@@ -1,0 +1,68 @@
+{
+  "name": "Meu Guarda-roupa",
+  "short_name": "Guarda-roupa",
+  "description": "App para gerenciar roupas, looks e histórico de uso",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#6c63ff",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%236c63ff' width='192' height='192'/><text x='50%' y='50%' font-size='100' fill='white' text-anchor='middle' dy='.3em'>👗</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%236c63ff' width='512' height='512'/><text x='50%' y='50%' font-size='280' fill='white' text-anchor='middle' dy='.3em'>👗</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Usar Hoje",
+      "short_name": "Usar Hoje",
+      "description": "Registre as peças que você está usando hoje",
+      "url": "/?page=usar-hoje",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23ff6b9d' width='192' height='192'/><text x='50%' y='50%' font-size='100' fill='white' text-anchor='middle' dy='.3em'>✨</text></svg>",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Histórico",
+      "short_name": "Histórico",
+      "description": "Veja seu histórico de uso dos últimos dias",
+      "url": "/?page=historico",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%232ecc71' width='192' height='192'/><text x='50%' y='50%' font-size='100' fill='white' text-anchor='middle' dy='.3em'>📊</text></svg>",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "categories": ["lifestyle", "shopping"],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23f8f9fa' width='540' height='720'/><rect fill='%236c63ff' width='540' height='60'/><text x='270' y='35' font-size='32' fill='white' text-anchor='middle'>Meu Guarda-roupa</text><text x='270' y='200' font-size='48' fill='%23333' text-anchor='middle'>👗</text><text x='270' y='300' font-size='24' fill='%23666' text-anchor='middle'>Galeria de Peças</text></svg>",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1080 1440'><rect fill='%23f8f9fa' width='1080' height='1440'/><rect fill='%236c63ff' width='1080' height='120'/><text x='540' y='70' font-size='64' fill='white' text-anchor='middle'>Meu Guarda-roupa</text><text x='540' y='400' font-size='96' fill='%23333' text-anchor='middle'>👗</text><text x='540' y='600' font-size='48' fill='%23666' text-anchor='middle'>Gerenciador de Roupas</text></svg>",
+      "sizes": "1080x1440",
+      "type": "image/svg+xml",
+      "form_factor": "wide"
+    }
+  ]
+}

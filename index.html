@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="App de Guarda-roupa - Gerencie suas roupas e looks">
+    <meta name="theme-color" content="#6c63ff">
+    
+    <!-- PWA Manifest (permite instalar como app) -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%236c63ff' width='180' height='180'/><text x='50%' y='50%' font-size='80' fill='white' text-anchor='middle' dy='.3em'>👗</text></svg>">
+    
+    <title>👗 Meu Guarda-roupa</title>
+    <link rel="stylesheet" href="css/style.css?v=20260603-substituir-look-modal">
+</head>
+<body>
+    <div id="app">
+        <!-- ==================== NAVEGAÇÃO ====================
+             A navegação fica sempre visível, mudando qual página 
+             é mostrada quando você clica em um botão -->
+        <nav class="navbar">
+            <button class="nav-btn active" onclick="mostrarPagina('home'); ativarNavBtn(0)">
+                Inicio
+            </button>
+            <button class="nav-btn" onclick="mostrarPagina('pecas'); ativarNavBtn(1)">
+                Pecas
+            </button>
+            <button class="nav-btn" onclick="mostrarPagina('usar-hoje'); ativarNavBtn(2)">
+                ✨ Registro
+            </button>
+            <button class="nav-btn" onclick="mostrarPagina('looks'); ativarNavBtn(3)">
+                💄 Looks
+            </button>
+            <button class="nav-btn" onclick="mostrarPagina('historico'); ativarNavBtn(4)">
+                📊 Histórico
+            </button>
+        </nav>
+
+        <!-- ==================== PÁGINA 1: HOME ====================
+             Galeria de todas as peças do guarda-roupa -->
+        <div id="home" class="pagina">
+            <div class="home-hero">
+                <div class="home-hero-texto">
+                    <span class="home-kicker">Meu Guarda-roupa</span>
+                    <h1>Escolha por onde quer comecar</h1>
+                    <p>Acesse rapidamente suas pecas, registre o look do dia, veja combinacoes e acompanhe o historico.</p>
+                </div>
+                <img src="fotos/home-illustration.jpg" alt="Ilustracao de estilo da home" class="home-hero-imagem">
+            </div>
+
+            <div class="home-links" aria-label="Atalhos principais">
+                <a class="home-link-card" href="#pecas" onclick="mostrarPagina('pecas'); ativarNavBtn(1)">
+                    <span class="home-link-icon">P</span>
+                    <strong>Pecas</strong>
+                    <small>Ver a galeria completa e filtrar o guarda-roupa.</small>
+                </a>
+                <a class="home-link-card" href="#usar-hoje" onclick="mostrarPagina('usar-hoje'); ativarNavBtn(2)">
+                    <span class="home-link-icon">R</span>
+                    <strong>Registro</strong>
+                    <small>Marcar as pecas usadas em uma data.</small>
+                </a>
+                <a class="home-link-card" href="#looks" onclick="mostrarPagina('looks'); ativarNavBtn(3)">
+                    <span class="home-link-icon">L</span>
+                    <strong>Looks</strong>
+                    <small>Consultar combinacoes prontas e sugestoes.</small>
+                </a>
+                <a class="home-link-card" href="#historico" onclick="mostrarPagina('historico'); ativarNavBtn(4)">
+                    <span class="home-link-icon">H</span>
+                    <strong>Historico</strong>
+                    <small>Rever usos, datas, estatisticas e sincronizacao.</small>
+                </a>
+            </div>
+        </div>
+
+        <div id="pecas" class="pagina" style="display:none;">
+            <div class="header">
+                <h1>👗 Minhas Peças</h1>
+                <input type="text" id="filtro-pesquisa" placeholder="🔍 Buscar..." 
+                       onkeyup="filtrarPecas()">
+            </div>
+
+            <!-- Filtros suspensos (Dropdowns) -->
+            <div id="filtros-home" class="filtros-home">
+                <button onclick="resetarFiltrosHome()">
+                    🔄 Limpar Filtros
+                </button>
+                <!-- Os selects serão adicionados dinamicamente pelo JS -->
+            </div>
+
+            <!-- IMPORTANTE: Aqui é onde as peças aparecem dinamicamente
+                 JavaScript irá criar cards para cada peça -->
+            <div id="galeria" class="galeria">
+                <!-- Os cards das peças serão inseridos aqui pelo JavaScript -->
+            </div>
+        </div>
+
+        <!-- ==================== PÁGINA 2: USAR HOJE ====================
+             Registra qual(is) peça(s) você usou hoje -->
+        <div id="usar-hoje" class="pagina" style="display:none;">
+            <div class="header">
+                <h1>Registro de Uso</h1>
+                <p id="data-hoje"></p>
+            </div>
+
+            <div class="secao">
+                <h3>Data do Registro</h3>
+                <input type="date" id="data-registro-uso">
+            </div>
+
+            <!-- Mostro as peças já selecionadas -->
+            <div class="secao">
+                <h3>Peças Selecionadas</h3>
+                <div id="pecas-selecionadas-hoje" class="lista-peças">
+                    <p style="text-align: center; color: #999;">Nenhuma peça selecionada ainda</p>
+                </div>
+                <div id="looks-compativeis-hoje" class="looks-compativeis-hoje"></div>
+                <button class="btn-principal" onclick="salvarUsoHoje()">
+                    ðŸ’¾ Registrar Uso
+                </button>
+            </div>
+
+            <!-- Filtros por tipo e função -->
+            <div class="secao">
+                <h3>Filtrar Peças</h3>
+                <div id="filtros-hoje" class="filtros-home">
+                    <button onclick="resetarFiltrosHoje()">
+                        ðŸ”„ Limpar Filtros
+                    </button>
+                    <!-- Tipos serão adicionados dinamicamente -->
+                </div>
+            </div>
+
+            <!-- Seletor de peças -->
+            <div class="secao secao-adicionar-peca-registro">
+                <h3>Adicionar Peça</h3>
+                <div id="galeria-usar-hoje" class="galeria">
+                    <!-- Peças aparecem aqui -->
+                </div>
+            </div>
+
+            <!-- Botão principal -->
+            <button class="btn-principal" onclick="salvarUsoHoje()">
+                💾 Registrar Uso
+            </button>
+        </div>
+
+        <!-- ==================== PÁGINA 3: LOOKS ====================
+             Gerencia looks (combinações de peças) e ocasiões -->
+        <div id="looks" class="pagina" style="display:none;">
+            <div class="header">
+                <h1>💄 Meus Looks</h1>
+            </div>
+
+            <!-- Filtros dos looks -->
+            <div class="secao">
+                <h3>Filtrar looks</h3>
+                <div class="filtros-home" id="filtros-ocasiao">
+                    <!-- Opções serão adicionadas aqui -->
+                </div>
+            </div>
+
+            <!-- Lista de looks -->
+            <div id="lista-looks" class="lista-looks">
+                <p style="text-align: center; color: #999;">Carregando looks...</p>
+            </div>
+        </div>
+
+        <!-- ==================== PÁGINA 4: HISTÓRICO ====================
+             Mostra estatísticas de uso dos últimos dias -->
+        <div id="historico" class="pagina" style="display:none;">
+            <div class="header">
+                <h1>📊 Histórico de Uso</h1>
+            </div>
+
+            <!-- Seletor de período -->
+            <div class="secao">
+                <h3>Período</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button id="historico-periodo-7" type="button" class="filtro-btn ativo">
+                        Últimos 7 dias
+                    </button>
+                    <button id="historico-periodo-14" type="button" class="filtro-btn">
+                        Últimos 14 dias
+                    </button>
+                    <button id="historico-periodo-30" type="button" class="filtro-btn">
+                        Últimos 30 dias
+                    </button>
+                    <button id="historico-periodo-todos" type="button" class="filtro-btn">
+                        Todo histórico
+                    </button>
+                </div>
+            </div>
+
+            <div class="secao">
+                <h3>Consultar por data</h3>
+                <div class="consulta-historico">
+                    <label>
+                        De
+                        <input type="date" id="historico-data-inicio">
+                    </label>
+                    <label>
+                        Até
+                        <input type="date" id="historico-data-fim">
+                    </label>
+                    <button id="historico-consultar-datas" type="button" class="btn-principal">
+                        Ver usos
+                    </button>
+                </div>
+                <p id="resumo-periodo-historico" class="texto-ajuda"></p>
+            </div>
+
+            <div class="secao">
+                <div class="calendario-historico-topo">
+                    <h3>Calendário</h3>
+                    <div class="calendario-historico-acoes">
+                        <button id="calendario-mes-anterior" type="button" class="filtro-btn">‹</button>
+                        <strong id="calendario-mes-label">Mês</strong>
+                        <button id="calendario-mes-proximo" type="button" class="filtro-btn">›</button>
+                    </div>
+                </div>
+                <div id="calendario-historico" class="calendario-historico"></div>
+            </div>
+
+            <div class="secao">
+                <h3>Importar histórico</h3>
+                <input type="file" id="arquivo-historico" accept=".xlsm,.xlsx,.csv,.json">
+                <button id="historico-importar-arquivo" type="button" class="btn-principal">
+                    Carregar histórico
+                </button>
+                <p id="status-importacao-historico" class="texto-ajuda">
+                    Use o arquivo 0305_Vestuário.xlsm ou uma planilha com colunas como Data, Peças/ID peças e Look.
+                </p>
+            </div>
+
+            <div class="secao">
+                <h3>Sincronização</h3>
+                <div id="supabase-login" class="sync-box">
+                    <input type="email" id="supabase-email" placeholder="Email">
+                    <input type="password" id="supabase-senha" placeholder="Senha">
+                    <div class="sync-acoes">
+                        <button id="supabase-entrar" type="button" class="btn-principal">Entrar</button>
+                        <button id="supabase-criar-conta" type="button" class="btn-secundario">Criar conta</button>
+                    </div>
+                </div>
+                <div id="supabase-logado" class="sync-box" style="display:none;">
+                    <p id="supabase-usuario" class="texto-ajuda"></p>
+                    <div class="sync-acoes">
+                        <button id="supabase-sincronizar" type="button" class="btn-principal">Sincronizar</button>
+                        <button id="supabase-baixar" type="button" class="btn-secundario">Baixar da nuvem</button>
+                        <button id="supabase-enviar" type="button" class="btn-secundario">Enviar para nuvem</button>
+                        <button id="supabase-sair" type="button" class="btn-secundario">Sair</button>
+                    </div>
+                </div>
+                <p id="supabase-status" class="texto-ajuda">Configure o Supabase para sincronizar celular e desktop.</p>
+            </div>
+
+            <div class="secao">
+                <h3>Looks e peças por data</h3>
+                <div id="detalhe-historico" class="detalhe-historico">
+                    <p style="text-align: center; color: #999;">Escolha um período para ver as fotos.</p>
+                </div>
+            </div>
+
+            <!-- Estatísticas gerais -->
+            <div class="cards-stats">
+                <div class="stat-card">
+                    <div class="stat-numero">0</div>
+                    <div class="stat-label">Usos Registrados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-numero">0</div>
+                    <div class="stat-label">Peças Diferentes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-numero">0</div>
+                    <div class="stat-label">Looks Usados</div>
+                </div>
+            </div>
+
+            <div class="secao secao-sem-uso">
+                <h3>Não uso há...</h3>
+                <div class="filtros-sem-uso">
+                    <label>
+                        Tipo de peça
+                        <select id="filtro-sem-uso-tipo">
+                            <option value="">Todos os tipos</option>
+                        </select>
+                    </label>
+                    <label>
+                        Local
+                        <select id="filtro-sem-uso-local">
+                            <option value="">Todos os locais</option>
+                        </select>
+                    </label>
+                    <label>
+                        Situação
+                        <select id="filtro-sem-uso-situacao">
+                            <option value="">Todas as situações</option>
+                        </select>
+                    </label>
+                    <label>
+                        Tempo sem uso
+                        <select id="filtro-sem-uso-tempo">
+                            <option value="">Todos os tempos</option>
+                            <option value="nunca">Nunca usado</option>
+                            <option value="90">3 meses sem uso</option>
+                            <option value="180">6 meses sem uso</option>
+                            <option value="365">1 ano sem uso</option>
+                            <option value="730">2 anos sem uso</option>
+                            <option value="1095">3 anos sem uso</option>
+                            <option value="mais-1095">Mais de 3 anos sem uso</option>
+                        </select>
+                    </label>
+                </div>
+                <div id="pecas-sem-uso" class="pecas-sem-uso">
+                    <!-- Cards serão montados aqui -->
+                </div>
+            </div>
+
+            <div class="secao">
+                <h3>Peças Mais Usadas</h3>
+                <div id="tabela-historico" class="pecas-mais-usadas">
+                    <!-- Cards serão montados aqui -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== MODAL: DETALHES DA PEÇA ====================
+             Popover que mostra informações completas de uma peça -->
+        <div id="modal-peca" class="modal" style="display:none;">
+            <div class="modal-content">
+                <button class="btn-fechar" onclick="fecharModal()">✕</button>
+                
+                <img id="foto-modal" src="" alt="Peça" class="foto-modal">
+                
+                <h2 id="titulo-modal"></h2>
+                
+                <div class="ficha-peca">
+                    <div class="campo-ficha">
+                        <span class="label">ID:</span>
+                        <span id="ficha-id"></span>
+                    </div>
+                    <div class="campo-ficha">
+                        <span class="label">Tipo:</span>
+                        <span id="ficha-tipo"></span>
+                    </div>
+                    <div class="campo-ficha">
+                        <span class="label">Função:</span>
+                        <span id="ficha-funcao"></span>
+                    </div>
+                    <div class="campo-ficha">
+                        <span class="label">Cor:</span>
+                        <span id="ficha-cor"></span>
+                    </div>
+                    <div class="campo-ficha">
+                        <span class="label">Situação:</span>
+                        <span id="ficha-situacao"></span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn-secundario" onclick="fecharModal()">Fechar</button>
+                    <button class="btn-principal" onclick="selecionarPecaHoje()">
+                        Registro
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-look-detalhes" class="modal" style="display:none;">
+            <div class="modal-content modal-look-detalhes">
+                <button class="btn-fechar" onclick="fecharModal()">✕</button>
+                <img id="foto-look-modal" src="" alt="Look" class="foto-look-modal">
+                <h2 id="titulo-look-modal"></h2>
+                <div id="tags-look-modal" class="tags-look"></div>
+                <div id="ficha-look-modal" class="ficha-peca"></div>
+                <div class="secao look-modal-secao">
+                    <h3>Peças do look</h3>
+                    <div id="pecas-look-modal" class="historico-pecas-grid"></div>
+                </div>
+                <div class="secao look-modal-secao">
+                    <h3>Acessórios e calçados sugeridos</h3>
+                    <div id="sugestoes-look-modal" class="historico-pecas-grid"></div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn-secundario" onclick="fecharModal()">Fechar</button>
+                    <button id="usar-look-modal" class="btn-principal" type="button">Usar Este Look</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-criar-look-historico" class="modal" style="display:none;">
+            <div class="modal-content">
+                <button class="btn-fechar" onclick="fecharModal()">✕</button>
+                <h2>Criar Look</h2>
+
+                <div class="form-look-historico form-look-historico-modo">
+                    <label>
+                        Acao
+                        <select id="look-historico-modo">
+                            <option value="novo">Criar novo look</option>
+                            <option value="substituir">Substituir look existente</option>
+                        </select>
+                    </label>
+                    <label id="look-historico-look-existente-label" style="display:none;">
+                        Look existente
+                        <select id="look-historico-look-existente"></select>
+                    </label>
+                    <label id="look-historico-data-alteracao-label" style="display:none;">
+                        Data de alteracao
+                        <input type="date" id="look-historico-data-alteracao">
+                    </label>
+                </div>
+
+                <div class="form-look-historico">
+                    <label>
+                        Data de criação
+                        <input type="date" id="look-historico-data">
+                    </label>
+                    <label>
+                        Situação
+                        <select id="look-historico-situacao">
+                            <option value="em uso">em uso</option>
+                            <option value="stand-by">stand-by</option>
+                            <option value="excluído">excluído</option>
+                        </select>
+                    </label>
+                    <label>
+                        Indicador
+                        <select id="look-historico-indicador"></select>
+                    </label>
+                    <label>
+                        HTT
+                        <select id="look-historico-htt">
+                            <option value="false">false</option>
+                            <option value="true">true</option>
+                        </select>
+                    </label>
+                    <label>
+                        Ocasião
+                        <select id="look-historico-ocasiao" multiple size="6">
+                        </select>
+                    </label>
+                    <label class="form-look-historico-largo">
+                        Foto do look
+                        <input type="file" id="look-historico-foto" accept="image/*">
+                    </label>
+                </div>
+
+                <div class="look-historico-preview">
+                    <strong id="look-historico-id-preview">ID: selecione o indicador</strong>
+                    <span id="look-historico-pecas-preview"></span>
+                </div>
+
+                <div class="secao look-historico-ordem">
+                    <h3>Ordem das peças</h3>
+                    <div id="look-historico-ordem"></div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn-secundario" onclick="fecharModal()">Cancelar</button>
+                    <button class="btn-principal" onclick="salvarLookHistorico()">
+                        Salvar Look
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ==================== SCRIPTS ====================
+         A ordem importa! CSS deve carregar antes, depois o app.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/app.js?v=20260603-substituir-look-existente"></script>
+</body>
+</html>
+
+<!-- 
+    💡 EXPLICAÇÃO DA ESTRUTURA:
+
+    1. NAVBAR (Navegação)
+       - 4 botões que mudam qual página é mostrada
+       - onclick="mostrarPagina('home')" = função JS que esconde tudo e mostra aquela página
+
+    2. PÁGINAS (4 no total)
+       - Cada uma tem id="algo" e class="pagina"
+       - JavaScript muda o display: none/block delas
+       - Isso é melhor que recarregar a página
+
+    3. MODAIS (Popups)
+       - modal-peca: mostra detalhes de uma peça
+       - Sobrepõem as páginas
+
+    4. IDs e Classes
+       - id="algo" é para JavaScript encontrar (getElementById)
+       - class="algo" é para CSS estilizar (querySelector)
+
+    5. Eventos JavaScript
+       - onclick="funcao()" chama função quando clica
+       - onkeyup="funcao()" chama enquanto digita
+       - onchange="funcao()" chama quando muda
+
+    PRÓXIMO PASSO: Abra js/app.js para ver a lógica
+-->
