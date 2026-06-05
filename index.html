@@ -240,6 +240,16 @@
                     <div class="sync-acoes">
                         <button id="supabase-entrar" type="button" class="btn-principal">Entrar</button>
                         <button id="supabase-criar-conta" type="button" class="btn-secundario">Criar conta</button>
+                        <button id="supabase-recuperar-senha" type="button" class="btn-secundario">Esqueci senha</button>
+                    </div>
+                </div>
+                <div id="supabase-reset-senha" class="sync-box" style="display:none;">
+                    <p class="texto-ajuda">Digite a nova senha para concluir a recuperaÃ§Ã£o.</p>
+                    <input type="password" id="supabase-nova-senha" placeholder="Nova senha">
+                    <input type="password" id="supabase-confirmar-senha" placeholder="Confirmar nova senha">
+                    <div class="sync-acoes">
+                        <button id="supabase-atualizar-senha" type="button" class="btn-principal">Salvar nova senha</button>
+                        <button id="supabase-cancelar-reset" type="button" class="btn-secundario">Cancelar</button>
                     </div>
                 </div>
                 <div id="supabase-logado" class="sync-box" style="display:none;">
@@ -472,7 +482,7 @@
          A ordem importa! CSS deve carregar antes, depois o app.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
-    <script src="js/app.js?v=20260603-substituir-look-existente"></script>
+    <script src="js/app.js?v=20260605-recuperar-senha-supabase"></script>
 </body>
 </html>
 

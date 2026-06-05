@@ -28,6 +28,7 @@ const app = {
     usuarioSupabase: null,
     sincronizando: false,
     forcarEnvioLocalSupabase: false,
+    recuperandoSenhaSupabase: false,
     
     // Filtros da página Home
     filtrosHome: Object.fromEntries(CAMPOS_FILTROS_PECAS.map(campo => [campo, []])),
@@ -507,10 +508,14 @@ async function inicializarSupabase() {
         await baixarDadosSupabase({ silencioso: true });
     }
 
-    app.supabase.auth.onAuthStateChange(async (_event, session) => {
+    app.supabase.auth.onAuthStateChange(async (event, session) => {
         app.usuarioSupabase = session?.user || null;
+        if (event === 'PASSWORD_RECOVERY') {
+            app.recuperandoSenhaSupabase = true;
+            atualizarStatusSupabase('Link de recuperacao validado. Digite sua nova senha.', 'sucesso');
+        }
         atualizarUISupabase(app.usuarioSupabase);
-        if (app.usuarioSupabase) await baixarDadosSupabase({ silencioso: true });
+        if (app.usuarioSupabase && !app.recuperandoSenhaSupabase) await baixarDadosSupabase({ silencioso: true });
     });
 }
 
@@ -522,6 +527,9 @@ function configurarEventosSupabase() {
         ['supabase-sincronizar', sincronizarSupabase],
         ['supabase-baixar', () => baixarDadosSupabase()],
         ['supabase-enviar', () => enviarDadosSupabase()],
+        ['supabase-recuperar-senha', solicitarRecuperacaoSenhaSupabase],
+        ['supabase-atualizar-senha', atualizarSenhaSupabase],
+        ['supabase-cancelar-reset', cancelarRecuperacaoSenhaSupabase],
     ];
 
     eventos.forEach(([id, acao]) => {
@@ -542,12 +550,21 @@ function atualizarStatusSupabase(mensagem, tipo = '') {
 function atualizarUISupabase(usuario) {
     const login = document.getElementById('supabase-login');
     const logado = document.getElementById('supabase-logado');
+    const resetSenha = document.getElementById('supabase-reset-senha');
     const usuarioEl = document.getElementById('supabase-usuario');
 
     if (!login || !logado) return;
 
+    if (app.recuperandoSenhaSupabase) {
+        login.style.display = 'none';
+        logado.style.display = 'none';
+        if (resetSenha) resetSenha.style.display = 'grid';
+        return;
+    }
+
     login.style.display = usuario ? 'none' : 'grid';
     logado.style.display = usuario ? 'grid' : 'none';
+    if (resetSenha) resetSenha.style.display = 'none';
     if (usuarioEl) usuarioEl.textContent = usuario ? `Conectado como ${usuario.email}` : '';
 }
 
@@ -561,6 +578,75 @@ function obterCredenciaisSupabase() {
     }
 
     return { email, password };
+}
+
+function obterUrlRedirectSupabase() {
+    return `${window.location.origin}${window.location.pathname}`;
+}
+
+async function solicitarRecuperacaoSenhaSupabase() {
+    if (!app.supabase) {
+        atualizarStatusSupabase('Configure o Supabase antes de recuperar senha.', 'erro');
+        return;
+    }
+
+    const email = document.getElementById('supabase-email')?.value?.trim();
+    if (!email) {
+        alert('Digite seu email para receber o link de recuperacao.');
+        return;
+    }
+
+    atualizarStatusSupabase('Enviando email de recuperacao...');
+    const { error } = await app.supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: obterUrlRedirectSupabase(),
+    });
+
+    if (error) {
+        atualizarStatusSupabase(error.message, 'erro');
+        return;
+    }
+
+    atualizarStatusSupabase('Email de recuperacao enviado. Abra o link no mesmo app para definir a nova senha.', 'sucesso');
+}
+
+async function atualizarSenhaSupabase() {
+    if (!app.supabase) return;
+
+    const novaSenha = document.getElementById('supabase-nova-senha')?.value || '';
+    const confirmarSenha = document.getElementById('supabase-confirmar-senha')?.value || '';
+
+    if (novaSenha.length < 6) {
+        alert('A nova senha precisa ter pelo menos 6 caracteres.');
+        return;
+    }
+    if (novaSenha !== confirmarSenha) {
+        alert('As senhas nao conferem.');
+        return;
+    }
+
+    atualizarStatusSupabase('Atualizando senha...');
+    const { data, error } = await app.supabase.auth.updateUser({ password: novaSenha });
+
+    if (error) {
+        atualizarStatusSupabase(error.message, 'erro');
+        return;
+    }
+
+    app.recuperandoSenhaSupabase = false;
+    app.usuarioSupabase = data.user || app.usuarioSupabase;
+    document.getElementById('supabase-nova-senha').value = '';
+    document.getElementById('supabase-confirmar-senha').value = '';
+    atualizarUISupabase(app.usuarioSupabase);
+    atualizarStatusSupabase('Senha atualizada. Voce ja esta conectada.', 'sucesso');
+    await baixarDadosSupabase({ silencioso: true });
+}
+
+function cancelarRecuperacaoSenhaSupabase() {
+    app.recuperandoSenhaSupabase = false;
+    document.getElementById('supabase-nova-senha').value = '';
+    document.getElementById('supabase-confirmar-senha').value = '';
+    atualizarUISupabase(app.usuarioSupabase);
+    atualizarStatusSupabase('Recuperacao de senha cancelada.');
 }
 
 async function entrarSupabase() {
@@ -580,6 +666,7 @@ async function entrarSupabase() {
     }
 
     app.usuarioSupabase = data.session?.user || data.user;
+    app.recuperandoSenhaSupabase = false;
     atualizarUISupabase(app.usuarioSupabase);
     await baixarDadosSupabase();
 }
@@ -621,6 +708,7 @@ async function sairSupabase() {
     if (!app.supabase) return;
     await app.supabase.auth.signOut();
     app.usuarioSupabase = null;
+    app.recuperandoSenhaSupabase = false;
     atualizarUISupabase(null);
     atualizarStatusSupabase('Desconectado.');
 }
