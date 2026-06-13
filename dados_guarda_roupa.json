@@ -51857,7 +51857,7 @@
         },
         {
           "campo": "Data revisão",
-          "valor": "2025-09-22",
+          "valor": "2026-06-10",
           "coluna": 28
         }
       ],
@@ -51952,7 +51952,7 @@
       "tom": "preto",
       "utilizacao": "under",
       "local": "BASE",
-      "situacao": "stand-by",
+      "situacao": "ok",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -51966,7 +51966,7 @@
         },
         {
           "campo": "Situação",
-          "valor": "stand-by",
+          "valor": "ok",
           "coluna": 17
         },
         {
@@ -52006,7 +52006,7 @@
         },
         {
           "campo": "Data revisão",
-          "valor": "2025-09-22",
+          "valor": "2026-06-11",
           "coluna": 28
         }
       ],
@@ -52024,7 +52024,7 @@
       "tom": "preto",
       "utilizacao": "under",
       "local": "BASE",
-      "situacao": "stand-by",
+      "situacao": "ok",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -52038,7 +52038,7 @@
         },
         {
           "campo": "Situação",
-          "valor": "stand-by",
+          "valor": "ok",
           "coluna": 17
         },
         {
@@ -52078,7 +52078,7 @@
         },
         {
           "campo": "Data revisão",
-          "valor": "2025-09-22",
+          "valor": "2026-06-11",
           "coluna": 28
         }
       ],
@@ -52140,7 +52140,7 @@
         },
         {
           "campo": "Data revisão",
-          "valor": "2025-09-22",
+          "valor": "2026-06-11",
           "coluna": 28
         }
       ],
@@ -52192,7 +52192,7 @@
         },
         {
           "campo": "Data revisão",
-          "valor": "2025-09-22",
+          "valor": "2026-06-11",
           "coluna": 28
         }
       ],
@@ -52249,7 +52249,7 @@
         },
         {
           "campo": "Data revisão",
-          "valor": "2025-09-22",
+          "valor": "2026-06-11",
           "coluna": 28
         }
       ],
@@ -52306,7 +52306,7 @@
         },
         {
           "campo": "Data revisão",
-          "valor": "2025-09-22",
+          "valor": "2026-06-11",
           "coluna": 28
         }
       ],
@@ -52363,7 +52363,7 @@
         },
         {
           "campo": "Data revisão",
-          "valor": "2025-09-22",
+          "valor": "2026-06-11",
           "coluna": 28
         }
       ],
@@ -52420,7 +52420,7 @@
         },
         {
           "campo": "Data revisão",
-          "valor": "2025-09-22",
+          "valor": "2026-06-12",
           "coluna": 28
         }
       ],
@@ -52477,7 +52477,7 @@
         },
         {
           "campo": "Data revisão",
-          "valor": "2025-09-22",
+          "valor": "2026-06-12",
           "coluna": 28
         }
       ],
@@ -52518,6 +52518,21 @@
           "coluna": 19
         },
         {
+          "campo": "Marca",
+          "valor": "lovi",
+          "coluna": 21
+        },
+        {
+          "campo": "Loja",
+          "valor": "Renner",
+          "coluna": 22
+        },
+        {
+          "campo": "Tamanho",
+          "valor": "GG",
+          "coluna": 23
+        },
+        {
           "campo": "Custo",
           "valor": "0",
           "coluna": 24
@@ -52526,6 +52541,11 @@
           "campo": "Data aquisição",
           "valor": "2026-09-21",
           "coluna": 25
+        },
+        {
+          "campo": "Data revisão",
+          "valor": "2026-06-11",
+          "coluna": 28
         }
       ],
       "acessorios": [],
@@ -52588,6 +52608,11 @@
           "campo": "Data aquisição",
           "valor": "2025-09-26",
           "coluna": 25
+        },
+        {
+          "campo": "Data revisão",
+          "valor": "2026-06-12",
+          "coluna": 28
         }
       ],
       "acessorios": [],
@@ -52650,6 +52675,11 @@
           "campo": "Data aquisição",
           "valor": "2025-09-26",
           "coluna": 25
+        },
+        {
+          "campo": "Data revisão",
+          "valor": "2026-06-12",
+          "coluna": 28
         }
       ],
       "acessorios": [],
@@ -52945,6 +52975,11 @@
           "campo": "Data aquisição",
           "valor": "2025-09-21",
           "coluna": 25
+        },
+        {
+          "campo": "Data revisão",
+          "valor": "2026-06-12",
+          "coluna": 28
         }
       ],
       "acessorios": [],
@@ -53168,6 +53203,11 @@
           "campo": "Repor",
           "valor": "não",
           "coluna": 19
+        },
+        {
+          "campo": "Marca",
+          "valor": "Trifil",
+          "coluna": 21
         }
       ],
       "acessorios": [],
@@ -53205,6 +53245,11 @@
           "campo": "Repor",
           "valor": "não",
           "coluna": 19
+        },
+        {
+          "campo": "Marca",
+          "valor": "Trifil",
+          "coluna": 21
         }
       ],
       "acessorios": [],
@@ -53225,7 +53270,7 @@
       "detalhes": [
         {
           "campo": "Alocação",
-          "valor": "alocada",
+          "valor": "sumida",
           "coluna": 16
         },
         {
@@ -53242,6 +53287,11 @@
           "campo": "Repor",
           "valor": "não",
           "coluna": 19
+        },
+        {
+          "campo": "Marca",
+          "valor": "Trifil",
+          "coluna": 21
         }
       ],
       "acessorios": [],
@@ -53254,7 +53304,7 @@
       "subtipo": "sapatilha",
       "nivel_aquecimento": "1",
       "padronagem": "lisa",
-      "cor_detalhe": "azul",
+      "cor_detalhe": "verde",
       "tom": "claro",
       "utilizacao": "under",
       "local": "BASE",
@@ -53382,6 +53432,253 @@
         {
           "campo": "Data aquisição",
           "valor": "2025-09-28",
+          "coluna": 25
+        }
+      ],
+      "acessorios": [],
+      "combinacoes_nao_permitidas": []
+    },
+    "ID0718": {
+      "id": "ID0718",
+      "tipo": "meia",
+      "funcao": "funcional",
+      "subtipo": "meia-calça",
+      "nivel_aquecimento": "na",
+      "padronagem": "lisa",
+      "cor_detalhe": "nude",
+      "tom": "médio",
+      "utilizacao": "under",
+      "local": "BASE",
+      "situacao": "ok",
+      "detalhes": [
+        {
+          "campo": "Modelagem",
+          "valor": "3/4",
+          "coluna": 12
+        },
+        {
+          "campo": "Alocação",
+          "valor": "alocada",
+          "coluna": 16
+        },
+        {
+          "campo": "Situação",
+          "valor": "ok",
+          "coluna": 17
+        },
+        {
+          "campo": "conservação",
+          "valor": "usada",
+          "coluna": 18
+        },
+        {
+          "campo": "Repor",
+          "valor": "não",
+          "coluna": 19
+        },
+        {
+          "campo": "Custo",
+          "valor": "76.54",
+          "coluna": 24
+        },
+        {
+          "campo": "Data aquisição",
+          "valor": "2025-04-26",
+          "coluna": 25
+        },
+        {
+          "campo": "Data revisão",
+          "valor": "2026-06-10",
+          "coluna": 28
+        }
+      ],
+      "acessorios": [],
+      "combinacoes_nao_permitidas": []
+    },
+    "ID0719": {
+      "id": "ID0719",
+      "tipo": "calçado",
+      "funcao": "visual",
+      "subtipo": "pantufa",
+      "nivel_aquecimento": "5",
+      "padronagem": "na",
+      "cor_detalhe": "cinza",
+      "tom": "claro",
+      "utilizacao": "casa",
+      "local": "BASE",
+      "situacao": "ok",
+      "detalhes": [
+        {
+          "campo": "formalidade",
+          "valor": "lounge",
+          "coluna": 13
+        },
+        {
+          "campo": "Tendência",
+          "valor": "atemporal",
+          "coluna": 14
+        },
+        {
+          "campo": "Alocação",
+          "valor": "alocada",
+          "coluna": 16
+        },
+        {
+          "campo": "Situação",
+          "valor": "ok",
+          "coluna": 17
+        },
+        {
+          "campo": "conservação",
+          "valor": "usada",
+          "coluna": 18
+        },
+        {
+          "campo": "Repor",
+          "valor": "não",
+          "coluna": 19
+        },
+        {
+          "campo": "Tamanho",
+          "valor": "39",
+          "coluna": 23
+        },
+        {
+          "campo": "Custo",
+          "valor": "0",
+          "coluna": 24
+        },
+        {
+          "campo": "Data aquisição",
+          "valor": "2026-05-10",
+          "coluna": 25
+        }
+      ],
+      "acessorios": [
+        {
+          "grupo": "combinação1",
+          "id": "ID0677",
+          "foto": "fotos/ID0677.webp"
+        },
+        {
+          "grupo": "combinação2",
+          "id": "ID0080",
+          "foto": "fotos/ID0080.webp"
+        },
+        {
+          "grupo": "combinação3",
+          "id": "ID0676",
+          "foto": "fotos/ID0676.webp"
+        },
+        {
+          "grupo": "combinação4",
+          "id": "ID0082",
+          "foto": "fotos/ID0082.webp"
+        },
+        {
+          "grupo": "combinação5",
+          "id": "ID0083",
+          "foto": "fotos/ID0083.webp"
+        },
+        {
+          "grupo": "combinação6",
+          "id": "ID0086",
+          "foto": "fotos/ID0086.webp"
+        },
+        {
+          "grupo": "combinação7",
+          "id": "ID0084",
+          "foto": "fotos/ID0084.webp"
+        },
+        {
+          "grupo": "combinação9",
+          "id": "ID0090",
+          "foto": "fotos/ID0090.webp"
+        },
+        {
+          "grupo": "combinação10",
+          "id": "ID0477",
+          "foto": "fotos/ID0477.webp"
+        },
+        {
+          "grupo": "combinação11",
+          "id": "ID0093",
+          "foto": "fotos/ID0093.webp"
+        },
+        {
+          "grupo": "combinação12",
+          "id": "ID0100",
+          "foto": "fotos/ID0100.webp"
+        },
+        {
+          "grupo": "combinação13",
+          "id": "ID0577",
+          "foto": "fotos/ID0577.webp"
+        }
+      ],
+      "combinacoes_nao_permitidas": []
+    },
+    "ID0720": {
+      "id": "ID0720",
+      "tipo": "bolsa",
+      "funcao": "visual",
+      "subtipo": "alça",
+      "nivel_aquecimento": "na",
+      "padronagem": "lisa",
+      "cor_detalhe": "caramelo",
+      "tom": "médio",
+      "utilizacao": "sair",
+      "local": "BASE",
+      "situacao": "ok",
+      "detalhes": [
+        {
+          "campo": "Modelagem",
+          "valor": "grande",
+          "coluna": 12
+        },
+        {
+          "campo": "formalidade",
+          "valor": "casual",
+          "coluna": 13
+        },
+        {
+          "campo": "Tendência",
+          "valor": "trendy",
+          "coluna": 14
+        },
+        {
+          "campo": "Alocação",
+          "valor": "alocada",
+          "coluna": 16
+        },
+        {
+          "campo": "Situação",
+          "valor": "ok",
+          "coluna": 17
+        },
+        {
+          "campo": "conservação",
+          "valor": "usada",
+          "coluna": 18
+        },
+        {
+          "campo": "Repor",
+          "valor": "não",
+          "coluna": 19
+        },
+        {
+          "campo": "Marca",
+          "valor": "Doralis",
+          "coluna": 21
+        },
+        {
+          "campo": "Custo",
+          "valor": "469.68",
+          "coluna": 24
+        },
+        {
+          "campo": "Data aquisição",
+          "valor": "2026-05-14",
           "coluna": 25
         }
       ],
@@ -442740,7 +443037,7 @@
       "foto": "fotos/categorias/CD0048.webp"
     }
   },
-  "ultima_atualizacao": "2026-06-03T15:56:48.007523",
-  "total_pecas": 717,
+  "ultima_atualizacao": "2026-06-13T01:50:56.652833",
+  "total_pecas": 720,
   "total_looks": 6888
 }
