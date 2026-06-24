@@ -4,6 +4,16 @@
 
 const CAMPOS_FILTROS_PECAS = ['tipo', 'funcao', 'padronagem', 'tom', 'cor_detalhe', 'nivel_aquecimento', 'subtipo', 'utilizacao', 'local', 'situacao'];
 const CAMPOS_FILTROS_LOOKS = ['situacao', 'utilizacao', 'indicador', 'clima', 'local', 'htt', 'ocasiao'];
+const CAMPOS_FILTROS_GERAIS_HOJE = CAMPOS_FILTROS_PECAS.filter(campo => !['tipo', 'subtipo'].includes(campo));
+const GRUPOS_REGISTRO_PECAS = [
+    { id: 'roupas-principais', titulo: 'Blusas, calças, casacos, inteiros', tipos: ['blusa', 'calça', 'casaco', 'inteiro'] },
+    { id: 'intimas-funcionais', titulo: 'Sutien, calcinha, modelador, tops, segunda-pele', tipos: ['sutien', 'calcinha', 'modelador', 'top', 'segunda-pele'] },
+    { id: 'pijamas', titulo: 'Pijamas', tipos: ['pijama'] },
+    { id: 'meias-calcados', titulo: 'Meias e calçados', tipos: ['meia', 'calçado'] },
+    { id: 'bijus', titulo: 'Bijus', tipos: ['biju'] },
+    { id: 'acessorios', titulo: 'Bolsa, cinto, pra cabeça, pro pescoço', tipos: ['bolsa', 'cinto', 'pra cabeça', 'pro pescoço'] },
+    { id: 'praia', titulo: 'Roupa de praia', tipos: ['roupa de praia'] },
+];
 
 const app = {
     // Dados carregados do JSON (nunca mudam)
@@ -34,7 +44,8 @@ const app = {
     filtrosHome: Object.fromEntries(CAMPOS_FILTROS_PECAS.map(campo => [campo, []])),
     
     // Filtros da aba "Usar Hoje"
-    filtrosHoje: Object.fromEntries(CAMPOS_FILTROS_PECAS.map(campo => [campo, []])),
+    filtrosHoje: Object.fromEntries(CAMPOS_FILTROS_GERAIS_HOJE.map(campo => [campo, []])),
+    filtrosHojeGrupos: Object.fromEntries(GRUPOS_REGISTRO_PECAS.map(grupo => [grupo.id, { tipo: [], subtipo: [] }])),
 
     // Filtros da página Looks
     filtrosLooks: Object.fromEntries(CAMPOS_FILTROS_LOOKS.map(campo => [campo, []])),
@@ -297,6 +308,13 @@ function obterTiposPecasInteirasCompativeis(look) {
 
 function formatarNomeFiltro(campo) {
     const nomes = {
+        tipo: 'Tipo',
+        funcao: 'Função',
+        subtipo: 'Subtipo',
+        padronagem: 'Padronagem',
+        tom: 'Tom',
+        cor_detalhe: 'Cor detalhe',
+        nivel_aquecimento: 'Aquecimento',
         situacao: 'Situação',
         utilizacao: 'Utilização',
         indicador: 'Tipo',
@@ -1627,8 +1645,17 @@ function formatarDataParaInput(data) {
 /* Renderizar galeria de peças com filtros aplicados na aba "Usar Hoje" */
 function preencherFiltrosHoje() {
     const container = document.getElementById('filtros-hoje');
+    if (!container) return;
 
-    CAMPOS_FILTROS_PECAS.forEach(campo => {
+    container.innerHTML = '';
+
+    const botaoLimpar = document.createElement('button');
+    botaoLimpar.type = 'button';
+    botaoLimpar.textContent = 'Limpar Filtros';
+    botaoLimpar.onclick = resetarFiltrosHoje;
+    container.appendChild(botaoLimpar);
+
+    CAMPOS_FILTROS_GERAIS_HOJE.forEach(campo => {
         const valores = [...new Set(Object.values(app.pecas).map(p => p[campo]).filter(v => v && v !== 'na'))];
 
         if (valores.length > 0) {
@@ -1651,20 +1678,14 @@ function resetarFiltrosHoje() {
         app.filtrosHoje[campo] = [];
     }
 
-    document.querySelectorAll('#filtros-hoje input[type="checkbox"]').forEach(checkbox => {
-        checkbox.checked = false;
-        checkbox.closest('.filtro-chip')?.classList.remove('selecionado');
+    GRUPOS_REGISTRO_PECAS.forEach(grupo => {
+        app.filtrosHojeGrupos[grupo.id] = { tipo: [], subtipo: [] };
     });
 
-    document.querySelectorAll('#filtros-hoje .filtro-multiplo').forEach(filtro => {
-        filtro.classList.remove('tem-selecao', 'aberto');
-        filtro.querySelector('.filtro-multiplo-contador').textContent = '';
-    });
-
-    renderGaleriaUsarHoje();
+    preencherFiltrosHoje();
 }
 
-function renderGaleriaUsarHoje() {
+function renderGaleriaUsarHojeAntiga() {
     const galeria = document.getElementById('galeria-usar-hoje');
     galeria.innerHTML = '';
 
@@ -1718,6 +1739,118 @@ function renderGaleriaUsarHoje() {
 }
 
 
+
+function obterFiltroGrupoRegistro(grupoId) {
+    if (!app.filtrosHojeGrupos[grupoId]) {
+        app.filtrosHojeGrupos[grupoId] = { tipo: [], subtipo: [] };
+    }
+
+    return app.filtrosHojeGrupos[grupoId];
+}
+
+function filtrarGrupoHoje(grupoId, campo, valores) {
+    const filtros = obterFiltroGrupoRegistro(grupoId);
+    filtros[campo] = valores;
+    renderGaleriaUsarHoje();
+}
+
+function pecaPertenceAoGrupoRegistro(peca, grupo) {
+    const tipoPeca = normalizarTexto(peca?.tipo);
+    return grupo.tipos.some(tipo => normalizarTexto(tipo) === tipoPeca);
+}
+
+function obterValoresCampoPecas(pecas, campo, selecionados = []) {
+    const valores = pecas
+        .map(([, peca]) => peca[campo])
+        .filter(v => v && v !== 'na');
+
+    return [...new Set([...valores, ...selecionados])];
+}
+
+function criarCardPecaRegistro(id, peca) {
+    const card = document.createElement('div');
+    card.className = 'card-peca';
+    if (app.pecasSelecionadasHoje.includes(id)) card.classList.add('selecionado');
+
+    card.innerHTML = `
+        ${criarImagem(getCaminhoFoto(id), peca.tipo || id, 'foto-card-peca')}
+        <div class="card-peca-corpo">
+            <div class="card-peca-titulo">
+                <strong>${escapeHtml(id)}</strong>
+            </div>
+        </div>
+    `;
+
+    card.onclick = () => {
+        if (!app.pecasSelecionadasHoje.includes(id)) app.pecasSelecionadasHoje.push(id);
+        atualizarPecasSelecionadasHoje();
+        renderGaleriaUsarHoje();
+    };
+
+    return card;
+}
+
+function renderGaleriaUsarHoje() {
+    const galeria = document.getElementById('galeria-usar-hoje');
+    galeria.innerHTML = '';
+
+    GRUPOS_REGISTRO_PECAS.forEach(grupo => {
+        const filtrosGrupo = obterFiltroGrupoRegistro(grupo.id);
+        const pecasBaseGrupo = Object.entries(app.pecas)
+            .filter(([, peca]) => pecaPertenceAoGrupoRegistro(peca, grupo))
+            .filter(([, peca]) => pecaPassaNosFiltros(peca, app.filtrosHoje));
+        const pecasFiltradas = pecasBaseGrupo
+            .filter(([, peca]) => pecaPassaNosFiltros(peca, filtrosGrupo));
+
+        if (pecasBaseGrupo.length === 0) return;
+
+        const secao = document.createElement('section');
+        secao.className = 'grupo-registro';
+
+        const topo = document.createElement('div');
+        topo.className = 'grupo-registro-topo';
+        topo.innerHTML = `
+            <h4>${escapeHtml(grupo.titulo)}</h4>
+            <span>${pecasFiltradas.length} de ${pecasBaseGrupo.length}</span>
+        `;
+        secao.appendChild(topo);
+
+        const filtros = document.createElement('div');
+        filtros.className = 'grupo-registro-filtros';
+        const valoresTipo = obterValoresCampoPecas(pecasBaseGrupo, 'tipo', filtrosGrupo.tipo);
+        const valoresSubtipo = obterValoresCampoPecas(pecasBaseGrupo, 'subtipo', filtrosGrupo.subtipo);
+
+        if (valoresTipo.length > 1) {
+            criarFiltroMultiplo(filtros, 'tipo', valoresTipo, filtrosGrupo.tipo, valores => {
+                filtrarGrupoHoje(grupo.id, 'tipo', valores);
+            });
+        }
+
+        if (valoresSubtipo.length > 0) {
+            criarFiltroMultiplo(filtros, 'subtipo', valoresSubtipo, filtrosGrupo.subtipo, valores => {
+                filtrarGrupoHoje(grupo.id, 'subtipo', valores);
+            });
+        }
+
+        if (filtros.children.length > 0) secao.appendChild(filtros);
+
+        const grade = document.createElement('div');
+        grade.className = 'grupo-registro-grade';
+
+        if (pecasFiltradas.length === 0) {
+            grade.innerHTML = '<p class="grupo-registro-vazio">Nenhuma peça neste grupo com os filtros atuais.</p>';
+        } else {
+            pecasFiltradas.forEach(([id, peca]) => {
+                grade.appendChild(criarCardPecaRegistro(id, peca));
+            });
+        }
+
+        secao.appendChild(grade);
+        galeria.appendChild(secao);
+    });
+
+    console.log('Galeria "Usar Hoje" renderizada por grupos!');
+}
 
 function atualizarPecasSelecionadasHoje() {
     const container = document.getElementById('pecas-selecionadas-hoje');

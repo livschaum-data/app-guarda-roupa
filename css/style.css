@@ -676,15 +676,73 @@ body {
 }
 
 #galeria-usar-hoje {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    display: block;
     align-content: start;
-    max-height: clamp(320px, 52vh, 560px);
-    overflow-y: auto;
-    overscroll-behavior: contain;
+    max-height: none;
+    overflow: visible;
+    padding: 12px;
 }
 
-#galeria-usar-hoje .card-peca img {
+.grupo-registro {
+    padding: 14px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    background: var(--cor-fundo-card);
+}
+
+.grupo-registro + .grupo-registro {
+    margin-top: 14px;
+}
+
+.grupo-registro-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.grupo-registro-topo h4 {
+    margin: 0;
+    color: var(--cor-texto);
+    font-size: 16px;
+    line-height: 1.25;
+}
+
+.grupo-registro-topo span {
+    flex: 0 0 auto;
+    color: var(--cor-texto-cinza);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.grupo-registro-filtros {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 180px));
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.grupo-registro-grade {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+    max-height: clamp(260px, 42vh, 440px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 4px;
+}
+
+.grupo-registro-grade .card-peca img {
     height: 100px;
+}
+
+.grupo-registro-vazio {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 12px;
+    color: var(--cor-texto-cinza);
+    text-align: center;
 }
 
 /* Responsivo: Em telas pequenas, menos colunas */
@@ -693,6 +751,24 @@ body {
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 8px;
         padding: 10px;
+    }
+
+    .grupo-registro {
+        padding: 12px;
+    }
+
+    .grupo-registro-topo {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .grupo-registro-filtros {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grupo-registro-grade {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
