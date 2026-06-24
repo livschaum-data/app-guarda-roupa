@@ -11542,9 +11542,9 @@
     },
     "ID0175": {
       "id": "ID0175",
-      "tipo": "funcional",
-      "funcao": "tronco",
-      "subtipo": "alcinha",
+      "tipo": "segunda-pele",
+      "funcao": "funcional",
+      "subtipo": "tronco",
       "nivel_aquecimento": "1",
       "padronagem": "lisa",
       "cor_detalhe": "preto",
@@ -11636,9 +11636,9 @@
     },
     "ID0176": {
       "id": "ID0176",
-      "tipo": "funcional",
-      "funcao": "tronco",
-      "subtipo": "alcinha",
+      "tipo": "segunda-pele",
+      "funcao": "funcional",
+      "subtipo": "tronco",
       "nivel_aquecimento": "1",
       "padronagem": "lisa",
       "cor_detalhe": "chumbo",
@@ -11727,9 +11727,9 @@
     },
     "ID0177": {
       "id": "ID0177",
-      "tipo": "funcional",
-      "funcao": "tronco",
-      "subtipo": "alcinha",
+      "tipo": "segunda-pele",
+      "funcao": "funcional",
+      "subtipo": "tronco",
       "nivel_aquecimento": "1",
       "padronagem": "lisa",
       "cor_detalhe": "branco",
@@ -53680,6 +53680,63 @@
           "campo": "Data aquisição",
           "valor": "2026-05-14",
           "coluna": 25
+        }
+      ],
+      "acessorios": [],
+      "combinacoes_nao_permitidas": []
+    },
+    "ID0721": {
+      "id": "ID0721",
+      "tipo": "calça",
+      "funcao": "visual",
+      "subtipo": "calça",
+      "nivel_aquecimento": "5",
+      "padronagem": "lisa",
+      "cor_detalhe": "marrom",
+      "tom": "escuro",
+      "utilizacao": "casa",
+      "local": "BASE",
+      "situacao": "ok",
+      "detalhes": [
+        {
+          "campo": "formalidade",
+          "valor": "lounge",
+          "coluna": 13
+        },
+        {
+          "campo": "Tendência",
+          "valor": "atemporal",
+          "coluna": 14
+        },
+        {
+          "campo": "Alocação",
+          "valor": "alocada",
+          "coluna": 16
+        },
+        {
+          "campo": "Situação",
+          "valor": "ok",
+          "coluna": 17
+        },
+        {
+          "campo": "conservação",
+          "valor": "usada",
+          "coluna": 18
+        },
+        {
+          "campo": "Repor",
+          "valor": "não",
+          "coluna": 19
+        },
+        {
+          "campo": "Loja",
+          "valor": "Renner",
+          "coluna": 22
+        },
+        {
+          "campo": "Data revisão",
+          "valor": "2026-06-24",
+          "coluna": 28
         }
       ],
       "acessorios": [],
@@ -443037,7 +443094,7 @@
       "foto": "fotos/categorias/CD0048.webp"
     }
   },
-  "ultima_atualizacao": "2026-06-13T01:50:56.652833",
-  "total_pecas": 720,
+  "ultima_atualizacao": "2026-06-24T11:37:17.899132",
+  "total_pecas": 721,
   "total_looks": 6888
 }
