@@ -3124,8 +3124,6 @@ function aplicarLookExistenteNoFormulario() {
         option.selected = codigos.has(option.value);
     });
 
-    app.pecasSelecionadasLookHistorico[app.diaCriacaoLookHistorico] = [...(look.pecas || [])];
-    renderOrdemPecasLookHistorico();
     atualizarPreviewLookHistorico();
 }
 
