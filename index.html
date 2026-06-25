@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%236c63ff' width='180' height='180'/><text x='50%' y='50%' font-size='80' fill='white' text-anchor='middle' dy='.3em'>👗</text></svg>">
     
     <title>👗 Meu Guarda-roupa</title>
-    <link rel="stylesheet" href="css/style.css?v=20260625-editar-look-cores">
+    <link rel="stylesheet" href="css/style.css?v=20260625-historico-resumo-periodo">
 </head>
 <body>
     <div id="app">
@@ -175,7 +175,7 @@
             <!-- Seletor de período -->
             <div class="secao">
                 <h3>Período</h3>
-                <div style="display: flex; gap: 10px;">
+                <div class="historico-periodo-botoes">
                     <button id="historico-periodo-7" type="button" class="filtro-btn ativo">
                         Últimos 7 dias
                     </button>
@@ -272,6 +272,19 @@
             </div>
 
             <!-- Estatísticas gerais -->
+            <div class="secao secao-resumo-periodo">
+                <div class="resumo-periodo-topo">
+                    <h3>Usados no periodo</h3>
+                    <select id="historico-resumo-tipo" onchange="alterarTipoResumoHistorico(this.value)">
+                        <option value="looks">Looks</option>
+                        <option value="pecas">Pecas</option>
+                    </select>
+                </div>
+                <div id="historico-resumo-itens" class="historico-resumo-itens">
+                    <p class="texto-ajuda">Escolha um periodo para ver os itens usados.</p>
+                </div>
+            </div>
+
             <div class="cards-stats">
                 <div class="stat-card">
                     <div class="stat-numero">0</div>
@@ -487,7 +500,7 @@
          A ordem importa! CSS deve carregar antes, depois o app.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js?v=20260624-config-supabase"></script>
-    <script src="js/app.js?v=20260625-recalcular-look"></script>
+    <script src="js/app.js?v=20260625-historico-resumo-periodo"></script>
 </body>
 </html>
 

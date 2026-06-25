@@ -36,6 +36,8 @@ const app = {
     pecaEmDetalhes: null,
     mesCalendarioHistorico: null,
     filtroHistoricoAtivo: null,
+    resumoHistoricoTipo: 'looks',
+    registrosHistoricoPeriodo: [],
     supabase: null,
     usuarioSupabase: null,
     sincronizando: false,
@@ -2877,8 +2879,10 @@ function consultarHistoricoPorDatas() {
 
 function renderHistorico(registrosPeriodo, inicio, fim) {
     registrosPeriodo = registrosPeriodo.filter(reg => Array.isArray(reg.pecas) && reg.pecas.length > 0);
+    app.registrosHistoricoPeriodo = registrosPeriodo;
 
     atualizarResumoPeriodo(registrosPeriodo, inicio, fim);
+    renderResumoItensPeriodo(registrosPeriodo);
     renderTabelaPecasMaisUsadas(registrosPeriodo);
     renderDetalheHistorico(registrosPeriodo);
     atualizarStatsHistorico(registrosPeriodo);
@@ -3076,6 +3080,102 @@ function diferencaDias(dataInicio, dataFim) {
     const inicio = new Date(dataInicio.getFullYear(), dataInicio.getMonth(), dataInicio.getDate());
     const fim = new Date(dataFim.getFullYear(), dataFim.getMonth(), dataFim.getDate());
     return Math.max(0, Math.round((fim - inicio) / (24 * 60 * 60 * 1000)));
+}
+
+function alterarTipoResumoHistorico(tipo) {
+    app.resumoHistoricoTipo = tipo === 'pecas' ? 'pecas' : 'looks';
+    renderResumoItensPeriodo(app.registrosHistoricoPeriodo || []);
+}
+
+function renderResumoItensPeriodo(registrosPeriodo) {
+    const container = document.getElementById('historico-resumo-itens');
+    const select = document.getElementById('historico-resumo-tipo');
+    if (!container) return;
+
+    const tipo = app.resumoHistoricoTipo === 'pecas' ? 'pecas' : 'looks';
+    if (select) select.value = tipo;
+
+    const resumo = calcularResumoUsoHistorico(registrosPeriodo, tipo);
+
+    if (resumo.length === 0) {
+        container.innerHTML = `<p class="texto-ajuda">Nenhum ${tipo === 'pecas' ? 'item' : 'look'} usado neste periodo.</p>`;
+        return;
+    }
+
+    container.innerHTML = `
+        <div class="historico-resumo-cabecalho">
+            <span>ID</span>
+            <span>No periodo</span>
+            <span>Total</span>
+            <span>Primeiro uso</span>
+            <span>Ultimo uso</span>
+        </div>
+        ${resumo.map(item => criarLinhaResumoHistorico(item, tipo)).join('')}
+    `;
+}
+
+function calcularResumoUsoHistorico(registrosPeriodo, tipo) {
+    const contagemPeriodo = contarUsosHistorico(registrosPeriodo, tipo);
+    const contagemTotal = contarUsosHistorico(app.historico, tipo);
+
+    return [...contagemPeriodo.values()]
+        .map(itemPeriodo => {
+            const itemTotal = contagemTotal.get(itemPeriodo.id) || itemPeriodo;
+            return {
+                ...itemPeriodo,
+                total: itemTotal.total || itemPeriodo.total,
+                primeiro: itemTotal.primeiro || itemPeriodo.primeiro,
+                ultimo: itemTotal.ultimo || itemPeriodo.ultimo,
+            };
+        })
+        .sort((a, b) => b.periodo - a.periodo || String(a.id).localeCompare(String(b.id), 'pt-BR', { numeric: true }));
+}
+
+function contarUsosHistorico(registros, tipo) {
+    const mapa = new Map();
+
+    (registros || []).forEach(registro => {
+        const dia = obterDiaRegistro(registro);
+        if (!dia) return;
+
+        const ids = tipo === 'pecas'
+            ? [...new Set(registro.pecas || [])].filter(Boolean)
+            : obterLookIdsRegistro(registro);
+
+        ids.forEach(id => {
+            const atual = mapa.get(id) || { id, periodo: 0, total: 0, primeiro: dia, ultimo: dia };
+            atual.periodo += 1;
+            atual.total += 1;
+            if (dia < atual.primeiro) atual.primeiro = dia;
+            if (dia > atual.ultimo) atual.ultimo = dia;
+            mapa.set(id, atual);
+        });
+    });
+
+    return mapa;
+}
+
+function criarLinhaResumoHistorico(item, tipo) {
+    const existe = tipo === 'pecas' ? Boolean(app.pecas[item.id]) : Boolean(obterLookPorId(item.id));
+    const detalhe = tipo === 'pecas'
+        ? app.pecas[item.id]?.tipo || 'Peca'
+        : obterLookPorId(item.id)?.nome || 'Look';
+    const acao = existe
+        ? (tipo === 'pecas' ? `mostrarDetalhesPeca('${item.id}')` : `mostrarDetalhesLook('${item.id}')`)
+        : '';
+
+    return `
+        <button type="button" class="historico-resumo-linha" ${acao ? `onclick="${acao}"` : 'disabled'}>
+            <span>
+                <strong>${escapeHtml(item.id)}</strong>
+                <small>${escapeHtml(detalhe)}</small>
+            </span>
+            <span>${item.periodo}</span>
+            <span>${item.total}</span>
+            <span>${formatarDataBR(item.primeiro)}</span>
+            <span>${formatarDataBR(item.ultimo)}</span>
+        </button>
+    `;
 }
 
 function renderTabelaPecasMaisUsadas(registrosPeriodo) {

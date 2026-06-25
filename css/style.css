@@ -1522,6 +1522,176 @@ tr:hover {
 
 /* ==================== CONSULTA DO HISTÓRICO ==================== */
 
+.secao-resumo-periodo {
+    display: grid;
+    gap: 12px;
+}
+
+.resumo-periodo-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.resumo-periodo-topo h3 {
+    margin: 0;
+}
+
+.resumo-periodo-topo select {
+    width: auto;
+    min-width: 120px;
+    margin: 0;
+    padding: 8px 28px 8px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.historico-resumo-itens {
+    display: grid;
+    gap: 6px;
+    overflow-x: auto;
+}
+
+.historico-resumo-cabecalho,
+.historico-resumo-linha {
+    display: grid;
+    grid-template-columns: minmax(130px, 1.5fr) repeat(4, minmax(88px, 1fr));
+    gap: 8px;
+    align-items: center;
+    min-width: 620px;
+}
+
+.historico-resumo-cabecalho {
+    padding: 0 10px 2px;
+    color: var(--cor-texto-cinza);
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.historico-resumo-linha {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    background: var(--cor-fundo-card);
+    color: var(--cor-texto);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.historico-resumo-linha:hover:not(:disabled) {
+    border-color: var(--cor-primaria);
+    box-shadow: 0 8px 18px rgba(31, 41, 55, 0.1);
+}
+
+.historico-resumo-linha:disabled {
+    cursor: default;
+}
+
+.historico-resumo-linha strong,
+.historico-resumo-linha small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.historico-resumo-linha strong {
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+.historico-resumo-linha small {
+    color: var(--cor-texto-cinza);
+    font-size: 11px;
+}
+
+.historico-resumo-linha > span:not(:first-child) {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+#historico > .secao:nth-of-type(2),
+#historico > .secao:nth-of-type(3) {
+    position: sticky;
+    z-index: 80;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(31, 41, 55, 0.12);
+}
+
+#historico > .secao:nth-of-type(2) {
+    top: 47px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 8px;
+}
+
+#historico > .secao:nth-of-type(3) {
+    top: 92px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 6px 10px;
+}
+
+#historico > .secao:nth-of-type(2) h3,
+#historico > .secao:nth-of-type(3) h3 {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+.historico-periodo-botoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.historico-periodo-botoes .filtro-btn {
+    padding: 4px 8px;
+    border-width: 1px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+#historico > .secao:nth-of-type(3) .texto-ajuda {
+    grid-column: 2;
+    margin: -6px 0 0;
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+#historico > .secao:nth-of-type(3) .consulta-historico {
+    grid-template-columns: repeat(2, minmax(108px, 140px)) auto;
+    gap: 6px;
+}
+
+#historico > .secao:nth-of-type(3) .consulta-historico label {
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+#historico > .secao:nth-of-type(3) .consulta-historico input {
+    min-height: 28px;
+    margin-top: 2px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+
+#historico > .secao:nth-of-type(3) .consulta-historico .btn-principal {
+    min-height: 28px;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
 .consulta-historico {
     display: grid;
     grid-template-columns: repeat(2, minmax(160px, 1fr)) auto;
@@ -2302,6 +2472,38 @@ tr:hover {
 
     .consulta-historico {
         grid-template-columns: 1fr;
+    }
+
+    #historico > .secao:nth-of-type(2),
+    #historico > .secao:nth-of-type(3) {
+        margin: 4px 10px;
+        padding: 8px 10px;
+    }
+
+    #historico > .secao:nth-of-type(2) {
+        top: 0;
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    #historico > .secao:nth-of-type(3) {
+        top: 92px;
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    #historico > .secao:nth-of-type(3) .consulta-historico {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #historico > .secao:nth-of-type(3) .consulta-historico .btn-principal,
+    #historico > .secao:nth-of-type(3) .texto-ajuda {
+        grid-column: 1 / -1;
+    }
+
+    .historico-periodo-botoes .filtro-btn {
+        flex: 1 1 calc(50% - 6px);
+        padding: 5px 7px;
     }
 
     .historico-dia-cabecalho {
