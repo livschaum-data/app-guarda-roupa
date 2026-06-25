@@ -1556,10 +1556,10 @@ tr:hover {
 .historico-resumo-cabecalho,
 .historico-resumo-linha {
     display: grid;
-    grid-template-columns: minmax(130px, 1.5fr) repeat(4, minmax(88px, 1fr));
+    grid-template-columns: minmax(190px, 1.7fr) repeat(4, minmax(88px, 1fr));
     gap: 8px;
     align-items: center;
-    min-width: 620px;
+    min-width: 700px;
 }
 
 .historico-resumo-cabecalho {
@@ -1597,6 +1597,23 @@ tr:hover {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.historico-resumo-id {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.historico-resumo-id img {
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 7px;
+    background: #f3f4f6;
+    object-fit: contain;
 }
 
 .historico-resumo-linha strong {

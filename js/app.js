@@ -3160,15 +3160,20 @@ function criarLinhaResumoHistorico(item, tipo) {
     const detalhe = tipo === 'pecas'
         ? app.pecas[item.id]?.tipo || 'Peca'
         : obterLookPorId(item.id)?.nome || 'Look';
+    const foto = tipo === 'pecas' ? getCaminhoFoto(item.id) : getCaminhoFotoLook(item.id);
     const acao = existe
         ? (tipo === 'pecas' ? `mostrarDetalhesPeca('${item.id}')` : `mostrarDetalhesLook('${item.id}')`)
         : '';
 
     return `
         <button type="button" class="historico-resumo-linha" ${acao ? `onclick="${acao}"` : 'disabled'}>
-            <span>
-                <strong>${escapeHtml(item.id)}</strong>
-                <small>${escapeHtml(detalhe)}</small>
+            <span class="historico-resumo-id">
+                <img src="${escapeHtml(foto)}" alt="${escapeHtml(item.id)}"
+                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect fill=%22%23eee%22 width=%2280%22 height=%2280%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22>foto</text></svg>'">
+                <span>
+                    <strong>${escapeHtml(item.id)}</strong>
+                    <small>${escapeHtml(detalhe)}</small>
+                </span>
             </span>
             <span>${item.periodo}</span>
             <span>${item.total}</span>
