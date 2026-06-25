@@ -52,6 +52,7 @@ const app = {
     filtrosLooks: {
         ...Object.fromEntries(CAMPOS_FILTROS_LOOKS.map(campo => [campo, []])),
         situacao: ['em uso'],
+        pecas: [],
     },
 
     // Filtros do card "Não uso há..." no histórico
@@ -2062,6 +2063,8 @@ function preencherFiltrosOcasiao() {
 
     container.innerHTML = '';
 
+    criarFiltroPecasLooks(container);
+
     CAMPOS_FILTROS_LOOKS.forEach(campo => {
         const valores = obterValoresFiltroLooks(campo);
         if (valores.length > 0) {
@@ -2077,6 +2080,37 @@ function preencherFiltrosOcasiao() {
     btnLimpar.textContent = 'Limpar filtros';
     btnLimpar.onclick = limparFiltrosLooks;
     container.appendChild(btnLimpar);
+}
+
+function criarFiltroPecasLooks(container) {
+    const wrapper = document.createElement('label');
+    wrapper.className = 'filtro-pecas-looks';
+    wrapper.innerHTML = `
+        <span>IDs das peças</span>
+        <input type="search" id="filtro-look-pecas" placeholder="ID0430, ID0446, ID0101" autocomplete="off" value="${escapeHtml((app.filtrosLooks.pecas || []).join(', '))}">
+        <small>Use 1, 2 ou 3 IDs</small>
+    `;
+
+    const input = wrapper.querySelector('input');
+    input.addEventListener('input', evento => {
+        const ids = normalizarFiltroPecasLooks(evento.target.value);
+        app.filtrosLooks.pecas = ids;
+        renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
+    });
+    input.addEventListener('change', () => {
+        input.value = (app.filtrosLooks.pecas || []).join(', ');
+    });
+
+    container.appendChild(wrapper);
+}
+
+function normalizarFiltroPecasLooks(valor) {
+    return [...new Set(String(valor || '')
+        .toUpperCase()
+        .split(/[\s,;]+/)
+        .map(item => item.trim())
+        .filter(Boolean))]
+        .slice(0, 3);
 }
 
 function filtrarLooksPorOcasiao(ocasiao, evento) {
@@ -2256,6 +2290,9 @@ function limparFiltrosLooks() {
         filtro.querySelector('.filtro-multiplo-contador').textContent = '';
     });
 
+    const filtroPecas = document.getElementById('filtro-look-pecas');
+    if (filtroPecas) filtroPecas.value = '';
+
     renderLooks(obterTodosLooks());
 }
 
@@ -2263,6 +2300,16 @@ function lookPassaNosFiltros(look) {
     for (let campo in app.filtrosLooks) {
         const selecionados = app.filtrosLooks[campo];
         if (!Array.isArray(selecionados) || selecionados.length === 0) continue;
+
+        if (campo === 'pecas') {
+            const pecasLook = (look.pecas || []).map(id => normalizarTexto(id));
+            const passouPecas = selecionados.every(idFiltro => {
+                const alvo = normalizarTexto(idFiltro);
+                return pecasLook.some(idLook => idLook.includes(alvo));
+            });
+            if (!passouPecas) return false;
+            continue;
+        }
 
         const valoresLook = obterValoresCampoLook(look, campo).map(valor => normalizarTexto(valor));
         const passou = selecionados.some(valorFiltro => valoresLook.includes(normalizarTexto(valorFiltro)));

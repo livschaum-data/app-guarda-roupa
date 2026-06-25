@@ -383,6 +383,40 @@ body {
     box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
 }
 
+.filtro-pecas-looks {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+    color: var(--cor-texto);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.filtro-pecas-looks input {
+    width: 100%;
+    min-height: 40px;
+    padding: 9px 13px;
+    border: 1px solid #d8dce3;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--cor-texto);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.filtro-pecas-looks input:focus {
+    outline: none;
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.12);
+}
+
+.filtro-pecas-looks small {
+    color: var(--cor-texto-cinza);
+    font-size: 11px;
+    font-weight: 600;
+}
+
 .filtros-home select[multiple] {
     min-height: 118px;
     padding-right: 12px;
