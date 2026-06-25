@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%236c63ff' width='180' height='180'/><text x='50%' y='50%' font-size='80' fill='white' text-anchor='middle' dy='.3em'>👗</text></svg>">
     
     <title>👗 Meu Guarda-roupa</title>
-    <link rel="stylesheet" href="css/style.css?v=20260625-filtro-looks-pecas">
+    <link rel="stylesheet" href="css/style.css?v=20260625-editar-look">
 </head>
 <body>
     <div id="app">
@@ -390,10 +390,13 @@
                 </div>
                 <div class="secao look-modal-secao">
                     <h3>Acessórios e calçados sugeridos</h3>
-                    <div id="sugestoes-look-modal" class="historico-pecas-grid"></div>
+                <div id="sugestoes-look-modal" class="historico-pecas-grid"></div>
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
                     <button class="btn-secundario" onclick="fecharModal()">Fechar</button>
+                    <button id="editar-look-modal" class="btn-secundario" type="button">Editar</button>
+                    <button id="cancelar-edicao-look-modal" class="btn-secundario" type="button" style="display:none;">Cancelar edição</button>
+                    <button id="salvar-look-modal" class="btn-principal" type="button" style="display:none;">Salvar</button>
                     <button id="usar-look-modal" class="btn-principal" type="button">Usar Este Look</button>
                 </div>
             </div>
@@ -484,7 +487,7 @@
          A ordem importa! CSS deve carregar antes, depois o app.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js?v=20260624-config-supabase"></script>
-    <script src="js/app.js?v=20260625-filtro-looks-pecas"></script>
+    <script src="js/app.js?v=20260625-editar-look"></script>
 </body>
 </html>
 

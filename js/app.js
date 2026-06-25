@@ -2355,6 +2355,7 @@ function renderLooks(looks) {
                 <div class="tags-look">${tags}</div>
                 <div class="look-card-acoes">
                     <button class="btn-secundario" type="button" onclick="mostrarDetalhesLook('${look.id}')">Ficha</button>
+                    <button class="btn-secundario" type="button" onclick="abrirEdicaoLook('${look.id}')">Editar</button>
                     <button class="btn-principal" type="button" onclick="usarLookHoje('${look.id}')">Usar</button>
                 </div>
             </div>
@@ -2364,13 +2365,28 @@ function renderLooks(looks) {
     });
 }
 
-function mostrarDetalhesLook(lookId) {
+function abrirEdicaoLook(lookId) {
+    mostrarDetalhesLook(lookId, true);
+}
+
+function mostrarDetalhesLook(lookId, editando = false) {
     const look = obterLookPorId(lookId);
     if (!look) return;
+
+    const modal = document.getElementById('modal-look-detalhes');
+    modal.dataset.lookId = lookId;
+    modal.dataset.editando = editando ? 'true' : 'false';
 
     document.getElementById('titulo-look-modal').textContent = look.nome || look.id;
     document.getElementById('foto-look-modal').src = getCaminhoFotoLook(look.id);
     document.getElementById('usar-look-modal').onclick = () => usarLookHoje(look.id);
+    document.getElementById('editar-look-modal').onclick = () => mostrarDetalhesLook(lookId, true);
+    document.getElementById('cancelar-edicao-look-modal').onclick = () => mostrarDetalhesLook(lookId, false);
+    document.getElementById('salvar-look-modal').onclick = salvarEdicaoLook;
+    document.getElementById('editar-look-modal').style.display = editando ? 'none' : '';
+    document.getElementById('cancelar-edicao-look-modal').style.display = editando ? '' : 'none';
+    document.getElementById('salvar-look-modal').style.display = editando ? '' : 'none';
+    document.getElementById('usar-look-modal').style.display = editando ? 'none' : '';
 
     const tags = document.getElementById('tags-look-modal');
     tags.innerHTML = (look.ocasioes || []).length
@@ -2378,8 +2394,27 @@ function mostrarDetalhesLook(lookId) {
         : '<span>Sem ocasião definida</span>';
 
     const ficha = document.getElementById('ficha-look-modal');
+    if (editando) {
+        ficha.innerHTML = criarFormularioEdicaoLook(look);
+    } else {
+        renderFichaLookLeitura(look, ficha);
+    }
+
+    document.getElementById('pecas-look-modal').innerHTML = (look.pecas || [])
+        .filter(id => app.pecas[id])
+        .map(id => criarCardPecaHistorico(id))
+        .join('') || '<p class="texto-ajuda">Nenhuma peça cadastrada.</p>';
+
+    document.getElementById('sugestoes-look-modal').innerHTML = (look.pecas_sugeridas || [])
+        .filter(item => app.pecas[item.id])
+        .map(item => criarCardPecaLookSugerida(item))
+        .join('') || '<p class="texto-ajuda">Nenhuma sugestão cadastrada.</p>';
+
+    modal.style.display = 'flex';
+}
+
+function renderFichaLookLeitura(look, ficha) {
     const campos = look.basicos || {};
-    const climaInfo = look.clima_info || {};
     const camposClima = [
         ['Clima calculado', formatarClimaLook(look)],
         ['Aquecimento das peças', (look.aquecimentos || []).map(valor => valor || '-').join(' · ')],
@@ -2406,18 +2441,214 @@ function mostrarDetalhesLook(lookId) {
             </div>
         `)
         .join('');
+}
 
-    document.getElementById('pecas-look-modal').innerHTML = (look.pecas || [])
-        .filter(id => app.pecas[id])
-        .map(id => criarCardPecaHistorico(id))
-        .join('') || '<p class="texto-ajuda">Nenhuma peça cadastrada.</p>';
+function criarFormularioEdicaoLook(look) {
+    const basicos = look.basicos || {};
+    const sugestoes = (look.pecas_sugeridas || [])
+        .map(item => `${item.id || ''}${item.grupo ? ` | ${item.grupo}` : ''}`)
+        .join('\n');
+    const ocasioes = (look.ocasioes || [])
+        .map(item => item.codigo || item.descricao)
+        .filter(Boolean)
+        .join(', ');
+    const camposBasicos = Object.entries(basicos)
+        .sort(([a], [b]) => a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }))
+        .map(([campo, valor]) => `
+            <label class="campo-edicao-look">
+                <span>${escapeHtml(campo)}</span>
+                <input type="text" data-basico="${escapeHtml(campo)}" value="${escapeHtml(valor)}">
+            </label>
+        `)
+        .join('');
 
-    document.getElementById('sugestoes-look-modal').innerHTML = (look.pecas_sugeridas || [])
-        .filter(item => app.pecas[item.id])
-        .map(item => criarCardPecaLookSugerida(item))
-        .join('') || '<p class="texto-ajuda">Nenhuma sugestão cadastrada.</p>';
+    return `
+        <div id="form-edicao-look" class="form-edicao-look">
+            <label class="campo-edicao-look">
+                <span>ID do look</span>
+                <input type="text" id="edit-look-id" value="${escapeHtml(look.id || '')}" disabled>
+            </label>
+            <label class="campo-edicao-look">
+                <span>Nome</span>
+                <input type="text" id="edit-look-nome" value="${escapeHtml(look.nome || look.id || '')}">
+            </label>
+            <label class="campo-edicao-look">
+                <span>Foto URL</span>
+                <input type="text" id="edit-look-foto" value="${escapeHtml(look.foto || '')}">
+            </label>
+            <label class="campo-edicao-look campo-edicao-look-largo">
+                <span>Nova foto</span>
+                <input type="file" id="edit-look-foto-arquivo" accept="image/*">
+            </label>
+            <label class="campo-edicao-look">
+                <span>Situação</span>
+                <input type="text" id="edit-look-situacao" value="${escapeHtml(look.situacao || basicos['situação'] || '')}">
+            </label>
+            <label class="campo-edicao-look">
+                <span>Indicador</span>
+                <input type="text" id="edit-look-indicador" value="${escapeHtml(obterIndicadorLook(look, look.id))}">
+            </label>
+            <label class="campo-edicao-look">
+                <span>HTT</span>
+                <input type="text" id="edit-look-htt" value="${escapeHtml(look.HTT || look.htt || basicos.HTT || '')}">
+            </label>
+            <label class="campo-edicao-look">
+                <span>Clima calculado</span>
+                <input type="text" id="edit-look-clima-calc" value="${escapeHtml(look.clima_calc || look.clima || '')}">
+            </label>
+            <label class="campo-edicao-look">
+                <span>Local calculado</span>
+                <input type="text" id="edit-look-local-calc" value="${escapeHtml(look.local_calc || look.local || '')}">
+            </label>
+            <label class="campo-edicao-look">
+                <span>Utilização calculada</span>
+                <input type="text" id="edit-look-utilizacao-calc" value="${escapeHtml(look.utilizacao_calc || look.utilizacao || '')}">
+            </label>
+            <label class="campo-edicao-look campo-edicao-look-largo">
+                <span>Peças do look</span>
+                <textarea id="edit-look-pecas" rows="2">${escapeHtml((look.pecas || []).join(', '))}</textarea>
+            </label>
+            <label class="campo-edicao-look campo-edicao-look-largo">
+                <span>Ocasiões</span>
+                <textarea id="edit-look-ocasioes" rows="2">${escapeHtml(ocasioes)}</textarea>
+            </label>
+            <label class="campo-edicao-look campo-edicao-look-largo">
+                <span>Aquecimentos das peças</span>
+                <textarea id="edit-look-aquecimentos" rows="2">${escapeHtml((look.aquecimentos || []).join(', '))}</textarea>
+            </label>
+            <label class="campo-edicao-look campo-edicao-look-largo">
+                <span>Locais das peças</span>
+                <textarea id="edit-look-locais-pecas" rows="2">${escapeHtml((look.locais_pecas || []).join(', '))}</textarea>
+            </label>
+            <label class="campo-edicao-look campo-edicao-look-largo">
+                <span>Utilizações das peças</span>
+                <textarea id="edit-look-utilizacoes-pecas" rows="2">${escapeHtml((look.utilizacoes_pecas || []).join(', '))}</textarea>
+            </label>
+            <label class="campo-edicao-look campo-edicao-look-largo">
+                <span>Acessórios e calçados sugeridos</span>
+                <textarea id="edit-look-sugestoes" rows="4" placeholder="ID0001 | bolsa">${escapeHtml(sugestoes)}</textarea>
+            </label>
+            <div class="campo-edicao-look-grupo">
+                <strong>Campos da ficha</strong>
+                <div class="form-edicao-look">
+                    ${camposBasicos || '<p class="texto-ajuda">Nenhum campo básico cadastrado.</p>'}
+                </div>
+            </div>
+        </div>
+    `;
+}
 
-    document.getElementById('modal-look-detalhes').style.display = 'flex';
+async function salvarEdicaoLook() {
+    const modal = document.getElementById('modal-look-detalhes');
+    const lookId = modal.dataset.lookId;
+    const lookOriginal = obterLookPorId(lookId);
+    if (!lookOriginal) return;
+
+    const basicos = { ...(lookOriginal.basicos || {}) };
+    document.querySelectorAll('#form-edicao-look [data-basico]').forEach(input => {
+        basicos[input.dataset.basico] = input.value.trim();
+    });
+
+    const nome = document.getElementById('edit-look-nome')?.value.trim() || lookId;
+    const situacao = document.getElementById('edit-look-situacao')?.value.trim() || '';
+    const indicador = document.getElementById('edit-look-indicador')?.value.trim() || obterIndicadorLook(lookOriginal, lookId);
+    const htt = document.getElementById('edit-look-htt')?.value.trim() || '';
+    const fotoArquivo = await lerFotoEdicaoLook();
+    const fotoUrl = document.getElementById('edit-look-foto')?.value.trim() || '';
+    const pecas = parseListaIdsEdicaoLook(document.getElementById('edit-look-pecas')?.value || '')
+        .map(id => id.toUpperCase());
+    const ocasioes = parseOcasioesEdicaoLook(document.getElementById('edit-look-ocasioes')?.value || '');
+
+    basicos.ID = lookId;
+    basicos.ID1 = pecas[0] || '';
+    basicos.ID2 = pecas[1] || '';
+    basicos.ID3 = pecas[2] || '';
+    basicos.Indicador = indicador;
+    basicos['situação'] = situacao;
+    basicos.HTT = htt;
+
+    const lookEditado = {
+        ...lookOriginal,
+        id: lookId,
+        nome,
+        foto: fotoArquivo || fotoUrl || lookOriginal.foto || getCaminhoFotoLook(lookId),
+        situacao,
+        indicador,
+        HTT: htt,
+        htt,
+        clima_calc: document.getElementById('edit-look-clima-calc')?.value.trim() || '',
+        local_calc: document.getElementById('edit-look-local-calc')?.value.trim() || '',
+        utilizacao_calc: document.getElementById('edit-look-utilizacao-calc')?.value.trim() || '',
+        pecas,
+        ocasioes,
+        ocasiao: ocasioes.map(item => item.descricao).join(', '),
+        aquecimentos: parseListaValores(document.getElementById('edit-look-aquecimentos')?.value || ''),
+        locais_pecas: parseListaValores(document.getElementById('edit-look-locais-pecas')?.value || ''),
+        utilizacoes_pecas: parseListaValores(document.getElementById('edit-look-utilizacoes-pecas')?.value || ''),
+        pecas_sugeridas: parseSugestoesEdicaoLook(document.getElementById('edit-look-sugestoes')?.value || ''),
+        basicos,
+        editadoLocalmente: true,
+        editadoEm: new Date().toISOString(),
+    };
+
+    app.looksFavoritos[lookId] = lookEditado;
+    salvarDados();
+    preencherSelectLooks();
+    preencherFiltrosOcasiao();
+    renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
+    mostrarDetalhesLook(lookId, false);
+}
+
+function parseListaValores(valor) {
+    return String(valor || '')
+        .split(/[\n,;]+/)
+        .map(item => item.trim())
+        .filter(Boolean);
+}
+
+function parseListaIdsEdicaoLook(valor) {
+    return String(valor || '')
+        .split(/[\s,;]+/)
+        .map(item => item.trim())
+        .filter(Boolean);
+}
+
+function parseOcasioesEdicaoLook(valor) {
+    return parseListaValores(valor).map(item => {
+        const encontrado = Object.entries(app.mapaOcasioes || {}).find(([codigo, info]) => {
+            return normalizarTexto(codigo) === normalizarTexto(item)
+                || normalizarTexto(info?.descricao) === normalizarTexto(item);
+        });
+        if (encontrado) {
+            const [codigo, info] = encontrado;
+            return { codigo, ...info };
+        }
+        return { codigo: normalizarTexto(item).toUpperCase() || item, descricao: item };
+    });
+}
+
+function parseSugestoesEdicaoLook(valor) {
+    return String(valor || '')
+        .split(/\n+/)
+        .map(linha => linha.trim())
+        .filter(Boolean)
+        .map(linha => {
+            const [id, grupo = ''] = linha.split('|').map(parte => parte.trim());
+            return id ? { id: id.toUpperCase(), grupo } : null;
+        })
+        .filter(Boolean);
+}
+
+function lerFotoEdicaoLook() {
+    const arquivo = document.getElementById('edit-look-foto-arquivo')?.files?.[0];
+    if (!arquivo) return Promise.resolve('');
+
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('Não consegui ler a foto do look.'));
+        reader.readAsDataURL(arquivo);
+    });
 }
 
 function formatarClimaLook(look) {

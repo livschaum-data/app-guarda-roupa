@@ -1340,6 +1340,60 @@ body {
     padding: 18px;
 }
 
+.form-edicao-look {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.campo-edicao-look {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+    color: var(--cor-texto);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.campo-edicao-look-largo,
+.campo-edicao-look-grupo {
+    grid-column: 1 / -1;
+}
+
+.campo-edicao-look input,
+.campo-edicao-look textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--cor-texto);
+    font: inherit;
+    font-weight: 500;
+}
+
+.campo-edicao-look textarea {
+    resize: vertical;
+    min-height: 44px;
+}
+
+.campo-edicao-look input:disabled {
+    background: #f3f4f6;
+    color: var(--cor-texto-cinza);
+}
+
+.campo-edicao-look input:focus,
+.campo-edicao-look textarea:focus {
+    outline: none;
+    border-color: var(--cor-primaria);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.08);
+}
+
+.campo-edicao-look-grupo {
+    display: grid;
+    gap: 10px;
+}
+
 /* ==================== SELETOR DE RESULTADOS ====================
    Quando o usuário digita e aparecem resultados */
 
@@ -2253,6 +2307,10 @@ tr:hover {
 
     .look-card-acoes {
         flex-direction: row;
+    }
+
+    .form-edicao-look {
+        grid-template-columns: 1fr;
     }
 
     .historico-pecas-grid {
