@@ -20,6 +20,7 @@ const app = {
     pecas: {},
     looks: {},
     mapaOcasioes: {},
+    climas: {},
     ocasioes: ['Trabalho', 'Casual', 'Festa', 'Treino', 'Casa', 'Sair'],
 
     // Dados do usuário (salvos em localStorage)
@@ -443,6 +444,7 @@ async function carregarDadosJSON() {
         app.pecas = dados.pecas;
         app.looks = dados.looks;
         app.mapaOcasioes = dados.ocasioes || {};
+        app.climas = dados.climas || {};
         const tiposOcasiao = [...new Set(Object.values(app.mapaOcasioes).map(item => item.tipo).filter(Boolean))];
         if (tiposOcasiao.length > 0) app.ocasioes = tiposOcasiao;
 
@@ -2481,6 +2483,8 @@ function criarFormularioEdicaoLook(look) {
         `)
         .join('');
 
+    setTimeout(configurarRecalculoEdicaoLook, 0);
+
     return `
         <div id="form-edicao-look" class="form-edicao-look">
             <label class="campo-edicao-look">
@@ -2557,6 +2561,67 @@ function criarFormularioEdicaoLook(look) {
     `;
 }
 
+function configurarRecalculoEdicaoLook() {
+    const campoPecas = document.getElementById('edit-look-pecas');
+    if (!campoPecas) return;
+
+    const atualizar = () => {
+        const calculados = calcularDadosLookPorPecas(parseListaIdsEdicaoLook(campoPecas.value));
+        const clima = document.getElementById('edit-look-clima-calc');
+        const local = document.getElementById('edit-look-local-calc');
+        const utilizacao = document.getElementById('edit-look-utilizacao-calc');
+        const aquecimentos = document.getElementById('edit-look-aquecimentos');
+        const locais = document.getElementById('edit-look-locais-pecas');
+        const utilizacoes = document.getElementById('edit-look-utilizacoes-pecas');
+        if (clima) clima.value = calculados.clima_calc || '';
+        if (local) local.value = calculados.local_calc || '';
+        if (utilizacao) utilizacao.value = calculados.utilizacao_calc || '';
+        if (aquecimentos) aquecimentos.value = calculados.aquecimentos.filter(Boolean).join(', ');
+        if (locais) locais.value = calculados.locais_pecas.filter(Boolean).join(', ');
+        if (utilizacoes) utilizacoes.value = calculados.utilizacoes_pecas.filter(Boolean).join(', ');
+    };
+
+    campoPecas.addEventListener('input', atualizar);
+    atualizar();
+}
+
+function calcularDadosLookPorPecas(pecas) {
+    const ids = (pecas || []).map(id => String(id || '').trim().toUpperCase()).filter(Boolean);
+    const valoresPecas = ids.map(id => app.pecas[id] || null);
+    const aquecimentos = valoresPecas.map(peca => valorVisivel(peca?.nivel_aquecimento) ? String(peca.nivel_aquecimento) : null);
+    const locais = valoresPecas.map(peca => valorVisivel(peca?.local) ? String(peca.local) : null);
+    const utilizacoes = valoresPecas.map(peca => valorVisivel(peca?.utilizacao) ? String(peca.utilizacao) : null);
+    const climaCalc = aquecimentos
+        .map(valor => Number(valor))
+        .filter(valor => Number.isFinite(valor))
+        .reduce((maior, valor) => Math.max(maior, valor), 0);
+    const locaisValidos = locais.filter(Boolean);
+    const utilizacoesValidas = utilizacoes.filter(Boolean);
+
+    return {
+        clima_calc: climaCalc ? String(climaCalc) : '',
+        clima_info: climaCalc && app.climas?.[String(climaCalc)] ? { ...app.climas[String(climaCalc)] } : {},
+        aquecimentos: preencherAteTres(aquecimentos),
+        local_calc: calcularValorComposto(locaisValidos, 'misto', { virtualPrioritario: true }),
+        locais_pecas: preencherAteTres(locais),
+        utilizacao_calc: calcularValorComposto(utilizacoesValidas, 'mix'),
+        utilizacoes_pecas: preencherAteTres(utilizacoes),
+    };
+}
+
+function preencherAteTres(valores) {
+    const resultado = [...(valores || [])];
+    while (resultado.length < 3) resultado.push(null);
+    return resultado.slice(0, 3);
+}
+
+function calcularValorComposto(valores, misto, opcoes = {}) {
+    const validos = [...new Set((valores || []).filter(Boolean))];
+    if (validos.length === 0) return '';
+    if (opcoes.virtualPrioritario && validos.some(valor => normalizarTexto(valor) === 'virtual')) return 'virtual';
+    return validos.length === 1 ? validos[0] : misto;
+}
+
 async function salvarEdicaoLook() {
     const modal = document.getElementById('modal-look-detalhes');
     const lookId = modal.dataset.lookId;
@@ -2577,6 +2642,7 @@ async function salvarEdicaoLook() {
     const pecas = parseListaIdsEdicaoLook(document.getElementById('edit-look-pecas')?.value || '')
         .map(id => id.toUpperCase());
     const ocasioes = parseOcasioesEdicaoLook(document.getElementById('edit-look-ocasioes')?.value || '');
+    const calculados = calcularDadosLookPorPecas(pecas);
 
     basicos.ID = lookId;
     basicos.ID1 = pecas[0] || '';
@@ -2595,15 +2661,18 @@ async function salvarEdicaoLook() {
         indicador,
         HTT: htt,
         htt,
-        clima_calc: document.getElementById('edit-look-clima-calc')?.value.trim() || '',
-        local_calc: document.getElementById('edit-look-local-calc')?.value.trim() || '',
-        utilizacao_calc: document.getElementById('edit-look-utilizacao-calc')?.value.trim() || '',
+        clima_calc: calculados.clima_calc,
+        clima_info: calculados.clima_info,
+        local_calc: calculados.local_calc,
+        local: calculados.local_calc,
+        utilizacao_calc: calculados.utilizacao_calc,
+        utilizacao: calculados.utilizacao_calc,
         pecas,
         ocasioes,
         ocasiao: ocasioes.map(item => item.descricao).join(', '),
-        aquecimentos: parseListaValores(document.getElementById('edit-look-aquecimentos')?.value || ''),
-        locais_pecas: parseListaValores(document.getElementById('edit-look-locais-pecas')?.value || ''),
-        utilizacoes_pecas: parseListaValores(document.getElementById('edit-look-utilizacoes-pecas')?.value || ''),
+        aquecimentos: calculados.aquecimentos,
+        locais_pecas: calculados.locais_pecas,
+        utilizacoes_pecas: calculados.utilizacoes_pecas,
         pecas_sugeridas: parseSugestoesEdicaoLook(document.getElementById('edit-look-sugestoes')?.value || ''),
         basicos,
         editadoLocalmente: true,
@@ -3533,6 +3602,7 @@ async function salvarLookHistorico() {
         .map(codigo => app.mapaOcasioes[codigo] ? { codigo, ...app.mapaOcasioes[codigo] } : null)
         .filter(Boolean);
     const basicosOriginais = lookExistente?.basicos || {};
+    const calculados = calcularDadosLookPorPecas(pecas);
 
     app.looksFavoritos[id] = {
         ...(lookExistente || {}),
@@ -3545,6 +3615,15 @@ async function salvarLookHistorico() {
         situacao,
         indicador,
         HTT: htt,
+        clima_calc: calculados.clima_calc,
+        clima_info: calculados.clima_info,
+        aquecimentos: calculados.aquecimentos,
+        local_calc: calculados.local_calc,
+        local: calculados.local_calc,
+        locais_pecas: calculados.locais_pecas,
+        utilizacao_calc: calculados.utilizacao_calc,
+        utilizacao: calculados.utilizacao_calc,
+        utilizacoes_pecas: calculados.utilizacoes_pecas,
         foto: foto || lookExistente?.foto || `fotos/${indicador}/${id}.webp`,
         substituiLookBase: modo === 'substituir' || undefined,
         substituidoEm: dataAlteracao || undefined,
