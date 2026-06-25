@@ -34,6 +34,7 @@ const app = {
     fotoNovoLookHistorico: null,
     pecaEmDetalhes: null,
     mesCalendarioHistorico: null,
+    filtroHistoricoAtivo: null,
     supabase: null,
     usuarioSupabase: null,
     sincronizando: false,
@@ -524,6 +525,8 @@ async function inicializarSupabase() {
 
     if (app.usuarioSupabase) {
         await baixarDadosSupabase({ silencioso: true });
+    } else {
+        atualizarStatusSupabase('Entre na sua conta para baixar ou enviar o histórico pela nuvem.');
     }
 
     app.supabase.auth.onAuthStateChange(async (event, session) => {
@@ -533,7 +536,11 @@ async function inicializarSupabase() {
             atualizarStatusSupabase('Link de recuperacao validado. Digite sua nova senha.', 'sucesso');
         }
         atualizarUISupabase(app.usuarioSupabase);
-        if (app.usuarioSupabase && !app.recuperandoSenhaSupabase) await baixarDadosSupabase({ silencioso: true });
+        if (app.usuarioSupabase && !app.recuperandoSenhaSupabase) {
+            await baixarDadosSupabase({ silencioso: true });
+        } else if (!app.recuperandoSenhaSupabase) {
+            atualizarStatusSupabase('Entre na sua conta para baixar ou enviar o histórico pela nuvem.');
+        }
     });
 }
 
@@ -975,7 +982,7 @@ async function importarHistoricoArquivo() {
         const resultado = mesclarHistorico(registros);
 
         salvarDados();
-        atualizarHistorico(30);
+        aplicarFiltroHistoricoAtivo();
         atualizarStatusImportacao(
             `Importação concluída: ${resultado.adicionados} novos registros, ${resultado.duplicados} duplicados ignorados.`,
             'sucesso'
@@ -2409,7 +2416,7 @@ function inicializarHistorico() {
     }
 
     if (app.historico.length > 0) {
-        atualizarHistoricoPeriodo(30);
+        aplicarFiltroHistoricoAtivo();
     } else {
         renderHistorico([], null, null);
     }
@@ -2422,7 +2429,32 @@ function atualizarHistorico(dias) {
     atualizarHistoricoPeriodo(dias);
 }
 
+function aplicarFiltroHistoricoAtivo() {
+    if (!app.filtroHistoricoAtivo) {
+        app.filtroHistoricoAtivo = { tipo: 'periodo', dias: 7 };
+    }
+
+    const filtro = app.filtroHistoricoAtivo;
+
+    if (filtro.tipo === 'todos') {
+        atualizarHistoricoCompleto();
+        return;
+    }
+
+    if (filtro.tipo === 'intervalo') {
+        const inicio = filtro.inicio;
+        const fim = filtro.fim || inicio;
+        preencherDatasHistorico(inicio, fim);
+        renderHistorico(obterRegistrosHistoricoEntre(inicio, fim), inicio, fim);
+        marcarFiltroPeriodoHistorico(null);
+        return;
+    }
+
+    atualizarHistoricoPeriodo(filtro.dias || 30);
+}
+
 function atualizarHistoricoPeriodo(dias) {
+    app.filtroHistoricoAtivo = { tipo: 'periodo', dias };
     const referencia = obterDataReferenciaHistorico();
     if (!referencia) {
         renderHistorico([], null, null);
@@ -2440,6 +2472,7 @@ function atualizarHistoricoPeriodo(dias) {
 }
 
 function atualizarHistoricoCompleto() {
+    app.filtroHistoricoAtivo = { tipo: 'todos' };
     const intervalo = obterIntervaloCompletoHistorico();
     if (!intervalo) {
         renderHistorico([], null, null);
@@ -2466,6 +2499,7 @@ function consultarHistoricoPorDatas() {
     }
 
     renderHistorico(obterRegistrosHistoricoEntre(inicio, fim), inicio, fim);
+    app.filtroHistoricoAtivo = { tipo: 'intervalo', inicio, fim };
     marcarFiltroPeriodoHistorico(null);
 }
 
@@ -2546,6 +2580,7 @@ function navegarMesCalendarioHistorico(delta) {
 }
 
 function selecionarDiaCalendarioHistorico(dataISO) {
+    app.filtroHistoricoAtivo = { tipo: 'intervalo', inicio: dataISO, fim: dataISO };
     preencherDatasHistorico(dataISO, dataISO);
     renderHistorico(obterRegistrosHistoricoEntre(dataISO, dataISO), dataISO, dataISO);
     marcarFiltroPeriodoHistorico(null);
