@@ -49,7 +49,10 @@ const app = {
     filtrosHojeGrupos: Object.fromEntries(GRUPOS_REGISTRO_PECAS.map(grupo => [grupo.id, { tipo: [], subtipo: [] }])),
 
     // Filtros da página Looks
-    filtrosLooks: Object.fromEntries(CAMPOS_FILTROS_LOOKS.map(campo => [campo, []])),
+    filtrosLooks: {
+        ...Object.fromEntries(CAMPOS_FILTROS_LOOKS.map(campo => [campo, []])),
+        situacao: ['em uso'],
+    },
 
     // Filtros do card "Não uso há..." no histórico
     filtrosSemUso: {
@@ -2291,12 +2294,16 @@ function renderLooks(looks) {
             .map(id => escapeHtml(id))
             .join(' · ');
         const tags = (look.ocasioes || []).slice(0, 4).map(ocasiao => `<span>${ocasiao.descricao}</span>`).join('');
+        const lookId = look.id || look.nome || '';
 
         card.innerHTML = `
-            <img src="${getCaminhoFotoLook(look.id)}" alt="${look.id || look.nome}" class="look-card-foto"
-                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 120 120%22><rect fill=%22%23eee%22 width=%22120%22 height=%22120%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>sem foto</text></svg>'">
+            <div class="look-card-foto-wrap">
+                <img src="${getCaminhoFotoLook(look.id)}" alt="${escapeHtml(lookId)}" class="look-card-foto"
+                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 120 120%22><rect fill=%22%23eee%22 width=%22120%22 height=%22120%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>sem foto</text></svg>'">
+                <span class="look-card-id-badge">${escapeHtml(lookId)}</span>
+            </div>
             <div class="look-card-info">
-                <h3>${look.id || look.nome}</h3>
+                <h3>${escapeHtml(lookId)}</h3>
                 <p>${pecasTexto}</p>
                 <div class="tags-look">${tags}</div>
                 <div class="look-card-acoes">
