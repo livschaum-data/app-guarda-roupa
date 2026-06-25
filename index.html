@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%236c63ff' width='180' height='180'/><text x='50%' y='50%' font-size='80' fill='white' text-anchor='middle' dy='.3em'>👗</text></svg>">
     
     <title>👗 Meu Guarda-roupa</title>
-    <link rel="stylesheet" href="css/style.css?v=20260624-grupos-registro">
+    <link rel="stylesheet" href="css/style.css?v=20260625-modal-look-historico">
 </head>
 <body>
     <div id="app">
@@ -414,6 +414,7 @@
                     </label>
                     <label id="look-historico-look-existente-label" style="display:none;">
                         Look existente
+                        <input type="search" id="look-historico-busca-look" placeholder="Pesquisar por ID, situacao ou peca" autocomplete="off">
                         <select id="look-historico-look-existente"></select>
                     </label>
                     <label id="look-historico-data-alteracao-label" style="display:none;">
@@ -458,6 +459,7 @@
                 </div>
 
                 <div class="look-historico-preview">
+                    <img id="look-historico-foto-preview" class="look-historico-foto-preview" alt="Foto do look selecionado" style="display:none;">
                     <strong id="look-historico-id-preview">ID: selecione o indicador</strong>
                     <span id="look-historico-pecas-preview"></span>
                 </div>
@@ -482,7 +484,7 @@
          A ordem importa! CSS deve carregar antes, depois o app.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js?v=20260624-config-supabase"></script>
-    <script src="js/app.js?v=20260625-historico-padrao-7-dias"></script>
+    <script src="js/app.js?v=20260625-looks-ids-pecas"></script>
 </body>
 </html>
 

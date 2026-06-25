@@ -2287,11 +2287,8 @@ function renderLooks(looks) {
         const card = document.createElement('div');
         card.className = 'look-card';
 
-        const pecasTexto = look.pecas
-            .map(id => {
-                const peca = app.pecas[id];
-                return peca ? `${peca.tipo}` : id;
-            })
+        const pecasTexto = (look.pecas || [])
+            .map(id => escapeHtml(id))
             .join(' · ');
         const tags = (look.ocasioes || []).slice(0, 4).map(ocasiao => `<span>${ocasiao.descricao}</span>`).join('');
 
@@ -2990,6 +2987,7 @@ function abrirCriacaoLookHistorico(dia) {
     document.getElementById('look-historico-situacao').value = 'em uso';
     document.getElementById('look-historico-htt').value = 'false';
     document.getElementById('look-historico-foto').value = '';
+    document.getElementById('look-historico-busca-look').value = '';
 
     preencherIndicadoresLookHistorico();
     preencherLooksExistentesLookHistorico();
@@ -3004,8 +3002,10 @@ function abrirCriacaoLookHistorico(dia) {
 function configurarModoLookHistorico() {
     const modo = document.getElementById('look-historico-modo');
     const lookExistente = document.getElementById('look-historico-look-existente');
+    const buscaLook = document.getElementById('look-historico-busca-look');
     if (modo) modo.onchange = alternarModoLookHistorico;
     if (lookExistente) lookExistente.onchange = aplicarLookExistenteNoFormulario;
+    if (buscaLook) buscaLook.oninput = () => preencherLooksExistentesLookHistorico();
     alternarModoLookHistorico();
 }
 
@@ -3046,15 +3046,36 @@ function preencherLooksExistentesLookHistorico() {
     const select = document.getElementById('look-historico-look-existente');
     if (!select) return;
 
+    const valorAnterior = select.value;
+    const busca = normalizarTexto(document.getElementById('look-historico-busca-look')?.value || '');
     const looks = obterTodosLooks()
         .filter(look => look?.id)
+        .filter(look => {
+            if (!busca) return true;
+            const pecas = (look.pecas || []).join(' ');
+            const situacao = look.situacao || look.basicos?.['situação'] || '';
+            const indicador = obterIndicadorLook(look, look.id);
+            return normalizarTexto(`${look.id} ${situacao} ${indicador} ${pecas}`).includes(busca);
+        })
         .sort((a, b) => String(a.id).localeCompare(String(b.id), 'pt-BR', { numeric: true }));
+
+    if (!looks.length) {
+        select.innerHTML = '<option value="">Nenhum look encontrado</option>';
+        aplicarLookExistenteNoFormulario();
+        return;
+    }
 
     select.innerHTML = looks.map(look => {
         const pecas = (look.pecas || []).join(', ');
         const situacao = look.situacao || look.basicos?.['situação'] || '';
         return `<option value="${look.id}">${look.id}${situacao ? ` - ${situacao}` : ''}${pecas ? ` (${pecas})` : ''}</option>`;
     }).join('');
+
+    if (valorAnterior && looks.some(look => String(look.id) === String(valorAnterior))) {
+        select.value = valorAnterior;
+    }
+
+    aplicarLookExistenteNoFormulario();
 }
 
 function preencherOcasioesLookHistorico() {
@@ -3080,7 +3101,10 @@ function aplicarLookExistenteNoFormulario() {
 
     const lookId = document.getElementById('look-historico-look-existente')?.value;
     const look = obterLookPorId(lookId);
-    if (!look) return;
+    if (!look) {
+        atualizarPreviewLookHistorico();
+        return;
+    }
 
     const indicador = obterIndicadorLook(look, lookId);
     document.getElementById('look-historico-indicador').value = indicador;
@@ -3093,6 +3117,8 @@ function aplicarLookExistenteNoFormulario() {
         option.selected = codigos.has(option.value);
     });
 
+    app.pecasSelecionadasLookHistorico[app.diaCriacaoLookHistorico] = [...(look.pecas || [])];
+    renderOrdemPecasLookHistorico();
     atualizarPreviewLookHistorico();
 }
 
@@ -3100,13 +3126,28 @@ function atualizarPreviewLookHistorico() {
     const indicador = document.getElementById('look-historico-indicador')?.value;
     const modo = obterModoLookHistorico();
     const lookExistenteId = document.getElementById('look-historico-look-existente')?.value || '';
+    const lookExistente = modo === 'substituir' ? obterLookPorId(lookExistenteId) : null;
     const proximoId = modo === 'substituir' ? lookExistenteId : (indicador ? gerarProximoIdLook(indicador) : '');
     const pecas = app.pecasSelecionadasLookHistorico[app.diaCriacaoLookHistorico] || [];
+    const fotoPreview = document.getElementById('look-historico-foto-preview');
 
     document.getElementById('look-historico-id-preview').textContent = proximoId
         ? `${modo === 'substituir' ? 'Substituir' : 'ID'}: ${proximoId}`
         : 'ID: selecione o indicador';
     document.getElementById('look-historico-pecas-preview').textContent = `${pecas.length} peças selecionadas: ${pecas.join(', ')}`;
+
+    if (fotoPreview) {
+        if (lookExistente) {
+            fotoPreview.style.display = '';
+            fotoPreview.onerror = () => {
+                fotoPreview.style.display = 'none';
+            };
+            fotoPreview.src = getCaminhoFotoLook(lookExistenteId);
+        } else {
+            fotoPreview.style.display = 'none';
+            fotoPreview.removeAttribute('src');
+        }
+    }
 }
 
 function renderOrdemPecasLookHistorico() {
@@ -3117,12 +3158,16 @@ function renderOrdemPecasLookHistorico() {
 
     container.innerHTML = pecas.map((id, indice) => {
         const peca = app.pecas[id] || {};
+        const descricao = [peca.tipo, peca.subtipo].filter(Boolean).join(' · ');
         return `
             <div class="look-historico-ordem-item">
                 <strong>${indice + 1}</strong>
                 <img src="${getCaminhoFoto(id)}" alt="${peca.tipo || id}"
                      onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 60 60%22><rect fill=%22%23eee%22 width=%2260%22 height=%2260%22/></svg>'">
-                <span>${id} · ${peca.tipo || ''}</span>
+                <span class="look-historico-ordem-info">
+                    <strong>${escapeHtml(id)}</strong>
+                    <small>${escapeHtml(descricao || 'Sem tipo')}</small>
+                </span>
                 <button type="button" aria-label="Subir" onclick="moverPecaLookHistorico(${indice}, -1)" ${indice === 0 ? 'disabled' : ''}>↑</button>
                 <button type="button" aria-label="Descer" onclick="moverPecaLookHistorico(${indice}, 1)" ${indice === pecas.length - 1 ? 'disabled' : ''}>↓</button>
             </div>
