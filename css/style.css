@@ -1550,7 +1550,10 @@ tr:hover {
 .historico-resumo-itens {
     display: grid;
     gap: 6px;
-    overflow-x: auto;
+    max-height: 360px;
+    overflow: auto;
+    padding-right: 4px;
+    overscroll-behavior: contain;
 }
 
 .historico-resumo-cabecalho,
@@ -2521,6 +2524,10 @@ tr:hover {
     .historico-periodo-botoes .filtro-btn {
         flex: 1 1 calc(50% - 6px);
         padding: 5px 7px;
+    }
+
+    .historico-resumo-itens {
+        max-height: 300px;
     }
 
     .historico-dia-cabecalho {
