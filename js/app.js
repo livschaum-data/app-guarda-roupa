@@ -2159,8 +2159,22 @@ function garantirLooksFavoritosSemColisao() {
     Object.entries(app.looksFavoritos).forEach(([idOriginal, look]) => {
         if (!look || typeof look !== 'object') return;
 
-        let idFinal = look.id || idOriginal;
-        if (idsReservados.has(idFinal) && !look.substituiLookBase) {
+        const idBaseEditado = look.id_original && idsReservados.has(look.id_original) && (look.editadoLocalmente || look.substituiLookBase)
+            ? look.id_original
+            : '';
+        let idFinal = idBaseEditado || look.id || idOriginal;
+        let substituiLookBase = Boolean(look.substituiLookBase || idBaseEditado || (idsReservados.has(idFinal) && look.editadoLocalmente));
+
+        if (substituiLookBase && !look.substituiLookBase) {
+            alterou = true;
+        }
+
+        if (idBaseEditado && idOriginal !== idBaseEditado) {
+            substituirLookIdHistorico(idOriginal, idBaseEditado);
+            alterou = true;
+        }
+
+        if (idsReservados.has(idFinal) && !substituiLookBase) {
             idFinal = gerarProximoIdLookDisponivel(obterIndicadorLook(look, idFinal), idsReservados);
             substituirLookIdHistorico(idOriginal, idFinal);
             alterou = true;
@@ -2170,8 +2184,13 @@ function garantirLooksFavoritosSemColisao() {
         favoritosAtualizados[idFinal] = {
             ...look,
             id: idFinal,
-            nome: look.nome === idOriginal ? idFinal : (look.nome || idFinal),
-            id_original: look.id_original || (idFinal !== idOriginal ? idOriginal : undefined),
+            nome: look.nome === idOriginal || look.nome === look.id ? idFinal : (look.nome || idFinal),
+            id_original: substituiLookBase ? undefined : (look.id_original || (idFinal !== idOriginal ? idOriginal : undefined)),
+            substituiLookBase: substituiLookBase || undefined,
+            basicos: {
+                ...(look.basicos || {}),
+                ID: idFinal,
+            },
         };
     });
 
@@ -2589,6 +2608,8 @@ async function salvarEdicaoLook() {
         basicos,
         editadoLocalmente: true,
         editadoEm: new Date().toISOString(),
+        substituiLookBase: Boolean(app.looks[lookId] || lookOriginal.substituiLookBase) || undefined,
+        id_original: undefined,
     };
 
     app.looksFavoritos[lookId] = lookEditado;
