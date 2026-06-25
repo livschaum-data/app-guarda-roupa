@@ -1916,9 +1916,10 @@ tr:hover {
     white-space: nowrap;
 }
 
-.look-historico-ordem-info strong {
-    color: var(--cor-texto);
+.look-historico-ordem-info .look-historico-peca-id {
+    color: #111827;
     font-size: 13px;
+    font-weight: 800;
 }
 
 .look-historico-ordem-info small {

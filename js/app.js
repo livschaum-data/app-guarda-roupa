@@ -3165,7 +3165,7 @@ function renderOrdemPecasLookHistorico() {
                 <img src="${getCaminhoFoto(id)}" alt="${peca.tipo || id}"
                      onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 60 60%22><rect fill=%22%23eee%22 width=%2260%22 height=%2260%22/></svg>'">
                 <span class="look-historico-ordem-info">
-                    <strong>${escapeHtml(id)}</strong>
+                    <strong class="look-historico-peca-id">ID: ${escapeHtml(id)}</strong>
                     <small>${escapeHtml(descricao || 'Sem tipo')}</small>
                 </span>
                 <button type="button" aria-label="Subir" onclick="moverPecaLookHistorico(${indice}, -1)" ${indice === 0 ? 'disabled' : ''}>↑</button>
