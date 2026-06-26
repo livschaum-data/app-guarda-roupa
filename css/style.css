@@ -1559,23 +1559,23 @@ tr:hover {
 .historico-resumo-cabecalho,
 .historico-resumo-linha {
     display: grid;
-    grid-template-columns: minmax(190px, 1.7fr) repeat(4, minmax(88px, 1fr));
-    gap: 8px;
+    grid-template-columns: minmax(112px, 1.4fr) 54px 48px minmax(72px, 0.9fr) minmax(72px, 0.9fr);
+    gap: 4px;
     align-items: center;
-    min-width: 700px;
+    min-width: 0;
 }
 
 .historico-resumo-cabecalho {
-    padding: 0 10px 2px;
+    padding: 0 6px 2px;
     color: var(--cor-texto-cinza);
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 800;
     text-transform: uppercase;
 }
 
 .historico-resumo-linha {
     width: 100%;
-    padding: 9px 10px;
+    padding: 7px 6px;
     border: 1px solid var(--cor-borda);
     border-radius: 8px;
     background: var(--cor-fundo-card);
@@ -1604,15 +1604,15 @@ tr:hover {
 
 .historico-resumo-id {
     display: grid;
-    grid-template-columns: 42px minmax(0, 1fr);
+    grid-template-columns: 34px minmax(0, 1fr);
     align-items: center;
-    gap: 10px;
+    gap: 7px;
     min-width: 0;
 }
 
 .historico-resumo-id img {
-    width: 42px;
-    height: 42px;
+    width: 34px;
+    height: 34px;
     border: 1px solid var(--cor-borda);
     border-radius: 7px;
     background: #f3f4f6;
@@ -1620,7 +1620,7 @@ tr:hover {
 }
 
 .historico-resumo-linha strong {
-    font-size: 13px;
+    font-size: 12px;
     line-height: 1.2;
 }
 
@@ -1630,7 +1630,7 @@ tr:hover {
 }
 
 .historico-resumo-linha > span:not(:first-child) {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
 }
 

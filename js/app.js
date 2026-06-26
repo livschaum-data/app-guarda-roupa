@@ -3105,10 +3105,10 @@ function renderResumoItensPeriodo(registrosPeriodo) {
     container.innerHTML = `
         <div class="historico-resumo-cabecalho">
             <span>ID</span>
-            <span>No periodo</span>
+            <span>Periodo</span>
             <span>Total</span>
-            <span>Primeiro uso</span>
-            <span>Ultimo uso</span>
+            <span>1 uso</span>
+            <span>Ult. uso</span>
         </div>
         ${resumo.map(item => criarLinhaResumoHistorico(item, tipo)).join('')}
     `;
