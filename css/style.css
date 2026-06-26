@@ -3609,3 +3609,1271 @@ tr:hover {
 #modal-criar-look-historico .btn-fechar:hover {
     background: #e5e7eb;
 }
+
+/* ==================== AJUSTE VISUAL GERAL ==================== */
+:root {
+    --ui-bg: #eef2f7;
+    --ui-surface: #ffffff;
+    --ui-surface-muted: #f8fafc;
+    --ui-border: #d7dee9;
+    --ui-text: #172033;
+    --ui-muted: #64748b;
+    --ui-accent: #7c3aed;
+    --ui-accent-strong: #5b21b6;
+    --ui-accent-soft: #ede9fe;
+    --ui-teal: #0f766e;
+    --ui-blue: #2563eb;
+    --ui-warning: #d97706;
+    --ui-danger: #dc2626;
+    --ui-radius: 8px;
+    --ui-radius-modal: 10px;
+    --ui-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    --ui-shadow-soft: 0 1px 3px rgba(15, 23, 42, 0.10);
+
+    --cor-primaria: var(--ui-accent);
+    --cor-secundaria: var(--ui-teal);
+    --cor-sucesso: #059669;
+    --cor-alerta: var(--ui-danger);
+    --cor-fundo: var(--ui-bg);
+    --cor-fundo-card: var(--ui-surface);
+    --cor-borda: var(--ui-border);
+    --cor-texto: var(--ui-text);
+    --cor-texto-cinza: var(--ui-muted);
+    --radius: var(--ui-radius);
+    --sombra: var(--ui-shadow-soft);
+    --sombra-forte: var(--ui-shadow);
+    --transicao: all 0.18s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --ui-bg: #0d1320;
+        --ui-surface: #162033;
+        --ui-surface-muted: #101827;
+        --ui-border: #334155;
+        --ui-text: #f8fafc;
+        --ui-muted: #cbd5e1;
+        --ui-accent: #a78bfa;
+        --ui-accent-strong: #ddd6fe;
+        --ui-accent-soft: #2b2144;
+        --ui-teal: #2dd4bf;
+        --ui-blue: #60a5fa;
+        --ui-warning: #f59e0b;
+        --ui-danger: #f87171;
+        --ui-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
+        --ui-shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.24);
+
+        --cor-primaria: var(--ui-accent);
+        --cor-secundaria: var(--ui-teal);
+        --cor-fundo: var(--ui-bg);
+        --cor-fundo-card: var(--ui-surface);
+        --cor-borda: var(--ui-border);
+        --cor-texto: var(--ui-text);
+        --cor-texto-cinza: var(--ui-muted);
+    }
+}
+
+* {
+    letter-spacing: 0;
+}
+
+body {
+    background: var(--ui-bg);
+    color: var(--ui-text);
+    font-size: 15px;
+}
+
+#app {
+    background: var(--ui-bg);
+}
+
+.navbar {
+    background: var(--ui-surface);
+    border-bottom: 1px solid var(--ui-border);
+    box-shadow: var(--ui-shadow-soft);
+    gap: 2px;
+    padding: 4px;
+}
+
+.nav-btn {
+    border-radius: var(--ui-radius);
+    border-bottom: 0;
+    color: var(--ui-muted);
+    font-weight: 700;
+    padding: 11px 8px;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+    background: var(--ui-accent-soft);
+    color: var(--ui-accent-strong);
+    border-bottom-color: transparent;
+}
+
+.header,
+.home-hero {
+    background: #111827;
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.header {
+    padding: 24px 22px;
+}
+
+.header h1,
+.home-hero h1 {
+    font-weight: 800;
+}
+
+.home-hero {
+    border-radius: 0 0 var(--ui-radius) var(--ui-radius);
+}
+
+.home-hero-imagem,
+.home-link-card,
+.secao,
+.stat-card,
+.card-peca,
+.look-card,
+.historico-dia,
+.historico-look-card,
+.historico-peca-card,
+.historico-look-existente,
+.look-modal-secao,
+.look-historico-preview,
+.look-historico-ordem-item,
+.sync-box,
+.grupo-registro,
+.ocasioes-card,
+.ocasioes-bloco,
+.ocasioes-mini-card,
+.modal-content {
+    border-radius: var(--ui-radius);
+    border: 1px solid var(--ui-border);
+    background: var(--ui-surface);
+    color: var(--ui-text);
+    box-shadow: var(--ui-shadow-soft);
+}
+
+.secao,
+.look-modal-secao,
+.ocasioes-card,
+.ocasioes-bloco {
+    padding: 18px;
+}
+
+.secao h3,
+.look-modal-secao h3,
+.historico-dia-cabecalho h4,
+.historico-bloco h5,
+.calendario-historico-topo h3,
+.ocasioes-bloco h3,
+.look-card-info h3,
+.card-peca-titulo strong {
+    color: var(--ui-text);
+    font-weight: 800;
+}
+
+.secao label,
+.texto-ajuda,
+.look-card-info p,
+.card-peca-titulo span,
+.campo-card-peca span,
+.historico-look-card small,
+.historico-peca-card small,
+.ocasioes-card > span,
+.ocasioes-filtro span,
+.ocasioes-bloco-topo span,
+.form-look-historico label,
+.campo-edicao-look label {
+    color: var(--ui-muted);
+}
+
+.secao input,
+.secao select,
+.secao textarea,
+.consulta-historico input,
+.form-look-historico input,
+.form-look-historico select,
+.form-look-historico textarea,
+.campo-edicao-look input,
+.campo-edicao-look select,
+.campo-edicao-look textarea,
+.filtros-home select,
+.filtro-pecas-looks input,
+.ocasioes-filtro select,
+.ocasioes-bloco-topo select {
+    background: var(--ui-surface-muted);
+    border: 1px solid var(--ui-border);
+    border-radius: var(--ui-radius);
+    color: var(--ui-text);
+    min-height: 42px;
+    box-shadow: none;
+}
+
+.secao input:focus,
+.secao select:focus,
+.secao textarea:focus,
+.consulta-historico input:focus,
+.form-look-historico input:focus,
+.form-look-historico select:focus,
+.form-look-historico textarea:focus,
+.campo-edicao-look input:focus,
+.campo-edicao-look select:focus,
+.campo-edicao-look textarea:focus,
+.filtros-home select:focus,
+.filtro-pecas-looks input:focus,
+.ocasioes-filtro select:focus,
+.ocasioes-bloco-topo select:focus {
+    border-color: var(--ui-accent);
+    outline: 3px solid rgba(124, 58, 237, 0.16);
+}
+
+.secao input:disabled,
+.secao select:disabled,
+.form-look-historico input:disabled,
+.form-look-historico select:disabled,
+.campo-edicao-look input:disabled,
+.campo-edicao-look select:disabled,
+.campo-edicao-look textarea:disabled {
+    background: var(--ui-border);
+    color: var(--ui-muted);
+    opacity: 0.82;
+}
+
+.btn-principal,
+.btn-secundario,
+.filtro-btn,
+.look-card-acoes button,
+.calendario-historico-acoes button,
+.historico-bloco-topo button,
+.historico-peca-remover,
+.historico-look-existente-lista button {
+    border-radius: var(--ui-radius);
+    font-weight: 800;
+    box-shadow: none;
+}
+
+.btn-principal,
+.filtro-btn.ativo,
+.look-card-acoes button:last-child {
+    background: var(--ui-accent);
+    border: 1px solid var(--ui-accent);
+    color: #ffffff;
+}
+
+.btn-principal:hover,
+.filtro-btn.ativo:hover,
+.look-card-acoes button:last-child:hover {
+    background: var(--ui-accent-strong);
+    border-color: var(--ui-accent-strong);
+}
+
+.btn-secundario,
+.filtro-btn,
+.look-card-acoes button:first-child,
+.calendario-historico-acoes button,
+.historico-bloco-topo button {
+    background: var(--ui-surface-muted);
+    border: 1px solid var(--ui-border);
+    color: var(--ui-text);
+}
+
+.btn-secundario:hover,
+.filtro-btn:hover,
+.look-card-acoes button:first-child:hover,
+.calendario-historico-acoes button:hover,
+.historico-bloco-topo button:hover {
+    background: var(--ui-accent-soft);
+    border-color: var(--ui-accent);
+    color: var(--ui-accent-strong);
+}
+
+.filtros,
+.filtros-home,
+.filtro-pecas-looks,
+.grupo-registro-filtros,
+.filtros-sem-uso,
+.historico-periodo-botoes,
+.consulta-historico,
+.form-look-historico,
+.form-edicao-look {
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-border);
+    border-radius: var(--ui-radius);
+    box-shadow: var(--ui-shadow-soft);
+}
+
+.filtros-home,
+.grupo-registro-filtros,
+.filtros-sem-uso {
+    gap: 10px;
+    padding: 14px;
+}
+
+.filtro-multiplo-toggle {
+    background: var(--ui-surface-muted);
+    border: 1px solid var(--ui-border);
+    border-radius: var(--ui-radius);
+    color: var(--ui-text);
+    min-height: 42px;
+}
+
+.filtro-multiplo.aberto .filtro-multiplo-toggle,
+.filtro-multiplo.tem-selecao .filtro-multiplo-toggle,
+.filtro-multiplo-toggle:hover {
+    background: var(--ui-accent-soft);
+    border-color: var(--ui-accent);
+    color: var(--ui-accent-strong);
+}
+
+.filtro-multiplo-contador {
+    background: var(--ui-accent);
+    color: #ffffff;
+}
+
+.filtro-multiplo-opcoes {
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-border);
+    border-radius: var(--ui-radius);
+    box-shadow: var(--ui-shadow);
+}
+
+.filtro-chip {
+    background: var(--ui-surface-muted);
+    border: 1px solid var(--ui-border);
+    color: var(--ui-text);
+}
+
+.filtro-chip.selecionado,
+.filtro-chip:has(input:checked) {
+    background: var(--ui-accent-soft);
+    border-color: var(--ui-accent);
+    color: var(--ui-accent-strong);
+}
+
+.card-peca,
+.look-card,
+.historico-look-card,
+.historico-peca-card,
+.ocasioes-mini-card,
+.home-link-card {
+    overflow: hidden;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.card-peca:hover,
+.look-card:hover,
+.historico-look-card:hover,
+.historico-peca-card:hover,
+.ocasioes-mini-card:hover,
+.home-link-card:hover {
+    border-color: var(--ui-accent);
+    box-shadow: var(--ui-shadow);
+    transform: translateY(-2px);
+}
+
+.card-peca.selecionado,
+.historico-peca-card.selecionada,
+.ocasioes-mini-card.selecionado {
+    border-color: var(--ui-accent);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.16);
+}
+
+.card-peca img,
+.look-card-foto-wrap,
+.historico-look-foto,
+.historico-peca-card img,
+.look-historico-foto-preview,
+.historico-resumo-id img,
+.ocasioes-mini-card img {
+    background: var(--ui-surface-muted);
+}
+
+.look-card-id-badge,
+.historico-peca-check,
+.campo-card-peca strong,
+.ocasioes-destaque strong,
+.ocasioes-codigo strong,
+.ocasioes-stat strong,
+.historico-resumo-linha strong {
+    color: var(--ui-accent-strong);
+}
+
+.modal {
+    backdrop-filter: blur(6px);
+}
+
+.modal-content {
+    border-radius: var(--ui-radius-modal);
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28);
+}
+
+.btn-fechar {
+    border-radius: var(--ui-radius);
+}
+
+.calendario-historico,
+.historico-resumo-itens {
+    border: 1px solid var(--ui-border);
+    border-radius: var(--ui-radius);
+    background: var(--ui-surface);
+}
+
+.historico-resumo-cabecalho,
+.historico-resumo-linha {
+    grid-template-columns: minmax(150px, 1.4fr) 92px 74px 112px 112px;
+    column-gap: 10px;
+}
+
+.historico-resumo-cabecalho {
+    color: var(--ui-muted);
+}
+
+.historico-resumo-linha {
+    border-color: var(--ui-border);
+}
+
+.ocasioes-painel {
+    background: var(--ui-bg);
+    gap: 12px;
+}
+
+.ocasioes-card,
+.ocasioes-bloco {
+    min-height: auto;
+}
+
+.ocasioes-destaque strong,
+.ocasioes-codigo strong,
+.ocasioes-stat strong {
+    font-size: 28px;
+}
+
+.ocasioes-stat.destaque-laranja strong {
+    color: var(--ui-warning);
+}
+
+.ocasioes-grafico-climas {
+    background: var(--ui-surface);
+}
+
+.barra-atual {
+    background: var(--ui-blue);
+}
+
+.barra-htt {
+    background: var(--ui-accent);
+}
+
+.barra-valor {
+    background: var(--ui-surface-muted);
+    border: 1px solid var(--ui-border);
+    color: var(--ui-text);
+}
+
+.look-historico-ordem {
+    background: #111827;
+    color: #ffffff;
+    border-radius: var(--ui-radius-modal);
+    padding: 14px;
+}
+
+.look-historico-ordem h3 {
+    color: #ffffff;
+}
+
+.look-historico-ordem-item {
+    background: #ffffff;
+    color: #111827;
+}
+
+.look-historico-ordem-info strong {
+    color: #111827;
+}
+
+.look-historico-ordem-info small,
+.look-historico-ordem-info .look-historico-peca-id {
+    color: #475569;
+}
+
+#modal-criar-look-historico .modal-content,
+#modal-criar-look-historico .form-look-historico {
+    background: #ffffff;
+    color: #111827;
+}
+
+#modal-criar-look-historico .form-look-historico input,
+#modal-criar-look-historico .form-look-historico select {
+    background: #f8fafc;
+    color: #111827;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--ui-surface-muted);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--ui-accent);
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        padding: 4px;
+    }
+
+    .nav-btn {
+        font-size: 11px;
+        padding: 10px 4px;
+    }
+
+    .secao,
+    .look-modal-secao,
+    .ocasioes-card,
+    .ocasioes-bloco {
+        padding: 14px;
+    }
+
+    .historico-resumo-cabecalho,
+    .historico-resumo-linha {
+        grid-template-columns: minmax(132px, 1.3fr) 70px 62px 92px 92px;
+        column-gap: 8px;
+    }
+
+    .filtro-multiplo-opcoes {
+        left: 0;
+        right: auto;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .filtro-chip {
+        width: 100%;
+    }
+}
+
+/* ==================== VISUAL MODERNO V2 ==================== */
+:root {
+    --modern-bg: #f3f6fb;
+    --modern-surface: #ffffff;
+    --modern-surface-2: #f8fafc;
+    --modern-surface-3: #eef2f7;
+    --modern-border: #d9e1ec;
+    --modern-text: #111827;
+    --modern-muted: #617085;
+    --modern-accent: #6d5dfc;
+    --modern-accent-strong: #5145d4;
+    --modern-accent-soft: #ecebff;
+    --modern-teal: #0f766e;
+    --modern-rose: #be185d;
+    --modern-shadow: 0 14px 34px rgba(15, 23, 42, 0.10);
+    --modern-shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --modern-bg: #090f1d;
+        --modern-surface: #121a2b;
+        --modern-surface-2: #172033;
+        --modern-surface-3: #202b3f;
+        --modern-border: #2f3d55;
+        --modern-text: #f9fafb;
+        --modern-muted: #bac7d8;
+        --modern-accent: #9b8cff;
+        --modern-accent-strong: #c8c0ff;
+        --modern-accent-soft: #2c2852;
+        --modern-teal: #2dd4bf;
+        --modern-rose: #f472b6;
+        --modern-shadow: 0 18px 42px rgba(0, 0, 0, 0.30);
+        --modern-shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.28);
+    }
+}
+
+body {
+    background: var(--modern-bg);
+    color: var(--modern-text);
+}
+
+#app {
+    max-width: 1240px;
+    background: var(--modern-bg);
+}
+
+.navbar {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid var(--modern-border);
+    border-top: 0;
+    border-radius: 0 0 8px 8px;
+    box-shadow: var(--modern-shadow-soft);
+    padding: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .navbar {
+        background: rgba(18, 26, 43, 0.94);
+    }
+}
+
+.nav-btn {
+    min-height: 40px;
+    border-radius: 8px;
+    color: var(--modern-muted);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.nav-btn:hover {
+    background: var(--modern-surface-3);
+    color: var(--modern-text);
+}
+
+.nav-btn.active {
+    background: var(--modern-accent-soft);
+    color: var(--modern-accent-strong);
+    box-shadow: inset 0 0 0 1px rgba(109, 93, 252, 0.18);
+}
+
+.header,
+.home-hero {
+    background: var(--modern-surface);
+    color: var(--modern-text);
+    border: 1px solid var(--modern-border);
+    border-radius: 8px;
+    box-shadow: var(--modern-shadow-soft);
+    margin: 14px 16px 0;
+}
+
+.header {
+    padding: 20px;
+}
+
+.header h1,
+.home-hero h1 {
+    color: var(--modern-text);
+    font-size: 28px;
+    line-height: 1.12;
+}
+
+.header p,
+.home-hero p {
+    color: var(--modern-muted);
+}
+
+.home-hero {
+    padding: 28px 24px;
+}
+
+.home-kicker {
+    color: var(--modern-accent-strong);
+    font-weight: 800;
+}
+
+.home-hero-imagem {
+    border: 1px solid var(--modern-border);
+    background: var(--modern-surface-2);
+    box-shadow: var(--modern-shadow-soft);
+}
+
+.home-links,
+.galeria,
+#galeria-usar-hoje,
+.lista-looks,
+.cards-stats {
+    gap: 16px;
+}
+
+.home-link-card,
+.secao,
+.stat-card,
+.card-peca,
+.look-card,
+.historico-dia,
+.historico-look-card,
+.historico-peca-card,
+.look-modal-secao,
+.sync-box,
+.grupo-registro,
+.ocasioes-card,
+.ocasioes-bloco,
+.ocasioes-mini-card,
+.modal-content {
+    background: var(--modern-surface);
+    border-color: var(--modern-border);
+    color: var(--modern-text);
+    box-shadow: var(--modern-shadow-soft);
+}
+
+.secao,
+.look-modal-secao,
+.ocasioes-card,
+.ocasioes-bloco {
+    margin: 16px;
+    padding: 18px;
+}
+
+.secao h3,
+.look-modal-secao h3,
+.historico-dia-cabecalho h4,
+.historico-bloco h5,
+.calendario-historico-topo h3,
+.ocasioes-bloco h3,
+.look-card-info h3,
+.card-peca-titulo strong,
+.stat-numero {
+    color: var(--modern-text);
+}
+
+.texto-ajuda,
+.secao label,
+.look-card-info p,
+.card-peca-titulo span,
+.campo-card-peca span,
+.historico-look-card small,
+.historico-peca-card small,
+.stat-label,
+.ocasioes-card > span,
+.ocasioes-filtro span,
+.ocasioes-bloco-topo span {
+    color: var(--modern-muted);
+}
+
+.home-link-card {
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    column-gap: 12px;
+    align-items: center;
+    padding: 16px;
+}
+
+.home-link-card strong,
+.home-link-card small {
+    grid-column: 2;
+}
+
+.home-link-icon {
+    grid-row: 1 / span 2;
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    background: var(--modern-accent-soft);
+    color: var(--modern-accent-strong);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+}
+
+.filtros,
+.filtros-home,
+.filtro-pecas-looks,
+.grupo-registro-filtros,
+.filtros-sem-uso,
+.historico-periodo-botoes,
+.consulta-historico,
+.form-look-historico,
+.form-edicao-look {
+    background: var(--modern-surface);
+    border-color: var(--modern-border);
+    box-shadow: var(--modern-shadow-soft);
+}
+
+.filtros-home,
+.grupo-registro-filtros,
+.filtros-sem-uso {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.filtros-home > button,
+.btn-principal,
+.btn-secundario,
+.filtro-btn,
+.look-card-acoes button {
+    min-height: 40px;
+    border-radius: 8px;
+}
+
+.btn-principal,
+.filtros-home > button,
+.filtro-btn.ativo,
+.look-card-acoes button:last-child {
+    background: var(--modern-accent);
+    border-color: var(--modern-accent);
+    color: #ffffff;
+}
+
+.btn-principal:hover,
+.filtros-home > button:hover,
+.filtro-btn.ativo:hover,
+.look-card-acoes button:last-child:hover {
+    background: var(--modern-accent-strong);
+    border-color: var(--modern-accent-strong);
+    color: #ffffff;
+}
+
+.btn-secundario,
+.filtro-btn,
+.look-card-acoes button:first-child {
+    background: var(--modern-surface-2);
+    border-color: var(--modern-border);
+    color: var(--modern-text);
+}
+
+.btn-secundario:hover,
+.filtro-btn:hover,
+.look-card-acoes button:first-child:hover {
+    background: var(--modern-surface-3);
+    color: var(--modern-accent-strong);
+    border-color: var(--modern-accent);
+}
+
+.secao input,
+.secao select,
+.secao textarea,
+.consulta-historico input,
+.form-look-historico input,
+.form-look-historico select,
+.form-look-historico textarea,
+.campo-edicao-look input,
+.campo-edicao-look select,
+.campo-edicao-look textarea,
+.filtros-home select,
+.filtro-pecas-looks input,
+.header input[type="text"],
+.ocasioes-filtro select,
+.ocasioes-bloco-topo select {
+    background: var(--modern-surface-2);
+    border-color: var(--modern-border);
+    color: var(--modern-text);
+    border-radius: 8px;
+}
+
+.secao input:focus,
+.secao select:focus,
+.secao textarea:focus,
+.consulta-historico input:focus,
+.form-look-historico input:focus,
+.form-look-historico select:focus,
+.form-look-historico textarea:focus,
+.campo-edicao-look input:focus,
+.campo-edicao-look select:focus,
+.campo-edicao-look textarea:focus,
+.filtros-home select:focus,
+.filtro-pecas-looks input:focus,
+.header input[type="text"]:focus,
+.ocasioes-filtro select:focus,
+.ocasioes-bloco-topo select:focus {
+    border-color: var(--modern-accent);
+    outline: 3px solid rgba(109, 93, 252, 0.18);
+}
+
+.filtro-multiplo-toggle {
+    background: var(--modern-surface-2) !important;
+    border-color: var(--modern-border);
+    color: var(--modern-text);
+}
+
+.filtro-multiplo.aberto .filtro-multiplo-toggle,
+.filtro-multiplo.tem-selecao .filtro-multiplo-toggle,
+.filtro-multiplo-toggle:hover {
+    background: var(--modern-accent-soft) !important;
+    border-color: var(--modern-accent);
+    color: var(--modern-accent-strong);
+}
+
+.filtro-multiplo-opcoes {
+    background: var(--modern-surface);
+    border-color: var(--modern-border);
+    box-shadow: var(--modern-shadow);
+}
+
+.filtro-chip {
+    background: var(--modern-surface-2);
+    border-color: var(--modern-border);
+    color: var(--modern-text);
+}
+
+.filtro-chip.selecionado,
+.filtro-chip:has(input:checked) {
+    background: var(--modern-accent-soft);
+    color: var(--modern-accent-strong);
+    border-color: var(--modern-accent);
+}
+
+.card-peca,
+.look-card,
+.historico-look-card,
+.historico-peca-card,
+.ocasioes-mini-card {
+    padding: 10px;
+}
+
+.card-peca img,
+.look-card-foto-wrap,
+.historico-look-foto,
+.historico-peca-card img,
+.ocasioes-mini-card img,
+.look-historico-foto-preview {
+    border-radius: 8px;
+    border: 1px solid var(--modern-border);
+    background: var(--modern-surface-2);
+}
+
+.look-card-foto {
+    border-radius: 8px;
+}
+
+.card-peca:hover,
+.look-card:hover,
+.historico-look-card:hover,
+.historico-peca-card:hover,
+.ocasioes-mini-card:hover,
+.home-link-card:hover {
+    border-color: rgba(109, 93, 252, 0.62);
+    box-shadow: var(--modern-shadow);
+    transform: translateY(-3px);
+}
+
+.look-card-id-badge {
+    background: rgba(17, 24, 39, 0.74);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 8px;
+}
+
+.look-card-acoes {
+    gap: 8px;
+}
+
+.stat-card {
+    padding: 18px;
+}
+
+.stat-numero,
+.ocasioes-destaque strong,
+.ocasioes-codigo strong,
+.ocasioes-stat strong {
+    color: var(--modern-accent-strong);
+}
+
+.ocasioes-stat.destaque-laranja strong {
+    color: var(--modern-rose);
+}
+
+.ocasioes-painel {
+    padding: 16px;
+    background: var(--modern-bg);
+}
+
+.ocasioes-grafico-climas,
+.calendario-historico,
+.historico-resumo-itens {
+    background: var(--modern-surface);
+    border-color: var(--modern-border);
+}
+
+.barra-atual {
+    background: var(--modern-teal);
+}
+
+.barra-htt {
+    background: var(--modern-accent);
+}
+
+.modal-content {
+    background: var(--modern-surface);
+    color: var(--modern-text);
+    border-color: var(--modern-border);
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.34);
+}
+
+.btn-fechar {
+    background: var(--modern-surface-2);
+    color: var(--modern-text);
+    border: 1px solid var(--modern-border);
+}
+
+.btn-fechar:hover {
+    background: var(--modern-surface-3);
+    color: var(--modern-accent-strong);
+}
+
+#modal-criar-look-historico .modal-content,
+#modal-criar-look-historico .form-look-historico {
+    background: var(--modern-surface);
+    color: var(--modern-text);
+}
+
+#modal-criar-look-historico h2,
+#modal-criar-look-historico .form-look-historico label,
+#modal-criar-look-historico .look-historico-ordem h3 {
+    color: var(--modern-text);
+}
+
+#modal-criar-look-historico .form-look-historico input,
+#modal-criar-look-historico .form-look-historico select {
+    background: var(--modern-surface-2);
+    color: var(--modern-text);
+    border-color: var(--modern-border);
+}
+
+.look-historico-ordem {
+    background: var(--modern-surface-2);
+    border: 1px solid var(--modern-border);
+    color: var(--modern-text);
+}
+
+.look-historico-ordem h3,
+.look-historico-ordem-info strong {
+    color: var(--modern-text);
+}
+
+.look-historico-ordem-item {
+    background: var(--modern-surface);
+    border-color: var(--modern-border);
+    color: var(--modern-text);
+}
+
+.look-historico-ordem-info small,
+.look-historico-ordem-info .look-historico-peca-id {
+    color: var(--modern-muted);
+}
+
+#ficha-look-modal:has(.form-edicao-look) {
+    background: var(--modern-surface);
+    border-color: var(--modern-border);
+    color: var(--modern-text);
+}
+
+#ficha-look-modal:has(.form-edicao-look) .form-edicao-look {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+}
+
+#ficha-look-modal:has(.form-edicao-look) .campo-edicao-look {
+    color: var(--modern-text);
+}
+
+#ficha-look-modal:has(.form-edicao-look) .campo-edicao-look > span,
+#ficha-look-modal:has(.form-edicao-look) .campo-edicao-look-grupo > strong {
+    color: var(--modern-text);
+    font-size: 13px;
+    font-weight: 850;
+}
+
+#ficha-look-modal:has(.form-edicao-look) .campo-edicao-look input,
+#ficha-look-modal:has(.form-edicao-look) .campo-edicao-look textarea,
+#ficha-look-modal:has(.form-edicao-look) .campo-edicao-look select {
+    background: var(--modern-surface-2);
+    border-color: var(--modern-border);
+    color: var(--modern-text);
+    min-height: 46px;
+}
+
+#ficha-look-modal:has(.form-edicao-look) .campo-edicao-look textarea {
+    line-height: 1.45;
+}
+
+#ficha-look-modal:has(.form-edicao-look) .campo-edicao-look input:disabled,
+#ficha-look-modal:has(.form-edicao-look) .campo-edicao-look textarea:disabled,
+#ficha-look-modal:has(.form-edicao-look) .campo-edicao-look select:disabled {
+    background: var(--modern-surface-3);
+    color: var(--modern-muted);
+    -webkit-text-fill-color: var(--modern-muted);
+}
+
+#ficha-look-modal:has(.form-edicao-look) .campo-edicao-look input[type="file"] {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    color: var(--modern-muted);
+}
+
+#ficha-look-modal:has(.form-edicao-look) .campo-edicao-look input[type="file"]::file-selector-button {
+    margin-right: 12px;
+    min-height: 34px;
+    border: 1px solid var(--modern-accent);
+    border-radius: 8px;
+    background: var(--modern-accent);
+    color: #ffffff;
+    padding: 7px 12px;
+    font: inherit;
+    font-weight: 850;
+    cursor: pointer;
+}
+
+#ficha-look-modal:has(.form-edicao-look) .select-nativo-oculto {
+    position: absolute;
+    width: 1px !important;
+    min-height: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.edicao-chip-select {
+    display: grid;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid var(--modern-border);
+    border-radius: 8px;
+    background: var(--modern-surface-2);
+}
+
+.edicao-chip-select-topo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+}
+
+.edicao-chip-select-topo input {
+    min-height: 38px !important;
+    padding: 8px 10px !important;
+    background: var(--modern-surface) !important;
+}
+
+.edicao-chip-select-topo span {
+    min-width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: var(--modern-accent);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.edicao-chip-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-height: 172px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.edicao-chip-opcao {
+    border: 1px solid var(--modern-border);
+    border-radius: 8px;
+    background: var(--modern-surface);
+    color: var(--modern-text);
+    padding: 7px 10px;
+    font-size: 13px;
+    font-weight: 750;
+    line-height: 1.25;
+    cursor: pointer;
+    text-align: left;
+    transition: var(--transicao);
+}
+
+.edicao-chip-opcao:hover {
+    border-color: var(--modern-accent);
+    background: var(--modern-accent-soft);
+    color: var(--modern-accent-strong);
+}
+
+.edicao-chip-opcao.ativo {
+    border-color: var(--modern-accent);
+    background: var(--modern-accent);
+    color: #ffffff;
+    box-shadow: 0 8px 18px rgba(109, 93, 252, 0.22);
+}
+
+.ocasioes-filtro {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ocasioes-filtro .select-nativo-oculto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ocasioes-chip-select {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 8px;
+    max-height: 132px;
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid var(--modern-border);
+    border-radius: 8px;
+    background: var(--modern-surface-2);
+}
+
+.ocasioes-chip-opcao {
+    min-height: 32px;
+    border: 1px solid var(--modern-border);
+    border-radius: 8px;
+    background: var(--modern-surface);
+    color: var(--modern-text);
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: 750;
+    cursor: pointer;
+    transition: var(--transicao);
+}
+
+.ocasioes-chip-opcao:hover {
+    border-color: var(--modern-accent);
+    color: var(--modern-accent-strong);
+    background: var(--modern-accent-soft);
+}
+
+.ocasioes-chip-opcao.ativo {
+    border-color: var(--modern-accent);
+    background: var(--modern-accent);
+    color: #ffffff;
+    box-shadow: 0 8px 18px rgba(109, 93, 252, 0.22);
+}
+
+@media (max-width: 768px) {
+    .header,
+    .home-hero,
+    .secao,
+    .look-modal-secao,
+    .ocasioes-card,
+    .ocasioes-bloco {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .header h1,
+    .home-hero h1 {
+        font-size: 24px;
+    }
+
+    .filtros-home,
+    .grupo-registro-filtros,
+    .filtros-sem-uso {
+        grid-template-columns: 1fr;
+    }
+
+    .ocasioes-chip-select {
+        max-height: 116px;
+    }
+
+    .edicao-chip-lista {
+        max-height: 150px;
+    }
+}

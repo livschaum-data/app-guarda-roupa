@@ -2560,6 +2560,65 @@ function obterSugestoesSelecionadasEdicaoLook() {
     })).filter(item => item.id);
 }
 
+function configurarControlesVisuaisEdicaoLook() {
+    renderControleVisualMultiploEdicaoLook('edit-look-ocasioes', 'Pesquisar ocasiao');
+    renderControleVisualMultiploEdicaoLook('edit-look-sugestoes', 'Pesquisar peca');
+}
+
+function renderControleVisualMultiploEdicaoLook(selectId, placeholder) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+
+    select.classList.add('select-nativo-oculto');
+
+    let container = select.parentElement.querySelector(`.edicao-chip-select[data-select-id="${selectId}"]`);
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'edicao-chip-select';
+        container.dataset.selectId = selectId;
+        select.insertAdjacentElement('afterend', container);
+    }
+
+    const buscaAnterior = container.querySelector('input')?.value || '';
+    const termo = normalizarTexto(buscaAnterior);
+    const opcoes = [...select.options];
+    const selecionadas = opcoes.filter(option => option.selected).length;
+
+    container.innerHTML = `
+        <div class="edicao-chip-select-topo">
+            <input type="search" value="${escapeHtml(buscaAnterior)}" placeholder="${escapeHtml(placeholder)}">
+            <span>${selecionadas}</span>
+        </div>
+        <div class="edicao-chip-lista"></div>
+    `;
+
+    const inputBusca = container.querySelector('input');
+    const lista = container.querySelector('.edicao-chip-lista');
+    inputBusca.addEventListener('input', () => renderControleVisualMultiploEdicaoLook(selectId, placeholder));
+
+    const opcoesFiltradas = opcoes.filter(option => {
+        if (!termo) return true;
+        return normalizarTexto(option.textContent).includes(termo) || normalizarTexto(option.value).includes(termo);
+    });
+
+    lista.innerHTML = opcoesFiltradas.length
+        ? ''
+        : '<p class="texto-ajuda">Nenhuma opcao encontrada.</p>';
+
+    opcoesFiltradas.forEach(option => {
+        const botao = document.createElement('button');
+        botao.type = 'button';
+        botao.className = 'edicao-chip-opcao';
+        botao.classList.toggle('ativo', option.selected);
+        botao.textContent = option.textContent;
+        botao.addEventListener('click', () => {
+            option.selected = !option.selected;
+            renderControleVisualMultiploEdicaoLook(selectId, placeholder);
+        });
+        lista.appendChild(botao);
+    });
+}
+
 function campoBasicoEditavelLook(campo) {
     const camposGerenciados = new Set(['id', 'id1', 'id2', 'id3', 'situacao', 'indicador', 'htt', 'col_5']);
     return !camposGerenciados.has(normalizarTexto(campo));
@@ -2587,7 +2646,10 @@ function criarFormularioEdicaoLook(look) {
         `)
         .join('');
 
-    setTimeout(configurarRecalculoEdicaoLook, 0);
+    setTimeout(() => {
+        configurarRecalculoEdicaoLook();
+        configurarControlesVisuaisEdicaoLook();
+    }, 0);
 
     return `
         <div id="form-edicao-look" class="form-edicao-look">
@@ -2922,6 +2984,72 @@ function marcarValoresSelectMultiplo(select, valores) {
     });
 }
 
+function renderControlesVisuaisOcasioes() {
+    [
+        'ocasioes-filtro-tipo',
+        'ocasioes-filtro-clima',
+        'ocasioes-select',
+    ].forEach(id => {
+        const select = document.getElementById(id);
+        if (select) renderControleVisualOcasioes(select);
+    });
+}
+
+function renderControleVisualOcasioes(select) {
+    select.classList.add('select-nativo-oculto');
+
+    let container = select.parentElement.querySelector(`.ocasioes-chip-select[data-select-id="${select.id}"]`);
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'ocasioes-chip-select';
+        container.dataset.selectId = select.id;
+        select.insertAdjacentElement('afterend', container);
+    }
+
+    const selecionados = obterValoresSelectMultiplo(select.id);
+    const temSelecao = selecionados.length > 0;
+    const opcoes = [...select.options];
+    container.innerHTML = '';
+
+    opcoes.forEach(option => {
+        const botao = document.createElement('button');
+        botao.type = 'button';
+        botao.className = 'ocasioes-chip-opcao';
+        botao.dataset.valor = option.value;
+        botao.textContent = option.textContent;
+        botao.classList.toggle('ativo', option.value ? selecionados.includes(option.value) : !temSelecao);
+        botao.addEventListener('click', () => alternarControleVisualOcasioes(select.id, option.value));
+        container.appendChild(botao);
+    });
+}
+
+function alternarControleVisualOcasioes(selectId, valor) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+
+    if (!valor) {
+        [...select.options].forEach(option => {
+            option.selected = !option.value;
+        });
+    } else {
+        const option = [...select.options].find(item => item.value === valor);
+        if (option) option.selected = !option.selected;
+
+        const temSelecao = [...select.options].some(item => item.value && item.selected);
+        [...select.options].forEach(item => {
+            if (!item.value) item.selected = !temSelecao;
+        });
+    }
+
+    if (selectId === 'ocasioes-select') {
+        selecionarOcasiaoPagina();
+        renderControlesVisuaisOcasioes();
+        return;
+    }
+
+    filtrarPaginaOcasioes();
+}
+
 function preencherFiltrosPaginaOcasioes() {
     const selectTipo = document.getElementById('ocasioes-filtro-tipo');
     const selectClima = document.getElementById('ocasioes-filtro-clima');
@@ -2950,6 +3078,7 @@ function preencherFiltrosPaginaOcasioes() {
     const codigosDisponiveis = new Set(filtradas.map(ocasiao => ocasiao.codigo));
     app.filtrosOcasioes.ocasiao = (app.filtrosOcasioes.ocasiao || []).filter(codigo => codigosDisponiveis.has(codigo));
     marcarValoresSelectMultiplo(selectOcasiao, app.filtrosOcasioes.ocasiao);
+    renderControlesVisuaisOcasioes();
 }
 
 function filtrarPaginaOcasioes() {
@@ -2964,6 +3093,7 @@ function selecionarOcasiaoPagina() {
     app.filtrosOcasioes.ocasiao = obterValoresSelectMultiplo('ocasioes-select');
     app.filtrosOcasioes.lookId = '';
     renderPaginaOcasioes();
+    renderControlesVisuaisOcasioes();
 }
 
 function alterarEixoGraficoOcasioes(eixo) {
