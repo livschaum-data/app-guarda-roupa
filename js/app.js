@@ -58,6 +58,14 @@ const app = {
         pecas: [],
     },
 
+    filtrosOcasioes: {
+        tipo: [],
+        clima: [],
+        ocasiao: [],
+        lookId: '',
+        eixoGrafico: 'climas',
+    },
+
     // Filtros do card "Não uso há..." no histórico
     filtrosSemUso: {
         tipo: '',
@@ -87,6 +95,7 @@ async function inicializar() {
     renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
     preencherFiltrosHoje();
     configurarEventosHistorico();
+    inicializarPaginaOcasioes();
     await inicializarSupabase();
     atualizarDataHoje();
 
@@ -1483,6 +1492,10 @@ function mostrarPagina(nome) {
         renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
     }
 
+    if (nome === 'ocasioes') {
+        inicializarPaginaOcasioes();
+    }
+
     console.log(`📄 Mostrando página: ${nome}`);
 }
 
@@ -2466,16 +2479,105 @@ function renderFichaLookLeitura(look, ficha) {
         .join('');
 }
 
+function criarOptionsSituacaoLook(valorAtual) {
+    const valores = [...new Set([
+        'em uso',
+        'stand-by',
+        'excluido',
+        ...obterTodosLooks().map(look => look.situacao || look.basicos?.['situação'] || look.basicos?.['situaÃ§Ã£o']).filter(valorVisivel),
+        valorAtual,
+    ].filter(valorVisivel))];
+    const atualNormalizado = normalizarTexto(valorAtual);
+
+    return valores
+        .sort((a, b) => String(a).localeCompare(String(b), 'pt-BR'))
+        .map(valor => `<option value="${escapeHtml(valor)}" ${normalizarTexto(valor) === atualNormalizado ? 'selected' : ''}>${escapeHtml(valor)}</option>`)
+        .join('');
+}
+
+function criarOptionsHttLook(valorAtual) {
+    const atualNormalizado = normalizarTexto(valorAtual || 'false');
+    return ['false', 'true']
+        .map(valor => `<option value="${valor}" ${normalizarTexto(valor) === atualNormalizado ? 'selected' : ''}>${valor}</option>`)
+        .join('');
+}
+
+function criarOptionsOcasioesLook(ocasioesSelecionadas) {
+    const selecionadas = new Set((ocasioesSelecionadas || []).flatMap(item => [
+        normalizarTexto(item.codigo),
+        normalizarTexto(item.descricao),
+    ]).filter(Boolean));
+
+    return Object.entries(app.mapaOcasioes || {})
+        .map(([codigo, info]) => ({
+            codigo,
+            descricao: info.descricao || codigo,
+            tipo: info.tipo || '',
+        }))
+        .sort((a, b) => String(a.codigo).localeCompare(String(b.codigo), 'pt-BR', { numeric: true }))
+        .map(item => {
+            const selecionada = selecionadas.has(normalizarTexto(item.codigo)) || selecionadas.has(normalizarTexto(item.descricao));
+            const label = `${item.codigo} - ${item.descricao}${item.tipo ? ` (${item.tipo})` : ''}`;
+            return `<option value="${escapeHtml(item.codigo)}" ${selecionada ? 'selected' : ''}>${escapeHtml(label)}</option>`;
+        })
+        .join('');
+}
+
+function obterOcasioesSelecionadasEdicaoLook() {
+    const select = document.getElementById('edit-look-ocasioes');
+    if (!select) return [];
+    return [...select.selectedOptions].map(option => option.value);
+}
+
+function criarOptionsSugestoesLook(sugestoesSelecionadas) {
+    const sugestoesMap = new Map((sugestoesSelecionadas || [])
+        .filter(item => item?.id)
+        .map(item => [String(item.id).toUpperCase(), item.grupo || '']));
+    const tiposPermitidos = new Set(['calcado', 'cinto', 'bolsa']);
+
+    return Object.values(app.pecas || {})
+        .filter(peca => peca?.id)
+        .filter(peca => tiposPermitidos.has(normalizarTexto(peca.tipo)))
+        .filter(peca => normalizarTexto(peca.situacao) !== 'excluida')
+        .sort((a, b) => String(a.id).localeCompare(String(b.id), 'pt-BR', { numeric: true }))
+        .map(peca => {
+            const id = String(peca.id).toUpperCase();
+            const selecionada = sugestoesMap.has(id);
+            const grupo = sugestoesMap.get(id) || peca.tipo || '';
+            const label = `${id} - ${peca.tipo || ''}${peca.subtipo ? ` / ${peca.subtipo}` : ''}`;
+            return `<option value="${escapeHtml(id)}" data-grupo="${escapeHtml(grupo)}" ${selecionada ? 'selected' : ''}>${escapeHtml(label)}</option>`;
+        })
+        .join('');
+}
+
+function obterSugestoesSelecionadasEdicaoLook() {
+    const select = document.getElementById('edit-look-sugestoes');
+    if (!select) return [];
+
+    return [...select.selectedOptions].map(option => ({
+        id: String(option.value || '').toUpperCase(),
+        grupo: option.dataset.grupo || app.pecas[option.value]?.tipo || '',
+    })).filter(item => item.id);
+}
+
+function campoBasicoEditavelLook(campo) {
+    const camposGerenciados = new Set(['id', 'id1', 'id2', 'id3', 'situacao', 'indicador', 'htt', 'col_5']);
+    return !camposGerenciados.has(normalizarTexto(campo));
+}
+
 function criarFormularioEdicaoLook(look) {
     const basicos = look.basicos || {};
     const sugestoes = (look.pecas_sugeridas || [])
         .map(item => `${item.id || ''}${item.grupo ? ` | ${item.grupo}` : ''}`)
         .join('\n');
-    const ocasioes = (look.ocasioes || [])
-        .map(item => item.codigo || item.descricao)
-        .filter(Boolean)
-        .join(', ');
+    const situacaoAtual = look.situacao || basicos['situaÃ§Ã£o'] || basicos['situação'] || '';
+    const httAtual = String(look.HTT || look.htt || basicos.HTT || '');
+    const opcoesSituacao = criarOptionsSituacaoLook(situacaoAtual);
+    const opcoesHtt = criarOptionsHttLook(httAtual);
+    const opcoesOcasioes = criarOptionsOcasioesLook(look.ocasioes || []);
+    const opcoesSugestoes = criarOptionsSugestoesLook(look.pecas_sugeridas || []);
     const camposBasicos = Object.entries(basicos)
+        .filter(([campo]) => campoBasicoEditavelLook(campo))
         .sort(([a], [b]) => a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }))
         .map(([campo, valor]) => `
             <label class="campo-edicao-look">
@@ -2507,7 +2609,7 @@ function criarFormularioEdicaoLook(look) {
             </label>
             <label class="campo-edicao-look">
                 <span>Situação</span>
-                <input type="text" id="edit-look-situacao" value="${escapeHtml(look.situacao || basicos['situação'] || '')}">
+                <select id="edit-look-situacao">${opcoesSituacao}</select>
             </label>
             <label class="campo-edicao-look">
                 <span>Indicador</span>
@@ -2515,19 +2617,19 @@ function criarFormularioEdicaoLook(look) {
             </label>
             <label class="campo-edicao-look">
                 <span>HTT</span>
-                <input type="text" id="edit-look-htt" value="${escapeHtml(look.HTT || look.htt || basicos.HTT || '')}">
+                <select id="edit-look-htt">${opcoesHtt}</select>
             </label>
             <label class="campo-edicao-look">
                 <span>Clima calculado</span>
-                <input type="text" id="edit-look-clima-calc" value="${escapeHtml(look.clima_calc || look.clima || '')}">
+                <input type="text" id="edit-look-clima-calc" value="${escapeHtml(look.clima_calc || look.clima || '')}" disabled>
             </label>
             <label class="campo-edicao-look">
                 <span>Local calculado</span>
-                <input type="text" id="edit-look-local-calc" value="${escapeHtml(look.local_calc || look.local || '')}">
+                <input type="text" id="edit-look-local-calc" value="${escapeHtml(look.local_calc || look.local || '')}" disabled>
             </label>
             <label class="campo-edicao-look">
                 <span>Utilização calculada</span>
-                <input type="text" id="edit-look-utilizacao-calc" value="${escapeHtml(look.utilizacao_calc || look.utilizacao || '')}">
+                <input type="text" id="edit-look-utilizacao-calc" value="${escapeHtml(look.utilizacao_calc || look.utilizacao || '')}" disabled>
             </label>
             <label class="campo-edicao-look campo-edicao-look-largo">
                 <span>Peças do look</span>
@@ -2535,23 +2637,23 @@ function criarFormularioEdicaoLook(look) {
             </label>
             <label class="campo-edicao-look campo-edicao-look-largo">
                 <span>Ocasiões</span>
-                <textarea id="edit-look-ocasioes" rows="2">${escapeHtml(ocasioes)}</textarea>
+                <select id="edit-look-ocasioes" multiple size="8">${opcoesOcasioes}</select>
             </label>
             <label class="campo-edicao-look campo-edicao-look-largo">
                 <span>Aquecimentos das peças</span>
-                <textarea id="edit-look-aquecimentos" rows="2">${escapeHtml((look.aquecimentos || []).join(', '))}</textarea>
+                <textarea id="edit-look-aquecimentos" rows="2" disabled>${escapeHtml((look.aquecimentos || []).join(', '))}</textarea>
             </label>
             <label class="campo-edicao-look campo-edicao-look-largo">
                 <span>Locais das peças</span>
-                <textarea id="edit-look-locais-pecas" rows="2">${escapeHtml((look.locais_pecas || []).join(', '))}</textarea>
+                <textarea id="edit-look-locais-pecas" rows="2" disabled>${escapeHtml((look.locais_pecas || []).join(', '))}</textarea>
             </label>
             <label class="campo-edicao-look campo-edicao-look-largo">
                 <span>Utilizações das peças</span>
-                <textarea id="edit-look-utilizacoes-pecas" rows="2">${escapeHtml((look.utilizacoes_pecas || []).join(', '))}</textarea>
+                <textarea id="edit-look-utilizacoes-pecas" rows="2" disabled>${escapeHtml((look.utilizacoes_pecas || []).join(', '))}</textarea>
             </label>
             <label class="campo-edicao-look campo-edicao-look-largo">
                 <span>Acessórios e calçados sugeridos</span>
-                <textarea id="edit-look-sugestoes" rows="4" placeholder="ID0001 | bolsa">${escapeHtml(sugestoes)}</textarea>
+                <select id="edit-look-sugestoes" multiple size="10">${opcoesSugestoes}</select>
             </label>
             <div class="campo-edicao-look-grupo">
                 <strong>Campos da ficha</strong>
@@ -2643,7 +2745,7 @@ async function salvarEdicaoLook() {
     const fotoUrl = document.getElementById('edit-look-foto')?.value.trim() || '';
     const pecas = parseListaIdsEdicaoLook(document.getElementById('edit-look-pecas')?.value || '')
         .map(id => id.toUpperCase());
-    const ocasioes = parseOcasioesEdicaoLook(document.getElementById('edit-look-ocasioes')?.value || '');
+    const ocasioes = parseOcasioesEdicaoLook(obterOcasioesSelecionadasEdicaoLook());
     const calculados = calcularDadosLookPorPecas(pecas);
 
     basicos.ID = lookId;
@@ -2675,7 +2777,7 @@ async function salvarEdicaoLook() {
         aquecimentos: calculados.aquecimentos,
         locais_pecas: calculados.locais_pecas,
         utilizacoes_pecas: calculados.utilizacoes_pecas,
-        pecas_sugeridas: parseSugestoesEdicaoLook(document.getElementById('edit-look-sugestoes')?.value || ''),
+        pecas_sugeridas: obterSugestoesSelecionadasEdicaoLook(),
         basicos,
         editadoLocalmente: true,
         editadoEm: new Date().toISOString(),
@@ -2778,6 +2880,346 @@ function usarLookHoje(lookId) {
 
 /* ==================== PÁGINA HISTÓRICO ====================
    Mostra estatísticas de uso */
+
+/* ==================== PAGINA OCASIOES ==================== */
+
+function inicializarPaginaOcasioes() {
+    if (!document.getElementById('ocasioes')) return;
+
+    preencherFiltrosPaginaOcasioes();
+    renderPaginaOcasioes();
+}
+
+function obterOcasioesOrdenadas() {
+    return Object.entries(app.mapaOcasioes || {})
+        .map(([codigo, info]) => ({
+            codigo,
+            descricao: info.descricao || codigo,
+            local: info.local || '',
+            tipo: info.tipo || '',
+            data_revisao: info.data_revisao || '',
+        }))
+        .sort((a, b) => String(a.codigo).localeCompare(String(b.codigo), 'pt-BR', { numeric: true }));
+}
+
+function obterOcasioesFiltradasPagina() {
+    const tipos = app.filtrosOcasioes.tipo || [];
+    return obterOcasioesOrdenadas().filter(ocasiao => tipos.length === 0 || tipos.includes(ocasiao.tipo));
+}
+
+function obterValoresSelectMultiplo(id) {
+    const select = document.getElementById(id);
+    if (!select) return [];
+    const selecionados = [...select.selectedOptions].map(option => option.value);
+    const valores = selecionados.filter(Boolean);
+    return valores.length ? valores : [];
+}
+
+function marcarValoresSelectMultiplo(select, valores) {
+    const selecionados = new Set(valores || []);
+    [...select.options].forEach(option => {
+        option.selected = option.value ? selecionados.has(option.value) : selecionados.size === 0;
+    });
+}
+
+function preencherFiltrosPaginaOcasioes() {
+    const selectTipo = document.getElementById('ocasioes-filtro-tipo');
+    const selectClima = document.getElementById('ocasioes-filtro-clima');
+    const selectOcasiao = document.getElementById('ocasioes-select');
+    if (!selectTipo || !selectClima || !selectOcasiao) return;
+
+    const ocasioes = obterOcasioesOrdenadas();
+    const tipos = [...new Set(ocasioes.map(item => item.tipo).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    selectTipo.innerHTML = '<option value="">Todos</option>' +
+        tipos.map(tipo => `<option value="${escapeHtml(tipo)}">${escapeHtml(tipo)}</option>`).join('');
+    marcarValoresSelectMultiplo(selectTipo, app.filtrosOcasioes.tipo);
+
+    const climas = Object.values(app.climas || {})
+        .filter(clima => clima.codigo)
+        .sort((a, b) => String(a.codigo).localeCompare(String(b.codigo), 'pt-BR', { numeric: true }));
+    selectClima.innerHTML = '<option value="">Todas</option>' +
+        climas.map(clima => `<option value="${escapeHtml(clima.codigo)}">${escapeHtml(clima.descricao || clima.codigo)}</option>`).join('');
+    marcarValoresSelectMultiplo(selectClima, app.filtrosOcasioes.clima);
+
+    const filtradas = obterOcasioesFiltradasPagina();
+    selectOcasiao.innerHTML = '<option value="">Todas</option>' + filtradas
+        .map(ocasiao => `<option value="${escapeHtml(ocasiao.codigo)}">${escapeHtml(ocasiao.descricao)}</option>`)
+        .join('');
+
+    const codigosDisponiveis = new Set(filtradas.map(ocasiao => ocasiao.codigo));
+    app.filtrosOcasioes.ocasiao = (app.filtrosOcasioes.ocasiao || []).filter(codigo => codigosDisponiveis.has(codigo));
+    marcarValoresSelectMultiplo(selectOcasiao, app.filtrosOcasioes.ocasiao);
+}
+
+function filtrarPaginaOcasioes() {
+    app.filtrosOcasioes.tipo = obterValoresSelectMultiplo('ocasioes-filtro-tipo');
+    app.filtrosOcasioes.clima = obterValoresSelectMultiplo('ocasioes-filtro-clima');
+    app.filtrosOcasioes.lookId = '';
+    preencherFiltrosPaginaOcasioes();
+    renderPaginaOcasioes();
+}
+
+function selecionarOcasiaoPagina() {
+    app.filtrosOcasioes.ocasiao = obterValoresSelectMultiplo('ocasioes-select');
+    app.filtrosOcasioes.lookId = '';
+    renderPaginaOcasioes();
+}
+
+function alterarEixoGraficoOcasioes(eixo) {
+    app.filtrosOcasioes.eixoGrafico = eixo === 'ocasioes' ? 'ocasioes' : 'climas';
+    renderPaginaOcasioes();
+}
+
+function selecionarLookOcasioes(lookId) {
+    app.filtrosOcasioes.lookId = app.filtrosOcasioes.lookId === lookId ? '' : lookId;
+    renderPaginaOcasioes();
+}
+
+function renderPaginaOcasioes() {
+    const codigosSelecionados = app.filtrosOcasioes.ocasiao || [];
+    const looks = obterLooksPaginaOcasioes(codigosSelecionados);
+    if (app.filtrosOcasioes.lookId && !looks.some(look => look.id === app.filtrosOcasioes.lookId)) {
+        app.filtrosOcasioes.lookId = '';
+    }
+    const lookIds = new Set(looks.map(look => look.id));
+    const resumoOcasiao = obterResumoOcasiaoSelecionada(codigosSelecionados);
+
+    document.getElementById('ocasiao-selecionada-nome').textContent = resumoOcasiao.nome;
+    document.getElementById('ocasiao-selecionada-codigo').textContent = resumoOcasiao.codigo;
+    document.getElementById('ocasioes-stat-usos').textContent = contarUsosLooksOcasiao(lookIds);
+    document.getElementById('ocasioes-stat-looks').textContent = looks.length;
+    document.getElementById('ocasioes-stat-htt').textContent = looks.filter(lookEhHTT).length;
+    document.getElementById('ocasioes-data-revisao').textContent = resumoOcasiao.dataRevisao;
+    document.getElementById('ocasioes-temperaturas').textContent = obterTemperaturasOcasiao(looks);
+
+    renderLooksPaginaOcasioes(looks);
+    renderGraficoClimasOcasioes(looks);
+    renderSugestoesOcasioes(looks);
+}
+
+function obterResumoOcasiaoSelecionada(codigos) {
+    if (!codigos.length) {
+        return { nome: 'Todas', codigo: 'Todas', dataRevisao: '-' };
+    }
+
+    if (codigos.length === 1) {
+        const codigo = codigos[0];
+        const ocasiao = app.mapaOcasioes?.[codigo] || {};
+        return {
+            nome: ocasiao.descricao || codigo,
+            codigo,
+            dataRevisao: ocasiao.data_revisao ? formatarDataBR(ocasiao.data_revisao) : '-',
+        };
+    }
+
+    return {
+        nome: `${codigos.length} ocasioes`,
+        codigo: `${codigos.length} selecionadas`,
+        dataRevisao: '-',
+    };
+}
+
+function obterLooksPaginaOcasioes(codigosSelecionados = []) {
+    const climas = app.filtrosOcasioes.clima || [];
+    const codigosOcasioes = codigosSelecionados.length ? codigosSelecionados : obterOcasioesFiltradasPagina().map(ocasiao => ocasiao.codigo);
+    return obterTodosLooks()
+        .filter(look => !ehLookExcluido(look))
+        .filter(look => codigosOcasioes.some(codigoOcasiao => lookTemOcasiao(look, codigoOcasiao)))
+        .filter(look => climas.length === 0 || climas.includes(String(look.clima_calc || look.clima || '')))
+        .sort((a, b) => String(a.id || '').localeCompare(String(b.id || ''), 'pt-BR', { numeric: true }));
+}
+
+function lookTemOcasiao(look, codigo) {
+    if (!codigo) return false;
+    const alvo = normalizarTexto(codigo);
+    const info = app.mapaOcasioes?.[codigo];
+    const descricao = normalizarTexto(info?.descricao || '');
+
+    if ((look.ocasioes || []).some(item => normalizarTexto(item.codigo) === alvo || normalizarTexto(item.descricao) === descricao)) {
+        return true;
+    }
+
+    return descricao && obterValoresOcasiaoLook(look).some(valor => normalizarTexto(valor) === descricao);
+}
+
+function lookEhHTT(look) {
+    return normalizarTexto(look?.HTT || look?.htt || look?.basicos?.HTT) === 'true';
+}
+
+function contarUsosLooksOcasiao(lookIds) {
+    if (!lookIds.size) return 0;
+
+    return app.historico.reduce((total, registro) => {
+        const usados = obterLookIdsRegistro(registro);
+        return total + (usados.some(id => lookIds.has(id)) ? 1 : 0);
+    }, 0);
+}
+
+function obterTemperaturasOcasiao(looks) {
+    const temperaturas = [...new Set(looks
+        .map(look => look.clima_info?.temperatura || app.climas?.[String(look.clima_calc || look.clima || '')]?.temperatura)
+        .filter(Boolean))];
+
+    return temperaturas.length ? temperaturas.slice(0, 3).join(' / ') : '-';
+}
+
+function renderLooksPaginaOcasioes(looks) {
+    const container = document.getElementById('ocasioes-lista-looks');
+    const contador = document.getElementById('ocasioes-looks-contagem');
+    if (!container) return;
+
+    if (contador) contador.textContent = looks.length;
+    container.innerHTML = looks.length
+        ? looks.map(look => criarMiniCardLookOcasioes(look)).join('')
+        : '<p class="texto-ajuda">Nenhum look encontrado para essa ocasiao.</p>';
+}
+
+function criarMiniCardLookOcasioes(look) {
+    const selecionado = app.filtrosOcasioes.lookId === look.id;
+    return `
+        <button type="button" class="ocasioes-mini-card ${selecionado ? 'selecionado' : ''}" onclick="selecionarLookOcasioes('${escapeHtml(look.id)}')" title="Filtrar acessorios por este look">
+            <img src="${getCaminhoFotoLook(look.id)}" alt="${escapeHtml(look.id)}"
+                 onerror="this.src='${imagemFallback()}';">
+            <strong>${escapeHtml(look.id)}</strong>
+        </button>
+    `;
+}
+
+function renderGraficoClimasOcasioes(looks) {
+    const container = document.getElementById('ocasioes-grafico-climas');
+    if (!container) return;
+
+    const eixo = app.filtrosOcasioes.eixoGrafico === 'ocasioes' ? 'ocasioes' : 'climas';
+    const selectEixo = document.getElementById('ocasioes-grafico-eixo');
+    if (selectEixo) selectEixo.value = eixo;
+    const grupos = eixo === 'ocasioes'
+        ? obterGruposGraficoOcasioes()
+        : obterGruposGraficoClimas(looks);
+
+    if (grupos.length === 0) {
+        container.innerHTML = '<p class="texto-ajuda">Nenhum dado para o grafico.</p>';
+        return;
+    }
+
+    const maximo = Math.max(1, ...grupos.map(grupo => Math.max(grupo.total, grupo.htt)));
+
+    container.innerHTML = grupos.map(grupo => `
+        <div class="ocasioes-barra-clima">
+            <div class="ocasioes-barras">
+                <span class="barra-serie">
+                    <strong>${grupo.total}</strong>
+                    <span class="barra-atual" style="height:${Math.max(4, (grupo.total / maximo) * 96)}px" title="${grupo.total} looks"></span>
+                </span>
+                <span class="barra-serie">
+                    <strong>${grupo.htt}</strong>
+                    <span class="barra-htt" style="height:${Math.max(4, (grupo.htt / maximo) * 96)}px" title="${grupo.htt} HTT"></span>
+                </span>
+            </div>
+            <small>${escapeHtml(grupo.label)}</small>
+        </div>
+    `).join('');
+}
+
+function obterGruposGraficoClimas(looks) {
+    const climas = Object.values(app.climas || {})
+        .filter(clima => clima.codigo && clima.codigo !== '0')
+        .sort((a, b) => String(a.codigo).localeCompare(String(b.codigo), 'pt-BR', { numeric: true }));
+
+    return climas.map(clima => {
+        const total = looks.filter(look => String(look.clima_calc || look.clima || '') === String(clima.codigo)).length;
+        const htt = looks.filter(look => String(look.clima_calc || look.clima || '') === String(clima.codigo) && lookEhHTT(look)).length;
+        return {
+            label: clima.descricao || clima.codigo,
+            total,
+            htt,
+        };
+    });
+}
+
+function obterGruposGraficoOcasioes() {
+    const climas = app.filtrosOcasioes.clima || [];
+    const codigosSelecionados = app.filtrosOcasioes.ocasiao || [];
+    const ocasioes = obterOcasioesFiltradasPagina()
+        .filter(ocasiao => codigosSelecionados.length === 0 || codigosSelecionados.includes(ocasiao.codigo));
+    return ocasioes.map(ocasiao => {
+        const looks = obterTodosLooks()
+            .filter(look => !ehLookExcluido(look))
+            .filter(look => lookTemOcasiao(look, ocasiao.codigo))
+            .filter(look => climas.length === 0 || climas.includes(String(look.clima_calc || look.clima || '')));
+
+        return {
+            label: `${ocasiao.codigo} ${ocasiao.descricao}`,
+            total: looks.length,
+            htt: looks.filter(lookEhHTT).length,
+        };
+    });
+}
+
+function renderOutrasOcasioesPagina(codigoSelecionado) {
+    const container = document.getElementById('ocasioes-outras-lista');
+    if (!container) return;
+
+    container.innerHTML = obterOcasioesFiltradasPagina()
+        .map(ocasiao => `
+            <button type="button"
+                    class="${ocasiao.codigo === codigoSelecionado ? 'selecionada' : ''}"
+                    onclick="selecionarOcasiaoPagina('${escapeHtml(ocasiao.codigo)}')">
+                <span>${escapeHtml(ocasiao.codigo)}</span>
+                <strong>${escapeHtml(ocasiao.descricao)}</strong>
+            </button>
+        `).join('');
+}
+
+function renderSugestoesOcasioes(looks) {
+    const lookSelecionado = app.filtrosOcasioes.lookId;
+    const looksBase = lookSelecionado
+        ? looks.filter(look => look.id === lookSelecionado)
+        : looks;
+    const sugestoes = coletarSugestoesPecasOcasioes(looksBase);
+    const calcados = sugestoes.filter(item => normalizarTexto(app.pecas[item.id]?.tipo) === 'calcado');
+    const bolsas = sugestoes.filter(item => ['bolsa', 'cinto'].includes(normalizarTexto(app.pecas[item.id]?.tipo)));
+
+    renderPecasSugestaoOcasioes('ocasioes-calcados', 'ocasioes-calcados-contagem', calcados);
+    renderPecasSugestaoOcasioes('ocasioes-bolsas', 'ocasioes-bolsas-contagem', bolsas);
+}
+
+function coletarSugestoesPecasOcasioes(looks) {
+    const mapa = new Map();
+
+    looks.forEach(look => {
+        (look.pecas_sugeridas || []).forEach(item => {
+            if (!item.id || !app.pecas[item.id]) return;
+            if (!mapa.has(item.id)) mapa.set(item.id, item);
+        });
+    });
+
+    return [...mapa.values()].sort((a, b) => String(a.id).localeCompare(String(b.id), 'pt-BR', { numeric: true }));
+}
+
+function renderPecasSugestaoOcasioes(containerId, contadorId, itens) {
+    const container = document.getElementById(containerId);
+    const contador = document.getElementById(contadorId);
+    if (!container) return;
+
+    if (contador) contador.textContent = itens.length;
+    container.innerHTML = itens.length
+        ? itens.map(item => criarMiniCardPecaOcasioes(item.id)).join('')
+        : '<p class="texto-ajuda">Nenhuma sugestao encontrada.</p>';
+}
+
+function criarMiniCardPecaOcasioes(id) {
+    const peca = app.pecas[id];
+    if (!peca) return '';
+
+    return `
+        <button type="button" class="ocasioes-mini-card" onclick="mostrarDetalhesPeca('${escapeHtml(id)}')">
+            <img src="${getCaminhoFoto(id)}" alt="${escapeHtml(id)}"
+                 onerror="this.src='${imagemFallback()}';">
+            <strong>${escapeHtml(id)}</strong>
+        </button>
+    `;
+}
 
 function inicializarHistorico() {
     if (!document.getElementById('historico')) return;

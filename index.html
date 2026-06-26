@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%236c63ff' width='180' height='180'/><text x='50%' y='50%' font-size='80' fill='white' text-anchor='middle' dy='.3em'>👗</text></svg>">
     
     <title>👗 Meu Guarda-roupa</title>
-    <link rel="stylesheet" href="css/style.css?v=20260625-historico-resumo-sem-scroll-x">
+    <link rel="stylesheet" href="css/style.css?v=20260626-ocasioes-multiselect-look-filtro">
 </head>
 <body>
     <div id="app">
@@ -31,7 +31,10 @@
             <button class="nav-btn" onclick="mostrarPagina('looks'); ativarNavBtn(3)">
                 💄 Looks
             </button>
-            <button class="nav-btn" onclick="mostrarPagina('historico'); ativarNavBtn(4)">
+            <button class="nav-btn" onclick="mostrarPagina('ocasioes'); ativarNavBtn(4)">
+                Ocasioes
+            </button>
+            <button class="nav-btn" onclick="mostrarPagina('historico'); ativarNavBtn(5)">
                 📊 Histórico
             </button>
         </nav>
@@ -64,7 +67,12 @@
                     <strong>Looks</strong>
                     <small>Consultar combinacoes prontas e sugestoes.</small>
                 </a>
-                <a class="home-link-card" href="#historico" onclick="mostrarPagina('historico'); ativarNavBtn(4)">
+                <a class="home-link-card" href="#ocasioes" onclick="mostrarPagina('ocasioes'); ativarNavBtn(4)">
+                    <span class="home-link-icon">O</span>
+                    <strong>Ocasioes</strong>
+                    <small>Ver looks, climas e sugestoes por ocasiao.</small>
+                </a>
+                <a class="home-link-card" href="#historico" onclick="mostrarPagina('historico'); ativarNavBtn(5)">
                     <span class="home-link-icon">H</span>
                     <strong>Historico</strong>
                     <small>Rever usos, datas, estatisticas e sincronizacao.</small>
@@ -167,6 +175,99 @@
 
         <!-- ==================== PÁGINA 4: HISTÓRICO ====================
              Mostra estatísticas de uso dos últimos dias -->
+        <div id="ocasioes" class="pagina" style="display:none;">
+            <div class="header">
+                <h1>Ocasioes</h1>
+            </div>
+
+            <div class="ocasioes-painel">
+                <section class="ocasioes-card ocasioes-destaque">
+                    <span>Ocasiao selecionada</span>
+                    <strong id="ocasiao-selecionada-nome">Selecione</strong>
+                </section>
+
+                <section class="ocasioes-card ocasioes-codigo">
+                    <span>Codigo</span>
+                    <strong id="ocasiao-selecionada-codigo">-</strong>
+                </section>
+
+                <label class="ocasioes-card ocasioes-filtro">
+                    <span>Tipo</span>
+                    <select id="ocasioes-filtro-tipo" multiple size="4" onchange="filtrarPaginaOcasioes()"></select>
+                </label>
+
+                <label class="ocasioes-card ocasioes-filtro">
+                    <span>Clima</span>
+                    <select id="ocasioes-filtro-clima" multiple size="4" onchange="filtrarPaginaOcasioes()"></select>
+                </label>
+
+                <label class="ocasioes-card ocasioes-filtro">
+                    <span>Ocasiao</span>
+                    <select id="ocasioes-select" multiple size="4" onchange="selecionarOcasiaoPagina()"></select>
+                </label>
+
+                <section class="ocasioes-card ocasioes-stat">
+                    <span>Usos</span>
+                    <strong id="ocasioes-stat-usos">0</strong>
+                </section>
+
+                <section class="ocasioes-card ocasioes-stat">
+                    <span>Looks atual</span>
+                    <strong id="ocasioes-stat-looks">0</strong>
+                </section>
+
+                <section class="ocasioes-card ocasioes-stat destaque-laranja">
+                    <span>Looks HTT</span>
+                    <strong id="ocasioes-stat-htt">0</strong>
+                </section>
+
+                <section class="ocasioes-card ocasioes-stat">
+                    <span>Data de revisao</span>
+                    <strong id="ocasioes-data-revisao">-</strong>
+                </section>
+
+                <section class="ocasioes-card ocasioes-stat">
+                    <span>Temperaturas</span>
+                    <strong id="ocasioes-temperaturas">-</strong>
+                </section>
+
+                <section class="ocasioes-card ocasioes-bloco ocasioes-looks">
+                    <div class="ocasioes-bloco-topo">
+                        <h3>Looks</h3>
+                        <span id="ocasioes-looks-contagem">0</span>
+                    </div>
+                    <div id="ocasioes-lista-looks" class="ocasioes-mini-grid"></div>
+                </section>
+
+                <section class="ocasioes-card ocasioes-bloco ocasioes-grafico">
+                    <div class="ocasioes-bloco-topo">
+                        <h3>HTT atual e necessarios</h3>
+                        <select id="ocasioes-grafico-eixo" onchange="alterarEixoGraficoOcasioes(this.value)">
+                            <option value="climas">Climas</option>
+                            <option value="ocasioes">Ocasioes</option>
+                        </select>
+                    </div>
+                    <div id="ocasioes-grafico-climas" class="ocasioes-grafico-climas"></div>
+                </section>
+
+                <section class="ocasioes-card ocasioes-bloco ocasioes-sugestoes">
+                    <div class="ocasioes-bloco-topo">
+                        <h3>Calcados</h3>
+                        <span id="ocasioes-calcados-contagem">0</span>
+                    </div>
+                    <div id="ocasioes-calcados" class="ocasioes-mini-grid"></div>
+                </section>
+
+                <section class="ocasioes-card ocasioes-bloco ocasioes-sugestoes">
+                    <div class="ocasioes-bloco-topo">
+                        <h3>Bolsas e cintos</h3>
+                        <span id="ocasioes-bolsas-contagem">0</span>
+                    </div>
+                    <div id="ocasioes-bolsas" class="ocasioes-mini-grid"></div>
+                </section>
+            </div>
+        </div>
+
         <div id="historico" class="pagina" style="display:none;">
             <div class="header">
                 <h1>📊 Histórico de Uso</h1>
@@ -500,7 +601,7 @@
          A ordem importa! CSS deve carregar antes, depois o app.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js?v=20260624-config-supabase"></script>
-    <script src="js/app.js?v=20260625-historico-resumo-sem-scroll-x"></script>
+    <script src="js/app.js?v=20260626-edicao-look-sugestoes-select"></script>
 </body>
 </html>
 
