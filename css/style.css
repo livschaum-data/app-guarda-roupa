@@ -4159,6 +4159,40 @@ body {
     }
 }
 
+/* Mantem fotos e identificadores inteiros nas grades da pagina Ocasioes. */
+#ocasioes .ocasioes-mini-grid {
+    align-content: start;
+    grid-auto-rows: max-content;
+}
+
+#ocasioes .ocasioes-mini-card {
+    height: auto;
+    min-height: 0;
+    grid-template-rows: auto minmax(15px, auto);
+    align-self: start;
+}
+
+#ocasioes .ocasioes-mini-card img {
+    display: block;
+    height: auto;
+}
+
+#ocasioes .ocasioes-sugestoes .ocasioes-mini-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 6px;
+}
+
+#ocasioes .ocasioes-sugestoes .ocasioes-mini-card {
+    gap: 3px;
+    padding: 6px;
+}
+
+@media (max-width: 480px) {
+    #ocasioes .ocasioes-sugestoes .ocasioes-mini-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
 /* ==================== VISUAL MODERNO V2 ==================== */
 :root {
     --modern-bg: #f3f6fb;
@@ -4875,5 +4909,131 @@ body {
 
     .edicao-chip-lista {
         max-height: 150px;
+    }
+}
+
+/* ==================== CONTROLE DE TEMA ==================== */
+html[data-theme="light"] {
+    --ui-bg: #eef2f7;
+    --ui-surface: #ffffff;
+    --ui-surface-muted: #f8fafc;
+    --ui-border: #d7dee9;
+    --ui-text: #172033;
+    --ui-muted: #64748b;
+    --ui-accent: #7c3aed;
+    --ui-accent-strong: #5b21b6;
+    --ui-accent-soft: #ede9fe;
+    --ui-teal: #0f766e;
+    --ui-blue: #2563eb;
+    --ui-warning: #d97706;
+    --ui-danger: #dc2626;
+
+    --modern-bg: #f3f6fb;
+    --modern-surface: #ffffff;
+    --modern-surface-2: #f8fafc;
+    --modern-surface-3: #eef2f7;
+    --modern-border: #d9e1ec;
+    --modern-text: #111827;
+    --modern-muted: #617085;
+    --modern-accent: #6d5dfc;
+    --modern-accent-strong: #5145d4;
+    --modern-accent-soft: #ecebff;
+    --modern-teal: #0f766e;
+    --modern-rose: #be185d;
+    --modern-shadow: 0 14px 34px rgba(15, 23, 42, 0.10);
+    --modern-shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.08);
+
+    --cor-primaria: var(--modern-accent);
+    --cor-secundaria: var(--modern-teal);
+    --cor-fundo: var(--modern-bg);
+    --cor-fundo-card: var(--modern-surface);
+    --cor-borda: var(--modern-border);
+    --cor-texto: var(--modern-text);
+    --cor-texto-cinza: var(--modern-muted);
+}
+
+html[data-theme="dark"] {
+    --ui-bg: #0d1320;
+    --ui-surface: #162033;
+    --ui-surface-muted: #101827;
+    --ui-border: #334155;
+    --ui-text: #f8fafc;
+    --ui-muted: #cbd5e1;
+    --ui-accent: #a78bfa;
+    --ui-accent-strong: #ddd6fe;
+    --ui-accent-soft: #2b2144;
+    --ui-teal: #2dd4bf;
+    --ui-blue: #60a5fa;
+    --ui-warning: #f59e0b;
+    --ui-danger: #f87171;
+
+    --modern-bg: #090f1d;
+    --modern-surface: #121a2b;
+    --modern-surface-2: #172033;
+    --modern-surface-3: #202b3f;
+    --modern-border: #2f3d55;
+    --modern-text: #f9fafb;
+    --modern-muted: #bac7d8;
+    --modern-accent: #9b8cff;
+    --modern-accent-strong: #c8c0ff;
+    --modern-accent-soft: #2c2852;
+    --modern-teal: #2dd4bf;
+    --modern-rose: #f472b6;
+    --modern-shadow: 0 18px 42px rgba(0, 0, 0, 0.30);
+    --modern-shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.28);
+
+    --cor-primaria: var(--modern-accent);
+    --cor-secundaria: var(--modern-teal);
+    --cor-fundo: var(--modern-bg);
+    --cor-fundo-card: var(--modern-surface);
+    --cor-borda: var(--modern-border);
+    --cor-texto: var(--modern-text);
+    --cor-texto-cinza: var(--modern-muted);
+}
+
+html[data-theme="light"] .navbar {
+    background: rgba(255, 255, 255, 0.92);
+}
+
+html[data-theme="dark"] .navbar {
+    background: rgba(18, 26, 43, 0.94);
+}
+
+.theme-toggle {
+    flex: 0 0 auto;
+    min-width: 118px;
+    min-height: 40px;
+    border: 1px solid var(--modern-border);
+    border-radius: 8px;
+    background: var(--modern-surface-2);
+    color: var(--modern-text);
+    padding: 8px 12px;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 850;
+    cursor: pointer;
+    transition: var(--transicao);
+}
+
+.theme-toggle:hover {
+    border-color: var(--modern-accent);
+    background: var(--modern-accent-soft);
+    color: var(--modern-accent-strong);
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        justify-content: flex-start;
+        overflow-x: auto;
+    }
+
+    .nav-btn {
+        flex: 0 0 auto;
+        min-width: 76px;
+    }
+
+    .theme-toggle {
+        min-width: 112px;
+        padding: 8px 10px;
     }
 }

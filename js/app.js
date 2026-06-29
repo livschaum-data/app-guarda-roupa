@@ -5,6 +5,8 @@
 const CAMPOS_FILTROS_PECAS = ['tipo', 'funcao', 'padronagem', 'tom', 'cor_detalhe', 'nivel_aquecimento', 'subtipo', 'utilizacao', 'local', 'situacao'];
 const CAMPOS_FILTROS_LOOKS = ['situacao', 'utilizacao', 'indicador', 'clima', 'local', 'htt', 'ocasiao'];
 const CAMPOS_FILTROS_GERAIS_HOJE = CAMPOS_FILTROS_PECAS.filter(campo => !['tipo', 'subtipo'].includes(campo));
+const TEMA_VISUAL_STORAGE_KEY = 'temaVisualGuardaRoupa';
+const TEMAS_VISUAIS = ['sistema', 'claro', 'escuro'];
 const GRUPOS_REGISTRO_PECAS = [
     { id: 'roupas-principais', titulo: 'Blusas, calças, casacos, inteiros', tipos: ['blusa', 'calça', 'casaco', 'inteiro'] },
     { id: 'intimas-funcionais', titulo: 'Sutien, calcinha, modelador, tops, segunda-pele', tipos: ['sutien', 'calcinha', 'modelador', 'top', 'segunda-pele'] },
@@ -79,6 +81,7 @@ const app = {
    Chamado quando a página carrega. É o "ponto de entrada" */
 
 async function inicializar() {
+    configurarTemaVisual();
     console.log('🚀 Inicializando aplicação...');
 
     // 1. Carregar dados do Excel (JSON)
@@ -104,6 +107,66 @@ async function inicializar() {
 
 /* ==================== FUNÇÃO HELPER: OBTER CAMINHO DA FOTO ====================
    Carrega imagens em formato WebP */
+
+function configurarTemaVisual() {
+    const temaSalvo = obterTemaVisualSalvo();
+    aplicarTemaVisual(temaSalvo, { salvar: false });
+    atualizarBotaoTemaVisual(temaSalvo);
+}
+
+function obterTemaVisualSalvo() {
+    try {
+        const tema = localStorage.getItem(TEMA_VISUAL_STORAGE_KEY) || 'sistema';
+        return TEMAS_VISUAIS.includes(tema) ? tema : 'sistema';
+    } catch (erro) {
+        return 'sistema';
+    }
+}
+
+function aplicarTemaVisual(tema, opcoes = {}) {
+    const temaValido = TEMAS_VISUAIS.includes(tema) ? tema : 'sistema';
+
+    if (temaValido === 'claro') {
+        document.documentElement.dataset.theme = 'light';
+    } else if (temaValido === 'escuro') {
+        document.documentElement.dataset.theme = 'dark';
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+    }
+
+    if (opcoes.salvar !== false) {
+        try {
+            localStorage.setItem(TEMA_VISUAL_STORAGE_KEY, temaValido);
+        } catch (erro) {
+            console.warn('Nao foi possivel salvar o tema visual.', erro);
+        }
+    }
+
+    atualizarBotaoTemaVisual(temaValido);
+}
+
+function alternarTemaVisual() {
+    const temaAtual = obterTemaVisualSalvo();
+    const indiceAtual = TEMAS_VISUAIS.indexOf(temaAtual);
+    const proximoTema = TEMAS_VISUAIS[(indiceAtual + 1) % TEMAS_VISUAIS.length];
+    aplicarTemaVisual(proximoTema);
+}
+
+function atualizarBotaoTemaVisual(tema) {
+    const botao = document.getElementById('botao-tema');
+    if (!botao) return;
+
+    const labels = {
+        sistema: 'Sistema',
+        claro: 'Claro',
+        escuro: 'Escuro',
+    };
+    const label = labels[tema] || labels.sistema;
+
+    botao.textContent = `Tema: ${label}`;
+    botao.title = 'Alternar tema: sistema, claro ou escuro';
+    botao.setAttribute('aria-label', `Tema atual: ${label}. Clique para alternar.`);
+}
 
 function getCaminhoFoto(id) {
     return `fotos/${id}.webp`;

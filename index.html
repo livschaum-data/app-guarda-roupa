@@ -11,7 +11,18 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%236c63ff' width='180' height='180'/><text x='50%' y='50%' font-size='80' fill='white' text-anchor='middle' dy='.3em'>👗</text></svg>">
     
     <title>👗 Meu Guarda-roupa</title>
-    <link rel="stylesheet" href="css/style.css?v=20260626-edit-look-modern-2">
+    <script>
+        (function () {
+            try {
+                var tema = localStorage.getItem('temaVisualGuardaRoupa') || 'sistema';
+                if (tema === 'claro') document.documentElement.dataset.theme = 'light';
+                if (tema === 'escuro') document.documentElement.dataset.theme = 'dark';
+            } catch (erro) {
+                document.documentElement.removeAttribute('data-theme');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="css/style.css?v=20260626-ocasioes-acessorios-menores">
 </head>
 <body>
     <div id="app">
@@ -36,6 +47,9 @@
             </button>
             <button class="nav-btn" onclick="mostrarPagina('historico'); ativarNavBtn(5)">
                 📊 Histórico
+            </button>
+            <button id="botao-tema" class="theme-toggle" type="button" onclick="alternarTemaVisual()" aria-label="Alternar tema visual">
+                Tema: Sistema
             </button>
         </nav>
 
@@ -601,7 +615,7 @@
          A ordem importa! CSS deve carregar antes, depois o app.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js?v=20260624-config-supabase"></script>
-    <script src="js/app.js?v=20260626-edit-look-modern"></script>
+    <script src="js/app.js?v=20260626-theme-toggle"></script>
 </body>
 </html>
 
