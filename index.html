@@ -97,8 +97,11 @@
         <div id="pecas" class="pagina" style="display:none;">
             <div class="header">
                 <h1>👗 Minhas Peças</h1>
-                <input type="text" id="filtro-pesquisa" placeholder="🔍 Buscar..." 
-                       onkeyup="filtrarPecas()">
+                <div class="acoes-header-pecas">
+                    <input type="text" id="filtro-pesquisa" placeholder="🔍 Buscar..."
+                           onkeyup="filtrarPecas()">
+                    <button class="btn-principal" type="button" onclick="abrirNovaPeca()">+ Nova peça</button>
+                </div>
             </div>
 
             <!-- Filtros suspensos (Dropdowns) -->
@@ -498,7 +501,10 @@
 
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
                     <button class="btn-secundario" onclick="fecharModal()">Fechar</button>
-                    <button class="btn-principal" onclick="selecionarPecaHoje()">
+                    <button id="editar-peca-modal" class="btn-secundario" type="button" onclick="abrirEdicaoPeca()">Editar</button>
+                    <button id="cancelar-edicao-peca-modal" class="btn-secundario" type="button" onclick="cancelarEdicaoPeca()" style="display:none;">Cancelar</button>
+                    <button id="salvar-peca-modal" class="btn-principal" type="button" onclick="salvarPeca()" style="display:none;">Salvar peça</button>
+                    <button id="registrar-peca-modal" class="btn-principal" onclick="selecionarPecaHoje()">
                         Registro
                     </button>
                 </div>

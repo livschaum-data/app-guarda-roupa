@@ -2,8 +2,12 @@ create table if not exists public.wardrobe_sync (
     user_id uuid primary key references auth.users(id) on delete cascade,
     historico jsonb not null default '[]'::jsonb,
     looks_favoritos jsonb not null default '{}'::jsonb,
+    pecas_personalizadas jsonb not null default '{}'::jsonb,
     updated_at timestamptz not null default now()
 );
+
+alter table public.wardrobe_sync
+add column if not exists pecas_personalizadas jsonb not null default '{}'::jsonb;
 
 alter table public.wardrobe_sync enable row level security;
 

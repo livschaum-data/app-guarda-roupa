@@ -47,6 +47,7 @@ Pronto! Sua app está rodando! 🚀
 ### ✅ Funcionalidades Implementadas
 
 - **👗 Galeria de Peças**: Visualize todas as suas roupas em cards com fotos
+- **✏️ Cadastro de Peças**: Adicione novas peças e edite fotos e informações diretamente na galeria
 - **🔍 Busca e Filtro**: Encontre peças por tipo, cor, ID
 - **✨ Usar Hoje**: Registre quais peças você usou em cada dia
 - **💄 Criar Looks**: Combine peças e salve como looks favoritos

@@ -20,6 +20,7 @@ const GRUPOS_REGISTRO_PECAS = [
 const app = {
     // Dados carregados do JSON (nunca mudam)
     pecas: {},
+    pecasPersonalizadas: {},
     looks: {},
     mapaOcasioes: {},
     climas: {},
@@ -169,6 +170,7 @@ function atualizarBotaoTemaVisual(tema) {
 }
 
 function getCaminhoFoto(id) {
+    if (app.pecas?.[id]?.foto) return app.pecas[id].foto;
     return `fotos/${id}.webp`;
 }
 
@@ -218,6 +220,16 @@ function onErrorImagem(extensoes = ['png', 'jpg']) {
 
 function criarImagem(src, alt, classe = '') {
     return `<img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" class="${escapeHtml(classe)}" onerror="${onErrorImagem()}">`;
+}
+
+function atualizarFotoModalPeca(src) {
+    const imagem = document.getElementById('foto-modal');
+    if (!imagem) return;
+    imagem.onerror = () => {
+        imagem.onerror = null;
+        imagem.src = imagemFallback();
+    };
+    imagem.src = src || imagemFallback();
 }
 
 function obterDetalhePeca(peca, campo) {
@@ -539,6 +551,16 @@ function carregarDados() {
     // || [] = se não existir, usa lista vazia
 
     try {
+        const pecasSalvas = localStorage.getItem('app_pecas_personalizadas');
+        app.pecasPersonalizadas = pecasSalvas ? JSON.parse(pecasSalvas) : {};
+        if (!app.pecasPersonalizadas || Array.isArray(app.pecasPersonalizadas)) app.pecasPersonalizadas = {};
+        app.pecas = { ...app.pecas, ...app.pecasPersonalizadas };
+    } catch (erro) {
+        console.warn('Peças personalizadas inválidas. Ignorando alterações locais.', erro);
+        app.pecasPersonalizadas = {};
+    }
+
+    try {
         const historicoSalvo = localStorage.getItem('app_historico');
         app.historico = historicoSalvo ? JSON.parse(historicoSalvo) : [];
         if (!Array.isArray(app.historico)) app.historico = [];
@@ -569,6 +591,7 @@ function salvarDados() {
 
     localStorage.setItem('app_historico', JSON.stringify(app.historico));
     localStorage.setItem('app_looks_favs', JSON.stringify(app.looksFavoritos));
+    localStorage.setItem('app_pecas_personalizadas', JSON.stringify(app.pecasPersonalizadas));
 
     console.log('💾 Dados salvos!');
     agendarEnvioSupabase();
@@ -859,11 +882,19 @@ async function baixarDadosSupabase({ silencioso = false } = {}) {
     if (!app.supabase || !app.usuarioSupabase) return false;
     if (!silencioso) atualizarStatusSupabase('Baixando dados da nuvem...');
 
-    const { data, error } = await app.supabase
+    let { data, error } = await app.supabase
         .from('wardrobe_sync')
-        .select('historico, looks_favoritos')
+        .select('historico, looks_favoritos, pecas_personalizadas')
         .eq('user_id', app.usuarioSupabase.id)
         .maybeSingle();
+
+    if (error && /pecas_personalizadas/i.test(`${error.message || ''} ${error.details || ''}`)) {
+        ({ data, error } = await app.supabase
+            .from('wardrobe_sync')
+            .select('historico, looks_favoritos')
+            .eq('user_id', app.usuarioSupabase.id)
+            .maybeSingle());
+    }
 
     if (error) {
         atualizarStatusSupabase(error.message, 'erro');
@@ -901,6 +932,7 @@ async function enviarDadosSupabaseAntigo({ silencioso = false, mesclarAntes = tr
             user_id: app.usuarioSupabase.id,
             historico: app.historico,
             looks_favoritos: app.looksFavoritos,
+            pecas_personalizadas: app.pecasPersonalizadas,
             updated_at: new Date().toISOString(),
         }, { onConflict: 'user_id' });
 
@@ -935,16 +967,30 @@ async function enviarDadosSupabase({ silencioso = false, mesclarAntes = true } =
             }
         }
 
-        const { data, error } = await app.supabase
+        let { data, error } = await app.supabase
             .from('wardrobe_sync')
             .upsert({
                 user_id: app.usuarioSupabase.id,
                 historico: app.historico,
                 looks_favoritos: app.looksFavoritos,
+                pecas_personalizadas: app.pecasPersonalizadas,
                 updated_at: new Date().toISOString(),
             }, { onConflict: 'user_id' })
             .select('updated_at')
             .single();
+
+        if (error && /pecas_personalizadas/i.test(`${error.message || ''} ${error.details || ''}`)) {
+            ({ data, error } = await app.supabase
+                .from('wardrobe_sync')
+                .upsert({
+                    user_id: app.usuarioSupabase.id,
+                    historico: app.historico,
+                    looks_favoritos: app.looksFavoritos,
+                    updated_at: new Date().toISOString(),
+                }, { onConflict: 'user_id' })
+                .select('updated_at')
+                .single());
+        }
 
         if (error) {
             console.error('Erro ao enviar para Supabase:', error);
@@ -988,6 +1034,7 @@ function formatarDataHoraSupabase(valor) {
 function salvarDadosLocal() {
     localStorage.setItem('app_historico', JSON.stringify(app.historico));
     localStorage.setItem('app_looks_favs', JSON.stringify(app.looksFavoritos));
+    localStorage.setItem('app_pecas_personalizadas', JSON.stringify(app.pecasPersonalizadas));
 }
 
 function mesclarDadosNuvem(data) {
@@ -1001,10 +1048,18 @@ function mesclarDadosNuvem(data) {
         ...(data.looks_favoritos || {}),
         ...app.looksFavoritos,
     };
+    app.pecasPersonalizadas = {
+        ...(data.pecas_personalizadas || {}),
+        ...app.pecasPersonalizadas,
+    };
+    app.pecas = { ...app.pecas, ...app.pecasPersonalizadas };
     garantirLooksFavoritosSemColisao();
 }
 
 function atualizarTelasAposSync() {
+    renderGaleria();
+    reconstruirFiltrosHome();
+    preencherFiltrosHoje();
     preencherSelectLooks();
     preencherFiltrosOcasiao();
     if (document.getElementById('historico')?.style.display !== 'none') {
@@ -1598,6 +1653,7 @@ function preencherFiltrosHome() {
     const campos = CAMPOS_FILTROS_PECAS;
     
     const container = document.getElementById('filtros-home');
+    container.querySelectorAll('.filtro-multiplo').forEach(filtro => filtro.remove());
     
     campos.forEach(campo => {
         const valores = [...new Set(Object.values(app.pecas).map(p => p[campo]).filter(v => v && v !== 'na'))];
@@ -1677,6 +1733,12 @@ function filtrarPecas() {
     });
 }
 
+function reconstruirFiltrosHome() {
+    preencherFiltrosHome();
+    renderGaleriaFiltrada();
+    filtrarPecas();
+}
+
 /* ==================== MODAL: DETALHES DA PEÇA ====================
    Mostra informações completas de uma peça */
 
@@ -1700,7 +1762,11 @@ function abrirDetalhsPeca(id) {
         ${criarRestricoesHtml(peca)}
     `;
     document.getElementById('titulo-modal').textContent = `${peca.tipo || peca.id}`;
-    document.getElementById('foto-modal').src = getCaminhoFoto(peca.id);
+    atualizarFotoModalPeca(getCaminhoFoto(peca.id));
+    document.getElementById('editar-peca-modal').style.display = '';
+    document.getElementById('cancelar-edicao-peca-modal').style.display = 'none';
+    document.getElementById('salvar-peca-modal').style.display = 'none';
+    document.getElementById('registrar-peca-modal').style.display = '';
 
     // Mostrar modal
     document.getElementById('modal-peca').style.display = 'flex';
@@ -1774,6 +1840,172 @@ function resetarFiltrosHoje() {
     });
 
     preencherFiltrosHoje();
+}
+
+function gerarProximoIdPeca() {
+    const numeros = Object.keys(app.pecas)
+        .map(id => String(id).match(/^ID(\d+)$/i))
+        .filter(Boolean)
+        .map(match => Number(match[1]));
+    const proximo = (numeros.length ? Math.max(...numeros) : 0) + 1;
+    return `ID${String(proximo).padStart(4, '0')}`;
+}
+
+function abrirNovaPeca() {
+    app.pecaEmDetalhes = null;
+    mostrarFormularioPeca(null);
+}
+
+function abrirEdicaoPeca() {
+    if (!app.pecaEmDetalhes) return;
+    mostrarFormularioPeca(app.pecaEmDetalhes);
+}
+
+function cancelarEdicaoPeca() {
+    if (app.pecaEmDetalhes) abrirDetalhsPeca(app.pecaEmDetalhes);
+    else fecharModal();
+}
+
+function formatarDetalhesParaEdicao(detalhes) {
+    return (detalhes || [])
+        .filter(item => valorVisivel(item?.campo) || valorVisivel(item?.valor))
+        .map(item => `${item.campo || ''}: ${item.valor || ''}`)
+        .join('\n');
+}
+
+function formatarIdsRelacionados(itens, campo) {
+    return (itens || []).map(item => item?.[campo] || '').filter(Boolean).join(', ');
+}
+
+function mostrarFormularioPeca(id) {
+    const peca = id ? app.pecas[id] : {
+        id: gerarProximoIdPeca(), tipo: '', funcao: '', subtipo: '', padronagem: '',
+        cor_detalhe: '', tom: '', nivel_aquecimento: '', utilizacao: '', local: '', situacao: 'ok',
+        detalhes: [], acessorios: [], combinacoes_nao_permitidas: [],
+    };
+    if (!peca) return;
+
+    const nova = !id;
+    const campos = [
+        ['tipo', 'Tipo'], ['funcao', 'Função'], ['subtipo', 'Subtipo'],
+        ['padronagem', 'Padronagem'], ['cor_detalhe', 'Cor / detalhe'], ['tom', 'Tom'],
+        ['nivel_aquecimento', 'Nível de aquecimento'], ['utilizacao', 'Utilização'],
+        ['local', 'Local'], ['situacao', 'Situação'],
+    ];
+
+    document.getElementById('titulo-modal').textContent = nova ? 'Adicionar nova peça' : `Editar ${peca.id}`;
+    atualizarFotoModalPeca(getCaminhoFoto(peca.id));
+    document.querySelector('#modal-peca .ficha-peca').innerHTML = `
+        <form id="form-peca" class="form-edicao-peca" onsubmit="event.preventDefault(); salvarPeca();">
+            <label class="campo-edicao-peca">
+                <span>ID *</span>
+                <input id="edit-peca-id" type="text" value="${escapeHtml(peca.id)}" ${nova ? '' : 'disabled'} required>
+            </label>
+            ${campos.map(([campo, label]) => `
+                <label class="campo-edicao-peca">
+                    <span>${label}${campo === 'tipo' ? ' *' : ''}</span>
+                    <input type="text" data-campo-peca="${campo}" value="${escapeHtml(peca[campo] || '')}" ${campo === 'tipo' ? 'required' : ''}>
+                </label>
+            `).join('')}
+            <label class="campo-edicao-peca campo-edicao-peca-largo">
+                <span>URL da foto</span>
+                <input id="edit-peca-foto" type="text" value="${escapeHtml(peca.foto || '')}" placeholder="https://...">
+            </label>
+            <label class="campo-edicao-peca campo-edicao-peca-largo">
+                <span>Enviar nova foto</span>
+                <input id="edit-peca-foto-arquivo" type="file" accept="image/*">
+            </label>
+            <label class="campo-edicao-peca campo-edicao-peca-largo">
+                <span>Informações complementares</span>
+                <textarea id="edit-peca-detalhes" rows="8" placeholder="Uma informação por linha. Ex.: Marca: Renner">${escapeHtml(formatarDetalhesParaEdicao(peca.detalhes))}</textarea>
+            </label>
+            <label class="campo-edicao-peca campo-edicao-peca-largo">
+                <span>IDs de acessórios relacionados</span>
+                <input id="edit-peca-acessorios" type="text" value="${escapeHtml(formatarIdsRelacionados(peca.acessorios, 'id'))}" placeholder="ID0002, ID0045">
+            </label>
+            <label class="campo-edicao-peca campo-edicao-peca-largo">
+                <span>IDs de peças que não combinam</span>
+                <input id="edit-peca-restricoes" type="text" value="${escapeHtml(formatarIdsRelacionados(peca.combinacoes_nao_permitidas, 'codigo'))}" placeholder="ID0010, ID0032">
+            </label>
+            <button type="submit" class="submit-oculto" aria-hidden="true" tabindex="-1"></button>
+        </form>
+    `;
+
+    document.getElementById('editar-peca-modal').style.display = 'none';
+    document.getElementById('cancelar-edicao-peca-modal').style.display = '';
+    document.getElementById('salvar-peca-modal').style.display = '';
+    document.getElementById('registrar-peca-modal').style.display = 'none';
+    document.getElementById('modal-peca').style.display = 'flex';
+}
+
+function parseDetalhesPeca(valor) {
+    return String(valor || '').split(/\r?\n/).map(linha => linha.trim()).filter(Boolean).map(linha => {
+        const separador = linha.indexOf(':');
+        return separador < 0
+            ? { campo: linha, valor: '' }
+            : { campo: linha.slice(0, separador).trim(), valor: linha.slice(separador + 1).trim() };
+    }).filter(item => item.campo || item.valor);
+}
+
+function lerFotoPeca() {
+    const arquivo = document.getElementById('edit-peca-foto-arquivo')?.files?.[0];
+    if (!arquivo) return Promise.resolve('');
+    return new Promise((resolve, reject) => {
+        const leitor = new FileReader();
+        leitor.onload = () => resolve(String(leitor.result || ''));
+        leitor.onerror = () => reject(new Error('Não foi possível ler a foto selecionada.'));
+        leitor.readAsDataURL(arquivo);
+    });
+}
+
+async function salvarPeca() {
+    const formulario = document.getElementById('form-peca');
+    if (!formulario?.reportValidity()) return;
+
+    const editandoId = app.pecaEmDetalhes;
+    const id = String(document.getElementById('edit-peca-id')?.value || '').trim().toUpperCase();
+    if (!id) return;
+    if (!editandoId && app.pecas[id]) {
+        alert(`Já existe uma peça com o ID ${id}.`);
+        return;
+    }
+
+    try {
+        const original = editandoId ? app.pecas[editandoId] : {};
+        const campos = {};
+        formulario.querySelectorAll('[data-campo-peca]').forEach(input => {
+            campos[input.dataset.campoPeca] = input.value.trim();
+        });
+        const fotoArquivo = await lerFotoPeca();
+        const fotoUrl = document.getElementById('edit-peca-foto')?.value.trim() || '';
+        const acessorios = parseListaValores(document.getElementById('edit-peca-acessorios')?.value)
+            .map(itemId => ({ id: itemId.toUpperCase(), grupo: app.pecas[itemId.toUpperCase()]?.tipo || '' }));
+        const combinacoes = parseListaValores(document.getElementById('edit-peca-restricoes')?.value)
+            .map(codigo => ({ codigo: codigo.toUpperCase(), descricao: app.pecas[codigo.toUpperCase()]?.tipo || codigo.toUpperCase() }));
+
+        const peca = {
+            ...original,
+            ...campos,
+            id,
+            foto: fotoArquivo || fotoUrl || original.foto || '',
+            detalhes: parseDetalhesPeca(document.getElementById('edit-peca-detalhes')?.value),
+            acessorios,
+            combinacoes_nao_permitidas: combinacoes,
+            editadaLocalmente: true,
+            editadaEm: new Date().toISOString(),
+        };
+
+        app.pecas[id] = peca;
+        app.pecasPersonalizadas[id] = peca;
+        app.pecaEmDetalhes = id;
+        salvarDados();
+        reconstruirFiltrosHome();
+        preencherFiltrosHoje();
+        abrirDetalhsPeca(id);
+    } catch (erro) {
+        console.error('Erro ao salvar peça:', erro);
+        alert(erro.message || 'Não foi possível salvar a peça.');
+    }
 }
 
 function renderGaleriaUsarHojeAntiga() {

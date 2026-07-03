@@ -1210,6 +1210,92 @@ body {
     background: var(--cor-fundo);
 }
 
+.acoes-header-pecas {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.acoes-header-pecas input {
+    min-width: min(280px, 100%);
+}
+
+.form-edicao-peca {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.campo-edicao-peca {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+    color: var(--cor-texto);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.campo-edicao-peca-largo {
+    grid-column: 1 / -1;
+}
+
+.campo-edicao-peca input,
+.campo-edicao-peca textarea {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    background: var(--cor-fundo-card);
+    color: var(--cor-texto);
+    padding: 10px 12px;
+    font: inherit;
+    font-weight: 500;
+}
+
+.campo-edicao-peca textarea {
+    resize: vertical;
+    line-height: 1.45;
+}
+
+.campo-edicao-peca input:focus,
+.campo-edicao-peca textarea:focus {
+    outline: 2px solid color-mix(in srgb, var(--cor-primaria) 35%, transparent);
+    border-color: var(--cor-primaria);
+}
+
+.campo-edicao-peca input:disabled {
+    background: var(--cor-fundo);
+    color: var(--cor-texto-cinza);
+}
+
+.submit-oculto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+@media (max-width: 600px) {
+    .acoes-header-pecas,
+    .acoes-header-pecas input,
+    .acoes-header-pecas .btn-principal {
+        width: 100%;
+    }
+
+    .form-edicao-peca {
+        grid-template-columns: 1fr;
+    }
+
+    .campo-edicao-peca-largo {
+        grid-column: auto;
+    }
+}
+
 .lista-looks {
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
