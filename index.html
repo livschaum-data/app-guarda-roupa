@@ -51,7 +51,50 @@
             <button id="botao-tema" class="theme-toggle" type="button" onclick="alternarTemaVisual()" aria-label="Alternar tema visual">
                 Tema: Sistema
             </button>
+            <button id="supabase-global-toggle" class="sync-global-toggle" type="button" onclick="alternarPainelSupabase()" aria-expanded="false" aria-controls="supabase-global-panel">
+                <span id="supabase-global-indicador" class="sync-global-indicador"></span>
+                <span id="supabase-global-label">Nuvem</span>
+            </button>
         </nav>
+
+        <aside id="supabase-global-panel" class="sync-global-panel" aria-label="Conexão com a nuvem" style="display:none;">
+            <div class="sync-global-cabecalho">
+                <div>
+                    <span class="sync-global-kicker">Supabase</span>
+                    <h2>Sincronização da conta</h2>
+                </div>
+                <button class="btn-fechar" type="button" onclick="fecharPainelSupabase()" aria-label="Fechar conexão com a nuvem">✕</button>
+            </div>
+            <div id="supabase-login" class="sync-box">
+                <input type="email" id="supabase-email" placeholder="Email" autocomplete="email">
+                <input type="password" id="supabase-senha" placeholder="Senha" autocomplete="current-password">
+                <div class="sync-acoes">
+                    <button id="supabase-entrar" type="button" class="btn-principal">Entrar</button>
+                    <button id="supabase-criar-conta" type="button" class="btn-secundario">Criar conta</button>
+                    <button id="supabase-recuperar-senha" type="button" class="btn-secundario">Esqueci senha</button>
+                </div>
+            </div>
+            <div id="supabase-reset-senha" class="sync-box" style="display:none;">
+                <p class="texto-ajuda">Digite a nova senha para concluir a recuperação.</p>
+                <input type="password" id="supabase-nova-senha" placeholder="Nova senha" autocomplete="new-password">
+                <input type="password" id="supabase-confirmar-senha" placeholder="Confirmar nova senha" autocomplete="new-password">
+                <div class="sync-acoes">
+                    <button id="supabase-atualizar-senha" type="button" class="btn-principal">Salvar nova senha</button>
+                    <button id="supabase-cancelar-reset" type="button" class="btn-secundario">Cancelar</button>
+                </div>
+            </div>
+            <div id="supabase-logado" class="sync-box" style="display:none;">
+                <p id="supabase-usuario" class="texto-ajuda"></p>
+                <p class="sync-global-descricao">Histórico, looks e peças personalizadas são sincronizados automaticamente.</p>
+                <div class="sync-acoes">
+                    <button id="supabase-sincronizar" type="button" class="btn-principal">Sincronizar agora</button>
+                    <button id="supabase-baixar" type="button" class="btn-secundario">Baixar da nuvem</button>
+                    <button id="supabase-enviar" type="button" class="btn-secundario">Enviar para nuvem</button>
+                    <button id="supabase-sair" type="button" class="btn-secundario">Sair</button>
+                </div>
+            </div>
+            <p id="supabase-status" class="texto-ajuda" aria-live="polite">Verificando conexão com a nuvem...</p>
+        </aside>
 
         <!-- ==================== PÁGINA 1: HOME ====================
              Galeria de todas as peças do guarda-roupa -->
@@ -291,7 +334,7 @@
             </div>
 
             <!-- Seletor de período -->
-            <div class="secao">
+            <div class="secao secao-periodo-historico">
                 <h3>Período</h3>
                 <div class="historico-periodo-botoes">
                     <button id="historico-periodo-7" type="button" class="filtro-btn ativo">
@@ -309,7 +352,7 @@
                 </div>
             </div>
 
-            <div class="secao">
+            <div class="secao secao-consulta-historico">
                 <h3>Consultar por data</h3>
                 <div class="consulta-historico">
                     <label>
@@ -348,38 +391,6 @@
                 <p id="status-importacao-historico" class="texto-ajuda">
                     Use o arquivo 0305_Vestuário.xlsm ou uma planilha com colunas como Data, Peças/ID peças e Look.
                 </p>
-            </div>
-
-            <div class="secao">
-                <h3>Sincronização</h3>
-                <div id="supabase-login" class="sync-box">
-                    <input type="email" id="supabase-email" placeholder="Email">
-                    <input type="password" id="supabase-senha" placeholder="Senha">
-                    <div class="sync-acoes">
-                        <button id="supabase-entrar" type="button" class="btn-principal">Entrar</button>
-                        <button id="supabase-criar-conta" type="button" class="btn-secundario">Criar conta</button>
-                        <button id="supabase-recuperar-senha" type="button" class="btn-secundario">Esqueci senha</button>
-                    </div>
-                </div>
-                <div id="supabase-reset-senha" class="sync-box" style="display:none;">
-                    <p class="texto-ajuda">Digite a nova senha para concluir a recuperaÃ§Ã£o.</p>
-                    <input type="password" id="supabase-nova-senha" placeholder="Nova senha">
-                    <input type="password" id="supabase-confirmar-senha" placeholder="Confirmar nova senha">
-                    <div class="sync-acoes">
-                        <button id="supabase-atualizar-senha" type="button" class="btn-principal">Salvar nova senha</button>
-                        <button id="supabase-cancelar-reset" type="button" class="btn-secundario">Cancelar</button>
-                    </div>
-                </div>
-                <div id="supabase-logado" class="sync-box" style="display:none;">
-                    <p id="supabase-usuario" class="texto-ajuda"></p>
-                    <div class="sync-acoes">
-                        <button id="supabase-sincronizar" type="button" class="btn-principal">Sincronizar</button>
-                        <button id="supabase-baixar" type="button" class="btn-secundario">Baixar da nuvem</button>
-                        <button id="supabase-enviar" type="button" class="btn-secundario">Enviar para nuvem</button>
-                        <button id="supabase-sair" type="button" class="btn-secundario">Sair</button>
-                    </div>
-                </div>
-                <p id="supabase-status" class="texto-ajuda">Configure o Supabase para sincronizar celular e desktop.</p>
             </div>
 
             <div class="secao">

@@ -44,6 +44,8 @@ const app = {
     supabase: null,
     usuarioSupabase: null,
     sincronizando: false,
+    ultimaSincronizacaoSupabase: null,
+    supabaseSuportaPecas: true,
     forcarEnvioLocalSupabase: false,
     recuperandoSenhaSupabase: false,
     
@@ -627,9 +629,14 @@ async function inicializarSupabase() {
     atualizarUISupabase(app.usuarioSupabase);
 
     if (app.usuarioSupabase) {
-        await baixarDadosSupabase({ silencioso: true });
+        const baixou = await baixarDadosSupabase({ silencioso: true });
+        if (baixou && app.supabaseSuportaPecas) {
+            atualizarStatusSupabase('Conectado. Dados do app atualizados pela nuvem.', 'sucesso');
+        } else if (baixou) {
+            atualizarStatusSupabase('Conectado, mas falta atualizar o schema para sincronizar as peças.', 'erro');
+        }
     } else {
-        atualizarStatusSupabase('Entre na sua conta para baixar ou enviar o histórico pela nuvem.');
+        atualizarStatusSupabase('Entre na sua conta para sincronizar peças, looks e histórico.');
     }
 
     app.supabase.auth.onAuthStateChange(async (event, session) => {
@@ -640,9 +647,14 @@ async function inicializarSupabase() {
         }
         atualizarUISupabase(app.usuarioSupabase);
         if (app.usuarioSupabase && !app.recuperandoSenhaSupabase) {
-            await baixarDadosSupabase({ silencioso: true });
+            const baixou = await baixarDadosSupabase({ silencioso: true });
+            if (baixou && app.supabaseSuportaPecas) {
+                atualizarStatusSupabase('Conta conectada e dados atualizados.', 'sucesso');
+            } else if (baixou) {
+                atualizarStatusSupabase('Conta conectada, mas falta atualizar o schema das peças.', 'erro');
+            }
         } else if (!app.recuperandoSenhaSupabase) {
-            atualizarStatusSupabase('Entre na sua conta para baixar ou enviar o histórico pela nuvem.');
+            atualizarStatusSupabase('Entre na sua conta para sincronizar peças, looks e histórico.');
         }
     });
 }
@@ -670,9 +682,16 @@ function configurarEventosSupabase() {
 
 function atualizarStatusSupabase(mensagem, tipo = '') {
     const status = document.getElementById('supabase-status');
-    if (!status) return;
-    status.textContent = mensagem;
-    status.className = `texto-ajuda ${tipo}`.trim();
+    if (status) {
+        status.textContent = mensagem;
+        status.className = `texto-ajuda ${tipo}`.trim();
+    }
+
+    const botao = document.getElementById('supabase-global-toggle');
+    if (botao) {
+        botao.dataset.status = tipo || (app.usuarioSupabase ? 'conectado' : 'desconectado');
+        botao.title = mensagem;
+    }
 }
 
 function atualizarUISupabase(usuario) {
@@ -682,6 +701,17 @@ function atualizarUISupabase(usuario) {
     const usuarioEl = document.getElementById('supabase-usuario');
 
     if (!login || !logado) return;
+
+    const botaoGlobal = document.getElementById('supabase-global-toggle');
+    const labelGlobal = document.getElementById('supabase-global-label');
+    const configurado = supabaseConfigurado();
+    if (botaoGlobal) {
+        botaoGlobal.classList.toggle('conectado', Boolean(usuario));
+        botaoGlobal.classList.toggle('indisponivel', !configurado);
+    }
+    if (labelGlobal) {
+        labelGlobal.textContent = !configurado ? 'Nuvem indisponível' : (usuario ? 'Nuvem conectada' : 'Conectar nuvem');
+    }
 
     if (app.recuperandoSenhaSupabase) {
         login.style.display = 'none';
@@ -695,6 +725,34 @@ function atualizarUISupabase(usuario) {
     if (resetSenha) resetSenha.style.display = 'none';
     if (usuarioEl) usuarioEl.textContent = usuario ? `Conectado como ${usuario.email}` : '';
 }
+
+function alternarPainelSupabase() {
+    const painel = document.getElementById('supabase-global-panel');
+    if (!painel) return;
+    const abrir = painel.style.display === 'none';
+    painel.style.display = abrir ? 'grid' : 'none';
+    document.getElementById('supabase-global-toggle')?.setAttribute('aria-expanded', String(abrir));
+    if (abrir && !app.usuarioSupabase) {
+        window.setTimeout(() => document.getElementById('supabase-email')?.focus(), 0);
+    }
+}
+
+function fecharPainelSupabase() {
+    const painel = document.getElementById('supabase-global-panel');
+    if (painel) painel.style.display = 'none';
+    document.getElementById('supabase-global-toggle')?.setAttribute('aria-expanded', 'false');
+}
+
+document.addEventListener('click', evento => {
+    const painel = document.getElementById('supabase-global-panel');
+    if (!painel || painel.style.display === 'none') return;
+    if (evento.target.closest('#supabase-global-panel, #supabase-global-toggle')) return;
+    fecharPainelSupabase();
+});
+
+document.addEventListener('keydown', evento => {
+    if (evento.key === 'Escape') fecharPainelSupabase();
+});
 
 function obterCredenciaisSupabase() {
     const email = document.getElementById('supabase-email')?.value?.trim();
@@ -888,7 +946,8 @@ async function baixarDadosSupabase({ silencioso = false } = {}) {
         .eq('user_id', app.usuarioSupabase.id)
         .maybeSingle();
 
-    if (error && /pecas_personalizadas/i.test(`${error.message || ''} ${error.details || ''}`)) {
+    app.supabaseSuportaPecas = !(error && /pecas_personalizadas/i.test(`${error.message || ''} ${error.details || ''}`));
+    if (!app.supabaseSuportaPecas) {
         ({ data, error } = await app.supabase
             .from('wardrobe_sync')
             .select('historico, looks_favoritos')
@@ -979,19 +1038,6 @@ async function enviarDadosSupabase({ silencioso = false, mesclarAntes = true } =
             .select('updated_at')
             .single();
 
-        if (error && /pecas_personalizadas/i.test(`${error.message || ''} ${error.details || ''}`)) {
-            ({ data, error } = await app.supabase
-                .from('wardrobe_sync')
-                .upsert({
-                    user_id: app.usuarioSupabase.id,
-                    historico: app.historico,
-                    looks_favoritos: app.looksFavoritos,
-                    updated_at: new Date().toISOString(),
-                }, { onConflict: 'user_id' })
-                .select('updated_at')
-                .single());
-        }
-
         if (error) {
             console.error('Erro ao enviar para Supabase:', error);
             atualizarStatusSupabase(`Erro ao enviar: ${error.message}`, 'erro');
@@ -1019,7 +1065,18 @@ function agendarEnvioSupabase() {
     window.clearTimeout(app.timeoutSyncSupabase);
     const mesclarAntes = !app.forcarEnvioLocalSupabase;
     app.forcarEnvioLocalSupabase = false;
-    app.timeoutSyncSupabase = window.setTimeout(() => enviarDadosSupabase({ silencioso: true, mesclarAntes }), 800);
+    atualizarStatusSupabase('Alterações locais aguardando sincronização.', 'sincronizando');
+    app.timeoutSyncSupabase = window.setTimeout(async () => {
+        atualizarStatusSupabase('Sincronizando alterações com a nuvem...', 'sincronizando');
+        const enviou = await enviarDadosSupabase({ silencioso: true, mesclarAntes });
+        if (enviou) {
+            app.ultimaSincronizacaoSupabase = new Date();
+            atualizarStatusSupabase(
+                `Sincronizado automaticamente às ${app.ultimaSincronizacaoSupabase.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}.`,
+                'sucesso'
+            );
+        }
+    }, 800);
 }
 
 function formatarDataHoraSupabase(valor) {
@@ -1029,6 +1086,50 @@ function formatarDataHoraSupabase(valor) {
     if (Number.isNaN(data.getTime())) return valor;
 
     return data.toLocaleString('pt-BR');
+}
+
+function formatarDataHoraFicha(valor) {
+    if (!valor) return '';
+    const texto = String(valor).trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(texto)) return formatarDataBR(texto);
+    const data = new Date(valor);
+    if (Number.isNaN(data.getTime())) return String(valor);
+    return data.toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    });
+}
+
+function obterCampoPorNomes(objeto, nomes) {
+    const nomesNormalizados = new Set(nomes.map(normalizarTexto));
+    const entrada = Object.entries(objeto || {}).find(([campo, valor]) =>
+        nomesNormalizados.has(normalizarTexto(campo)) && valorVisivel(valor)
+    );
+    return entrada?.[1] || '';
+}
+
+function obterDataAtualizacaoLook(look) {
+    if (valorVisivel(look?.editadoEm)) return look.editadoEm;
+
+    const ultimaAlteracao = obterCampoPorNomes(look?.basicos, [
+        'Data última alteração',
+        'Data ultima alteracao',
+        'Data ult alt',
+        'Última alteração',
+    ]) || look?.dataUltimaAlteracao || look?.data_ultima_alteracao;
+
+    return valorVisivel(ultimaAlteracao) ? ultimaAlteracao : obterDataCriacaoLook(look);
+}
+
+function obterDataAtualizacaoPeca(peca) {
+    if (valorVisivel(peca?.editadaEm)) return peca.editadaEm;
+    return obterCampoPorNomes(
+        Object.fromEntries((peca?.detalhes || []).map(item => [item.campo, item.valor])),
+        ['Data revisão', 'Data revisao']
+    );
 }
 
 function salvarDadosLocal() {
@@ -1745,6 +1846,7 @@ function reconstruirFiltrosHome() {
 function abrirDetalhsPeca(id) {
     const peca = app.pecas[id];
     if (!peca) return;
+    const dataAtualizacao = obterDataAtualizacaoPeca(peca);
 
     // Guardar referência para usar depois
     app.pecaEmDetalhes = id;
@@ -1756,6 +1858,12 @@ function abrirDetalhsPeca(id) {
                 <span class="label">ID:</span>
                 <span>${escapeHtml(peca.id)}</span>
             </div>
+            ${dataAtualizacao ? `
+                <div class="campo-ficha">
+                    <span class="label">Última atualização:</span>
+                    <span>${escapeHtml(formatarDataHoraFicha(dataAtualizacao))}</span>
+                </div>
+            ` : ''}
             ${criarCamposPecaHtml(peca)}
         </div>
         ${criarAcessoriosHtml(peca)}
@@ -2747,6 +2855,7 @@ function mostrarDetalhesLook(lookId, editando = false) {
 function renderFichaLookLeitura(look, ficha) {
     const campos = look.basicos || {};
     const camposClima = [
+        ['Última atualização', formatarDataHoraFicha(obterDataAtualizacaoLook(look))],
         ['Clima calculado', formatarClimaLook(look)],
         ['Aquecimento das peças', (look.aquecimentos || []).map(valor => valor || '-').join(' · ')],
         ['Local calculado', look.local_calc || ''],
