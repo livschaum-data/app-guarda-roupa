@@ -70,6 +70,7 @@ const app = {
         lookId: '',
         eixoGrafico: 'climas',
     },
+    dropdownOcasioesAberto: null,
 
     // Filtros do card "Não uso há..." no histórico
     filtrosSemUso: {
@@ -501,6 +502,13 @@ document.addEventListener('click', evento => {
     if (!evento.target.closest('.filtro-multiplo')) {
         document.querySelectorAll('.filtro-multiplo.aberto').forEach(item => {
             item.classList.remove('aberto');
+        });
+    }
+    if (!evento.target.closest('.ocasioes-dropdown-multiplo')) {
+        app.dropdownOcasioesAberto = null;
+        document.querySelectorAll('.ocasioes-dropdown-multiplo.aberto').forEach(item => {
+            item.classList.remove('aberto');
+            item.querySelector('.ocasioes-dropdown-toggle')?.setAttribute('aria-expanded', 'false');
         });
     }
 });
@@ -1985,6 +1993,30 @@ function formatarIdsRelacionados(itens, campo) {
     return (itens || []).map(item => item?.[campo] || '').filter(Boolean).join(', ');
 }
 
+function obterOpcoesCampoPeca(campo, valorAtual = '') {
+    const valores = new Set(Object.values(app.pecas || {})
+        .map(peca => String(peca?.[campo] ?? '').trim())
+        .filter(Boolean));
+    if (String(valorAtual || '').trim()) valores.add(String(valorAtual).trim());
+    return [...valores].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }));
+}
+
+function criarCampoListaPeca(campo, label, valorAtual, obrigatorio = false) {
+    const opcoes = obterOpcoesCampoPeca(campo, valorAtual);
+    if (!opcoes.length) {
+        return `<input type="text" data-campo-peca="${campo}" value="${escapeHtml(valorAtual || '')}" ${obrigatorio ? 'required' : ''}>`;
+    }
+
+    return `
+        <select data-campo-peca="${campo}" ${obrigatorio ? 'required' : ''}>
+            <option value="">Selecione...</option>
+            ${opcoes.map(valor => `
+                <option value="${escapeHtml(valor)}" ${String(valor) === String(valorAtual || '') ? 'selected' : ''}>${escapeHtml(valor)}</option>
+            `).join('')}
+        </select>
+    `;
+}
+
 function mostrarFormularioPeca(id) {
     const peca = id ? app.pecas[id] : {
         id: gerarProximoIdPeca(), tipo: '', funcao: '', subtipo: '', padronagem: '',
@@ -2012,7 +2044,7 @@ function mostrarFormularioPeca(id) {
             ${campos.map(([campo, label]) => `
                 <label class="campo-edicao-peca">
                     <span>${label}${campo === 'tipo' ? ' *' : ''}</span>
-                    <input type="text" data-campo-peca="${campo}" value="${escapeHtml(peca[campo] || '')}" ${campo === 'tipo' ? 'required' : ''}>
+                    ${criarCampoListaPeca(campo, label, peca[campo] || '', campo === 'tipo')}
                 </label>
             `).join('')}
             <label class="campo-edicao-peca campo-edicao-peca-largo">
@@ -3389,14 +3421,90 @@ function marcarValoresSelectMultiplo(select, valores) {
 }
 
 function renderControlesVisuaisOcasioes() {
-    [
-        'ocasioes-filtro-tipo',
-        'ocasioes-filtro-clima',
-        'ocasioes-select',
-    ].forEach(id => {
+    ['ocasioes-filtro-tipo', 'ocasioes-filtro-clima'].forEach(id => {
         const select = document.getElementById(id);
-        if (select) renderControleVisualOcasioes(select);
+        if (select) renderDropdownMultiploOcasioes(select);
     });
+
+    const selectOcasiao = document.getElementById('ocasioes-select');
+    if (selectOcasiao) renderControleVisualOcasioes(selectOcasiao);
+}
+
+function renderDropdownMultiploOcasioes(select) {
+    select.classList.add('select-nativo-oculto');
+    select.parentElement.querySelector(`.ocasioes-chip-select[data-select-id="${select.id}"]`)?.remove();
+
+    let container = select.parentElement.querySelector(`.ocasioes-dropdown-multiplo[data-select-id="${select.id}"]`);
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'ocasioes-dropdown-multiplo';
+        container.dataset.selectId = select.id;
+        select.insertAdjacentElement('afterend', container);
+    }
+
+    const estavaAberto = container.classList.contains('aberto') || app.dropdownOcasioesAberto === select.id;
+    const selecionados = obterValoresSelectMultiplo(select.id);
+    const opcoes = [...select.options].filter(option => option.value);
+    const todasSelecionadas = opcoes.length > 0 && selecionados.length === opcoes.length;
+    const resumo = selecionados.length === 0 || todasSelecionadas
+        ? 'Todos'
+        : (selecionados.length === 1 ? opcoes.find(option => option.value === selecionados[0])?.textContent : `${selecionados.length} selecionados`);
+
+    container.innerHTML = `
+        <button type="button" class="ocasioes-dropdown-toggle" aria-expanded="${estavaAberto}">
+            <span>${escapeHtml(resumo || 'Selecionar')}</span>
+            <span class="ocasioes-dropdown-seta">⌄</span>
+        </button>
+        <div class="ocasioes-dropdown-painel">
+            <div class="ocasioes-dropdown-acoes">
+                <button type="button" data-acao="todos">Selecionar todos</button>
+                <button type="button" data-acao="limpar">Limpar</button>
+            </div>
+            <div class="ocasioes-dropdown-lista">
+                ${opcoes.map(option => `
+                    <button type="button" class="ocasioes-dropdown-opcao ${selecionados.includes(option.value) ? 'ativo' : ''}" data-valor="${escapeHtml(option.value)}">
+                        <span class="ocasioes-dropdown-check">${selecionados.includes(option.value) ? '✓' : ''}</span>
+                        <span>${escapeHtml(option.textContent)}</span>
+                    </button>
+                `).join('')}
+            </div>
+        </div>
+    `;
+    container.classList.toggle('aberto', estavaAberto);
+
+    const toggle = container.querySelector('.ocasioes-dropdown-toggle');
+    toggle.addEventListener('click', evento => {
+        evento.stopPropagation();
+        const abrir = !container.classList.contains('aberto');
+        document.querySelectorAll('.ocasioes-dropdown-multiplo.aberto').forEach(item => item.classList.remove('aberto'));
+        app.dropdownOcasioesAberto = abrir ? select.id : null;
+        container.classList.toggle('aberto', abrir);
+        toggle.setAttribute('aria-expanded', String(abrir));
+    });
+    container.querySelector('[data-acao="todos"]').addEventListener('click', evento => {
+        evento.stopPropagation();
+        definirTodosControleVisualOcasioes(select.id, true);
+    });
+    container.querySelector('[data-acao="limpar"]').addEventListener('click', evento => {
+        evento.stopPropagation();
+        definirTodosControleVisualOcasioes(select.id, false);
+    });
+    container.querySelectorAll('.ocasioes-dropdown-opcao').forEach(botao => {
+        botao.addEventListener('click', evento => {
+            evento.stopPropagation();
+            alternarControleVisualOcasioes(select.id, botao.dataset.valor);
+        });
+    });
+}
+
+function definirTodosControleVisualOcasioes(selectId, selecionar) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+    [...select.options].forEach(option => {
+        option.selected = option.value ? selecionar : !selecionar;
+    });
+    app.dropdownOcasioesAberto = selectId;
+    filtrarPaginaOcasioes();
 }
 
 function renderControleVisualOcasioes(select) {
@@ -3451,6 +3559,7 @@ function alternarControleVisualOcasioes(selectId, valor) {
         return;
     }
 
+    app.dropdownOcasioesAberto = selectId;
     filtrarPaginaOcasioes();
 }
 

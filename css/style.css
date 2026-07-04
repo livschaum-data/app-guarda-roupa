@@ -1242,6 +1242,7 @@ body {
 }
 
 .campo-edicao-peca input,
+.campo-edicao-peca select,
 .campo-edicao-peca textarea {
     width: 100%;
     min-width: 0;
@@ -1261,6 +1262,7 @@ body {
 }
 
 .campo-edicao-peca input:focus,
+.campo-edicao-peca select:focus,
 .campo-edicao-peca textarea:focus {
     outline: 2px solid color-mix(in srgb, var(--cor-primaria) 35%, transparent);
     border-color: var(--cor-primaria);
@@ -1269,6 +1271,10 @@ body {
 .campo-edicao-peca input:disabled {
     background: var(--cor-fundo);
     color: var(--cor-texto-cinza);
+}
+
+.campo-edicao-peca select {
+    cursor: pointer;
 }
 
 .submit-oculto {
@@ -5066,6 +5072,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    position: relative;
+    overflow: visible;
 }
 
 .ocasioes-filtro .select-nativo-oculto {
@@ -5116,6 +5124,134 @@ body {
     box-shadow: 0 8px 18px rgba(109, 93, 252, 0.22);
 }
 
+.ocasioes-dropdown-multiplo {
+    position: relative;
+}
+
+.ocasioes-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    min-height: 42px;
+    border: 1px solid var(--modern-border);
+    border-radius: 8px;
+    background: var(--modern-surface-2);
+    color: var(--modern-text);
+    padding: 9px 12px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.ocasioes-dropdown-toggle:hover,
+.ocasioes-dropdown-multiplo.aberto .ocasioes-dropdown-toggle {
+    border-color: var(--modern-accent);
+    box-shadow: 0 0 0 3px rgba(109, 93, 252, 0.14);
+}
+
+.ocasioes-dropdown-seta {
+    transition: transform 0.18s ease;
+}
+
+.ocasioes-dropdown-multiplo.aberto .ocasioes-dropdown-seta {
+    transform: rotate(180deg);
+}
+
+.ocasioes-dropdown-painel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 80;
+    min-width: 230px;
+    padding: 10px;
+    border: 1px solid var(--modern-border);
+    border-radius: 9px;
+    background: var(--modern-surface);
+    box-shadow: var(--modern-shadow);
+}
+
+.ocasioes-dropdown-multiplo.aberto .ocasioes-dropdown-painel {
+    display: grid;
+    gap: 9px;
+}
+
+.ocasioes-dropdown-acoes {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    padding-bottom: 9px;
+    border-bottom: 1px solid var(--modern-border);
+}
+
+.ocasioes-dropdown-acoes button {
+    min-height: 30px;
+    border: 1px solid var(--modern-border);
+    border-radius: 7px;
+    background: var(--modern-surface-2);
+    color: var(--modern-text);
+    padding: 5px 8px;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.ocasioes-dropdown-acoes button:hover {
+    border-color: var(--modern-accent);
+    color: var(--modern-accent-strong);
+}
+
+.ocasioes-dropdown-lista {
+    display: grid;
+    gap: 5px;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.ocasioes-dropdown-opcao {
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 34px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--modern-text);
+    padding: 5px 7px;
+    text-align: left;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.ocasioes-dropdown-opcao:hover {
+    border-color: var(--modern-border);
+    background: var(--modern-surface-2);
+}
+
+.ocasioes-dropdown-check {
+    display: grid !important;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border: 1px solid var(--modern-border);
+    border-radius: 5px;
+    color: transparent !important;
+    font-size: 12px !important;
+}
+
+.ocasioes-dropdown-opcao.ativo .ocasioes-dropdown-check {
+    border-color: var(--modern-accent);
+    background: var(--modern-accent);
+    color: #ffffff !important;
+}
+
 @media (max-width: 768px) {
     .header,
     .home-hero,
@@ -5140,6 +5276,15 @@ body {
 
     .ocasioes-chip-select {
         max-height: 116px;
+    }
+
+    .ocasioes-dropdown-painel {
+        position: fixed;
+        top: auto;
+        right: 12px;
+        bottom: 72px;
+        left: 12px;
+        max-height: min(70vh, 520px);
     }
 
     .edicao-chip-lista {
