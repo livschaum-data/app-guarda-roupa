@@ -1309,6 +1309,35 @@ body {
     padding: 0 20px 20px;
 }
 
+.looks-paginacao {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 16px;
+    color: var(--cor-texto-cinza);
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.looks-paginacao .btn-principal {
+    width: auto;
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .looks-paginacao {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .looks-paginacao .btn-principal {
+        width: 100%;
+    }
+}
+
 .look-card {
     display: flex;
     flex-direction: column;
@@ -4382,12 +4411,8 @@ body {
 
 @media (max-width: 768px) {
     .sync-global-toggle {
-        position: sticky;
-        right: 0;
-        z-index: 2;
         min-width: 132px;
         padding: 8px 10px;
-        box-shadow: -8px 0 12px var(--modern-bg);
     }
 
     .sync-global-panel {

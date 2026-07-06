@@ -29,6 +29,9 @@ const app = {
     // Dados do usuário (salvos em localStorage)
     historico: [],           // Lista de {data, pecas, lookId?}
     looksFavoritos: {},      // Meus próprios looks criados {id: {nome, pecas, ocasiao}}
+    looksEmExibicao: [],
+    limiteLooksExibidos: 0,
+    timeoutFiltroPecasLooks: null,
 
     // Estado temporário (mudam conforme usuário interage)
     pecasSelecionadasHoje: [],
@@ -222,7 +225,7 @@ function onErrorImagem(extensoes = ['png', 'jpg']) {
 }
 
 function criarImagem(src, alt, classe = '') {
-    return `<img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" class="${escapeHtml(classe)}" onerror="${onErrorImagem()}">`;
+    return `<img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" class="${escapeHtml(classe)}" loading="lazy" decoding="async" onerror="${onErrorImagem()}">`;
 }
 
 function atualizarFotoModalPeca(src) {
@@ -2568,7 +2571,10 @@ function criarFiltroPecasLooks(container) {
     input.addEventListener('input', evento => {
         const ids = normalizarFiltroPecasLooks(evento.target.value);
         app.filtrosLooks.pecas = ids;
-        renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
+        window.clearTimeout(app.timeoutFiltroPecasLooks);
+        app.timeoutFiltroPecasLooks = window.setTimeout(() => {
+            renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
+        }, 180);
     });
     input.addEventListener('change', () => {
         input.value = (app.filtrosLooks.pecas || []).join(', ');
@@ -2816,45 +2822,81 @@ function filtrarLooksPorOcasiao(ocasiao) {
     renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
 }
 
+function obterTamanhoLoteLooks() {
+    return window.matchMedia('(max-width: 768px)').matches ? 24 : 60;
+}
+
 function renderLooks(looks) {
     const container = document.getElementById('lista-looks');
     container.innerHTML = '';
+    app.looksEmExibicao = looks;
+    app.limiteLooksExibidos = 0;
 
     if (looks.length === 0) {
         container.innerHTML = '<p style="text-align: center; color: #999;">Nenhum look encontrado</p>';
         return;
     }
 
-    looks.forEach(look => {
-        const card = document.createElement('div');
-        card.className = 'look-card';
+    adicionarLoteLooks();
+}
 
-        const pecasTexto = (look.pecas || [])
-            .map(id => escapeHtml(id))
-            .join(' · ');
-        const tags = (look.ocasioes || []).slice(0, 4).map(ocasiao => `<span>${ocasiao.descricao}</span>`).join('');
-        const lookId = look.id || look.nome || '';
+function adicionarLoteLooks() {
+    const container = document.getElementById('lista-looks');
+    if (!container) return;
+    container.querySelector('.looks-paginacao')?.remove();
 
-        card.innerHTML = `
-            <div class="look-card-foto-wrap">
-                <img src="${getCaminhoFotoLook(look.id)}" alt="${escapeHtml(lookId)}" class="look-card-foto"
-                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 120 120%22><rect fill=%22%23eee%22 width=%22120%22 height=%22120%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>sem foto</text></svg>'">
-                <span class="look-card-id-badge">${escapeHtml(lookId)}</span>
-            </div>
-            <div class="look-card-info">
-                <h3>${escapeHtml(lookId)}</h3>
-                <p>${pecasTexto}</p>
-                <div class="tags-look">${tags}</div>
-                <div class="look-card-acoes">
-                    <button class="btn-secundario" type="button" onclick="mostrarDetalhesLook('${look.id}')">Ficha</button>
-                    <button class="btn-secundario" type="button" onclick="abrirEdicaoLook('${look.id}')">Editar</button>
-                    <button class="btn-principal" type="button" onclick="usarLookHoje('${look.id}')">Usar</button>
-                </div>
-            </div>
-        `;
-
-        container.appendChild(card);
+    const inicio = app.limiteLooksExibidos;
+    const fim = Math.min(inicio + obterTamanhoLoteLooks(), app.looksEmExibicao.length);
+    const fragmento = document.createDocumentFragment();
+    app.looksEmExibicao.slice(inicio, fim).forEach(look => {
+        fragmento.appendChild(criarCardLook(look));
     });
+    container.appendChild(fragmento);
+    app.limiteLooksExibidos = fim;
+
+    const paginacao = document.createElement('div');
+    paginacao.className = 'looks-paginacao';
+    paginacao.innerHTML = `<span>Mostrando ${fim} de ${app.looksEmExibicao.length} looks</span>`;
+    if (fim < app.looksEmExibicao.length) {
+        const botao = document.createElement('button');
+        botao.type = 'button';
+        botao.className = 'btn-principal';
+        botao.textContent = `Carregar mais ${Math.min(obterTamanhoLoteLooks(), app.looksEmExibicao.length - fim)}`;
+        botao.addEventListener('click', adicionarLoteLooks);
+        paginacao.appendChild(botao);
+    }
+    container.appendChild(paginacao);
+}
+
+function criarCardLook(look) {
+    const card = document.createElement('div');
+    card.className = 'look-card';
+
+    const pecasTexto = (look.pecas || [])
+        .map(id => escapeHtml(id))
+        .join(' · ');
+    const tags = (look.ocasioes || []).slice(0, 4).map(ocasiao => `<span>${ocasiao.descricao}</span>`).join('');
+    const lookId = look.id || look.nome || '';
+
+    card.innerHTML = `
+        <div class="look-card-foto-wrap">
+            <img src="${getCaminhoFotoLook(look.id)}" alt="${escapeHtml(lookId)}" class="look-card-foto" loading="lazy" decoding="async"
+                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 120 120%22><rect fill=%22%23eee%22 width=%22120%22 height=%22120%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>sem foto</text></svg>'">
+            <span class="look-card-id-badge">${escapeHtml(lookId)}</span>
+        </div>
+        <div class="look-card-info">
+            <h3>${escapeHtml(lookId)}</h3>
+            <p>${pecasTexto}</p>
+            <div class="tags-look">${tags}</div>
+            <div class="look-card-acoes">
+                <button class="btn-secundario" type="button" onclick="mostrarDetalhesLook('${look.id}')">Ficha</button>
+                <button class="btn-secundario" type="button" onclick="abrirEdicaoLook('${look.id}')">Editar</button>
+                <button class="btn-principal" type="button" onclick="usarLookHoje('${look.id}')">Usar</button>
+            </div>
+        </div>
+    `;
+
+    return card;
 }
 
 function abrirEdicaoLook(lookId) {
