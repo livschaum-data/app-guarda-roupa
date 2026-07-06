@@ -496,6 +496,7 @@ function criarFiltroMultiplo(container, campo, valores, selecionados, aoAlterar)
     filtro.appendChild(opcoes);
     container.appendChild(filtro);
     atualizarResumo();
+    return filtro;
 }
 
 document.addEventListener('click', evento => {
@@ -2245,9 +2246,22 @@ function criarCardPecaRegistro(id, peca) {
     `;
 
     card.onclick = () => {
-        if (!app.pecasSelecionadasHoje.includes(id)) app.pecasSelecionadasHoje.push(id);
+        const grade = card.closest('.grupo-registro-grade');
+        const posicaoRolagem = grade ? { top: grade.scrollTop, left: grade.scrollLeft } : null;
+        if (!app.pecasSelecionadasHoje.includes(id)) {
+            app.pecasSelecionadasHoje.push(id);
+            card.classList.add('selecionado');
+        }
         atualizarPecasSelecionadasHoje();
-        renderGaleriaUsarHoje();
+        if (grade && posicaoRolagem) {
+            grade.scrollTop = posicaoRolagem.top;
+            grade.scrollLeft = posicaoRolagem.left;
+            requestAnimationFrame(() => {
+                if (!grade.isConnected) return;
+                grade.scrollTop = posicaoRolagem.top;
+                grade.scrollLeft = posicaoRolagem.left;
+            });
+        }
     };
 
     return card;
@@ -2255,6 +2269,9 @@ function criarCardPecaRegistro(id, peca) {
 
 function renderGaleriaUsarHoje() {
     const galeria = document.getElementById('galeria-usar-hoje');
+    const chaveFiltroAberto = galeria
+        .querySelector('.grupo-registro-filtros .filtro-multiplo.aberto')
+        ?.dataset.filtroRegistro || '';
     galeria.innerHTML = '';
 
     GRUPOS_REGISTRO_PECAS.forEach(grupo => {
@@ -2284,15 +2301,19 @@ function renderGaleriaUsarHoje() {
         const valoresSubtipo = obterValoresCampoPecas(pecasBaseGrupo, 'subtipo', filtrosGrupo.subtipo);
 
         if (valoresTipo.length > 1) {
-            criarFiltroMultiplo(filtros, 'tipo', valoresTipo, filtrosGrupo.tipo, valores => {
+            const filtroTipo = criarFiltroMultiplo(filtros, 'tipo', valoresTipo, filtrosGrupo.tipo, valores => {
                 filtrarGrupoHoje(grupo.id, 'tipo', valores);
             });
+            filtroTipo.dataset.filtroRegistro = `${grupo.id}:tipo`;
+            filtroTipo.classList.toggle('aberto', chaveFiltroAberto === filtroTipo.dataset.filtroRegistro);
         }
 
         if (valoresSubtipo.length > 0) {
-            criarFiltroMultiplo(filtros, 'subtipo', valoresSubtipo, filtrosGrupo.subtipo, valores => {
+            const filtroSubtipo = criarFiltroMultiplo(filtros, 'subtipo', valoresSubtipo, filtrosGrupo.subtipo, valores => {
                 filtrarGrupoHoje(grupo.id, 'subtipo', valores);
             });
+            filtroSubtipo.dataset.filtroRegistro = `${grupo.id}:subtipo`;
+            filtroSubtipo.classList.toggle('aberto', chaveFiltroAberto === filtroSubtipo.dataset.filtroRegistro);
         }
 
         if (filtros.children.length > 0) secao.appendChild(filtros);
