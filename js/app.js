@@ -2,8 +2,26 @@
    Tudo sobre o estado da aplicação fica aqui. 
    É como um "banco de dados em memória" */
 
-const CAMPOS_FILTROS_PECAS = ['tipo', 'funcao', 'padronagem', 'tom', 'cor_detalhe', 'nivel_aquecimento', 'subtipo', 'utilizacao', 'local', 'situacao'];
-const CAMPOS_FILTROS_LOOKS = ['situacao', 'utilizacao', 'indicador', 'clima', 'local', 'htt', 'ocasiao'];
+const CAMPOS_FILTROS_PECAS = ['tipo', 'funcao', 'subtipo', 'padronagem', 'cor_detalhe', 'cor', 'tom', 'nivel_aquecimento', 'formalidade', 'tendencia', 'utilizacao', 'local', 'alocacao', 'situacao', 'conservacao', 'reposicao'];
+const CAMPOS_FILTROS_LOOKS = ['situacao', 'utilizacao', 'categoria', 'indicador', 'clima', 'local', 'htt', 'ocasiao'];
+const DIMENSAO_POR_CAMPO_PECA = {
+    tipo: ['tipos_peca', 'tipo'],
+    funcao: ['funcoes_peca', 'valor'],
+    subtipo: ['tipos_subtipos_peca', 'subtipo'],
+    padronagem: ['padronagens_peca', 'valor'],
+    cor_detalhe: ['cores_detalhe', 'cor_detalhe'],
+    cor: ['cores_peca', 'valor'],
+    tom: ['tons_peca', 'valor'],
+    nivel_aquecimento: ['aquecimentos_peca', 'valor'],
+    formalidade: ['formalidades_peca', 'valor'],
+    tendencia: ['tendencias_peca', 'valor'],
+    utilizacao: ['utilizacoes_peca', 'valor'],
+    local: ['locais', 'valor'],
+    alocacao: ['alocacoes_peca', 'valor'],
+    situacao: ['situacoes_peca', 'valor'],
+    conservacao: ['conservacoes_peca', 'valor'],
+    reposicao: ['reposicoes_peca', 'valor'],
+};
 const CAMPOS_FILTROS_GERAIS_HOJE = CAMPOS_FILTROS_PECAS.filter(campo => !['tipo', 'subtipo'].includes(campo));
 const TEMA_VISUAL_STORAGE_KEY = 'temaVisualGuardaRoupa';
 const TEMAS_VISUAIS = ['sistema', 'claro', 'escuro'];
@@ -24,6 +42,8 @@ const app = {
     looks: {},
     mapaOcasioes: {},
     climas: {},
+    dimensoes: {},
+    validacaoDimensoes: {},
     ocasioes: ['Trabalho', 'Casual', 'Festa', 'Treino', 'Casa', 'Sair'],
 
     // Dados do usuário (salvos em localStorage)
@@ -249,11 +269,17 @@ function criarCamposPecaHtml(peca, compacto = false) {
         ['Subtipo', peca.subtipo],
         ['Padronagem', peca.padronagem],
         ['Cor detalhe', peca.cor_detalhe],
+        ['Cor', peca.cor],
         ['Tom', peca.tom],
         ['Aquecimento', peca.nivel_aquecimento],
+        ['Formalidade', peca.formalidade],
+        ['Tendência', peca.tendencia],
         ['Utilização', peca.utilizacao],
         ['Local', peca.local],
+        ['Alocação', peca.alocacao],
         ['Situação', peca.situacao],
+        ['Conservação', peca.conservacao],
+        ['Reposição', peca.reposicao],
     ];
 
     const detalhes = (peca.detalhes || []).map(item => [item.campo, item.valor]);
@@ -535,7 +561,7 @@ function pecaPassaNosFiltros(peca, filtros) {
 async function carregarDadosJSON() {
     try {
         // fetch() = busca um arquivo da internet (ou local)
-        const response = await fetch('dados_guarda_roupa.json?v=20260603-todos-looks', { cache: 'no-store' });
+        const response = await fetch('dados_guarda_roupa.json?v=20260706-dimensoes-categorias', { cache: 'no-store' });
         
         // .json() = transforma texto em objeto JavaScript
         const dados = await response.json();
@@ -545,6 +571,8 @@ async function carregarDadosJSON() {
         app.looks = dados.looks;
         app.mapaOcasioes = dados.ocasioes || {};
         app.climas = dados.climas || {};
+        app.dimensoes = dados.dimensoes || {};
+        app.validacaoDimensoes = dados.validacao_dimensoes || {};
         const tiposOcasiao = [...new Set(Object.values(app.mapaOcasioes).map(item => item.tipo).filter(Boolean))];
         if (tiposOcasiao.length > 0) app.ocasioes = tiposOcasiao;
 
@@ -569,6 +597,7 @@ function carregarDados() {
         app.pecasPersonalizadas = pecasSalvas ? JSON.parse(pecasSalvas) : {};
         if (!app.pecasPersonalizadas || Array.isArray(app.pecasPersonalizadas)) app.pecasPersonalizadas = {};
         app.pecas = { ...app.pecas, ...app.pecasPersonalizadas };
+        Object.values(app.pecas).forEach(normalizarDimensoesPeca);
     } catch (erro) {
         console.warn('Peças personalizadas inválidas. Ignorando alterações locais.', erro);
         app.pecasPersonalizadas = {};
@@ -609,6 +638,27 @@ function salvarDados() {
 
     console.log('💾 Dados salvos!');
     agendarEnvioSupabase();
+}
+
+function normalizarDimensoesPeca(peca) {
+    const detalhes = new Map((peca?.detalhes || []).map(item => [normalizarTexto(item.campo), item.valor]));
+    const campos = {
+        formalidade: ['formalidade'],
+        tendencia: ['tendencia'],
+        alocacao: ['alocacao'],
+        conservacao: ['conservacao'],
+        reposicao: ['repor', 'reposicao'],
+    };
+    Object.entries(campos).forEach(([campo, aliases]) => {
+        if (valorVisivel(peca[campo])) return;
+        peca[campo] = aliases.map(alias => detalhes.get(alias)).find(valorVisivel) || '';
+    });
+    if (!valorVisivel(peca.cor)) {
+        peca.cor = (app.dimensoes?.cores_detalhe || []).find(item =>
+            normalizarTexto(item.cor_detalhe) === normalizarTexto(peca.cor_detalhe)
+        )?.cor || '';
+    }
+    return peca;
 }
 
 /* ==================== IMPORTAR HISTÓRICO ====================
@@ -1761,6 +1811,28 @@ function renderGaleria() {
 /* ==================== FILTROS DA PÁGINA HOME ====================
    Preencher filtros dinamicamente com valores únicos do JSON */
 
+function ordenarOpcoesDimensao(valores) {
+    return [...new Set((valores || []).map(valor => String(valor ?? '').trim()).filter(valor => valor && normalizarTexto(valor) !== 'na'))]
+        .sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }));
+}
+
+function obterValoresDimensaoPeca(campo, opcoes = {}) {
+    const [nomeDimensao, propriedade] = DIMENSAO_POR_CAMPO_PECA[campo] || [];
+    let valoresDimensao = nomeDimensao
+        ? (app.dimensoes?.[nomeDimensao] || []).map(item => item?.[propriedade])
+        : [];
+    if (campo === 'subtipo' && opcoes.tipo) {
+        valoresDimensao = (app.dimensoes?.tipos_subtipos_peca || [])
+            .filter(item => normalizarTexto(item.tipo) === normalizarTexto(opcoes.tipo))
+            .map(item => item.subtipo);
+    }
+    const pecasAtuais = campo === 'subtipo' && opcoes.tipo
+        ? Object.values(app.pecas || {}).filter(peca => normalizarTexto(peca.tipo) === normalizarTexto(opcoes.tipo))
+        : Object.values(app.pecas || {});
+    const valoresAtuais = pecasAtuais.map(peca => peca?.[campo]);
+    return ordenarOpcoesDimensao([...valoresDimensao, ...valoresAtuais, opcoes.valorAtual]);
+}
+
 function preencherFiltrosHome() {
     // Extrair valores únicos para cada campo
     const campos = CAMPOS_FILTROS_PECAS;
@@ -1769,7 +1841,7 @@ function preencherFiltrosHome() {
     container.querySelectorAll('.filtro-multiplo').forEach(filtro => filtro.remove());
     
     campos.forEach(campo => {
-        const valores = [...new Set(Object.values(app.pecas).map(p => p[campo]).filter(v => v && v !== 'na'))];
+        const valores = obterValoresDimensaoPeca(campo);
         
         if (valores.length > 0) {
             criarFiltroMultiplo(container, campo, valores, app.filtrosHome[campo], novosValores => {
@@ -1933,7 +2005,7 @@ function preencherFiltrosHoje() {
     container.appendChild(botaoLimpar);
 
     CAMPOS_FILTROS_GERAIS_HOJE.forEach(campo => {
-        const valores = [...new Set(Object.values(app.pecas).map(p => p[campo]).filter(v => v && v !== 'na'))];
+        const valores = obterValoresDimensaoPeca(campo);
 
         if (valores.length > 0) {
             criarFiltroMultiplo(container, campo, valores, app.filtrosHoje[campo], novosValores => {
@@ -1987,7 +2059,9 @@ function cancelarEdicaoPeca() {
 }
 
 function formatarDetalhesParaEdicao(detalhes) {
+    const camposGerenciados = new Set(['formalidade', 'tendencia', 'alocacao', 'situacao', 'conservacao', 'repor', 'reposicao']);
     return (detalhes || [])
+        .filter(item => !camposGerenciados.has(normalizarTexto(item?.campo)))
         .filter(item => valorVisivel(item?.campo) || valorVisivel(item?.valor))
         .map(item => `${item.campo || ''}: ${item.valor || ''}`)
         .join('\n');
@@ -1998,11 +2072,8 @@ function formatarIdsRelacionados(itens, campo) {
 }
 
 function obterOpcoesCampoPeca(campo, valorAtual = '') {
-    const valores = new Set(Object.values(app.pecas || {})
-        .map(peca => String(peca?.[campo] ?? '').trim())
-        .filter(Boolean));
-    if (String(valorAtual || '').trim()) valores.add(String(valorAtual).trim());
-    return [...valores].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }));
+    const tipoAtual = document.querySelector('[data-campo-peca="tipo"]')?.value || app.pecas?.[app.pecaEmDetalhes]?.tipo || '';
+    return obterValoresDimensaoPeca(campo, { valorAtual, tipo: campo === 'subtipo' ? tipoAtual : '' });
 }
 
 function criarCampoListaPeca(campo, label, valorAtual, obrigatorio = false) {
@@ -2021,10 +2092,42 @@ function criarCampoListaPeca(campo, label, valorAtual, obrigatorio = false) {
     `;
 }
 
+function preencherSelectDimensao(select, valores, valorAtual = '') {
+    if (!select) return;
+    select.innerHTML = '<option value="">Selecione...</option>' + ordenarOpcoesDimensao([...valores, valorAtual])
+        .map(valor => `<option value="${escapeHtml(valor)}" ${normalizarTexto(valor) === normalizarTexto(valorAtual) ? 'selected' : ''}>${escapeHtml(valor)}</option>`)
+        .join('');
+}
+
+function configurarDependenciasFormularioPeca() {
+    const tipo = document.querySelector('[data-campo-peca="tipo"]');
+    const subtipo = document.querySelector('[data-campo-peca="subtipo"]');
+    const corDetalhe = document.querySelector('[data-campo-peca="cor_detalhe"]');
+    const tom = document.querySelector('[data-campo-peca="tom"]');
+
+    tipo?.addEventListener('change', () => {
+        const valores = obterValoresDimensaoPeca('subtipo', { tipo: tipo.value });
+        const atual = valores.some(valor => normalizarTexto(valor) === normalizarTexto(subtipo?.value)) ? subtipo.value : '';
+        preencherSelectDimensao(subtipo, valores, atual);
+    });
+
+    corDetalhe?.addEventListener('change', () => {
+        const cor = (app.dimensoes?.cores_detalhe || []).find(item =>
+            normalizarTexto(item.cor_detalhe) === normalizarTexto(corDetalhe.value)
+        )?.cor;
+        const valores = (app.dimensoes?.cores_tons || [])
+            .filter(item => normalizarTexto(item.cor) === normalizarTexto(cor))
+            .map(item => item.tom);
+        const atual = valores.some(valor => normalizarTexto(valor) === normalizarTexto(tom?.value)) ? tom.value : '';
+        preencherSelectDimensao(tom, valores, atual);
+    });
+}
+
 function mostrarFormularioPeca(id) {
     const peca = id ? app.pecas[id] : {
         id: gerarProximoIdPeca(), tipo: '', funcao: '', subtipo: '', padronagem: '',
         cor_detalhe: '', tom: '', nivel_aquecimento: '', utilizacao: '', local: '', situacao: 'ok',
+        formalidade: '', tendencia: '', alocacao: '', conservacao: '', reposicao: '',
         detalhes: [], acessorios: [], combinacoes_nao_permitidas: [],
     };
     if (!peca) return;
@@ -2033,8 +2136,10 @@ function mostrarFormularioPeca(id) {
     const campos = [
         ['tipo', 'Tipo'], ['funcao', 'Função'], ['subtipo', 'Subtipo'],
         ['padronagem', 'Padronagem'], ['cor_detalhe', 'Cor / detalhe'], ['tom', 'Tom'],
-        ['nivel_aquecimento', 'Nível de aquecimento'], ['utilizacao', 'Utilização'],
-        ['local', 'Local'], ['situacao', 'Situação'],
+        ['nivel_aquecimento', 'Nível de aquecimento'], ['formalidade', 'Formalidade'],
+        ['tendencia', 'Tendência'], ['utilizacao', 'Utilização'], ['local', 'Local'],
+        ['alocacao', 'Alocação'], ['situacao', 'Situação'],
+        ['conservacao', 'Conservação'], ['reposicao', 'Reposição'],
     ];
 
     document.getElementById('titulo-modal').textContent = nova ? 'Adicionar nova peça' : `Editar ${peca.id}`;
@@ -2076,6 +2181,7 @@ function mostrarFormularioPeca(id) {
     `;
 
     document.getElementById('editar-peca-modal').style.display = 'none';
+    configurarDependenciasFormularioPeca();
     document.getElementById('cancelar-edicao-peca-modal').style.display = '';
     document.getElementById('salvar-peca-modal').style.display = '';
     document.getElementById('registrar-peca-modal').style.display = 'none';
@@ -2120,6 +2226,9 @@ async function salvarPeca() {
         formulario.querySelectorAll('[data-campo-peca]').forEach(input => {
             campos[input.dataset.campoPeca] = input.value.trim();
         });
+        campos.cor = (app.dimensoes?.cores_detalhe || []).find(item =>
+            normalizarTexto(item.cor_detalhe) === normalizarTexto(campos.cor_detalhe)
+        )?.cor || original.cor || '';
         const fotoArquivo = await lerFotoPeca();
         const fotoUrl = document.getElementById('edit-peca-foto')?.value.trim() || '';
         const acessorios = parseListaValores(document.getElementById('edit-peca-acessorios')?.value)
@@ -2719,7 +2828,16 @@ function substituirLookIdHistorico(idAntigo, idNovo) {
 }
 
 function obterValoresFiltroLooks(campo) {
-    const valores = new Set();
+    const valoresDimensao = {
+        situacao: (app.dimensoes?.situacoes_look || []).map(item => item.valor),
+        utilizacao: (app.dimensoes?.utilizacoes_look || []).map(item => item.valor),
+        categoria: (app.dimensoes?.categorias_look || []).map(item => item.categoria),
+        indicador: (app.dimensoes?.categorias_look || []).map(item => item.indicador),
+        clima: Object.values(app.climas || {}).map(item => `${item.codigo} - ${item.descricao}`),
+        local: (app.dimensoes?.locais || []).map(item => item.valor),
+        ocasiao: Object.values(app.mapaOcasioes || {}).map(item => item.descricao),
+    };
+    const valores = new Set(valoresDimensao[campo] || []);
 
     obterTodosLooks().forEach(look => {
         obterValoresCampoLook(look, campo).forEach(valor => {
@@ -2742,6 +2860,8 @@ function obterValoresCampoLook(look, campo) {
             return [look.utilizacao_calc || look.utilizacao];
         case 'indicador':
             return [look.indicador || basicos.Indicador];
+        case 'categoria':
+            return [look.categoria || obterCategoriaIndicadorLook(look.indicador || basicos.Indicador)];
         case 'clima':
             return [formatarClimaLook(look) || look.clima_calc || look.clima];
         case 'local':
@@ -2753,6 +2873,12 @@ function obterValoresCampoLook(look, campo) {
         default:
             return [look[campo] || basicos[campo]];
     }
+}
+
+function obterCategoriaIndicadorLook(indicador) {
+    return (app.dimensoes?.categorias_look || []).find(item =>
+        normalizarTexto(item.indicador) === normalizarTexto(indicador)
+    )?.categoria || '';
 }
 
 function obterValoresOcasiaoLook(look) {
@@ -2980,9 +3106,7 @@ function renderFichaLookLeitura(look, ficha) {
 
 function criarOptionsSituacaoLook(valorAtual) {
     const valores = [...new Set([
-        'em uso',
-        'stand-by',
-        'excluido',
+        ...(app.dimensoes?.situacoes_look || []).map(item => item.valor),
         ...obterTodosLooks().map(look => look.situacao || look.basicos?.['situação'] || look.basicos?.['situaÃ§Ã£o']).filter(valorVisivel),
         valorAtual,
     ].filter(valorVisivel))];
@@ -2992,6 +3116,18 @@ function criarOptionsSituacaoLook(valorAtual) {
         .sort((a, b) => String(a).localeCompare(String(b), 'pt-BR'))
         .map(valor => `<option value="${escapeHtml(valor)}" ${normalizarTexto(valor) === atualNormalizado ? 'selected' : ''}>${escapeHtml(valor)}</option>`)
         .join('');
+}
+
+function criarOptionsIndicadorLook(valorAtual) {
+    const atualNormalizado = normalizarTexto(valorAtual);
+    const itens = [...(app.dimensoes?.categorias_look || [])];
+    if (valorAtual && !itens.some(item => normalizarTexto(item.indicador) === atualNormalizado)) {
+        itens.push({ indicador: valorAtual, categoria: 'Fora da aba Categorias' });
+    }
+    return itens.map(item => {
+        const selecionado = normalizarTexto(item.indicador) === atualNormalizado ? 'selected' : '';
+        return `<option value="${escapeHtml(item.indicador)}" ${selecionado}>${escapeHtml(item.indicador)} - ${escapeHtml(item.categoria)}</option>`;
+    }).join('');
 }
 
 function criarOptionsHttLook(valorAtual) {
@@ -3131,6 +3267,7 @@ function criarFormularioEdicaoLook(look) {
     const situacaoAtual = look.situacao || basicos['situaÃ§Ã£o'] || basicos['situação'] || '';
     const httAtual = String(look.HTT || look.htt || basicos.HTT || '');
     const opcoesSituacao = criarOptionsSituacaoLook(situacaoAtual);
+    const opcoesIndicador = criarOptionsIndicadorLook(obterIndicadorLook(look, look.id));
     const opcoesHtt = criarOptionsHttLook(httAtual);
     const opcoesOcasioes = criarOptionsOcasioesLook(look.ocasioes || []);
     const opcoesSugestoes = criarOptionsSugestoesLook(look.pecas_sugeridas || []);
@@ -3174,7 +3311,7 @@ function criarFormularioEdicaoLook(look) {
             </label>
             <label class="campo-edicao-look">
                 <span>Indicador</span>
-                <input type="text" id="edit-look-indicador" value="${escapeHtml(obterIndicadorLook(look, look.id))}">
+                <select id="edit-look-indicador">${opcoesIndicador}</select>
             </label>
             <label class="campo-edicao-look">
                 <span>HTT</span>
@@ -3324,6 +3461,7 @@ async function salvarEdicaoLook() {
         foto: fotoArquivo || fotoUrl || lookOriginal.foto || getCaminhoFotoLook(lookId),
         situacao,
         indicador,
+        categoria: obterCategoriaIndicadorLook(indicador),
         HTT: htt,
         htt,
         clima_calc: calculados.clima_calc,
@@ -3808,18 +3946,18 @@ function renderGraficoClimasOcasioes(looks) {
         return;
     }
 
-    const maximo = Math.max(1, ...grupos.map(grupo => Math.max(grupo.total, grupo.htt)));
+    const maximo = Math.max(1, ...grupos.map(grupo => Math.max(grupo.atual, grupo.necessario)));
 
     container.innerHTML = grupos.map(grupo => `
         <div class="ocasioes-barra-clima">
             <div class="ocasioes-barras">
                 <span class="barra-serie">
-                    <strong>${grupo.total}</strong>
-                    <span class="barra-atual" style="height:${Math.max(4, (grupo.total / maximo) * 96)}px" title="${grupo.total} looks"></span>
+                    <strong>${grupo.atual}</strong>
+                    <span class="barra-atual" style="height:${Math.max(4, (grupo.atual / maximo) * 96)}px" title="${grupo.atual} HTT atuais"></span>
                 </span>
                 <span class="barra-serie">
-                    <strong>${grupo.htt}</strong>
-                    <span class="barra-htt" style="height:${Math.max(4, (grupo.htt / maximo) * 96)}px" title="${grupo.htt} HTT"></span>
+                    <strong>${grupo.necessario}</strong>
+                    <span class="barra-htt" style="height:${Math.max(4, (grupo.necessario / maximo) * 96)}px" title="${grupo.necessario} necessários"></span>
                 </span>
             </div>
             <small>${escapeHtml(grupo.label)}</small>
@@ -3833,12 +3971,16 @@ function obterGruposGraficoClimas(looks) {
         .sort((a, b) => String(a.codigo).localeCompare(String(b.codigo), 'pt-BR', { numeric: true }));
 
     return climas.map(clima => {
-        const total = looks.filter(look => String(look.clima_calc || look.clima || '') === String(clima.codigo)).length;
-        const htt = looks.filter(look => String(look.clima_calc || look.clima || '') === String(clima.codigo) && lookEhHTT(look)).length;
+        const atual = looks.filter(look => String(look.clima_calc || look.clima || '') === String(clima.codigo) && lookEhHTT(look)).length;
+        const codigos = (app.filtrosOcasioes.ocasiao || []).length
+            ? app.filtrosOcasioes.ocasiao
+            : obterOcasioesFiltradasPagina().map(ocasiao => ocasiao.codigo);
+        const necessario = codigos.reduce((total, codigo) =>
+            total + Number(app.mapaOcasioes?.[codigo]?.quantidades_necessarias?.[clima.codigo] || 0), 0);
         return {
             label: clima.descricao || clima.codigo,
-            total,
-            htt,
+            atual,
+            necessario,
         };
     });
 }
@@ -3854,10 +3996,13 @@ function obterGruposGraficoOcasioes() {
             .filter(look => lookTemOcasiao(look, ocasiao.codigo))
             .filter(look => climas.length === 0 || climas.includes(String(look.clima_calc || look.clima || '')));
 
+        const necessario = climas.length
+            ? climas.reduce((total, clima) => total + Number(ocasiao.quantidades_necessarias?.[clima] || 0), 0)
+            : Number(ocasiao.total_necessario || 0);
         return {
             label: `${ocasiao.codigo} ${ocasiao.descricao}`,
-            total: looks.length,
-            htt: looks.filter(lookEhHTT).length,
+            atual: looks.filter(lookEhHTT).length,
+            necessario,
         };
     });
 }

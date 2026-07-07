@@ -160,6 +160,219 @@ def extrair_mapa_climas(wb):
 
     return mapa
 
+def extrair_linhas_dimensao(ws, min_col, max_col, nomes=None):
+    """Extrai um bloco vertical da aba Categorias, ignorando linhas vazias."""
+    headers = [valor_texto(cell.value) for cell in ws[1][min_col - 1:max_col]]
+    chaves = nomes or [
+        re.sub(r'[^a-z0-9_]+', '_', header.lower()).strip('_') or f'coluna_{idx + min_col}'
+        for idx, header in enumerate(headers)
+    ]
+    linhas = []
+    for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=min_col, max_col=max_col, values_only=True):
+        valores = [valor_texto(valor) for valor in row]
+        if not any(valores):
+            continue
+        linhas.append({chaves[idx]: valor for idx, valor in enumerate(valores) if idx < len(chaves)})
+    return linhas
+
+
+def extrair_dimensoes(wb, mapa_climas, mapa_ocasioes):
+    """Carrega todas as dimensoes mantidas na aba Categorias."""
+    try:
+        ws = wb['Categorias']
+    except KeyError:
+        return {}
+
+    # J:Q guarda a necessidade por clima; R guarda o total por ocasiao.
+    codigos_clima_meta = [valor_texto(ws.cell(1, coluna).value) for coluna in range(10, 18)]
+    for linha in range(2, ws.max_row + 1):
+        codigo = valor_texto(ws.cell(linha, 5).value)
+        if not codigo or codigo not in mapa_ocasioes:
+            continue
+        metas = {}
+        for coluna, clima in zip(range(10, 18), codigos_clima_meta):
+            valor = ws.cell(linha, coluna).value
+            if clima and valor not in (None, ''):
+                metas[clima] = valor
+        mapa_ocasioes[codigo]['quantidades_necessarias'] = metas
+        total_planilha = ws.cell(linha, 18).value
+        mapa_ocasioes[codigo]['total_necessario'] = total_planilha if isinstance(total_planilha, (int, float)) else sum(
+            valor for valor in metas.values() if isinstance(valor, (int, float))
+        )
+
+    tipos_peca = []
+    for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=32, max_col=49, values_only=True):
+        codigo, tipo, grupo = [valor_texto(valor) for valor in row[:3]]
+        if not tipo:
+            continue
+        tipos_peca.append({
+            'codigo': codigo,
+            'tipo': tipo,
+            'grupo': grupo,
+            'combinacoes': [valor_texto(valor) for valor in row[3:] if valor_texto(valor)],
+        })
+
+    locais = [
+        {'valor': valor_texto(ws.cell(linha, 30).value)}
+        for linha in range(2, ws.max_row + 1)
+        if valor_texto(ws.cell(linha, 30).value)
+    ]
+    aquecimentos = [
+        {'valor': valor_texto(ws.cell(linha, 80).value)}
+        for linha in range(2, ws.max_row + 1)
+        if valor_texto(ws.cell(linha, 80).value)
+    ]
+
+    return {
+        'climas': list(mapa_climas.values()),
+        'ocasioes': list(mapa_ocasioes.values()),
+        'situacoes_look': extrair_linhas_dimensao(ws, 20, 21, ['codigo', 'valor']),
+        'categorias_look': extrair_linhas_dimensao(ws, 23, 25, ['codigo', 'categoria', 'indicador']),
+        'utilizacoes_look': extrair_linhas_dimensao(ws, 27, 28, ['codigo', 'valor']),
+        'locais': locais,
+        'tipos_peca': tipos_peca,
+        'tipos_combinacao': extrair_linhas_dimensao(ws, 51, 53, ['codigo', 'tipo', 'grupo']),
+        'conservacoes_peca': extrair_linhas_dimensao(ws, 55, 56, ['codigo', 'valor']),
+        'reposicoes_peca': extrair_linhas_dimensao(ws, 58, 59, ['codigo', 'valor']),
+        'funcoes_peca': extrair_linhas_dimensao(ws, 61, 62, ['codigo', 'valor']),
+        'padronagens_peca': extrair_linhas_dimensao(ws, 64, 65, ['codigo', 'valor']),
+        'cores_detalhe': extrair_linhas_dimensao(ws, 67, 69, ['codigo', 'cor_detalhe', 'cor']),
+        'cores_peca': extrair_linhas_dimensao(ws, 71, 72, ['codigo', 'valor']),
+        'cores_tons': extrair_linhas_dimensao(ws, 74, 75, ['cor', 'tom']),
+        'tons_peca': extrair_linhas_dimensao(ws, 77, 78, ['codigo', 'valor']),
+        'aquecimentos_peca': aquecimentos,
+        'formalidades_peca': extrair_linhas_dimensao(ws, 82, 83, ['codigo', 'valor']),
+        'tendencias_peca': extrair_linhas_dimensao(ws, 85, 86, ['codigo', 'valor']),
+        'alocacoes_peca': extrair_linhas_dimensao(ws, 88, 89, ['codigo', 'valor']),
+        'situacoes_peca': extrair_linhas_dimensao(ws, 91, 92, ['codigo', 'valor']),
+        'utilizacoes_peca': extrair_linhas_dimensao(ws, 94, 95, ['codigo', 'valor']),
+        'tipos_subtipos_peca': extrair_linhas_dimensao(ws, 97, 98, ['tipo', 'subtipo']),
+    }
+
+
+def normalizar_categoria(valor):
+    import unicodedata
+    texto = unicodedata.normalize('NFKD', valor_texto(valor).casefold())
+    return ''.join(char for char in texto if not unicodedata.combining(char)).strip()
+
+
+def validar_dimensoes(pecas, looks, dimensoes):
+    """Compara os bancos com as listas da aba Categorias."""
+    faltantes = {}
+
+    def validar(nome, valores, permitidos):
+        permitidos_norm = {normalizar_categoria(valor) for valor in permitidos if campo_valido(valor)}
+        contagens = {}
+        originais = {}
+        for valor in valores:
+            if not campo_valido(valor):
+                continue
+            chave = normalizar_categoria(valor)
+            if chave and chave not in permitidos_norm:
+                contagens[chave] = contagens.get(chave, 0) + 1
+                originais.setdefault(chave, valor_texto(valor))
+        if contagens:
+            faltantes[nome] = [
+                {'valor': originais[chave], 'ocorrencias': contagens[chave]}
+                for chave in sorted(contagens, key=lambda item: (-contagens[item], item))
+            ]
+
+    def valores_dim(nome, campo='valor'):
+        return [item.get(campo, '') for item in dimensoes.get(nome, [])]
+
+    mapa_campos_peca = {
+        'tipo_peça': ('tipo', valores_dim('tipos_peca', 'tipo')),
+        'função_peça': ('funcao', valores_dim('funcoes_peca')),
+        'subtipo_peça': ('subtipo', valores_dim('tipos_subtipos_peca', 'subtipo')),
+        'aquecimento_peça': ('nivel_aquecimento', valores_dim('aquecimentos_peca')),
+        'padronagem_peça': ('padronagem', valores_dim('padronagens_peca')),
+        'cor_detalhe_peça': ('cor_detalhe', valores_dim('cores_detalhe', 'cor_detalhe')),
+        'tom_peça': ('tom', valores_dim('tons_peca')),
+        'utilização_peça': ('utilizacao', valores_dim('utilizacoes_peca')),
+        'formalidade_peça': ('formalidade', valores_dim('formalidades_peca')),
+        'tendência_peça': ('tendencia', valores_dim('tendencias_peca')),
+        'local_peça': ('local', valores_dim('locais')),
+        'alocação_peça': ('alocacao', valores_dim('alocacoes_peca')),
+        'situação_peça': ('situacao', valores_dim('situacoes_peca')),
+        'conservação_peça': ('conservacao', valores_dim('conservacoes_peca')),
+        'reposição_peça': ('reposicao', valores_dim('reposicoes_peca')),
+    }
+    for nome, (campo, permitidos) in mapa_campos_peca.items():
+        validar(nome, (peca.get(campo) for peca in pecas.values()), permitidos)
+
+    pares_permitidos = {
+        (normalizar_categoria(item.get('tipo')), normalizar_categoria(item.get('subtipo')))
+        for item in dimensoes.get('tipos_subtipos_peca', [])
+    }
+    pares_faltantes = {}
+    for peca in pecas.values():
+        if not campo_valido(peca.get('subtipo')):
+            continue
+        par = (normalizar_categoria(peca.get('tipo')), normalizar_categoria(peca.get('subtipo')))
+        if par not in pares_permitidos:
+            rotulo = f"{valor_texto(peca.get('tipo'))} → {valor_texto(peca.get('subtipo'))}"
+            pares_faltantes[rotulo] = pares_faltantes.get(rotulo, 0) + 1
+    if pares_faltantes:
+        faltantes['relação_tipo_subtipo_peça'] = [
+            {'valor': valor, 'ocorrencias': quantidade}
+            for valor, quantidade in sorted(pares_faltantes.items(), key=lambda item: (-item[1], item[0]))
+        ]
+
+    cor_por_detalhe = {
+        normalizar_categoria(item.get('cor_detalhe')): item.get('cor', '')
+        for item in dimensoes.get('cores_detalhe', [])
+    }
+    pares_cor_tom = {
+        (normalizar_categoria(item.get('cor')), normalizar_categoria(item.get('tom')))
+        for item in dimensoes.get('cores_tons', [])
+    }
+    relacoes_cor_tom = {}
+    for peca in pecas.values():
+        cor = cor_por_detalhe.get(normalizar_categoria(peca.get('cor_detalhe')), '')
+        tom = peca.get('tom')
+        if not campo_valido(cor) or not campo_valido(tom):
+            continue
+        if (normalizar_categoria(cor), normalizar_categoria(tom)) not in pares_cor_tom:
+            rotulo = f"{cor} → {valor_texto(tom)}"
+            relacoes_cor_tom[rotulo] = relacoes_cor_tom.get(rotulo, 0) + 1
+    if relacoes_cor_tom:
+        faltantes['relação_cor_tom_peça'] = [
+            {'valor': valor, 'ocorrencias': quantidade}
+            for valor, quantidade in sorted(relacoes_cor_tom.items(), key=lambda item: (-item[1], item[0]))
+        ]
+
+    validar('situação_look', (look.get('situacao') for look in looks.values()), valores_dim('situacoes_look'))
+    validar('indicador_look', (look.get('indicador') for look in looks.values()), valores_dim('categorias_look', 'indicador'))
+    validar('utilização_look', (look.get('utilizacao') for look in looks.values()), valores_dim('utilizacoes_look'))
+    validar('local_look', (look.get('local') for look in looks.values()), valores_dim('locais'))
+    validar('clima_look', (look.get('clima') for look in looks.values()), [item.get('codigo') for item in dimensoes.get('climas', [])])
+    validar(
+        'ocasião_look',
+        (ocasiao.get('codigo') for look in looks.values() for ocasiao in look.get('ocasioes', [])),
+        [item.get('codigo') for item in dimensoes.get('ocasioes', [])],
+    )
+
+    return {
+        'valido': not faltantes,
+        'campos_com_opcoes_faltantes': len(faltantes),
+        'faltantes': faltantes,
+    }
+
+
+def salvar_relatorio_validacao(validacao, nome_arquivo='RELATORIO_CATEGORIAS_FALTANTES.md'):
+    linhas = ['# Validação da aba Categorias', '']
+    faltantes = validacao.get('faltantes', {})
+    if not faltantes:
+        linhas.append('Todos os valores dos bancos de looks e peças constam na aba Categorias.')
+    else:
+        linhas.append('Adicione à aba Categorias as opções abaixo para cobrir os valores já usados nos bancos.')
+        for campo, itens in faltantes.items():
+            linhas.extend(['', f'## {campo}', ''])
+            linhas.extend(f"- {item['valor']} ({item['ocorrencias']} ocorrência(s))" for item in itens)
+    with open(nome_arquivo, 'w', encoding='utf-8') as arquivo:
+        arquivo.write('\n'.join(linhas) + '\n')
+
+
 def aquecimento_peca(pecas, peca_id):
     valor = pecas.get(peca_id, {}).get('nivel_aquecimento')
     texto = valor_texto(valor)
@@ -372,8 +585,13 @@ def extrair_dados(arquivo_excel):
             cor_detalhe = str(row[8]) if row[8] else 'na'  # Coluna I
             tom = str(row[9]) if row[9] else 'na'  # Coluna J
             utilizacao = str(row[10]) if row[10] else 'na'  # Coluna K
+            formalidade = str(row[12]) if row[12] else 'na'  # Coluna M
+            tendencia = str(row[13]) if row[13] else 'na'  # Coluna N
             local = str(row[14]) if row[14] else 'na'  # Coluna O
+            alocacao = str(row[15]) if row[15] else 'na'  # Coluna P
             situacao = str(row[16]) if row[16] else 'na'  # Coluna Q
+            conservacao = str(row[17]) if row[17] else 'na'  # Coluna R
+            reposicao = str(row[18]) if row[18] else 'na'  # Coluna S
             detalhes = extrair_campos_linha(row, headers_pecas, campos_extra_idx)
             acessorios = extrair_ids_linha(row, headers_pecas, acessorios_idx)
             combinacoes_nao_permitidas = []
@@ -406,8 +624,13 @@ def extrair_dados(arquivo_excel):
                 'cor_detalhe': cor_detalhe.strip(),
                 'tom': tom.strip(),
                 'utilizacao': utilizacao.strip(),
+                'formalidade': formalidade.strip(),
+                'tendencia': tendencia.strip(),
                 'local': local.strip(),
+                'alocacao': alocacao.strip(),
                 'situacao': situacao.strip(),
+                'conservacao': conservacao.strip(),
+                'reposicao': reposicao.strip(),
                 'detalhes': detalhes,
                 'acessorios': acessorios,
                 'combinacoes_nao_permitidas': combinacoes_nao_permitidas
@@ -431,6 +654,13 @@ def extrair_dados(arquivo_excel):
     looks = {}
     mapa_ocasiões = extrair_mapa_ocasiões(wb)
     mapa_climas = extrair_mapa_climas(wb)
+    dimensoes = extrair_dimensoes(wb, mapa_climas, mapa_ocasiões)
+    cores_por_detalhe = {
+        normalizar_categoria(item.get('cor_detalhe')): item.get('cor', '')
+        for item in dimensoes.get('cores_detalhe', [])
+    }
+    for peca in pecas.values():
+        peca['cor'] = cores_por_detalhe.get(normalizar_categoria(peca.get('cor_detalhe')), '')
     
     if ws_looks:
         headers = [valor_texto(cell.value) for cell in ws_looks[1]]
@@ -519,6 +749,10 @@ def extrair_dados(arquivo_excel):
                         'ocasiao': ', '.join([o['descricao'] for o in ocasioes]) or 'não especificada',
                         'situacao': situacao.strip(),
                         'indicador': valor_texto(row[10]) if len(row) > 10 else '',
+                        'categoria': next((
+                            item.get('categoria', '') for item in dimensoes.get('categorias_look', [])
+                            if normalizar_categoria(item.get('indicador')) == normalizar_categoria(valor_texto(row[10]))
+                        ), ''),
                         'clima': clima_final,
                         'clima_planilha': clima,
                         'clima_calc': clima_calc or '',
@@ -541,12 +775,16 @@ def extrair_dados(arquivo_excel):
     
     # ==================== RETORNAR DADOS ====================
     
+    validacao_dimensoes = validar_dimensoes(pecas, looks, dimensoes)
+
     dados = {
         'pecas': pecas,
         'looks': looks,
         'ocasioes': mapa_ocasiões,
         'climas': mapa_climas,
         'combinacoes_nao_permitidas': mapa_combinacoes_nao_permitidas,
+        'dimensoes': dimensoes,
+        'validacao_dimensoes': validacao_dimensoes,
         'ultima_atualizacao': datetime.now().isoformat(),
         'total_pecas': len(pecas),
         'total_looks': len(looks),
@@ -650,6 +888,7 @@ def main():
     
     # Salvar JSON
     salvar_json(dados)
+    salvar_relatorio_validacao(dados.get('validacao_dimensoes', {}))
     
     print("\n✅ Pronto! Agora:")
     print("   1. Copie 'dados_guarda_roupa.json' para a pasta da app")
