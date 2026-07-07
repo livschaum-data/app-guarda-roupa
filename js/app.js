@@ -2948,6 +2948,20 @@ function filtrarLooksPorOcasiao(ocasiao) {
     renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
 }
 
+function contarUsosLook(lookId) {
+    const alvo = normalizarTexto(lookId);
+    if (!alvo) return 0;
+
+    return (app.historico || []).reduce((total, registro) => {
+        const idsRegistro = obterLookIdsRegistro(registro).map(id => normalizarTexto(id));
+        return total + (idsRegistro.includes(alvo) ? 1 : 0);
+    }, 0);
+}
+
+function formatarTotalUsosLook(total) {
+    return `${total} ${total === 1 ? 'uso' : 'usos'}`;
+}
+
 function obterTamanhoLoteLooks() {
     return window.matchMedia('(max-width: 768px)').matches ? 24 : 60;
 }
@@ -3003,6 +3017,7 @@ function criarCardLook(look) {
         .join(' · ');
     const tags = (look.ocasioes || []).slice(0, 4).map(ocasiao => `<span>${ocasiao.descricao}</span>`).join('');
     const lookId = look.id || look.nome || '';
+    const totalUsos = contarUsosLook(look.id);
 
     card.innerHTML = `
         <div class="look-card-foto-wrap">
@@ -3010,6 +3025,7 @@ function criarCardLook(look) {
                  onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 120 120%22><rect fill=%22%23eee%22 width=%22120%22 height=%22120%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>sem foto</text></svg>'">
             <span class="look-card-id-badge">${escapeHtml(lookId)}</span>
         </div>
+        <div class="look-card-usos">${formatarTotalUsosLook(totalUsos)}</div>
         <div class="look-card-info">
             <h3>${escapeHtml(lookId)}</h3>
             <p>${pecasTexto}</p>
@@ -3075,7 +3091,9 @@ function mostrarDetalhesLook(lookId, editando = false) {
 
 function renderFichaLookLeitura(look, ficha) {
     const campos = look.basicos || {};
+    const totalUsos = contarUsosLook(look.id);
     const camposClima = [
+        ['Total de usos', formatarTotalUsosLook(totalUsos)],
         ['Última atualização', formatarDataHoraFicha(obterDataAtualizacaoLook(look))],
         ['Clima calculado', formatarClimaLook(look)],
         ['Aquecimento das peças', (look.aquecimentos || []).map(valor => valor || '-').join(' · ')],

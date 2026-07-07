@@ -1384,6 +1384,15 @@ body {
     white-space: nowrap;
 }
 
+.look-card-usos {
+    margin-top: -2px;
+    color: var(--cor-primaria);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.2;
+    text-align: center;
+}
+
 .look-card-info h3 {
     margin: 0 0 4px;
     color: var(--cor-texto);
