@@ -1138,6 +1138,10 @@ body {
     animation: fadeIn 0.2s ease-in-out;
 }
 
+.modal.modal-em-pilha {
+    z-index: 260;
+}
+
 .modal-content {
     background: white;
     border-radius: var(--radius);

@@ -632,6 +632,9 @@ function salvarDados() {
     // localStorage.setItem() = salva um valor
     // JSON.stringify() = transforma objeto em texto
 
+    app.mapaUsosLooksAtual = null;
+    app.indiceLooksPorPecasAtual = null;
+
     localStorage.setItem('app_historico', JSON.stringify(app.historico));
     localStorage.setItem('app_looks_favs', JSON.stringify(app.looksFavoritos));
     localStorage.setItem('app_pecas_personalizadas', JSON.stringify(app.pecasPersonalizadas));
@@ -1216,6 +1219,8 @@ function mesclarDadosNuvem(data) {
         ...app.pecasPersonalizadas,
     };
     app.pecas = { ...app.pecas, ...app.pecasPersonalizadas };
+    app.mapaUsosLooksAtual = null;
+    app.indiceLooksPorPecasAtual = null;
     garantirLooksFavoritosSemColisao();
 }
 
@@ -1225,6 +1230,9 @@ function atualizarTelasAposSync() {
     preencherFiltrosHoje();
     preencherSelectLooks();
     preencherFiltrosOcasiao();
+    if (document.getElementById('looks')?.style.display !== 'none') {
+        renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
+    }
     if (document.getElementById('historico')?.style.display !== 'none') {
         inicializarHistorico();
     }
@@ -1931,6 +1939,9 @@ function abrirDetalhsPeca(id) {
     const peca = app.pecas[id];
     if (!peca) return;
     const dataAtualizacao = obterDataAtualizacaoPeca(peca);
+    const modalPeca = document.getElementById('modal-peca');
+    const modalAbertoPorBaixo = [...document.querySelectorAll('.modal')]
+        .some(modal => modal !== modalPeca && modal.style.display !== 'none');
 
     // Guardar referência para usar depois
     app.pecaEmDetalhes = id;
@@ -1961,12 +1972,18 @@ function abrirDetalhsPeca(id) {
     document.getElementById('registrar-peca-modal').style.display = '';
 
     // Mostrar modal
-    document.getElementById('modal-peca').style.display = 'flex';
+    modalPeca.classList.toggle('modal-em-pilha', modalAbertoPorBaixo);
+    modalPeca.style.display = 'flex';
+}
+
+function mostrarDetalhesPeca(id) {
+    abrirDetalhsPeca(id);
 }
 
 function fecharModal() {
     // Esconde todos os modais
     document.querySelectorAll('.modal').forEach(modal => {
+        modal.classList.remove('modal-em-pilha');
         modal.style.display = 'none';
     });
 }
@@ -2250,11 +2267,23 @@ async function salvarPeca() {
 
         app.pecas[id] = peca;
         app.pecasPersonalizadas[id] = peca;
+        const totalLooksAtualizados = recalcularLooksAfetadosPorPeca([editandoId, id], { idAntigo: editandoId, idNovo: id });
         app.pecaEmDetalhes = id;
         salvarDados();
         reconstruirFiltrosHome();
         preencherFiltrosHoje();
+        preencherSelectLooks();
+        preencherFiltrosOcasiao();
+        if (document.getElementById('looks')?.style.display !== 'none') {
+            renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
+        }
+        if (document.getElementById('historico')?.style.display !== 'none') {
+            inicializarHistorico();
+        }
         abrirDetalhsPeca(id);
+        if (totalLooksAtualizados > 0) {
+            console.log(`🔄 ${totalLooksAtualizados} look(s) recalculado(s) após atualizar a peça ${id}.`);
+        }
     } catch (erro) {
         console.error('Erro ao salvar peça:', erro);
         alert(erro.message || 'Não foi possível salvar a peça.');
@@ -2948,14 +2977,85 @@ function filtrarLooksPorOcasiao(ocasiao) {
     renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
 }
 
-function contarUsosLook(lookId) {
-    const alvo = normalizarTexto(lookId);
-    if (!alvo) return 0;
+function incrementarUsoLook(mapa, lookId) {
+    const chave = normalizarTexto(lookId);
+    if (!chave) return;
+    mapa.set(chave, (mapa.get(chave) || 0) + 1);
+}
 
-    return (app.historico || []).reduce((total, registro) => {
-        const idsRegistro = obterLookIdsRegistro(registro).map(id => normalizarTexto(id));
-        return total + (idsRegistro.includes(alvo) ? 1 : 0);
-    }, 0);
+function construirIndiceLooksPorPecas() {
+    const looks = obterTodosLooks().filter(look => look?.id && Array.isArray(look.pecas) && look.pecas.length > 0);
+    const looksPorPeca = new Map();
+    const totalPecasPorLook = new Map();
+    const idOriginalPorLook = new Map();
+
+    looks.forEach(look => {
+        const lookId = normalizarTexto(look.id);
+        const pecas = [...new Set((look.pecas || []).map(id => normalizarTexto(id)).filter(Boolean))];
+        if (!lookId || pecas.length === 0) return;
+
+        totalPecasPorLook.set(lookId, pecas.length);
+        idOriginalPorLook.set(lookId, look.id);
+        pecas.forEach(pecaId => {
+            if (!looksPorPeca.has(pecaId)) looksPorPeca.set(pecaId, []);
+            looksPorPeca.get(pecaId).push(lookId);
+        });
+    });
+
+    return { looksPorPeca, totalPecasPorLook, idOriginalPorLook };
+}
+
+function obterIndiceLooksPorPecasAtual() {
+    if (!app.indiceLooksPorPecasAtual) {
+        app.indiceLooksPorPecasAtual = construirIndiceLooksPorPecas();
+    }
+    return app.indiceLooksPorPecasAtual;
+}
+
+function inferirLookIdsPelasPecas(pecas) {
+    const pecasRegistro = [...new Set((pecas || []).map(id => normalizarTexto(id)).filter(Boolean))];
+    if (pecasRegistro.length === 0) return [];
+
+    const { looksPorPeca, totalPecasPorLook, idOriginalPorLook } = obterIndiceLooksPorPecasAtual();
+    const pecasSet = new Set(pecasRegistro);
+    const candidatos = new Map();
+
+    pecasSet.forEach(pecaId => {
+        (looksPorPeca.get(pecaId) || []).forEach(lookId => {
+            candidatos.set(lookId, (candidatos.get(lookId) || 0) + 1);
+        });
+    });
+
+    return [...candidatos.entries()]
+        .filter(([lookId, totalEncontrado]) => totalEncontrado >= (totalPecasPorLook.get(lookId) || Infinity))
+        .map(([lookId]) => idOriginalPorLook.get(lookId) || lookId)
+        .sort((a, b) => String(a).localeCompare(String(b), 'pt-BR', { numeric: true }));
+}
+
+function obterLookIdsRegistroOuInferidos(registro) {
+    const explicitos = obterLookIdsRegistro(registro);
+    return explicitos.length > 0 ? explicitos : inferirLookIdsPelasPecas(registro?.pecas || []);
+}
+
+function calcularMapaUsosLooks() {
+    const mapa = new Map();
+
+    (app.historico || []).forEach(registro => {
+        obterLookIdsRegistroOuInferidos(registro).forEach(id => incrementarUsoLook(mapa, id));
+    });
+
+    return mapa;
+}
+
+function obterMapaUsosLooksAtual() {
+    if (!app.mapaUsosLooksAtual) {
+        app.mapaUsosLooksAtual = calcularMapaUsosLooks();
+    }
+    return app.mapaUsosLooksAtual;
+}
+
+function contarUsosLook(lookId) {
+    return obterMapaUsosLooksAtual().get(normalizarTexto(lookId)) || 0;
 }
 
 function formatarTotalUsosLook(total) {
@@ -2969,6 +3069,8 @@ function obterTamanhoLoteLooks() {
 function renderLooks(looks) {
     const container = document.getElementById('lista-looks');
     container.innerHTML = '';
+    app.indiceLooksPorPecasAtual = construirIndiceLooksPorPecas();
+    app.mapaUsosLooksAtual = calcularMapaUsosLooks();
     app.looksEmExibicao = looks;
     app.limiteLooksExibidos = 0;
 
@@ -3427,6 +3529,75 @@ function calcularDadosLookPorPecas(pecas) {
         utilizacao_calc: calcularValorComposto(utilizacoesValidas, 'mix'),
         utilizacoes_pecas: preencherAteTres(utilizacoes),
     };
+}
+
+function atualizarCalculadosLook(look, pecas, dataAtualizacao) {
+    const calculados = calcularDadosLookPorPecas(pecas);
+    const basicos = {
+        ...(look.basicos || {}),
+        ID: look.id,
+        ID1: pecas[0] || '',
+        ID2: pecas[1] || '',
+        ID3: pecas[2] || '',
+    };
+
+    return {
+        ...look,
+        pecas,
+        clima_calc: calculados.clima_calc,
+        clima_info: calculados.clima_info,
+        aquecimentos: calculados.aquecimentos,
+        local_calc: calculados.local_calc,
+        local: calculados.local_calc,
+        locais_pecas: calculados.locais_pecas,
+        utilizacao_calc: calculados.utilizacao_calc,
+        utilizacao: calculados.utilizacao_calc,
+        utilizacoes_pecas: calculados.utilizacoes_pecas,
+        basicos,
+        editadoLocalmente: true,
+        editadoEm: dataAtualizacao,
+        substituiLookBase: Boolean(app.looks[look.id] || look.substituiLookBase) || undefined,
+        id_original: undefined,
+    };
+}
+
+function recalcularLooksAfetadosPorPeca(pecaIds, opcoes = {}) {
+    const idsAfetados = new Set((pecaIds || []).map(id => String(id || '').trim().toUpperCase()).filter(Boolean));
+    if (idsAfetados.size === 0) return 0;
+
+    const idAntigo = String(opcoes.idAntigo || '').trim().toUpperCase();
+    const idNovo = String(opcoes.idNovo || '').trim().toUpperCase();
+    const dataAtualizacao = opcoes.dataAtualizacao || new Date().toISOString();
+    let total = 0;
+
+    obterTodosLooks().forEach(look => {
+        if (!look?.id || !Array.isArray(look.pecas)) return;
+
+        let trocouId = false;
+        const pecas = look.pecas.map(id => {
+            const idNormalizado = String(id || '').trim().toUpperCase();
+            if (idAntigo && idNovo && idAntigo !== idNovo && idNormalizado === idAntigo) {
+                trocouId = true;
+                return idNovo;
+            }
+            return idNormalizado;
+        });
+
+        const usaPecaAfetada = pecas.some(id => idsAfetados.has(id)) || (idAntigo && look.pecas.some(id => normalizarTexto(id) === normalizarTexto(idAntigo)));
+        if (!usaPecaAfetada && !trocouId) return;
+
+        const pecasUnicas = [...new Set(pecas.filter(Boolean))];
+        const lookAtualizado = atualizarCalculadosLook(look, pecasUnicas, dataAtualizacao);
+        app.looksFavoritos[look.id] = lookAtualizado;
+        total += 1;
+    });
+
+    if (total > 0) {
+        app.mapaUsosLooksAtual = null;
+        app.indiceLooksPorPecasAtual = null;
+    }
+
+    return total;
 }
 
 function preencherAteTres(valores) {
@@ -3913,7 +4084,7 @@ function contarUsosLooksOcasiao(lookIds) {
     if (!lookIds.size) return 0;
 
     return app.historico.reduce((total, registro) => {
-        const usados = obterLookIdsRegistro(registro);
+        const usados = obterLookIdsRegistroOuInferidos(registro);
         return total + (usados.some(id => lookIds.has(id)) ? 1 : 0);
     }, 0);
 }
@@ -4451,7 +4622,7 @@ function contarUsosHistorico(registros, tipo) {
 
         const ids = tipo === 'pecas'
             ? [...new Set(registro.pecas || [])].filter(Boolean)
-            : obterLookIdsRegistro(registro);
+            : obterLookIdsRegistroOuInferidos(registro);
 
         ids.forEach(id => {
             const atual = mapa.get(id) || { id, periodo: 0, total: 0, primeiro: dia, ultimo: dia };
@@ -4536,8 +4707,7 @@ function atualizarStatsHistorico(registrosPeriodo) {
 
     const looksUsados = new Set();
     registrosPeriodo.forEach(reg => {
-        if (reg.lookId) looksUsados.add(reg.lookId);
-        (reg.lookIds || []).forEach(id => looksUsados.add(id));
+        obterLookIdsRegistroOuInferidos(reg).forEach(id => looksUsados.add(id));
     });
     statCards[2].textContent = looksUsados.size;
 }
@@ -4558,7 +4728,7 @@ function renderDetalheHistorico(registrosPeriodo) {
         .sort(([diaA], [diaB]) => diaB.localeCompare(diaA))
         .forEach(([dia, registros]) => {
             const pecasDia = [...new Set(registros.flatMap(reg => reg.pecas || []))].filter(id => app.pecas[id]);
-            const looksDia = [...new Set(registros.flatMap(reg => obterLookIdsRegistro(reg)))].filter(id => obterLookPorId(id));
+            const looksDia = [...new Set(registros.flatMap(reg => obterLookIdsRegistroOuInferidos(reg)))].filter(id => obterLookPorId(id));
 
             const grupo = document.createElement('div');
             grupo.className = 'historico-dia';
