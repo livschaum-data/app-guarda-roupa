@@ -24,6 +24,7 @@ const DIMENSAO_POR_CAMPO_PECA = {
 };
 const CAMPOS_FILTROS_GERAIS_HOJE = CAMPOS_FILTROS_PECAS.filter(campo => !['tipo', 'subtipo'].includes(campo));
 const TEMA_VISUAL_STORAGE_KEY = 'temaVisualGuardaRoupa';
+const ESTADO_FILTROS_STORAGE_KEY = 'estadoFiltrosGuardaRoupa';
 const TEMAS_VISUAIS = ['sistema', 'claro', 'escuro'];
 const GRUPOS_REGISTRO_PECAS = [
     { id: 'roupas-principais', titulo: 'Blusas, calças, casacos, inteiros', tipos: ['blusa', 'calça', 'casaco', 'inteiro'] },
@@ -117,10 +118,12 @@ async function inicializar() {
 
     // 2. Carregar dados salvos no celular
     carregarDados();
+    carregarEstadoFiltros();
 
     // 3. Montar a interface
-    renderGaleria();
     preencherFiltrosHome();
+    renderGaleriaFiltrada();
+    aplicarPesquisaPecasSalva();
     preencherSelectLooks();
     preencherFiltrosOcasiao();
     renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
@@ -628,6 +631,89 @@ function carregarDados() {
 
 /* ==================== SALVAR DADOS NO CELULAR ====================
    Persiste dados em localStorage (sobrevive ao fechar a app) */
+
+function clonarEstado(valor, fallback) {
+    if (!valor || typeof valor !== 'object') return JSON.parse(JSON.stringify(fallback));
+    return JSON.parse(JSON.stringify(valor));
+}
+
+function normalizarMapaFiltrosArrays(filtros, campos) {
+    return Object.fromEntries(campos.map(campo => [
+        campo,
+        Array.isArray(filtros?.[campo]) ? filtros[campo].filter(Boolean) : [],
+    ]));
+}
+
+function normalizarFiltrosHojeGrupos(filtrosGrupos) {
+    return Object.fromEntries(GRUPOS_REGISTRO_PECAS.map(grupo => {
+        const filtrosGrupo = filtrosGrupos?.[grupo.id] || {};
+        return [grupo.id, {
+            tipo: Array.isArray(filtrosGrupo.tipo) ? filtrosGrupo.tipo.filter(Boolean) : [],
+            subtipo: Array.isArray(filtrosGrupo.subtipo) ? filtrosGrupo.subtipo.filter(Boolean) : [],
+        }];
+    }));
+}
+
+function carregarEstadoFiltros() {
+    try {
+        const salvo = localStorage.getItem(ESTADO_FILTROS_STORAGE_KEY);
+        if (!salvo) return;
+
+        const estado = JSON.parse(salvo);
+        app.filtrosHome = normalizarMapaFiltrosArrays(estado.filtrosHome, CAMPOS_FILTROS_PECAS);
+        app.filtrosHoje = normalizarMapaFiltrosArrays(estado.filtrosHoje, CAMPOS_FILTROS_GERAIS_HOJE);
+        app.filtrosHojeGrupos = normalizarFiltrosHojeGrupos(estado.filtrosHojeGrupos);
+        app.filtrosLooks = {
+            ...normalizarMapaFiltrosArrays(estado.filtrosLooks, CAMPOS_FILTROS_LOOKS),
+            pecas: Array.isArray(estado.filtrosLooks?.pecas) ? estado.filtrosLooks.pecas.filter(Boolean) : [],
+        };
+        app.filtrosOcasioes = {
+            tipo: Array.isArray(estado.filtrosOcasioes?.tipo) ? estado.filtrosOcasioes.tipo.filter(Boolean) : [],
+            clima: Array.isArray(estado.filtrosOcasioes?.clima) ? estado.filtrosOcasioes.clima.filter(Boolean) : [],
+            ocasiao: Array.isArray(estado.filtrosOcasioes?.ocasiao) ? estado.filtrosOcasioes.ocasiao.filter(Boolean) : [],
+            lookId: estado.filtrosOcasioes?.lookId || '',
+            eixoGrafico: estado.filtrosOcasioes?.eixoGrafico === 'ocasioes' ? 'ocasioes' : 'climas',
+        };
+        app.filtroHistoricoAtivo = estado.filtroHistoricoAtivo || app.filtroHistoricoAtivo;
+        app.mesCalendarioHistorico = estado.mesCalendarioHistorico || app.mesCalendarioHistorico;
+        app.filtrosSemUso = {
+            tipo: estado.filtrosSemUso?.tipo || '',
+            local: estado.filtrosSemUso?.local || '',
+            situacao: estado.filtrosSemUso?.situacao || '',
+            tempo: estado.filtrosSemUso?.tempo || '',
+        };
+        app.filtroPesquisaPecas = estado.filtroPesquisaPecas || '';
+    } catch (erro) {
+        console.warn('Filtros salvos invalidos. Mantendo filtros padrao.', erro);
+    }
+}
+
+function salvarEstadoFiltros() {
+    try {
+        const pesquisa = document.getElementById('filtro-pesquisa')?.value ?? app.filtroPesquisaPecas ?? '';
+        app.filtroPesquisaPecas = pesquisa;
+        localStorage.setItem(ESTADO_FILTROS_STORAGE_KEY, JSON.stringify({
+            filtrosHome: clonarEstado(app.filtrosHome, {}),
+            filtroPesquisaPecas: pesquisa,
+            filtrosHoje: clonarEstado(app.filtrosHoje, {}),
+            filtrosHojeGrupos: clonarEstado(app.filtrosHojeGrupos, {}),
+            filtrosLooks: clonarEstado(app.filtrosLooks, {}),
+            filtrosOcasioes: clonarEstado(app.filtrosOcasioes, {}),
+            filtroHistoricoAtivo: clonarEstado(app.filtroHistoricoAtivo, null),
+            mesCalendarioHistorico: app.mesCalendarioHistorico || '',
+            filtrosSemUso: clonarEstado(app.filtrosSemUso, {}),
+        }));
+    } catch (erro) {
+        console.warn('Nao foi possivel salvar os filtros.', erro);
+    }
+}
+
+function aplicarPesquisaPecasSalva() {
+    const input = document.getElementById('filtro-pesquisa');
+    if (!input) return;
+    input.value = app.filtroPesquisaPecas || '';
+    filtrarPecas();
+}
 
 function salvarDados() {
     // localStorage.setItem() = salva um valor
@@ -2010,6 +2096,8 @@ function decodificarXml(texto) {
    Sistema de single-page-app: uma página HTML, múltiplas visualizações */
 
 function mostrarPagina(nome) {
+    salvarEstadoFiltros();
+
     // Esconde TODAS as páginas
     // querySelectorAll() = busca todos os elementos com essa classe
     document.querySelectorAll('.pagina').forEach(pagina => {
@@ -2024,6 +2112,15 @@ function mostrarPagina(nome) {
 
     if (nome === 'historico') {
         inicializarHistorico();
+    }
+
+    if (nome === 'pecas') {
+        renderGaleriaFiltrada();
+        aplicarPesquisaPecasSalva();
+    }
+
+    if (nome === 'usar-hoje') {
+        preencherFiltrosHoje();
     }
 
     if (nome === 'looks') {
@@ -2114,6 +2211,7 @@ function preencherFiltrosHome() {
 /* Atualizar filtro da Home */
 function filtrarHome(campo, valor) {
     app.filtrosHome[campo] = valor;
+    salvarEstadoFiltros();
 }
 
 /* Resetar todos os filtros da Home */
@@ -2134,6 +2232,7 @@ function resetarFiltrosHome() {
     });
     
     renderGaleriaFiltrada();
+    salvarEstadoFiltros();
 }
 
 /* Renderizar galeria com filtros aplicados */
@@ -2166,7 +2265,10 @@ function renderGaleriaFiltrada() {
 
 /* Filtrar peças por texto na barra de pesquisa */
 function filtrarPecas() {
-    const termo = document.getElementById('filtro-pesquisa').value.toLowerCase();
+    const termoOriginal = document.getElementById('filtro-pesquisa').value;
+    const termo = termoOriginal.toLowerCase();
+    app.filtroPesquisaPecas = termoOriginal;
+    salvarEstadoFiltros();
     const cards = document.querySelectorAll('.card-peca');
 
     cards.forEach(card => {
@@ -2286,6 +2388,7 @@ function preencherFiltrosHoje() {
 
 function filtrarHoje(campo, valor) {
     app.filtrosHoje[campo] = valor;
+    salvarEstadoFiltros();
 }
 
 function resetarFiltrosHoje() {
@@ -2298,6 +2401,7 @@ function resetarFiltrosHoje() {
     });
 
     preencherFiltrosHoje();
+    salvarEstadoFiltros();
 }
 
 function gerarProximoIdPeca() {
@@ -2605,6 +2709,7 @@ function obterFiltroGrupoRegistro(grupoId) {
 function filtrarGrupoHoje(grupoId, campo, valores) {
     const filtros = obterFiltroGrupoRegistro(grupoId);
     filtros[campo] = valores;
+    salvarEstadoFiltros();
     renderGaleriaUsarHoje();
 }
 
@@ -2959,6 +3064,7 @@ function criarFiltroPecasLooks(container) {
     input.addEventListener('input', evento => {
         const ids = normalizarFiltroPecasLooks(evento.target.value);
         app.filtrosLooks.pecas = ids;
+        salvarEstadoFiltros();
         window.clearTimeout(app.timeoutFiltroPecasLooks);
         app.timeoutFiltroPecasLooks = window.setTimeout(() => {
             renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
@@ -2987,6 +3093,9 @@ function filtrarLooksPorOcasiao(ocasiao, evento) {
     const btnsFiltro = document.querySelectorAll('#filtros-ocasiao .filtro-btn');
     btnsFiltro.forEach(btn => btn.classList.remove('ativo'));
     if (evento?.target) evento.target.classList.add('ativo');
+
+    app.filtrosLooks.ocasiao = ocasiao === 'todas' ? [] : [ocasiao];
+    salvarEstadoFiltros();
 
     if (ocasiao === 'todas') {
         // Mostrar todos os looks
@@ -3202,6 +3311,7 @@ function formatarClimaFiltroLook(look) {
 
 function filtrarLooks(campo, valores) {
     app.filtrosLooks[campo] = valores;
+    salvarEstadoFiltros();
     renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
 }
 
@@ -3231,6 +3341,7 @@ function limparFiltrosLooks() {
     const filtroPecas = document.getElementById('filtro-look-pecas');
     if (filtroPecas) filtroPecas.value = '';
 
+    salvarEstadoFiltros();
     renderLooks(obterTodosLooks());
 }
 
@@ -3261,6 +3372,7 @@ function lookPassaNosFiltros(look) {
 
 function filtrarLooksPorOcasiao(ocasiao) {
     app.filtrosLooks.ocasiao = ocasiao === 'todas' ? [] : [ocasiao];
+    salvarEstadoFiltros();
     renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
 }
 
@@ -4280,6 +4392,7 @@ function preencherFiltrosPaginaOcasioes() {
     const codigosDisponiveis = new Set(filtradas.map(ocasiao => ocasiao.codigo));
     app.filtrosOcasioes.ocasiao = (app.filtrosOcasioes.ocasiao || []).filter(codigo => codigosDisponiveis.has(codigo));
     marcarValoresSelectMultiplo(selectOcasiao, app.filtrosOcasioes.ocasiao);
+    salvarEstadoFiltros();
     renderControlesVisuaisOcasioes();
 }
 
@@ -4287,6 +4400,7 @@ function filtrarPaginaOcasioes() {
     app.filtrosOcasioes.tipo = obterValoresSelectMultiplo('ocasioes-filtro-tipo');
     app.filtrosOcasioes.clima = obterValoresSelectMultiplo('ocasioes-filtro-clima');
     app.filtrosOcasioes.lookId = '';
+    salvarEstadoFiltros();
     preencherFiltrosPaginaOcasioes();
     renderPaginaOcasioes();
 }
@@ -4294,17 +4408,20 @@ function filtrarPaginaOcasioes() {
 function selecionarOcasiaoPagina() {
     app.filtrosOcasioes.ocasiao = obterValoresSelectMultiplo('ocasioes-select');
     app.filtrosOcasioes.lookId = '';
+    salvarEstadoFiltros();
     renderPaginaOcasioes();
     renderControlesVisuaisOcasioes();
 }
 
 function alterarEixoGraficoOcasioes(eixo) {
     app.filtrosOcasioes.eixoGrafico = eixo === 'ocasioes' ? 'ocasioes' : 'climas';
+    salvarEstadoFiltros();
     renderPaginaOcasioes();
 }
 
 function selecionarLookOcasioes(lookId) {
     app.filtrosOcasioes.lookId = app.filtrosOcasioes.lookId === lookId ? '' : lookId;
+    salvarEstadoFiltros();
     renderPaginaOcasioes();
 }
 
@@ -4313,6 +4430,7 @@ function renderPaginaOcasioes() {
     const looks = obterLooksPaginaOcasioes(codigosSelecionados);
     if (app.filtrosOcasioes.lookId && !looks.some(look => look.id === app.filtrosOcasioes.lookId)) {
         app.filtrosOcasioes.lookId = '';
+        salvarEstadoFiltros();
     }
     const lookIds = new Set(looks.map(look => look.id));
     const resumoOcasiao = obterResumoOcasiaoSelecionada(codigosSelecionados);
@@ -4610,6 +4728,7 @@ function aplicarFiltroHistoricoAtivo() {
 
 function atualizarHistoricoPeriodo(dias) {
     app.filtroHistoricoAtivo = { tipo: 'periodo', dias };
+    salvarEstadoFiltros();
     const referencia = obterDataReferenciaHistorico();
     if (!referencia) {
         renderHistorico([], null, null);
@@ -4628,6 +4747,7 @@ function atualizarHistoricoPeriodo(dias) {
 
 function atualizarHistoricoCompleto() {
     app.filtroHistoricoAtivo = { tipo: 'todos' };
+    salvarEstadoFiltros();
     const intervalo = obterIntervaloCompletoHistorico();
     if (!intervalo) {
         renderHistorico([], null, null);
@@ -4655,6 +4775,7 @@ function consultarHistoricoPorDatas() {
 
     renderHistorico(obterRegistrosHistoricoEntre(inicio, fim), inicio, fim);
     app.filtroHistoricoAtivo = { tipo: 'intervalo', inicio, fim };
+    salvarEstadoFiltros();
     marcarFiltroPeriodoHistorico(null);
 }
 
@@ -4730,6 +4851,7 @@ function navegarMesCalendarioHistorico(delta) {
 
     referencia.setMonth(referencia.getMonth() + delta);
     app.mesCalendarioHistorico = formatarMesInput(referencia);
+    salvarEstadoFiltros();
     renderCalendarioHistorico(
         document.getElementById('historico-data-inicio')?.value || null,
         document.getElementById('historico-data-fim')?.value || null
@@ -4738,6 +4860,7 @@ function navegarMesCalendarioHistorico(delta) {
 
 function selecionarDiaCalendarioHistorico(dataISO) {
     app.filtroHistoricoAtivo = { tipo: 'intervalo', inicio: dataISO, fim: dataISO };
+    salvarEstadoFiltros();
     preencherDatasHistorico(dataISO, dataISO);
     renderHistorico(obterRegistrosHistoricoEntre(dataISO, dataISO), dataISO, dataISO);
     marcarFiltroPeriodoHistorico(null);
@@ -4811,6 +4934,7 @@ function preencherSelectFiltroSemUso(select, campo, labelTodos) {
 
 function atualizarFiltroSemUso(campo, evento) {
     app.filtrosSemUso[campo] = evento.target.value;
+    salvarEstadoFiltros();
     renderPecasSemUso();
 }
 
