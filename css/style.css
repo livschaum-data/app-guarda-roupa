@@ -1796,6 +1796,107 @@ body {
     max-width: 760px;
 }
 
+.modal-conflitos-historico {
+    max-width: 900px;
+}
+
+.lista-conflitos-historico {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.conflito-historico-dia {
+    display: grid;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+    background: var(--cor-fundo);
+}
+
+.conflito-historico-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.conflito-historico-topo strong {
+    color: var(--cor-texto);
+    font-size: 16px;
+}
+
+.conflito-historico-topo span,
+.conflito-historico-comparacao > div > span {
+    color: var(--cor-texto-cinza);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.conflito-historico-comparacao {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.conflito-historico-comparacao > div {
+    min-width: 0;
+    padding: 10px;
+    border-radius: 10px;
+    background: #fff;
+}
+
+.conflito-historico-comparacao ul {
+    margin: 8px 0 0;
+    padding-left: 18px;
+    color: var(--cor-texto);
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.conflito-historico-dia label {
+    display: grid;
+    gap: 6px;
+    color: var(--cor-texto);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.conflito-historico-dia select {
+    min-height: 42px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--cor-texto);
+    padding: 8px 10px;
+    font: inherit;
+    font-weight: 600;
+}
+
+.acoes-conflitos-historico {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.acoes-conflitos-historico button {
+    flex: 1;
+}
+
+@media (max-width: 700px) {
+    .conflito-historico-topo,
+    .acoes-conflitos-historico {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .conflito-historico-comparacao {
+        grid-template-columns: 1fr;
+    }
+}
+
 #titulo-look-modal {
     color: #111827;
 }

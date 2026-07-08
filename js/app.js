@@ -64,6 +64,7 @@ const app = {
     filtroHistoricoAtivo: null,
     resumoHistoricoTipo: 'looks',
     registrosHistoricoPeriodo: [],
+    importacaoHistoricoPendente: null,
     supabase: null,
     usuarioSupabase: null,
     sincronizando: false,
@@ -398,7 +399,7 @@ function formatarDataLook(valor) {
     return /^\d{4}-\d{2}-\d{2}/.test(valor) ? formatarDataBR(valor) : valor;
 }
 
-function obterLooksCompativeis(pecasSelecionadas) {
+function obterLooksCompativeis(pecasSelecionadas, opcoes = {}) {
     const selecionadas = [...new Set((pecasSelecionadas || []).filter(Boolean))];
     if (selecionadas.length === 0) return [];
     const selecionadasSet = new Set(selecionadas);
@@ -406,7 +407,7 @@ function obterLooksCompativeis(pecasSelecionadas) {
     const pecasInteirasSet = new Set(pecasInteirasSelecionadas);
 
     return obterTodosLooks()
-        .filter(look => !ehLookExcluido(look))
+        .filter(look => opcoes.incluirExcluidos || !ehLookExcluido(look))
         .map(look => ({
             ...look,
             pecasCompativeis: (look.pecas || []).filter(id => selecionadasSet.has(id)),
@@ -1091,17 +1092,26 @@ async function enviarDadosSupabase({ silencioso = false, mesclarAntes = true } =
             }
         }
 
-        let { data, error } = await app.supabase
+        const montarPayload = incluirPecas => ({
+            user_id: app.usuarioSupabase.id,
+            historico: app.historico,
+            looks_favoritos: app.looksFavoritos,
+            ...(incluirPecas ? { pecas_personalizadas: app.pecasPersonalizadas } : {}),
+            updated_at: new Date().toISOString(),
+        });
+
+        const enviarPayload = incluirPecas => app.supabase
             .from('wardrobe_sync')
-            .upsert({
-                user_id: app.usuarioSupabase.id,
-                historico: app.historico,
-                looks_favoritos: app.looksFavoritos,
-                pecas_personalizadas: app.pecasPersonalizadas,
-                updated_at: new Date().toISOString(),
-            }, { onConflict: 'user_id' })
+            .upsert(montarPayload(incluirPecas), { onConflict: 'user_id' })
             .select('updated_at')
             .single();
+
+        let { data, error } = await enviarPayload(app.supabaseSuportaPecas !== false);
+
+        if (error && /pecas_personalizadas/i.test(`${error.message || ''} ${error.details || ''}`)) {
+            app.supabaseSuportaPecas = false;
+            ({ data, error } = await enviarPayload(false));
+        }
 
         if (error) {
             console.error('Erro ao enviar para Supabase:', error);
@@ -1110,8 +1120,11 @@ async function enviarDadosSupabase({ silencioso = false, mesclarAntes = true } =
         }
 
         if (!silencioso) {
+            const avisoPecas = app.supabaseSuportaPecas === false
+                ? ' Peças personalizadas ainda não foram enviadas porque falta atualizar o schema do Supabase.'
+                : '';
             atualizarStatusSupabase(
-                `Dados enviados para a nuvem (${app.historico.length} registros, ${Object.keys(app.looksFavoritos).length} looks criados). Ultima gravacao: ${formatarDataHoraSupabase(data?.updated_at)}.`,
+                `Dados enviados para a nuvem (${app.historico.length} registros, ${Object.keys(app.looksFavoritos).length} looks criados). Ultima gravacao: ${formatarDataHoraSupabase(data?.updated_at)}.${avisoPecas}`,
                 'sucesso'
             );
         }
@@ -1285,18 +1298,21 @@ async function importarHistoricoArquivo() {
     try {
         const linhas = await lerTabelaHistorico(arquivo);
         const registros = normalizarLinhasHistorico(linhas);
-        const resultado = mesclarHistorico(registros);
 
-        salvarDados();
-        aplicarFiltroHistoricoAtivo();
-        atualizarStatusImportacao(
-            `Importação concluída: ${resultado.adicionados} novos registros, ${resultado.duplicados} duplicados ignorados.`,
-            'sucesso'
-        );
-
-        if (resultado.ignorados > 0) {
-            alert(`${resultado.ignorados} linha(s) não tinham data ou peça/look reconhecido e foram ignoradas.`);
+        if ((registros.ignorados || 0) > 0) {
+            alert(`${registros.ignorados} linha(s) não tinham data ou peça/look reconhecido e foram ignoradas.`);
         }
+
+        const plano = prepararImportacaoHistorico(registros);
+        if (plano.conflitos.length > 0) {
+            app.importacaoHistoricoPendente = { ...plano, ignorados: registros.ignorados || 0 };
+            mostrarConflitosImportacaoHistorico();
+            atualizarStatusImportacao(`${plano.conflitos.length} dia(s) precisam de revisão antes de importar.`, 'erro');
+            return;
+        }
+
+        const resultado = aplicarPlanoImportacaoHistorico(plano);
+        finalizarImportacaoHistorico(resultado, registros.ignorados || 0);
 
         input.value = '';
     } catch (erro) {
@@ -1355,9 +1371,10 @@ function normalizarRegistroHistorico(linha) {
     const lookId = lookIds[0] || normalizarLookId(
         campos.look || campos.lookid || campos.idlook || campos.look_id || linha.lookId
     );
+    const lookIdsNormalizados = [...new Set([lookId, ...lookIds].filter(Boolean))];
 
     const pecas = extrairIdsPecas(linha);
-    lookIds.forEach(id => {
+    lookIdsNormalizados.forEach(id => {
         const look = obterLookPorId(id);
         if (look?.pecas) pecas.push(...look.pecas);
     });
@@ -1370,7 +1387,7 @@ function normalizarRegistroHistorico(linha) {
         data,
         pecas: pecasValidas,
         lookId: lookId || null,
-        lookIds,
+        lookIds: lookIdsNormalizados,
     };
 }
 
@@ -1494,6 +1511,170 @@ function mesclarHistorico(registros) {
     });
 
     return resultado;
+}
+
+function prepararImportacaoHistorico(registros) {
+    const registrosValidos = (registros || [])
+        .map(normalizarRegistroUso)
+        .filter(Boolean);
+    const existentesPorDia = agruparRegistrosPorDia(app.historico || []);
+    const importadosPorDia = agruparRegistrosPorDia(registrosValidos);
+    const automaticos = [];
+    const conflitos = [];
+
+    Object.entries(importadosPorDia).forEach(([dia, importados]) => {
+        const existentes = existentesPorDia[dia] || [];
+        if (existentes.length === 0) {
+            automaticos.push(...importados);
+            return;
+        }
+
+        if (diaTemDiferencasHistorico(existentes, importados)) {
+            conflitos.push({ dia, existentes, importados, decisao: 'manter' });
+        } else {
+            automaticos.push(...importados);
+        }
+    });
+
+    return { automaticos, conflitos };
+}
+
+function diaTemDiferencasHistorico(existentes, importados) {
+    const chavesExistentes = new Set((existentes || []).map(chaveRegistroHistorico));
+    const chavesImportados = new Set((importados || []).map(chaveRegistroHistorico));
+    if (chavesExistentes.size !== chavesImportados.size) return true;
+    return [...chavesImportados].some(chave => !chavesExistentes.has(chave));
+}
+
+function aplicarPlanoImportacaoHistorico(plano) {
+    const resultado = {
+        adicionados: 0,
+        duplicados: 0,
+        substituidos: 0,
+        mantidos: 0,
+    };
+
+    (plano.automaticos || []).forEach(registro => {
+        if (mesclarRegistroHistorico(registro)) {
+            resultado.adicionados++;
+        } else {
+            resultado.duplicados++;
+        }
+    });
+
+    (plano.conflitos || []).forEach(conflito => {
+        const decisao = conflito.decisao || 'manter';
+        if (decisao === 'manter') {
+            resultado.mantidos += (conflito.importados || []).length;
+            return;
+        }
+
+        if (decisao === 'substituir') {
+            app.historico = (app.historico || []).filter(registro => obterDiaRegistro(registro) !== conflito.dia);
+            (conflito.importados || []).forEach(registro => {
+                app.historico.push(registro);
+                resultado.substituidos++;
+            });
+            return;
+        }
+
+        (conflito.importados || []).forEach(registro => {
+            if (mesclarRegistroHistorico(registro)) {
+                resultado.adicionados++;
+            } else {
+                resultado.duplicados++;
+            }
+        });
+    });
+
+    return resultado;
+}
+
+function finalizarImportacaoHistorico(resultado, ignorados = 0) {
+    salvarDados();
+    aplicarFiltroHistoricoAtivo();
+    atualizarStatusImportacao(
+        `Importação concluída: ${resultado.adicionados} novo(s), ${resultado.substituidos || 0} substituído(s), ${resultado.duplicados} duplicado(s) ignorado(s), ${resultado.mantidos || 0} mantido(s) no app${ignorados ? `, ${ignorados} linha(s) ignorada(s)` : ''}.`,
+        'sucesso'
+    );
+}
+
+function mostrarConflitosImportacaoHistorico() {
+    const pendente = app.importacaoHistoricoPendente;
+    const modal = document.getElementById('modal-conflitos-historico');
+    const lista = document.getElementById('lista-conflitos-historico');
+    if (!pendente || !modal || !lista) return;
+
+    lista.innerHTML = pendente.conflitos.map((conflito, indice) => `
+        <div class="conflito-historico-dia">
+            <div class="conflito-historico-topo">
+                <strong>${formatarDataBR(conflito.dia)}</strong>
+                <span>${conflito.existentes.length} no app · ${conflito.importados.length} no arquivo</span>
+            </div>
+            <div class="conflito-historico-comparacao">
+                <div>
+                    <span>Atual no app</span>
+                    ${resumirRegistrosHistoricoConflito(conflito.existentes)}
+                </div>
+                <div>
+                    <span>Arquivo importado</span>
+                    ${resumirRegistrosHistoricoConflito(conflito.importados)}
+                </div>
+            </div>
+            <label>
+                O que fazer neste dia?
+                <select data-decisao-conflito-historico="${indice}">
+                    <option value="manter">Manter como está no app</option>
+                    <option value="adicionar">Adicionar registros do arquivo</option>
+                    <option value="substituir">Substituir este dia pelo arquivo</option>
+                </select>
+            </label>
+        </div>
+    `).join('');
+
+    modal.style.display = 'flex';
+}
+
+function resumirRegistrosHistoricoConflito(registros) {
+    if (!registros?.length) return '<p class="texto-ajuda">Nenhum registro.</p>';
+
+    return `
+        <ul>
+            ${registros.slice(0, 4).map(registro => {
+                const looks = obterLookIdsRegistro(registro);
+                const pecas = registro.pecas || [];
+                return `<li>${looks.length ? `Looks: ${escapeHtml(looks.join(', '))}` : 'Sem look'} · ${pecas.length} peça(s): ${escapeHtml(pecas.slice(0, 6).join(', '))}${pecas.length > 6 ? '...' : ''}</li>`;
+            }).join('')}
+            ${registros.length > 4 ? `<li>...mais ${registros.length - 4} registro(s)</li>` : ''}
+        </ul>
+    `;
+}
+
+function cancelarImportacaoHistoricoComConflitos() {
+    app.importacaoHistoricoPendente = null;
+    document.getElementById('modal-conflitos-historico').style.display = 'none';
+    const input = document.getElementById('arquivo-historico');
+    if (input) input.value = '';
+    atualizarStatusImportacao('Importação cancelada. Nenhuma alteração foi aplicada.', 'erro');
+}
+
+function confirmarImportacaoHistoricoComConflitos() {
+    const pendente = app.importacaoHistoricoPendente;
+    if (!pendente) return;
+
+    document.querySelectorAll('[data-decisao-conflito-historico]').forEach(select => {
+        const indice = Number(select.dataset.decisaoConflitoHistorico);
+        if (pendente.conflitos[indice]) {
+            pendente.conflitos[indice].decisao = select.value;
+        }
+    });
+
+    const resultado = aplicarPlanoImportacaoHistorico(pendente);
+    app.importacaoHistoricoPendente = null;
+    document.getElementById('modal-conflitos-historico').style.display = 'none';
+    const input = document.getElementById('arquivo-historico');
+    if (input) input.value = '';
+    finalizarImportacaoHistorico(resultado, pendente.ignorados || 0);
 }
 
 function normalizarRegistroUso(registro) {
@@ -4909,7 +5090,7 @@ function atualizarAvisoLookExistenteHistorico(dia) {
     if (!container) return;
 
     const pecas = app.pecasSelecionadasLookHistorico[dia] || [];
-    const looks = obterLooksCompativeis(pecas);
+    const looks = obterLooksCompativeis(pecas, { incluirExcluidos: true });
 
     if (looks.length === 0) {
         container.innerHTML = '';
