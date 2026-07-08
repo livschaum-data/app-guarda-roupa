@@ -2854,6 +2854,16 @@ tr:hover {
     transition: var(--transicao);
 }
 
+.historico-look-registrado {
+    border-color: color-mix(in srgb, var(--cor-primaria) 42%, var(--cor-borda));
+    background: color-mix(in srgb, var(--cor-primaria) 7%, #fff);
+}
+
+.historico-look-inferido {
+    border-color: #f59e0b;
+    background: #fffbeb;
+}
+
 .historico-look-card:hover {
     border-color: var(--cor-primaria);
     box-shadow: var(--sombra);
@@ -2882,6 +2892,29 @@ tr:hover {
 .historico-peca-card small {
     color: var(--cor-texto-cinza);
     font-size: 12px;
+}
+
+.historico-look-origem {
+    display: inline-flex;
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 7px;
+    padding: 3px 7px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.1;
+    white-space: normal;
+}
+
+.historico-look-registrado .historico-look-origem {
+    background: color-mix(in srgb, var(--cor-primaria) 16%, #fff);
+    color: var(--cor-primaria);
+}
+
+.historico-look-inferido .historico-look-origem {
+    background: #fde68a;
+    color: #92400e;
 }
 
 .historico-look-foto,

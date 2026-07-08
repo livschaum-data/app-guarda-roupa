@@ -1216,21 +1216,83 @@ function salvarDadosLocal() {
     localStorage.setItem('app_pecas_personalizadas', JSON.stringify(app.pecasPersonalizadas));
 }
 
+function timestampValor(valor) {
+    if (!valor && valor !== 0) return 0;
+    const direto = new Date(valor);
+    if (!Number.isNaN(direto.getTime())) return direto.getTime();
+    const normalizado = normalizarDataHistorico(valor);
+    const data = normalizado ? new Date(normalizado) : new Date(0);
+    const tempo = data.getTime();
+    return Number.isFinite(tempo) ? tempo : 0;
+}
+
+function timestampRegistroHistorico(registro) {
+    return timestampValor(registro?.alteradoEm || registro?.updatedAt || registro?.updated_at || registro?.criadoEm || registro?.data);
+}
+
+function timestampLookSync(look) {
+    return timestampValor(look?.editadoEm || look?.updatedAt || look?.updated_at || obterDataAtualizacaoLook(look));
+}
+
+function timestampPecaSync(peca) {
+    return timestampValor(peca?.editadaEm || peca?.updatedAt || peca?.updated_at || obterDataAtualizacaoPeca(peca));
+}
+
+function mesclarMapaPorMaisRecente(local = {}, nuvem = {}, obterTimestamp) {
+    const resultado = { ...(local || {}) };
+    Object.entries(nuvem || {}).forEach(([id, itemNuvem]) => {
+        const itemLocal = resultado[id];
+        if (!itemLocal || obterTimestamp(itemNuvem) > obterTimestamp(itemLocal)) {
+            resultado[id] = itemNuvem;
+        }
+    });
+    return resultado;
+}
+
+function chaveConjuntoRegistrosHistorico(registros) {
+    return (registros || []).map(chaveRegistroHistorico).sort().join('||');
+}
+
+function mesclarHistoricoPorMaisRecente(historicoNuvem) {
+    const locais = agruparRegistrosPorDia((app.historico || []).map(normalizarRegistroUso).filter(Boolean));
+    const nuvem = agruparRegistrosPorDia((historicoNuvem || []).map(normalizarRegistroUso).filter(Boolean));
+    const dias = [...new Set([...Object.keys(locais), ...Object.keys(nuvem)])].sort();
+    const resultado = [];
+
+    dias.forEach(dia => {
+        const registrosLocais = locais[dia] || [];
+        const registrosNuvem = nuvem[dia] || [];
+
+        if (registrosLocais.length === 0) {
+            resultado.push(...registrosNuvem);
+            return;
+        }
+
+        if (registrosNuvem.length === 0) {
+            resultado.push(...registrosLocais);
+            return;
+        }
+
+        if (chaveConjuntoRegistrosHistorico(registrosLocais) === chaveConjuntoRegistrosHistorico(registrosNuvem)) {
+            resultado.push(...registrosLocais);
+            return;
+        }
+
+        const tsLocal = Math.max(...registrosLocais.map(timestampRegistroHistorico));
+        const tsNuvem = Math.max(...registrosNuvem.map(timestampRegistroHistorico));
+        resultado.push(...(tsNuvem > tsLocal ? registrosNuvem : registrosLocais));
+    });
+
+    app.historico = resultado;
+}
+
 function mesclarDadosNuvem(data) {
     const historicoNuvem = Array.isArray(data.historico) ? data.historico : [];
 
-    historicoNuvem.forEach(registro => {
-        mesclarRegistroHistorico(registro);
-    });
+    mesclarHistoricoPorMaisRecente(historicoNuvem);
 
-    app.looksFavoritos = {
-        ...(data.looks_favoritos || {}),
-        ...app.looksFavoritos,
-    };
-    app.pecasPersonalizadas = {
-        ...(data.pecas_personalizadas || {}),
-        ...app.pecasPersonalizadas,
-    };
+    app.looksFavoritos = mesclarMapaPorMaisRecente(app.looksFavoritos, data.looks_favoritos || {}, timestampLookSync);
+    app.pecasPersonalizadas = mesclarMapaPorMaisRecente(app.pecasPersonalizadas, data.pecas_personalizadas || {}, timestampPecaSync);
     app.pecas = { ...app.pecas, ...app.pecasPersonalizadas };
     app.mapaUsosLooksAtual = null;
     app.indiceLooksPorPecasAtual = null;
@@ -1388,6 +1450,7 @@ function normalizarRegistroHistorico(linha) {
         pecas: pecasValidas,
         lookId: lookId || null,
         lookIds: lookIdsNormalizados,
+        alteradoEm: new Date().toISOString(),
     };
 }
 
@@ -1572,7 +1635,7 @@ function aplicarPlanoImportacaoHistorico(plano) {
         if (decisao === 'substituir') {
             app.historico = (app.historico || []).filter(registro => obterDiaRegistro(registro) !== conflito.dia);
             (conflito.importados || []).forEach(registro => {
-                app.historico.push(registro);
+                app.historico.push({ ...registro, alteradoEm: new Date().toISOString() });
                 resultado.substituidos++;
             });
             return;
@@ -1683,6 +1746,7 @@ function normalizarRegistroUso(registro) {
     const data = normalizarDataHistorico(registro.data);
     const pecas = [...new Set(Array.isArray(registro.pecas) ? registro.pecas : [])].filter(id => app.pecas[id]);
     const lookIds = [...new Set([registro.lookId, ...(Array.isArray(registro.lookIds) ? registro.lookIds : [])].filter(Boolean))];
+    const alteradoEm = registro.alteradoEm || registro.updatedAt || registro.updated_at || registro.criadoEm || '';
 
     if (!data || pecas.length === 0) return null;
 
@@ -1692,6 +1756,7 @@ function normalizarRegistroUso(registro) {
         pecas,
         lookId: lookIds[0] || null,
         lookIds,
+        alteradoEm,
     };
 }
 
@@ -1716,6 +1781,9 @@ function mesclarRegistroHistorico(registro) {
         obterLookIdsRegistro(normalizado).forEach(id => lookIds.add(id));
         existenteBase.lookIds = [...lookIds];
         existenteBase.lookId = existenteBase.lookId || normalizado.lookId || existenteBase.lookIds[0] || null;
+        existenteBase.alteradoEm = timestampRegistroHistorico(normalizado) > timestampRegistroHistorico(existenteBase)
+            ? normalizado.alteradoEm
+            : existenteBase.alteradoEm;
         return true;
     }
 
@@ -2807,6 +2875,7 @@ function salvarUsoHoje() {
         pecas: [...app.pecasSelecionadasHoje],
         lookId: app.looksSelecionadosHoje[0] || null,
         lookIds: [...app.looksSelecionadosHoje],
+        alteradoEm: new Date().toISOString(),
     };
 
     app.historico.push(registro);
@@ -3215,7 +3284,19 @@ function inferirLookIdsPelasPecas(pecas) {
 
 function obterLookIdsRegistroOuInferidos(registro) {
     const explicitos = obterLookIdsRegistro(registro);
-    return explicitos.length > 0 ? explicitos : inferirLookIdsPelasPecas(registro?.pecas || []);
+    const inferidos = inferirLookIdsPelasPecas(registro?.pecas || []);
+    return [...new Set([...explicitos, ...inferidos])];
+}
+
+function obterLooksRegistroComOrigem(registro) {
+    const explicitos = new Set(obterLookIdsRegistro(registro));
+    const inferidos = new Set(inferirLookIdsPelasPecas(registro?.pecas || []));
+    const ids = [...new Set([...explicitos, ...inferidos])];
+
+    return ids.map(id => ({
+        id,
+        origem: explicitos.has(id) ? 'registrado' : 'inferido',
+    }));
 }
 
 function calcularMapaUsosLooks() {
@@ -4909,14 +4990,21 @@ function renderDetalheHistorico(registrosPeriodo) {
         .sort(([diaA], [diaB]) => diaB.localeCompare(diaA))
         .forEach(([dia, registros]) => {
             const pecasDia = [...new Set(registros.flatMap(reg => reg.pecas || []))].filter(id => app.pecas[id]);
-            const looksDia = [...new Set(registros.flatMap(reg => obterLookIdsRegistroOuInferidos(reg)))].filter(id => obterLookPorId(id));
+            const looksDiaMap = new Map();
+            registros.flatMap(reg => obterLooksRegistroComOrigem(reg)).forEach(item => {
+                if (!obterLookPorId(item.id)) return;
+                const atual = looksDiaMap.get(item.id);
+                const origem = atual?.origem === 'registrado' || item.origem === 'registrado' ? 'registrado' : 'inferido';
+                looksDiaMap.set(item.id, { id: item.id, origem });
+            });
+            const looksDia = [...looksDiaMap.values()];
 
             const grupo = document.createElement('div');
             grupo.className = 'historico-dia';
             grupo.dataset.dia = dia;
 
             const looksHtml = looksDia.length > 0
-                ? looksDia.map(id => criarCardLookHistorico(id)).join('')
+                ? looksDia.map(item => criarCardLookHistorico(item.id, item.origem)).join('')
                 : '<p class="texto-ajuda">Nenhum look identificado nesse dia.</p>';
 
             const pecasHtml = pecasDia.length > 0
@@ -4948,17 +5036,20 @@ function renderDetalheHistorico(registrosPeriodo) {
         });
 }
 
-function criarCardLookHistorico(id) {
+function criarCardLookHistorico(id, origem = 'registrado') {
     const look = obterLookPorId(id);
     const pecas = (look?.pecas || []).filter(pid => app.pecas[pid]);
     const nome = look?.nome || look?.id || id;
+    const origemNormalizada = origem === 'inferido' ? 'inferido' : 'registrado';
+    const origemLabel = origemNormalizada === 'inferido' ? 'Inferido pelas peças' : 'Registrado no histórico';
 
     return `
-        <button type="button" class="historico-look-card" onclick="mostrarDetalhesLook('${id}')">
+        <button type="button" class="historico-look-card historico-look-${origemNormalizada}" onclick="mostrarDetalhesLook('${id}')">
             <img src="${getCaminhoFotoLook(id)}" alt="${nome}" class="historico-look-foto"
                  onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23eee%22 width=%22100%22 height=%22100%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>sem foto</text></svg>'">
             <strong>${nome}</strong>
             <small>${pecas.length} peças</small>
+            <span class="historico-look-origem">${origemLabel}</span>
         </button>
     `;
 }
@@ -5011,6 +5102,7 @@ function removerPecaDoHistoricoDia(dia, pecaId) {
                 pecas: pecasAtualizadas,
                 lookId: lookIdsAtualizados[0] || null,
                 lookIds: lookIdsAtualizados,
+                alteradoEm: new Date().toISOString(),
             };
         })
         .filter(registro => (registro.pecas || []).length > 0);
@@ -5021,7 +5113,6 @@ function removerPecaDoHistoricoDia(dia, pecaId) {
         app.pecasSelecionadasLookHistorico[dia] = app.pecasSelecionadasLookHistorico[dia].filter(id => id !== pecaId);
     }
 
-    app.forcarEnvioLocalSupabase = true;
     salvarDados();
     atualizarHistoricoAposEdicao();
 }
@@ -5435,6 +5526,7 @@ function vincularLookAoHistorico(dia, lookId, pecasLook) {
     lookIds.add(lookId);
     alvo.lookId = alvo.lookId || lookId;
     alvo.lookIds = [...lookIds];
+    alvo.alteradoEm = new Date().toISOString();
 }
 
 function lerFotoLookHistorico() {
