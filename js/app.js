@@ -3112,21 +3112,24 @@ function obterValoresFiltroLooks(campo) {
         utilizacao: (app.dimensoes?.utilizacoes_look || []).map(item => item.valor),
         categoria: (app.dimensoes?.categorias_look || []).map(item => item.categoria),
         indicador: (app.dimensoes?.categorias_look || []).map(item => item.indicador),
-        clima: Object.values(app.climas || {}).map(item => `${item.codigo} - ${item.descricao}`),
+        clima: Object.values(app.climas || {}).map(formatarClimaFiltro),
         local: (app.dimensoes?.locais || []).map(item => item.valor),
         ocasiao: Object.values(app.mapaOcasioes || {}).map(item => item.descricao),
     };
-    const valores = new Set(valoresDimensao[campo] || []);
+    const valores = new Map();
+    const adicionarValor = valor => {
+        if (valor === null || valor === undefined || String(valor).trim() === '') return;
+        const texto = String(valor).trim();
+        const chave = normalizarTexto(texto);
+        if (!valores.has(chave)) valores.set(chave, texto);
+    };
 
+    (valoresDimensao[campo] || []).forEach(adicionarValor);
     obterTodosLooks().forEach(look => {
-        obterValoresCampoLook(look, campo).forEach(valor => {
-            if (valor !== null && valor !== undefined && String(valor).trim() !== '') {
-                valores.add(String(valor).trim());
-            }
-        });
+        obterValoresCampoLook(look, campo).forEach(adicionarValor);
     });
 
-    return [...valores].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }));
+    return [...valores.values()].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }));
 }
 
 function obterValoresCampoLook(look, campo) {
@@ -3142,7 +3145,7 @@ function obterValoresCampoLook(look, campo) {
         case 'categoria':
             return [look.categoria || obterCategoriaIndicadorLook(look.indicador || basicos.Indicador)];
         case 'clima':
-            return [formatarClimaLook(look) || look.clima_calc || look.clima];
+            return [formatarClimaFiltroLook(look), obterCodigoClimaLook(look)];
         case 'local':
             return [look.local_calc || look.local];
         case 'htt':
@@ -3173,9 +3176,41 @@ function obterValoresOcasiaoLook(look) {
     return [...new Set(valores)];
 }
 
+function obterCodigoClimaLook(look) {
+    const info = look?.clima_info || {};
+    return String(look?.clima_calc || look?.clima || info.codigo || '').trim();
+}
+
+function formatarClimaFiltro(clima) {
+    if (!clima) return '';
+    const codigo = String(clima.codigo || '').trim();
+    const descricao = String(clima.descricao || codigo).trim();
+    if (!codigo && !descricao) return '';
+    return codigo && descricao && normalizarTexto(codigo) !== normalizarTexto(descricao)
+        ? `${codigo} - ${descricao}`
+        : (codigo || descricao);
+}
+
+function formatarClimaFiltroLook(look) {
+    const codigo = obterCodigoClimaLook(look);
+    const info = look?.clima_info || app.climas?.[codigo] || {};
+    return formatarClimaFiltro({
+        codigo,
+        descricao: info.descricao || codigo,
+    });
+}
+
 function filtrarLooks(campo, valores) {
     app.filtrosLooks[campo] = valores;
     renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
+}
+
+function normalizarValorFiltroLook(campo, valor) {
+    if (campo === 'clima') {
+        const codigo = String(valor || '').split('-')[0].trim();
+        return normalizarTexto(codigo || valor);
+    }
+    return normalizarTexto(valor);
 }
 
 function limparFiltrosLooks() {
@@ -3214,8 +3249,10 @@ function lookPassaNosFiltros(look) {
             continue;
         }
 
-        const valoresLook = obterValoresCampoLook(look, campo).map(valor => normalizarTexto(valor));
-        const passou = selecionados.some(valorFiltro => valoresLook.includes(normalizarTexto(valorFiltro)));
+        const valoresLook = obterValoresCampoLook(look, campo)
+            .map(valor => normalizarValorFiltroLook(campo, valor))
+            .filter(Boolean);
+        const passou = selecionados.some(valorFiltro => valoresLook.includes(normalizarValorFiltroLook(campo, valorFiltro)));
         if (!passou) return false;
     }
 
