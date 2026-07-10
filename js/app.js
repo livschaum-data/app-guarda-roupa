@@ -1953,15 +1953,15 @@ function detectarDelimitadorCSV(texto) {
 async function xlsxParaObjetos(buffer) {
     const arquivos = await lerZipBasico(buffer);
     const sharedStrings = obterSharedStrings(arquivos['xl/sharedStrings.xml']);
-    const caminhoPlanilha = obterCaminhoPrimeiraPlanilha(arquivos);
+    const caminhoPlanilha = obterCaminhoPlanilhaRegistro(arquivos);
     const xmlPlanilha = arquivos[caminhoPlanilha];
 
     if (!xmlPlanilha) {
-        throw new Error('não encontrei uma aba de planilha dentro do .xlsx.');
+        throw new Error('nao encontrei a aba registro dentro do .xlsx/.xlsm.');
     }
 
     const linhas = planilhaXmlParaMatriz(xmlPlanilha, sharedStrings);
-    return matrizParaObjetos(linhas);
+    return matrizRegistroHistoricoParaObjetos(linhas);
 }
 
 async function lerZipBasico(buffer) {
@@ -2045,6 +2045,76 @@ function obterCaminhoPrimeiraPlanilha(arquivos) {
     }
 
     return 'xl/worksheets/sheet1.xml';
+}
+
+const COLUNAS_REGISTRO_LOOKS = ['C', 'G', 'J', 'N', 'W', 'AA', 'AG', 'AL', 'AM', 'AN', 'AO', 'AP'];
+const COLUNAS_REGISTRO_PECAS = ['D', 'E', 'F', 'H', 'I', 'K', 'L', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'Y', 'Z', 'AB', 'AC', 'AD', 'AE', 'AF', 'AH', 'AI', 'AJ', 'AK'];
+
+function obterCaminhoPlanilhaRegistro(arquivos) {
+    const workbook = arquivos['xl/workbook.xml'];
+    const rels = arquivos['xl/_rels/workbook.xml.rels'];
+    if (!workbook || !rels) return obterCaminhoPrimeiraPlanilha(arquivos);
+
+    const sheets = [...workbook.matchAll(/<sheet\b[^>]*>/g)].map(match => {
+        const tag = match[0];
+        return {
+            nome: decodificarXml(tag.match(/\bname="([^"]+)"/)?.[1] || ''),
+            relId: tag.match(/\br:id="([^"]+)"/)?.[1] || '',
+        };
+    });
+    const sheetRegistro = sheets.find(sheet => normalizarTexto(sheet.nome) === 'registro');
+    if (!sheetRegistro?.relId) return '';
+
+    const rel = new RegExp(`<Relationship[^>]*Id="${sheetRegistro.relId}"[^>]*Target="([^"]+)"`).exec(rels);
+    if (!rel) return '';
+
+    return normalizarCaminhoPlanilhaWorkbook(rel[1]);
+}
+
+function normalizarCaminhoPlanilhaWorkbook(target) {
+    const semPrefixo = String(target || '').replace(/^\/?xl\//, '');
+    return `xl/${semPrefixo.replace(/^\.\.\//, '')}`;
+}
+
+function matrizRegistroHistoricoParaObjetos(linhas) {
+    return (linhas || []).map(linha => {
+        const data = linha[colunaParaIndice('A')] || '';
+        const diaSemana = linha[colunaParaIndice('B')] || '';
+        const lookIds = extrairIdsLooksDasColunasRegistro(linha);
+        const pecas = extrairIdsPecasDasColunasRegistro(linha);
+
+        return {
+            data,
+            diaSemana,
+            lookIds,
+            pecas,
+            origem: 'excel-registro',
+        };
+    });
+}
+
+function extrairIdsLooksDasColunasRegistro(linha) {
+    const ids = [];
+    COLUNAS_REGISTRO_LOOKS.forEach(coluna => {
+        const valor = linha[colunaParaIndice(coluna)];
+        if (!valorVisivel(valor)) return;
+        const encontrados = String(valor).toUpperCase().match(/\b(?:LOOK_\d+|[A-Z]{1,4}\d{4})\b/g) || [];
+        encontrados.forEach(id => {
+            if (obterLookPorId(id)) ids.push(id);
+        });
+    });
+    return [...new Set(ids)];
+}
+
+function extrairIdsPecasDasColunasRegistro(linha) {
+    const ids = [];
+    COLUNAS_REGISTRO_PECAS.forEach(coluna => {
+        const valor = linha[colunaParaIndice(coluna)];
+        if (!valorVisivel(valor)) return;
+        const encontrados = String(valor).toUpperCase().match(/\bID\d{4}\b/g) || [];
+        ids.push(...encontrados);
+    });
+    return [...new Set(ids)];
 }
 
 function planilhaXmlParaMatriz(xml, sharedStrings) {
