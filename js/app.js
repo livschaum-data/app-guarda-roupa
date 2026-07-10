@@ -104,6 +104,10 @@ const app = {
         situacao: '',
         tempo: '',
     },
+    filtroDataUsoPecas: {
+        inicio: '',
+        fim: '',
+    },
 };
 
 /* ==================== INICIALIZAR A APP ====================
@@ -363,22 +367,7 @@ function criarRestricoesHtml(peca) {
 function criarCardPeca(peca) {
     const card = document.createElement('div');
     card.className = 'card-peca';
-    const textoBusca = [
-        peca.id,
-        peca.tipo,
-        peca.funcao,
-        peca.subtipo,
-        peca.padronagem,
-        peca.cor_detalhe,
-        peca.tom,
-        peca.nivel_aquecimento,
-        peca.utilizacao,
-        peca.local,
-        peca.situacao,
-        ...(peca.detalhes || []).flatMap(item => [item.campo, item.valor]),
-        ...(peca.acessorios || []).flatMap(item => [item.grupo, item.id]),
-        ...(peca.combinacoes_nao_permitidas || []).flatMap(item => [item.codigo, item.descricao]),
-    ].filter(valorVisivel).join(' ');
+    const textoBusca = obterTextoBuscaPeca(peca);
 
     card.dataset.textoBusca = textoBusca.toLowerCase();
     card.innerHTML = `
@@ -391,6 +380,26 @@ function criarCardPeca(peca) {
     `;
     card.onclick = () => abrirDetalhsPeca(peca.id);
     return card;
+}
+
+function obterTextoBuscaPeca(peca) {
+    return [
+        peca.id,
+        peca.tipo,
+        peca.funcao,
+        peca.subtipo,
+        peca.padronagem,
+        peca.cor_detalhe,
+        peca.cor,
+        peca.tom,
+        peca.nivel_aquecimento,
+        peca.utilizacao,
+        peca.local,
+        peca.situacao,
+        ...(peca.detalhes || []).flatMap(item => [item.campo, item.valor]),
+        ...(peca.acessorios || []).flatMap(item => [item.grupo, item.id]),
+        ...(peca.combinacoes_nao_permitidas || []).flatMap(item => [item.codigo, item.descricao]),
+    ].filter(valorVisivel).join(' ');
 }
 
 function obterDataCriacaoLook(look) {
@@ -683,6 +692,10 @@ function carregarEstadoFiltros() {
             tempo: estado.filtrosSemUso?.tempo || '',
         };
         app.filtroPesquisaPecas = estado.filtroPesquisaPecas || '';
+        app.filtroDataUsoPecas = {
+            inicio: estado.filtroDataUsoPecas?.inicio || '',
+            fim: estado.filtroDataUsoPecas?.fim || '',
+        };
     } catch (erro) {
         console.warn('Filtros salvos invalidos. Mantendo filtros padrao.', erro);
     }
@@ -702,6 +715,7 @@ function salvarEstadoFiltros() {
             filtroHistoricoAtivo: clonarEstado(app.filtroHistoricoAtivo, null),
             mesCalendarioHistorico: app.mesCalendarioHistorico || '',
             filtrosSemUso: clonarEstado(app.filtrosSemUso, {}),
+            filtroDataUsoPecas: clonarEstado(app.filtroDataUsoPecas, {}),
         }));
     } catch (erro) {
         console.warn('Nao foi possivel salvar os filtros.', erro);
@@ -710,8 +724,12 @@ function salvarEstadoFiltros() {
 
 function aplicarPesquisaPecasSalva() {
     const input = document.getElementById('filtro-pesquisa');
-    if (!input) return;
-    input.value = app.filtroPesquisaPecas || '';
+    const dataInicio = document.getElementById('pecas-data-uso-inicio');
+    const dataFim = document.getElementById('pecas-data-uso-fim');
+    if (input) input.value = app.filtroPesquisaPecas || '';
+    if (dataInicio) dataInicio.value = app.filtroDataUsoPecas.inicio || '';
+    if (dataFim) dataFim.value = app.filtroDataUsoPecas.fim || '';
+    atualizarResumoDataUsoPecas();
     filtrarPecas();
 }
 
@@ -2219,6 +2237,7 @@ function resetarFiltrosHome() {
     for (let campo in app.filtrosHome) {
         app.filtrosHome[campo] = [];
     }
+    app.filtroDataUsoPecas = { inicio: '', fim: '' };
     
     // Resetar visualmente as caixas de selecao
     document.querySelectorAll('#filtros-home input[type="checkbox"]').forEach(checkbox => {
@@ -2230,6 +2249,11 @@ function resetarFiltrosHome() {
         filtro.classList.remove('tem-selecao', 'aberto');
         filtro.querySelector('.filtro-multiplo-contador').textContent = '';
     });
+    const dataInicio = document.getElementById('pecas-data-uso-inicio');
+    const dataFim = document.getElementById('pecas-data-uso-fim');
+    if (dataInicio) dataInicio.value = '';
+    if (dataFim) dataFim.value = '';
+    atualizarResumoDataUsoPecas();
     
     renderGaleriaFiltrada();
     salvarEstadoFiltros();
@@ -2239,8 +2263,26 @@ function resetarFiltrosHome() {
 function renderGaleriaFiltrada() {
     const galeria = document.getElementById('galeria');
     galeria.innerHTML = '';
+    const pecasFiltradas = obterPecasFiltradasHome();
+    renderTabelaPecasFiltradas(pecasFiltradas);
 
-    Object.values(app.pecas).forEach(peca => {
+    if (pecasFiltradas.length === 0) {
+        galeria.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #999;">Nenhuma peça encontrada para esses filtros.</p>';
+        return;
+    }
+
+    pecasFiltradas.forEach(peca => {
+        galeria.appendChild(criarCardPeca(peca));
+    });
+
+    console.log('Galeria filtrada renderizada!');
+}
+
+function obterPecasFiltradasHome() {
+    const termo = normalizarTexto(document.getElementById('filtro-pesquisa')?.value || app.filtroPesquisaPecas || '');
+    const idsPecasPorDataUso = obterIdsPecasPorDataUsoSelecionada();
+
+    return Object.values(app.pecas).filter(peca => {
         // Verificar cada filtro
         let passouNosFiltros = true;
         
@@ -2255,26 +2297,160 @@ function renderGaleriaFiltrada() {
             }
         }
 
-        if (!passouNosFiltros) return;
+        if (!passouNosFiltros) return false;
+        if (idsPecasPorDataUso && !idsPecasPorDataUso.has(peca.id)) return false;
+        if (!termo) return true;
 
+        return normalizarTexto(obterTextoBuscaPeca(peca)).includes(termo);
+    });
+
+    if (pecasFiltradas.length === 0) {
+        galeria.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #999;">Nenhuma peça encontrada para esses filtros.</p>';
+        return;
+    }
+
+    pecasFiltradas.forEach(peca => {
         galeria.appendChild(criarCardPeca(peca));
     });
 
     console.log('🖼️ Galeria filtrada renderizada!');
 }
 
+function renderTabelaPecasFiltradas(pecas) {
+    const container = document.getElementById('tabela-pecas-filtradas');
+    const contagem = document.getElementById('tabela-pecas-contagem');
+    if (!container) return;
+
+    if (contagem) {
+        contagem.textContent = `${pecas.length} peça${pecas.length === 1 ? '' : 's'}`;
+    }
+
+    if (pecas.length === 0) {
+        container.innerHTML = '<p class="texto-ajuda">Nenhuma peça encontrada para esses filtros.</p>';
+        return;
+    }
+
+    const ultimoUso = obterUltimoUsoPorPeca();
+    container.innerHTML = `
+        <div class="tabela-pecas-cabecalho">
+            <span>ID</span>
+            <span>Ultimo uso</span>
+            <span>Tipo</span>
+            <span>Função</span>
+            <span>Subtipo</span>
+            <span>nivel_aquecimento</span>
+            <span>Utilização</span>
+            <span>Formalidade</span>
+            <span>Tendência</span>
+            <span>Local</span>
+            <span>Alocação</span>
+            <span>Situação</span>
+            <span>Conservação</span>
+            <span>Repor</span>
+            <span>Info e fotos</span>
+            <span>Combinação</span>
+            <span>Data revisão</span>
+        </div>
+        ${pecas.map(peca => criarLinhaTabelaPecaFiltrada(peca, ultimoUso)).join('')}
+    `;
+}
+
+function criarLinhaTabelaPecaFiltrada(peca, ultimoUso) {
+    const dataUltimoUso = ultimoUso[peca.id];
+    const ultimoUsoTexto = dataUltimoUso ? formatarDataBR(formatarDataInput(dataUltimoUso)) : '-';
+    const dataRevisao = obterDataAtualizacaoPeca(peca);
+    const combinacoes = normalizarListaPeca(peca.combinacoes_nao_permitidas)
+        .map(item => item.codigo || item.id || item.descricao)
+        .filter(valorVisivel)
+        .join(', ');
+
+    return `
+        <button type="button" class="tabela-pecas-linha" onclick="mostrarDetalhesPeca('${peca.id}')">
+            <span class="tabela-pecas-id">
+                <img src="${escapeHtml(getCaminhoFoto(peca.id))}" alt="${escapeHtml(peca.id)}" onerror="${onErrorImagem()}">
+                <strong>${escapeHtml(peca.id)}</strong>
+            </span>
+            <span>${escapeHtml(ultimoUsoTexto)}</span>
+            <span>${escapeHtml(valorTabelaPeca(peca.tipo))}</span>
+            <span>${escapeHtml(valorTabelaPeca(peca.funcao))}</span>
+            <span>${escapeHtml(valorTabelaPeca(peca.subtipo))}</span>
+            <span>${escapeHtml(valorTabelaPeca(peca.nivel_aquecimento))}</span>
+            <span>${escapeHtml(valorTabelaPeca(peca.utilizacao))}</span>
+            <span>${escapeHtml(valorTabelaPeca(peca.formalidade))}</span>
+            <span>${escapeHtml(valorTabelaPeca(peca.tendencia))}</span>
+            <span>${escapeHtml(valorTabelaPeca(peca.local))}</span>
+            <span>${escapeHtml(valorTabelaPeca(peca.alocacao))}</span>
+            <span>${escapeHtml(valorTabelaPeca(peca.situacao))}</span>
+            <span>${escapeHtml(valorTabelaPeca(peca.conservacao))}</span>
+            <span>${escapeHtml(valorTabelaPeca(peca.reposicao || obterDetalhePeca(peca, 'Repor')))}</span>
+            <span class="tabela-pecas-info">Ver ficha</span>
+            <span>${escapeHtml(valorTabelaPeca(combinacoes))}</span>
+            <span>${escapeHtml(dataRevisao ? formatarDataBR(dataRevisao) : '-')}</span>
+        </button>
+    `;
+}
+
+function valorTabelaPeca(valor) {
+    return valorVisivel(valor) ? String(valor) : '-';
+}
+
 /* Filtrar peças por texto na barra de pesquisa */
 function filtrarPecas() {
-    const termoOriginal = document.getElementById('filtro-pesquisa').value;
-    const termo = termoOriginal.toLowerCase();
+    const termoOriginal = document.getElementById('filtro-pesquisa')?.value || '';
     app.filtroPesquisaPecas = termoOriginal;
     salvarEstadoFiltros();
-    const cards = document.querySelectorAll('.card-peca');
+    renderGaleriaFiltrada();
+}
 
-    cards.forEach(card => {
-        const texto = card.dataset.textoBusca || card.textContent.toLowerCase();
-        card.style.display = texto.includes(termo) ? '' : 'none';
+function consultarPecasPorDataUso() {
+    const inicio = document.getElementById('pecas-data-uso-inicio')?.value || '';
+    const fim = document.getElementById('pecas-data-uso-fim')?.value || inicio;
+
+    if (!inicio) {
+        alert('Informe a data inicial para consultar os usos.');
+        return;
+    }
+    if (fim && fim < inicio) {
+        alert('A data final nao pode ser anterior a data inicial.');
+        return;
+    }
+
+    app.filtroDataUsoPecas = { inicio, fim };
+    const campoFim = document.getElementById('pecas-data-uso-fim');
+    if (campoFim) campoFim.value = fim;
+    atualizarResumoDataUsoPecas();
+    salvarEstadoFiltros();
+    renderGaleriaFiltrada();
+}
+
+function obterIdsPecasPorDataUsoSelecionada() {
+    const { inicio, fim } = app.filtroDataUsoPecas || {};
+    if (!inicio) return null;
+
+    const ids = new Set();
+    obterRegistrosHistoricoEntre(inicio, fim || inicio).forEach(registro => {
+        (registro.pecas || []).forEach(id => {
+            if (app.pecas[id]) ids.add(id);
+        });
     });
+    return ids;
+}
+
+function atualizarResumoDataUsoPecas() {
+    const resumo = document.getElementById('resumo-data-uso-pecas');
+    if (!resumo) return;
+
+    const { inicio, fim } = app.filtroDataUsoPecas || {};
+    if (!inicio) {
+        resumo.textContent = 'Nenhum periodo selecionado.';
+        return;
+    }
+
+    const ids = obterIdsPecasPorDataUsoSelecionada();
+    const periodo = fim && fim !== inicio
+        ? `${formatarDataBR(inicio)} ate ${formatarDataBR(fim)}`
+        : formatarDataBR(inicio);
+    resumo.textContent = `${ids.size} peça${ids.size === 1 ? '' : 's'} usada${ids.size === 1 ? '' : 's'} em ${periodo}.`;
 }
 
 function reconstruirFiltrosHome() {
@@ -4944,6 +5120,10 @@ function pecaPassaFiltroSemUso({ peca, dias }) {
     if (tipo && peca.tipo !== tipo) return false;
     if (local && peca.local !== local) return false;
     if (situacao && peca.situacao !== situacao) return false;
+    return pecaPassaFiltroTempoSemUso(dias, tempo);
+}
+
+function pecaPassaFiltroTempoSemUso(dias, tempo) {
     if (!tempo) return true;
     if (tempo === 'nunca') return dias === null;
 

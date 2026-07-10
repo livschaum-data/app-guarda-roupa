@@ -22,7 +22,7 @@
             }
         })();
     </script>
-    <link rel="stylesheet" href="css/style.css?v=20260626-ocasioes-acessorios-menores">
+    <link rel="stylesheet" href="css/style.css?v=20260710-filtros-pecas-compactos">
 </head>
 <body>
     <div id="app">
@@ -135,6 +135,7 @@
                     <small>Rever usos, datas, estatisticas e sincronizacao.</small>
                 </a>
             </div>
+
         </div>
 
         <div id="pecas" class="pagina" style="display:none;">
@@ -145,6 +146,24 @@
                            onkeyup="filtrarPecas()">
                     <button class="btn-principal" type="button" onclick="abrirNovaPeca()">+ Nova peça</button>
                 </div>
+            </div>
+
+            <div class="secao secao-consulta-pecas-uso">
+                <h3>Consultar por data de uso</h3>
+                <div class="consulta-historico">
+                    <label>
+                        De
+                        <input type="date" id="pecas-data-uso-inicio">
+                    </label>
+                    <label>
+                        Até
+                        <input type="date" id="pecas-data-uso-fim">
+                    </label>
+                    <button type="button" class="btn-principal" onclick="consultarPecasPorDataUso()">
+                        Ver usos
+                    </button>
+                </div>
+                <p id="resumo-data-uso-pecas" class="texto-ajuda"></p>
             </div>
 
             <!-- Filtros suspensos (Dropdowns) -->
@@ -159,6 +178,15 @@
                  JavaScript irá criar cards para cada peça -->
             <div id="galeria" class="galeria">
                 <!-- Os cards das peças serão inseridos aqui pelo JavaScript -->
+            </div>
+            <div class="secao secao-tabela-pecas">
+                <div class="resumo-periodo-topo">
+                    <h3>Peças filtradas</h3>
+                    <span id="tabela-pecas-contagem" class="texto-ajuda"></span>
+                </div>
+                <div id="tabela-pecas-filtradas" class="tabela-pecas-filtradas">
+                    <p class="texto-ajuda">Aplique filtros para ver a lista de peças.</p>
+                </div>
             </div>
         </div>
 
@@ -647,7 +675,7 @@
          A ordem importa! CSS deve carregar antes, depois o app.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js?v=20260624-config-supabase"></script>
-    <script src="js/app.js?v=20260626-theme-toggle"></script>
+    <script src="js/app.js?v=20260710-tabela-pecas-filtradas-2"></script>
 </body>
 </html>
 
