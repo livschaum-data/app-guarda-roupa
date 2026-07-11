@@ -1943,6 +1943,291 @@ body {
     padding: 18px;
 }
 
+.modal-looks-peca {
+    max-width: 1040px;
+}
+
+.looks-peca-topo {
+    display: grid;
+    grid-template-columns: minmax(190px, 260px) minmax(0, 1fr);
+    gap: 18px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.looks-peca-selecionada {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 12px;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    background: var(--cor-fundo);
+}
+
+.looks-peca-selecionada img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #f3f4f6;
+}
+
+.looks-peca-selecionada small,
+.looks-peca-card small,
+.looks-peca-filtro summary span {
+    color: var(--cor-texto-cinza);
+}
+
+.looks-peca-selecionada strong {
+    display: block;
+    margin-top: 2px;
+    color: var(--cor-texto);
+    font-size: 18px;
+}
+
+.looks-peca-topo h2 {
+    margin: 0 0 4px;
+}
+
+.looks-peca-filtros {
+    display: grid;
+    grid-template-columns: minmax(120px, 0.8fr) repeat(3, minmax(170px, 1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.looks-peca-filtro-htt,
+.looks-peca-filtro {
+    min-width: 0;
+}
+
+.looks-peca-filtro-htt {
+    display: grid;
+    gap: 5px;
+    color: var(--cor-texto-cinza);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.looks-peca-filtro-htt select,
+.looks-peca-filtro summary {
+    min-height: 40px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    background: var(--cor-fundo-card);
+    color: var(--cor-texto);
+}
+
+.looks-peca-filtro-htt select {
+    padding: 8px 10px;
+    font: inherit;
+}
+
+.looks-peca-filtro {
+    position: relative;
+}
+
+.looks-peca-filtro summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 10px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.looks-peca-filtro summary::-webkit-details-marker {
+    display: none;
+}
+
+.looks-peca-filtro summary strong {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--cor-texto);
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.looks-peca-opcoes {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 12;
+    display: grid;
+    gap: 4px;
+    max-height: 260px;
+    overflow: auto;
+    padding: 8px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    background: var(--cor-fundo-card);
+    box-shadow: var(--sombra);
+}
+
+.looks-peca-opcoes button {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+    padding: 7px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--cor-texto);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.looks-peca-opcoes button:hover,
+.looks-peca-opcoes button.ativo {
+    border-color: var(--cor-primaria);
+    background: rgba(139, 92, 246, 0.10);
+}
+
+.looks-peca-opcoes img,
+.looks-peca-opcao-vazia {
+    width: 38px;
+    height: 38px;
+    border-radius: 7px;
+    background: #f3f4f6;
+}
+
+.looks-peca-opcoes img {
+    object-fit: contain;
+}
+
+.looks-peca-opcao-vazia {
+    display: grid;
+    place-items: center;
+    color: var(--cor-texto-cinza);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.looks-peca-opcoes strong,
+.looks-peca-opcoes small {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.looks-peca-opcoes small {
+    color: var(--cor-texto-cinza);
+    font-size: 11px;
+}
+
+.looks-peca-lista {
+    display: grid;
+    gap: 14px;
+    max-height: 58vh;
+    overflow: auto;
+    padding-right: 4px;
+}
+
+.looks-peca-grupo {
+    display: grid;
+    gap: 10px;
+}
+
+.looks-peca-grupo-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.looks-peca-grupo-topo h3 {
+    margin: 0;
+    color: var(--cor-texto);
+    font-size: 15px;
+}
+
+.looks-peca-grupo-topo span {
+    color: var(--cor-texto-cinza);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.looks-peca-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+    gap: 10px;
+}
+
+.looks-peca-card {
+    position: relative;
+    display: grid;
+    gap: 6px;
+    padding: 9px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    background: var(--cor-fundo-card);
+    color: var(--cor-texto);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.looks-peca-card:hover {
+    border-color: var(--cor-primaria);
+    box-shadow: var(--sombra);
+    transform: translateY(-1px);
+}
+
+.looks-peca-card img {
+    width: 100%;
+    height: 110px;
+    object-fit: contain;
+    border-radius: 7px;
+    background: #f3f4f6;
+}
+
+.looks-peca-card strong,
+.looks-peca-card small {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.looks-peca-card > span {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 3px 6px;
+    border-radius: 999px;
+    background: var(--cor-primaria);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+@media (max-width: 768px) {
+    .looks-peca-topo,
+    .looks-peca-filtros {
+        grid-template-columns: 1fr;
+    }
+
+    .looks-peca-lista {
+        max-height: 54vh;
+    }
+
+    .looks-peca-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
 .form-edicao-look {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2258,7 +2543,8 @@ tr:hover {
 .tabela-pecas-linha {
     display: grid;
     grid-template-columns:
-        minmax(92px, 1fr)
+        48px
+        minmax(92px, 0.9fr)
         minmax(82px, 0.9fr)
         minmax(86px, 0.9fr)
         minmax(88px, 0.9fr)
@@ -2277,7 +2563,7 @@ tr:hover {
         minmax(92px, 0.9fr);
     gap: 5px;
     align-items: center;
-    min-width: 1660px;
+    min-width: 1715px;
 }
 
 .tabela-pecas-cabecalho {
@@ -2313,22 +2599,77 @@ tr:hover {
 }
 
 .tabela-pecas-linha span,
-.tabela-pecas-cabecalho span {
+.tabela-pecas-cabecalho span,
+.tabela-pecas-ordenar {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.tabela-pecas-id {
-    display: grid;
-    grid-template-columns: 30px minmax(0, 1fr);
+.tabela-pecas-ordenar {
+    display: flex;
     align-items: center;
-    gap: 7px;
+    justify-content: space-between;
+    gap: 4px;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    text-align: left;
+    text-transform: inherit;
+    cursor: pointer;
+}
+
+.tabela-pecas-ordenar small {
+    flex: 0 0 10px;
+    color: var(--cor-primaria);
+    font-size: 11px;
+    line-height: 1;
+    text-align: right;
+}
+
+.tabela-pecas-ordenar:hover,
+.tabela-pecas-ordenar.ativo {
+    color: var(--cor-primaria);
+}
+
+.tabela-pecas-foto,
+.tabela-pecas-id {
+    position: sticky;
+    z-index: 3;
+    background: var(--cor-fundo-card);
+}
+
+.tabela-pecas-foto {
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tabela-pecas-id {
+    left: 53px;
+    display: flex;
+    align-items: center;
     font-weight: 800;
 }
 
-.tabela-pecas-id img {
+.tabela-pecas-cabecalho .tabela-pecas-foto,
+.tabela-pecas-cabecalho .tabela-pecas-id {
+    z-index: 5;
+}
+
+.tabela-pecas-linha:hover .tabela-pecas-foto,
+.tabela-pecas-linha:hover .tabela-pecas-id {
+    background: var(--cor-fundo-card);
+}
+
+.tabela-pecas-foto img {
     width: 30px;
     height: 30px;
     border: 1px solid var(--cor-borda);

@@ -551,7 +551,7 @@ def extrair_dados(arquivo_excel):
     
     pecas = {}
     headers_pecas = [valor_texto(cell.value) for cell in ws_pecas[1]]
-    campos_extra_idx = [11, 12, 13, 15, 16, 17, 18, 20, 21, 22, 23, 24, 27, 28]
+    campos_extra_idx = [11, 12, 13, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 26, 27, 28]
     acessorios_idx = range(37, 61) # AL:BI
     combinacoes_nao_permitidas_idx = range(61, 69) # BJ:BQ
     mapa_combinacoes_nao_permitidas = extrair_mapa_combinacoes_nao_permitidas(wb)
@@ -592,6 +592,8 @@ def extrair_dados(arquivo_excel):
             situacao = str(row[16]) if row[16] else 'na'  # Coluna Q
             conservacao = str(row[17]) if row[17] else 'na'  # Coluna R
             reposicao = str(row[18]) if row[18] else 'na'  # Coluna S
+            info_fotos = valor_texto(row[25]) if len(row) > 25 else ''  # Coluna Z
+            combinacoes = valor_texto(row[26]) if len(row) > 26 else ''  # Coluna AA
             detalhes = extrair_campos_linha(row, headers_pecas, campos_extra_idx)
             acessorios = extrair_ids_linha(row, headers_pecas, acessorios_idx)
             combinacoes_nao_permitidas = []
@@ -631,6 +633,8 @@ def extrair_dados(arquivo_excel):
                 'situacao': situacao.strip(),
                 'conservacao': conservacao.strip(),
                 'reposicao': reposicao.strip(),
+                'info_fotos': info_fotos,
+                'combinacoes': combinacoes,
                 'detalhes': detalhes,
                 'acessorios': acessorios,
                 'combinacoes_nao_permitidas': combinacoes_nao_permitidas

@@ -108,6 +108,16 @@ const app = {
         inicio: '',
         fim: '',
     },
+    ordenacaoTabelaPecas: {
+        campo: 'id',
+        direcao: 'asc',
+    },
+    filtrosLooksPeca: {
+        htt: 'todos',
+        peca1: '',
+        peca2: '',
+        peca3: '',
+    },
 };
 
 /* ==================== INICIALIZAR A APP ====================
@@ -396,6 +406,8 @@ function obterTextoBuscaPeca(peca) {
         peca.utilizacao,
         peca.local,
         peca.situacao,
+        obterInfoFotosPeca(peca),
+        obterCombinacoesPeca(peca),
         ...(peca.detalhes || []).flatMap(item => [item.campo, item.valor]),
         ...(peca.acessorios || []).flatMap(item => [item.grupo, item.id]),
         ...(peca.combinacoes_nao_permitidas || []).flatMap(item => [item.codigo, item.descricao]),
@@ -2401,45 +2413,139 @@ function renderTabelaPecasFiltradas(pecas) {
     }
 
     const ultimoUso = obterUltimoUsoPorPeca();
+    const pecasOrdenadas = ordenarPecasTabela(pecas, ultimoUso);
     container.innerHTML = `
         <div class="tabela-pecas-cabecalho">
-            <span>ID</span>
-            <span>Ultimo uso</span>
-            <span>Tipo</span>
-            <span>Função</span>
-            <span>Subtipo</span>
-            <span>nivel_aquecimento</span>
-            <span>Utilização</span>
-            <span>Formalidade</span>
-            <span>Tendência</span>
-            <span>Local</span>
-            <span>Alocação</span>
-            <span>Situação</span>
-            <span>Conservação</span>
-            <span>Repor</span>
-            <span>Info e fotos</span>
-            <span>Combinação</span>
-            <span>Data revisão</span>
+            ${COLUNAS_TABELA_PECAS.map(criarCelulaCabecalhoTabelaPecas).join('')}
         </div>
-        ${pecas.map(peca => criarLinhaTabelaPecaFiltrada(peca, ultimoUso)).join('')}
+        ${pecasOrdenadas.map(peca => criarLinhaTabelaPecaFiltrada(peca, ultimoUso)).join('')}
     `;
+}
+
+const COLUNAS_TABELA_PECAS = [
+    { campo: 'foto', titulo: 'Foto', classe: 'tabela-pecas-foto' },
+    { campo: 'id', titulo: 'ID', classe: 'tabela-pecas-id' },
+    { campo: 'ultimoUso', titulo: 'Ultimo uso' },
+    { campo: 'tipo', titulo: 'Tipo' },
+    { campo: 'funcao', titulo: 'Função' },
+    { campo: 'subtipo', titulo: 'Subtipo' },
+    { campo: 'nivel_aquecimento', titulo: 'nivel_aquecimento' },
+    { campo: 'utilizacao', titulo: 'Utilização' },
+    { campo: 'formalidade', titulo: 'Formalidade' },
+    { campo: 'tendencia', titulo: 'Tendência' },
+    { campo: 'local', titulo: 'Local' },
+    { campo: 'alocacao', titulo: 'Alocação' },
+    { campo: 'situacao', titulo: 'Situação' },
+    { campo: 'conservacao', titulo: 'Conservação' },
+    { campo: 'reposicao', titulo: 'Repor' },
+    { campo: 'infoFotos', titulo: 'Info e fotos' },
+    { campo: 'combinacao', titulo: 'Combinação' },
+    { campo: 'dataRevisao', titulo: 'Data revisão' },
+];
+
+function criarCelulaCabecalhoTabelaPecas(coluna) {
+    const ordenacao = app.ordenacaoTabelaPecas || {};
+    const ativo = ordenacao.campo === coluna.campo;
+    const direcao = ativo ? ordenacao.direcao : '';
+    const classe = [
+        'tabela-pecas-ordenar',
+        coluna.classe || '',
+        ativo ? 'ativo' : '',
+    ].filter(Boolean).join(' ');
+    const indicador = ativo ? (direcao === 'desc' ? '↓' : '↑') : '';
+
+    return `
+        <button type="button" class="${classe}" onclick="ordenarTabelaPecas('${coluna.campo}')">
+            <span>${escapeHtml(coluna.titulo)}</span>
+            <small aria-hidden="true">${indicador}</small>
+        </button>
+    `;
+}
+
+function ordenarTabelaPecas(campo) {
+    const atual = app.ordenacaoTabelaPecas || {};
+    const direcao = atual.campo === campo && atual.direcao === 'asc' ? 'desc' : 'asc';
+    app.ordenacaoTabelaPecas = { campo, direcao };
+    renderGaleriaFiltrada();
+}
+
+function ordenarPecasTabela(pecas, ultimoUso) {
+    const { campo = 'id', direcao = 'asc' } = app.ordenacaoTabelaPecas || {};
+    const multiplicador = direcao === 'desc' ? -1 : 1;
+
+    return [...pecas].sort((a, b) => {
+        const valorA = obterValorOrdenacaoTabelaPeca(a, campo, ultimoUso);
+        const valorB = obterValorOrdenacaoTabelaPeca(b, campo, ultimoUso);
+        const vazioA = !valorVisivel(valorA);
+        const vazioB = !valorVisivel(valorB);
+
+        if (vazioA && vazioB) return String(a.id).localeCompare(String(b.id), 'pt-BR', { numeric: true });
+        if (vazioA) return 1;
+        if (vazioB) return -1;
+
+        return compararValoresTabelaPecas(valorA, valorB) * multiplicador
+            || String(a.id).localeCompare(String(b.id), 'pt-BR', { numeric: true });
+    });
+}
+
+function compararValoresTabelaPecas(valorA, valorB) {
+    const dataA = normalizarDataHistorico(valorA);
+    const dataB = normalizarDataHistorico(valorB);
+    if (dataA && dataB) return dataA.localeCompare(dataB);
+
+    const numeroA = Number(String(valorA).replace(',', '.'));
+    const numeroB = Number(String(valorB).replace(',', '.'));
+    if (Number.isFinite(numeroA) && Number.isFinite(numeroB)) return numeroA - numeroB;
+
+    return String(valorA).localeCompare(String(valorB), 'pt-BR', { numeric: true, sensitivity: 'base' });
+}
+
+function obterValorOrdenacaoTabelaPeca(peca, campo, ultimoUso) {
+    if (campo === 'foto' || campo === 'id') return peca.id;
+    if (campo === 'ultimoUso') return ultimoUso[peca.id] || '';
+    if (campo === 'reposicao') return peca.reposicao || obterDetalhePeca(peca, 'Repor') || '';
+    if (campo === 'infoFotos') return obterInfoFotosPeca(peca);
+    if (campo === 'combinacao') return obterCombinacoesPeca(peca);
+    if (campo === 'dataRevisao') return obterDataAtualizacaoPeca(peca) || '';
+    return peca[campo] || '';
+}
+
+function obterInfoFotosPeca(peca) {
+    return peca.info_fotos
+        || peca.infoFotos
+        || obterDetalhePeca(peca, 'Info e fotos')
+        || obterDetalhePeca(peca, 'Info/fotos')
+        || '';
+}
+
+function obterCombinacoesPeca(peca) {
+    const combinacoes = peca.combinacoes
+        || peca.combinacao
+        || obterDetalhePeca(peca, 'Combinações')
+        || obterDetalhePeca(peca, 'Combinacoes')
+        || '';
+
+    if (valorVisivel(combinacoes)) return combinacoes;
+
+    return normalizarListaPeca(peca.combinacoes_nao_permitidas)
+        .map(item => item.codigo || item.id || item.descricao)
+        .filter(valorVisivel)
+        .join(', ');
 }
 
 function criarLinhaTabelaPecaFiltrada(peca, ultimoUso) {
     const dataUltimoUso = ultimoUso[peca.id];
     const ultimoUsoTexto = dataUltimoUso ? formatarDataBR(formatarDataInput(dataUltimoUso)) : '-';
     const dataRevisao = obterDataAtualizacaoPeca(peca);
-    const combinacoes = normalizarListaPeca(peca.combinacoes_nao_permitidas)
-        .map(item => item.codigo || item.id || item.descricao)
-        .filter(valorVisivel)
-        .join(', ');
+    const infoFotos = obterInfoFotosPeca(peca);
+    const combinacoes = obterCombinacoesPeca(peca);
 
     return `
         <button type="button" class="tabela-pecas-linha" onclick="mostrarDetalhesPeca('${peca.id}')">
-            <span class="tabela-pecas-id">
+            <span class="tabela-pecas-foto">
                 <img src="${escapeHtml(getCaminhoFoto(peca.id))}" alt="${escapeHtml(peca.id)}" onerror="${onErrorImagem()}">
-                <strong>${escapeHtml(peca.id)}</strong>
             </span>
+            <span class="tabela-pecas-id"><strong>${escapeHtml(peca.id)}</strong></span>
             <span>${escapeHtml(ultimoUsoTexto)}</span>
             <span>${escapeHtml(valorTabelaPeca(peca.tipo))}</span>
             <span>${escapeHtml(valorTabelaPeca(peca.funcao))}</span>
@@ -2453,7 +2559,7 @@ function criarLinhaTabelaPecaFiltrada(peca, ultimoUso) {
             <span>${escapeHtml(valorTabelaPeca(peca.situacao))}</span>
             <span>${escapeHtml(valorTabelaPeca(peca.conservacao))}</span>
             <span>${escapeHtml(valorTabelaPeca(peca.reposicao || obterDetalhePeca(peca, 'Repor')))}</span>
-            <span class="tabela-pecas-info">Ver ficha</span>
+            <span class="tabela-pecas-info">${escapeHtml(valorTabelaPeca(infoFotos))}</span>
             <span>${escapeHtml(valorTabelaPeca(combinacoes))}</span>
             <span>${escapeHtml(dataRevisao ? formatarDataBR(dataRevisao) : '-')}</span>
         </button>
@@ -2564,6 +2670,7 @@ function abrirDetalhsPeca(id) {
     document.getElementById('titulo-modal').textContent = `${peca.tipo || peca.id}`;
     atualizarFotoModalPeca(getCaminhoFoto(peca.id));
     document.getElementById('editar-peca-modal').style.display = '';
+    document.getElementById('looks-existentes-peca-modal').style.display = '';
     document.getElementById('cancelar-edicao-peca-modal').style.display = 'none';
     document.getElementById('salvar-peca-modal').style.display = 'none';
     document.getElementById('registrar-peca-modal').style.display = '';
@@ -2575,6 +2682,181 @@ function abrirDetalhsPeca(id) {
 
 function mostrarDetalhesPeca(id) {
     abrirDetalhsPeca(id);
+}
+
+function abrirLooksExistentesPeca() {
+    const pecaId = app.pecaEmDetalhes;
+    const peca = app.pecas[pecaId];
+    if (!peca) return;
+
+    app.filtrosLooksPeca = { htt: 'todos', peca1: '', peca2: '', peca3: '' };
+
+    const modal = document.getElementById('modal-looks-peca');
+    modal.dataset.pecaId = pecaId;
+    document.getElementById('looks-peca-foto').src = getCaminhoFoto(pecaId);
+    document.getElementById('looks-peca-id').textContent = pecaId;
+    renderLooksExistentesPeca();
+    modal.classList.add('modal-em-pilha');
+    modal.style.display = 'flex';
+}
+
+function fecharModalLooksPeca() {
+    const modal = document.getElementById('modal-looks-peca');
+    modal.classList.remove('modal-em-pilha');
+    modal.style.display = 'none';
+}
+
+function fecharModalLookDetalhes() {
+    const modal = document.getElementById('modal-look-detalhes');
+    const temModalPorBaixo = [...document.querySelectorAll('.modal')]
+        .some(item => item !== modal && item.style.display !== 'none');
+
+    if (!temModalPorBaixo) {
+        fecharModal();
+        return;
+    }
+
+    modal.classList.remove('modal-em-pilha');
+    modal.style.display = 'none';
+}
+
+function obterLooksDaPeca(pecaId) {
+    return obterTodosLooks()
+        .filter(look => look?.id && Array.isArray(look.pecas))
+        .filter(look => look.pecas.includes(pecaId))
+        .sort((a, b) => String(a.id).localeCompare(String(b.id), 'pt-BR', { numeric: true }));
+}
+
+function renderLooksExistentesPeca() {
+    const modal = document.getElementById('modal-looks-peca');
+    const pecaId = modal?.dataset.pecaId || app.pecaEmDetalhes;
+    const todosLooks = obterLooksDaPeca(pecaId);
+    const looksFiltrados = filtrarLooksExistentesPeca(todosLooks);
+
+    document.getElementById('looks-peca-resumo').textContent = `${looksFiltrados.length} de ${todosLooks.length} look${todosLooks.length === 1 ? '' : 's'} encontrado${todosLooks.length === 1 ? '' : 's'}.`;
+    document.getElementById('looks-peca-filtros').innerHTML = criarFiltrosLooksPeca(todosLooks);
+    document.getElementById('looks-peca-lista').innerHTML = criarGruposLooksPeca(looksFiltrados);
+}
+
+function filtrarLooksExistentesPeca(looks) {
+    const filtros = app.filtrosLooksPeca || {};
+    return looks.filter(look => {
+        if (filtros.htt !== 'todos' && String(lookEhHTT(look)) !== filtros.htt) return false;
+        if (filtros.peca1 && look.pecas?.[0] !== filtros.peca1) return false;
+        if (filtros.peca2 && look.pecas?.[1] !== filtros.peca2) return false;
+        if (filtros.peca3 && look.pecas?.[2] !== filtros.peca3) return false;
+        return true;
+    });
+}
+
+function criarFiltrosLooksPeca(looks) {
+    const filtros = app.filtrosLooksPeca || {};
+    return `
+        <label class="looks-peca-filtro-htt">
+            <span>HTT</span>
+            <select onchange="alterarFiltroLooksPeca('htt', this.value)">
+                <option value="todos" ${filtros.htt === 'todos' ? 'selected' : ''}>Todos</option>
+                <option value="true" ${filtros.htt === 'true' ? 'selected' : ''}>HTT</option>
+                <option value="false" ${filtros.htt === 'false' ? 'selected' : ''}>Não HTT</option>
+            </select>
+        </label>
+        ${[0, 1, 2].map(indice => criarFiltroPecaLookExistente(looks, indice)).join('')}
+    `;
+}
+
+function criarFiltroPecaLookExistente(looks, indice) {
+    const campo = `peca${indice + 1}`;
+    const selecionado = app.filtrosLooksPeca?.[campo] || '';
+    const opcoes = obterOpcoesPecaPorPosicaoLooks(looks, indice);
+    const rotulo = `Peça ${indice + 1}`;
+    const textoSelecionado = selecionado || 'Todas';
+
+    return `
+        <details class="looks-peca-filtro">
+            <summary>
+                <span>${rotulo}</span>
+                <strong>${escapeHtml(textoSelecionado)}</strong>
+            </summary>
+            <div class="looks-peca-opcoes">
+                <button type="button" class="${selecionado ? '' : 'ativo'}" onclick="alterarFiltroLooksPeca('${campo}', '')">
+                    <span class="looks-peca-opcao-vazia">Todas</span>
+                </button>
+                ${opcoes.map(id => criarOpcaoFiltroPecaLook(campo, id, selecionado)).join('')}
+            </div>
+        </details>
+    `;
+}
+
+function obterOpcoesPecaPorPosicaoLooks(looks, indice) {
+    const ids = new Set();
+    looks.forEach(look => {
+        const id = look.pecas?.[indice];
+        if (id && app.pecas[id]) ids.add(id);
+    });
+    return [...ids].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true }));
+}
+
+function criarOpcaoFiltroPecaLook(campo, id, selecionado) {
+    const peca = app.pecas[id] || {};
+    return `
+        <button type="button" class="${selecionado === id ? 'ativo' : ''}" onclick="alterarFiltroLooksPeca('${campo}', '${id}')">
+            <img src="${escapeHtml(getCaminhoFoto(id))}" alt="${escapeHtml(id)}" onerror="${onErrorImagem()}">
+            <span>
+                <strong>${escapeHtml(id)}</strong>
+                <small>${escapeHtml([peca.tipo, peca.subtipo].filter(valorVisivel).join(' - ') || 'Peça')}</small>
+            </span>
+        </button>
+    `;
+}
+
+function alterarFiltroLooksPeca(campo, valor) {
+    app.filtrosLooksPeca = {
+        ...(app.filtrosLooksPeca || {}),
+        [campo]: valor,
+    };
+    renderLooksExistentesPeca();
+}
+
+function criarGruposLooksPeca(looks) {
+    if (!looks.length) return '<p class="texto-ajuda">Nenhum look encontrado com esses filtros.</p>';
+
+    const grupos = looks.reduce((mapa, look) => {
+        const situacao = obterSituacaoLook(look) || 'Sem situação';
+        mapa[situacao] = mapa[situacao] || [];
+        mapa[situacao].push(look);
+        return mapa;
+    }, {});
+
+    return Object.entries(grupos)
+        .sort(([a], [b]) => a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }))
+        .map(([situacao, itens]) => `
+            <section class="looks-peca-grupo">
+                <div class="looks-peca-grupo-topo">
+                    <h3>${escapeHtml(situacao)}</h3>
+                    <span>${itens.length}</span>
+                </div>
+                <div class="looks-peca-grid">
+                    ${itens.map(criarCardLookExistentePeca).join('')}
+                </div>
+            </section>
+        `)
+        .join('');
+}
+
+function obterSituacaoLook(look) {
+    return look?.situacao || look?.basicos?.['situação'] || look?.basicos?.['situaÃ§Ã£o'] || '';
+}
+
+function criarCardLookExistentePeca(look) {
+    const pecasTexto = (look.pecas || []).join(' / ');
+    return `
+        <button type="button" class="looks-peca-card" onclick="mostrarDetalhesLook('${escapeHtml(look.id)}')">
+            <img src="${escapeHtml(getCaminhoFotoLook(look.id))}" alt="${escapeHtml(look.id)}" onerror="${onErrorImagem()}">
+            <strong>${escapeHtml(look.id)}</strong>
+            <small>${escapeHtml(pecasTexto)}</small>
+            ${lookEhHTT(look) ? '<span>HTT</span>' : ''}
+        </button>
+    `;
 }
 
 function fecharModal() {
@@ -2797,6 +3079,7 @@ function mostrarFormularioPeca(id) {
     `;
 
     document.getElementById('editar-peca-modal').style.display = 'none';
+    document.getElementById('looks-existentes-peca-modal').style.display = 'none';
     configurarDependenciasFormularioPeca();
     document.getElementById('cancelar-edicao-peca-modal').style.display = '';
     document.getElementById('salvar-peca-modal').style.display = '';
@@ -3809,6 +4092,8 @@ function mostrarDetalhesLook(lookId, editando = false) {
     if (!look) return;
 
     const modal = document.getElementById('modal-look-detalhes');
+    const modalAbertoPorBaixo = [...document.querySelectorAll('.modal')]
+        .some(item => item !== modal && item.style.display !== 'none');
     modal.dataset.lookId = lookId;
     modal.dataset.editando = editando ? 'true' : 'false';
 
@@ -3845,6 +4130,7 @@ function mostrarDetalhesLook(lookId, editando = false) {
         .map(item => criarCardPecaLookSugerida(item))
         .join('') || '<p class="texto-ajuda">Nenhuma sugestão cadastrada.</p>';
 
+    modal.classList.toggle('modal-em-pilha', modalAbertoPorBaixo);
     modal.style.display = 'flex';
 }
 

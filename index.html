@@ -22,7 +22,7 @@
             }
         })();
     </script>
-    <link rel="stylesheet" href="css/style.css?v=20260710-filtros-pecas-compactos">
+    <link rel="stylesheet" href="css/style.css?v=20260710-looks-existentes-peca">
 </head>
 <body>
     <div id="app">
@@ -540,6 +540,7 @@
 
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
                     <button class="btn-secundario" onclick="fecharModal()">Fechar</button>
+                    <button id="looks-existentes-peca-modal" class="btn-secundario" type="button" onclick="abrirLooksExistentesPeca()">Looks existentes</button>
                     <button id="editar-peca-modal" class="btn-secundario" type="button" onclick="abrirEdicaoPeca()">Editar</button>
                     <button id="cancelar-edicao-peca-modal" class="btn-secundario" type="button" onclick="cancelarEdicaoPeca()" style="display:none;">Cancelar</button>
                     <button id="salvar-peca-modal" class="btn-principal" type="button" onclick="salvarPeca()" style="display:none;">Salvar peça</button>
@@ -550,9 +551,30 @@
             </div>
         </div>
 
+        <div id="modal-looks-peca" class="modal" style="display:none;">
+            <div class="modal-content modal-looks-peca">
+                <button class="btn-fechar" onclick="fecharModalLooksPeca()">✕</button>
+                <div class="looks-peca-topo">
+                    <div class="looks-peca-selecionada">
+                        <img id="looks-peca-foto" src="" alt="Peça selecionada">
+                        <span>
+                            <small>Peça selecionada</small>
+                            <strong id="looks-peca-id"></strong>
+                        </span>
+                    </div>
+                    <div>
+                        <h2>Looks existentes</h2>
+                        <p id="looks-peca-resumo" class="texto-ajuda"></p>
+                    </div>
+                </div>
+                <div id="looks-peca-filtros" class="looks-peca-filtros"></div>
+                <div id="looks-peca-lista" class="looks-peca-lista"></div>
+            </div>
+        </div>
+
         <div id="modal-look-detalhes" class="modal" style="display:none;">
             <div class="modal-content modal-look-detalhes">
-                <button class="btn-fechar" onclick="fecharModal()">✕</button>
+                <button class="btn-fechar" onclick="fecharModalLookDetalhes()">✕</button>
                 <img id="foto-look-modal" src="" alt="Look" class="foto-look-modal">
                 <h2 id="titulo-look-modal"></h2>
                 <div id="tags-look-modal" class="tags-look"></div>
@@ -566,7 +588,7 @@
                 <div id="sugestoes-look-modal" class="historico-pecas-grid"></div>
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button class="btn-secundario" onclick="fecharModal()">Fechar</button>
+                    <button class="btn-secundario" onclick="fecharModalLookDetalhes()">Fechar</button>
                     <button id="editar-look-modal" class="btn-secundario" type="button">Editar</button>
                     <button id="cancelar-edicao-look-modal" class="btn-secundario" type="button" style="display:none;">Cancelar edição</button>
                     <button id="salvar-look-modal" class="btn-principal" type="button" style="display:none;">Salvar</button>
@@ -675,7 +697,7 @@
          A ordem importa! CSS deve carregar antes, depois o app.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js?v=20260624-config-supabase"></script>
-    <script src="js/app.js?v=20260710-importacao-registro-excel"></script>
+    <script src="js/app.js?v=20260710-modais-empilhados"></script>
 </body>
 </html>
 
