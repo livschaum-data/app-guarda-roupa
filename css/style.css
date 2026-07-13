@@ -1998,6 +1998,45 @@ body {
     margin-bottom: 18px;
 }
 
+.looks-peca-acoes-lote {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 12px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    background: var(--cor-fundo-card);
+}
+
+.looks-peca-lote-info {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+}
+
+.looks-peca-lote-info strong {
+    color: var(--cor-texto);
+    font-size: 14px;
+}
+
+.looks-peca-lote-info span {
+    color: var(--cor-texto-cinza);
+    font-size: 12px;
+}
+
+.looks-peca-lote-botoes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.looks-peca-lote-botoes button {
+    margin: 0;
+}
+
 .looks-peca-filtro-htt,
 .looks-peca-filtro {
     min-width: 0;
@@ -2176,13 +2215,34 @@ body {
     color: var(--cor-texto);
     font: inherit;
     text-align: left;
-    cursor: pointer;
 }
 
-.looks-peca-card:hover {
+.looks-peca-card:hover,
+.looks-peca-card.selecionado {
     border-color: var(--cor-primaria);
     box-shadow: var(--sombra);
     transform: translateY(-1px);
+}
+
+.looks-peca-card.selecionado {
+    background: rgba(139, 92, 246, 0.10);
+}
+
+.looks-peca-check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    color: var(--cor-texto);
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.looks-peca-check input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--cor-primaria);
 }
 
 .looks-peca-card img {
@@ -2203,7 +2263,7 @@ body {
 
 .looks-peca-card > span {
     position: absolute;
-    top: 8px;
+    top: 34px;
     right: 8px;
     padding: 3px 6px;
     border-radius: 999px;
@@ -2213,10 +2273,29 @@ body {
     font-weight: 900;
 }
 
+.looks-peca-ficha {
+    width: 100%;
+    margin: 0;
+    padding: 8px 10px;
+}
+
 @media (max-width: 768px) {
     .looks-peca-topo,
-    .looks-peca-filtros {
+    .looks-peca-filtros,
+    .looks-peca-acoes-lote {
         grid-template-columns: 1fr;
+    }
+
+    .looks-peca-acoes-lote {
+        display: grid;
+    }
+
+    .looks-peca-lote-botoes {
+        justify-content: stretch;
+    }
+
+    .looks-peca-lote-botoes button {
+        flex: 1 1 140px;
     }
 
     .looks-peca-lista {
@@ -2302,6 +2381,31 @@ body {
 .campo-edicao-look-grupo {
     display: grid;
     gap: 10px;
+}
+
+.campo-edicao-lote {
+    display: grid;
+    grid-column: 1 / -1;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.campo-edicao-lote-aplicar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 850;
+}
+
+.campo-edicao-lote-aplicar input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--cor-primaria);
 }
 
 /* ==================== SELETOR DE RESULTADOS ====================
@@ -5707,7 +5811,8 @@ body {
     cursor: pointer;
 }
 
-#ficha-look-modal:has(.form-edicao-look) .select-nativo-oculto {
+#ficha-look-modal:has(.form-edicao-look) .select-nativo-oculto,
+#form-edicao-lote-looks .select-nativo-oculto {
     position: absolute;
     width: 1px !important;
     min-height: 1px !important;

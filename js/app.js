@@ -118,6 +118,7 @@ const app = {
         peca2: '',
         peca3: '',
     },
+    looksPecaSelecionados: [],
 };
 
 /* ==================== INICIALIZAR A APP ====================
@@ -2690,6 +2691,7 @@ function abrirLooksExistentesPeca() {
     if (!peca) return;
 
     app.filtrosLooksPeca = { htt: 'todos', peca1: '', peca2: '', peca3: '' };
+    app.looksPecaSelecionados = [];
 
     const modal = document.getElementById('modal-looks-peca');
     modal.dataset.pecaId = pecaId;
@@ -2702,6 +2704,7 @@ function abrirLooksExistentesPeca() {
 
 function fecharModalLooksPeca() {
     const modal = document.getElementById('modal-looks-peca');
+    app.looksPecaSelecionados = [];
     modal.classList.remove('modal-em-pilha');
     modal.style.display = 'none';
 }
@@ -2732,10 +2735,74 @@ function renderLooksExistentesPeca() {
     const pecaId = modal?.dataset.pecaId || app.pecaEmDetalhes;
     const todosLooks = obterLooksDaPeca(pecaId);
     const looksFiltrados = filtrarLooksExistentesPeca(todosLooks);
+    app.looksPecaSelecionados = obterIdsLooksPecaSelecionadosValidos(todosLooks);
 
     document.getElementById('looks-peca-resumo').textContent = `${looksFiltrados.length} de ${todosLooks.length} look${todosLooks.length === 1 ? '' : 's'} encontrado${todosLooks.length === 1 ? '' : 's'}.`;
     document.getElementById('looks-peca-filtros').innerHTML = criarFiltrosLooksPeca(todosLooks);
+    document.getElementById('looks-peca-acoes-lote').innerHTML = criarAcoesLoteLooksPeca(looksFiltrados);
     document.getElementById('looks-peca-lista').innerHTML = criarGruposLooksPeca(looksFiltrados);
+}
+
+function obterIdsLooksPecaSelecionadosValidos(looks) {
+    const idsValidos = new Set((looks || []).map(look => look.id));
+    return [...new Set(app.looksPecaSelecionados || [])].filter(id => idsValidos.has(id));
+}
+
+function criarAcoesLoteLooksPeca(looksFiltrados) {
+    const totalSelecionados = (app.looksPecaSelecionados || []).length;
+    const idsFiltrados = (looksFiltrados || []).map(look => look.id);
+    const totalFiltrados = idsFiltrados.length;
+    const todosFiltradosSelecionados = totalFiltrados > 0 && idsFiltrados.every(id => app.looksPecaSelecionados.includes(id));
+
+    return `
+        <div class="looks-peca-lote-info">
+            <strong>${totalSelecionados} selecionado${totalSelecionados === 1 ? '' : 's'}</strong>
+            <span>${totalFiltrados} look${totalFiltrados === 1 ? '' : 's'} na lista atual</span>
+        </div>
+        <div class="looks-peca-lote-botoes">
+            <button type="button" class="btn-secundario" onclick="selecionarLooksPecaFiltrados()" ${totalFiltrados ? '' : 'disabled'}>
+                ${todosFiltradosSelecionados ? 'Desmarcar lista' : 'Selecionar lista'}
+            </button>
+            <button type="button" class="btn-secundario" onclick="limparSelecaoLooksPeca()" ${totalSelecionados ? '' : 'disabled'}>Limpar</button>
+            <button type="button" class="btn-principal" onclick="abrirEdicaoLoteLooksPeca()" ${totalSelecionados ? '' : 'disabled'}>Editar selecionados</button>
+        </div>
+    `;
+}
+
+function alternarSelecaoLookPeca(lookId) {
+    const selecionados = new Set(app.looksPecaSelecionados || []);
+    if (selecionados.has(lookId)) {
+        selecionados.delete(lookId);
+    } else {
+        selecionados.add(lookId);
+    }
+    app.looksPecaSelecionados = [...selecionados];
+    renderLooksExistentesPeca();
+}
+
+function selecionarLooksPecaFiltrados() {
+    const modal = document.getElementById('modal-looks-peca');
+    const pecaId = modal?.dataset.pecaId || app.pecaEmDetalhes;
+    const looksFiltrados = filtrarLooksExistentesPeca(obterLooksDaPeca(pecaId));
+    const idsFiltrados = looksFiltrados.map(look => look.id);
+    const selecionados = new Set(app.looksPecaSelecionados || []);
+    const todosSelecionados = idsFiltrados.length > 0 && idsFiltrados.every(id => selecionados.has(id));
+
+    idsFiltrados.forEach(id => {
+        if (todosSelecionados) {
+            selecionados.delete(id);
+        } else {
+            selecionados.add(id);
+        }
+    });
+
+    app.looksPecaSelecionados = [...selecionados];
+    renderLooksExistentesPeca();
+}
+
+function limparSelecaoLooksPeca() {
+    app.looksPecaSelecionados = [];
+    renderLooksExistentesPeca();
 }
 
 function filtrarLooksExistentesPeca(looks) {
@@ -2849,14 +2916,188 @@ function obterSituacaoLook(look) {
 
 function criarCardLookExistentePeca(look) {
     const pecasTexto = (look.pecas || []).join(' / ');
+    const selecionado = (app.looksPecaSelecionados || []).includes(look.id);
     return `
-        <button type="button" class="looks-peca-card" onclick="mostrarDetalhesLook('${escapeHtml(look.id)}')">
+        <div class="looks-peca-card ${selecionado ? 'selecionado' : ''}">
+            <label class="looks-peca-check">
+                <input type="checkbox" ${selecionado ? 'checked' : ''} onchange="alternarSelecaoLookPeca('${escapeHtml(look.id)}')">
+                <span>Selecionar</span>
+            </label>
             <img src="${escapeHtml(getCaminhoFotoLook(look.id))}" alt="${escapeHtml(look.id)}" onerror="${onErrorImagem()}">
             <strong>${escapeHtml(look.id)}</strong>
             <small>${escapeHtml(pecasTexto)}</small>
             ${lookEhHTT(look) ? '<span>HTT</span>' : ''}
-        </button>
+            <button type="button" class="btn-secundario looks-peca-ficha" onclick="mostrarDetalhesLook('${escapeHtml(look.id)}')">Ficha</button>
+        </div>
     `;
+}
+
+function abrirEdicaoLoteLooksPeca() {
+    const idsSelecionados = obterIdsLooksSelecionadosParaEdicaoLote();
+    if (!idsSelecionados.length) {
+        alert('Selecione pelo menos um look para editar.');
+        return;
+    }
+
+    const modal = document.getElementById('modal-edicao-lote-looks');
+    const resumo = document.getElementById('edicao-lote-looks-resumo');
+    const form = document.getElementById('form-edicao-lote-looks');
+    if (!modal || !form) return;
+
+    resumo.textContent = `${idsSelecionados.length} look${idsSelecionados.length === 1 ? '' : 's'} selecionado${idsSelecionados.length === 1 ? '' : 's'}: ${idsSelecionados.join(', ')}`;
+    form.innerHTML = criarFormularioEdicaoLoteLooks();
+
+    setTimeout(() => {
+        renderControleVisualMultiploEdicaoLook('edit-lote-look-ocasioes', 'Pesquisar ocasiao');
+        renderControleVisualMultiploEdicaoLook('edit-lote-look-sugestoes', 'Pesquisar peca');
+    }, 0);
+
+    modal.classList.add('modal-em-pilha');
+    modal.style.display = 'flex';
+}
+
+function fecharModalEdicaoLoteLooks() {
+    const modal = document.getElementById('modal-edicao-lote-looks');
+    if (!modal) return;
+    modal.classList.remove('modal-em-pilha');
+    modal.style.display = 'none';
+}
+
+function obterIdsLooksSelecionadosParaEdicaoLote() {
+    return [...new Set(app.looksPecaSelecionados || [])]
+        .filter(id => Boolean(obterLookPorId(id)));
+}
+
+function criarFormularioEdicaoLoteLooks() {
+    const opcoesSituacao = criarOptionsSituacaoLook('');
+    const opcoesHtt = criarOptionsHttLook('false');
+    const opcoesOcasioes = criarOptionsOcasioesLook([]);
+    const opcoesSugestoes = criarOptionsSugestoesLook([]);
+
+    return `
+        <div class="form-edicao-look form-edicao-lote-looks">
+            ${criarCampoAplicarEdicaoLote('situacao', `
+                <label class="campo-edicao-look">
+                    <span>SituaÃ§Ã£o</span>
+                    <select id="edit-lote-look-situacao">${opcoesSituacao}</select>
+                </label>
+            `)}
+            ${criarCampoAplicarEdicaoLote('htt', `
+                <label class="campo-edicao-look">
+                    <span>HTT</span>
+                    <select id="edit-lote-look-htt">${opcoesHtt}</select>
+                </label>
+            `)}
+            ${criarCampoAplicarEdicaoLote('ocasioes', `
+                <label class="campo-edicao-look campo-edicao-look-largo">
+                    <span>OcasiÃµes</span>
+                    <select id="edit-lote-look-ocasioes" multiple size="8">${opcoesOcasioes}</select>
+                </label>
+            `)}
+            ${criarCampoAplicarEdicaoLote('sugestoes', `
+                <label class="campo-edicao-look campo-edicao-look-largo">
+                    <span>AcessÃ³rios e calÃ§ados sugeridos</span>
+                    <select id="edit-lote-look-sugestoes" multiple size="10">${opcoesSugestoes}</select>
+                </label>
+            `)}
+        </div>
+    `;
+}
+
+function criarCampoAplicarEdicaoLote(campo, conteudo) {
+    return `
+        <div class="campo-edicao-lote" data-campo-lote="${campo}">
+            <label class="campo-edicao-lote-aplicar">
+                <input type="checkbox" data-aplicar-lote="${campo}">
+                <span>Aplicar este campo</span>
+            </label>
+            ${conteudo}
+        </div>
+    `;
+}
+
+function campoLoteDeveAplicar(campo) {
+    return Boolean(document.querySelector(`[data-aplicar-lote="${campo}"]`)?.checked);
+}
+
+function salvarEdicaoLoteLooks() {
+    const idsSelecionados = obterIdsLooksSelecionadosParaEdicaoLote();
+    if (!idsSelecionados.length) {
+        alert('Selecione pelo menos um look para editar.');
+        return;
+    }
+
+    const aplicarSituacao = campoLoteDeveAplicar('situacao');
+    const aplicarHtt = campoLoteDeveAplicar('htt');
+    const aplicarOcasioes = campoLoteDeveAplicar('ocasioes');
+    const aplicarSugestoes = campoLoteDeveAplicar('sugestoes');
+
+    if (!aplicarSituacao && !aplicarHtt && !aplicarOcasioes && !aplicarSugestoes) {
+        alert('Marque pelo menos um campo para aplicar aos looks selecionados.');
+        return;
+    }
+
+    const situacao = document.getElementById('edit-lote-look-situacao')?.value.trim() || '';
+    const htt = document.getElementById('edit-lote-look-htt')?.value.trim() || '';
+    const ocasioes = parseOcasioesEdicaoLook(obterValoresSelectMultiplo('edit-lote-look-ocasioes'));
+    const sugestoes = obterSugestoesSelectMultiplo('edit-lote-look-sugestoes');
+    const editadoEm = new Date().toISOString();
+
+    idsSelecionados.forEach(lookId => {
+        const lookOriginal = obterLookPorId(lookId);
+        if (!lookOriginal) return;
+
+        const basicos = { ...(lookOriginal.basicos || {}) };
+        if (aplicarSituacao) basicos['situaÃ§Ã£o'] = situacao;
+        if (aplicarSituacao) basicos.situacao = situacao;
+        if (aplicarHtt) basicos.HTT = htt;
+
+        const lookEditado = {
+            ...lookOriginal,
+            id: lookId,
+            ...(aplicarSituacao ? { situacao } : {}),
+            ...(aplicarHtt ? { HTT: htt, htt } : {}),
+            ...(aplicarOcasioes ? {
+                ocasioes,
+                ocasiao: ocasioes.map(item => item.descricao).join(', '),
+            } : {}),
+            ...(aplicarSugestoes ? { pecas_sugeridas: sugestoes } : {}),
+            basicos: {
+                ...basicos,
+                ID: lookId,
+            },
+            editadoLocalmente: true,
+            editadoEm,
+            substituiLookBase: Boolean(app.looks[lookId] || lookOriginal.substituiLookBase) || undefined,
+            id_original: undefined,
+        };
+
+        app.looksFavoritos[lookId] = lookEditado;
+    });
+
+    salvarDados();
+    preencherSelectLooks();
+    preencherFiltrosOcasiao();
+    renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
+    renderLooksExistentesPeca();
+    fecharModalEdicaoLoteLooks();
+    alert(`${idsSelecionados.length} look${idsSelecionados.length === 1 ? '' : 's'} atualizado${idsSelecionados.length === 1 ? '' : 's'} com sucesso.`);
+}
+
+function obterValoresSelectMultiplo(selectId) {
+    const select = document.getElementById(selectId);
+    if (!select) return [];
+    return [...select.selectedOptions].map(option => option.value);
+}
+
+function obterSugestoesSelectMultiplo(selectId) {
+    const select = document.getElementById(selectId);
+    if (!select) return [];
+
+    return [...select.selectedOptions].map(option => ({
+        id: String(option.value || '').toUpperCase(),
+        grupo: option.dataset.grupo || app.pecas[option.value]?.tipo || '',
+    })).filter(item => item.id);
 }
 
 function fecharModal() {
