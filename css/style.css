@@ -2664,10 +2664,11 @@ tr:hover {
         minmax(72px, 0.75fr)
         minmax(90px, 0.85fr)
         minmax(112px, 1fr)
+        minmax(126px, 1fr)
         minmax(92px, 0.9fr);
     gap: 5px;
     align-items: center;
-    min-width: 1715px;
+    min-width: 1845px;
 }
 
 .tabela-pecas-cabecalho {

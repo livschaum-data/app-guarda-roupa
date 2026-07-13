@@ -1320,10 +1320,29 @@ function obterDataAtualizacaoLook(look) {
 }
 
 function obterDataAtualizacaoPeca(peca) {
-    if (valorVisivel(peca?.editadaEm)) return peca.editadaEm;
+    return obterDataAtualizacaoTabelaPeca(peca);
+}
+
+function obterDataRevisaoPeca(peca) {
+    if (valorVisivel(peca?.data_revisao)) return peca.data_revisao;
+    if (valorVisivel(peca?.dataRevisao)) return peca.dataRevisao;
+
     return obterCampoPorNomes(
         Object.fromEntries((peca?.detalhes || []).map(item => [item.campo, item.valor])),
         ['Data revisão', 'Data revisao']
+    );
+}
+
+function obterDataAtualizacaoTabelaPeca(peca) {
+    if (valorVisivel(peca?.editadaEm)) return peca.editadaEm;
+    if (valorVisivel(peca?.updatedAt)) return peca.updatedAt;
+    if (valorVisivel(peca?.updated_at)) return peca.updated_at;
+    if (valorVisivel(peca?.data_atualizacao)) return peca.data_atualizacao;
+    if (valorVisivel(peca?.dataAtualizacao)) return peca.dataAtualizacao;
+
+    return obterCampoPorNomes(
+        Object.fromEntries((peca?.detalhes || []).map(item => [item.campo, item.valor])),
+        ['Data atualização', 'Data atualizacao', 'Data última alteração', 'Data ultima alteracao', 'Última atualização', 'Ultima atualizacao']
     );
 }
 
@@ -2442,6 +2461,7 @@ const COLUNAS_TABELA_PECAS = [
     { campo: 'infoFotos', titulo: 'Info e fotos' },
     { campo: 'combinacao', titulo: 'Combinação' },
     { campo: 'dataRevisao', titulo: 'Data revisão' },
+    { campo: 'dataAtualizacao', titulo: 'Data atualização' },
 ];
 
 function criarCelulaCabecalhoTabelaPecas(coluna) {
@@ -2507,37 +2527,36 @@ function obterValorOrdenacaoTabelaPeca(peca, campo, ultimoUso) {
     if (campo === 'reposicao') return peca.reposicao || obterDetalhePeca(peca, 'Repor') || '';
     if (campo === 'infoFotos') return obterInfoFotosPeca(peca);
     if (campo === 'combinacao') return obterCombinacoesPeca(peca);
-    if (campo === 'dataRevisao') return obterDataAtualizacaoPeca(peca) || '';
+    if (campo === 'dataRevisao') return obterDataRevisaoPeca(peca) || '';
+    if (campo === 'dataAtualizacao') return obterDataAtualizacaoTabelaPeca(peca) || '';
     return peca[campo] || '';
 }
 
 function obterInfoFotosPeca(peca) {
     return peca.info_fotos
         || peca.infoFotos
-        || obterDetalhePeca(peca, 'Info e fotos')
-        || obterDetalhePeca(peca, 'Info/fotos')
+        || peca.info_foto
+        || peca.fotos_info
+        || obterCampoPorNomes(peca, ['Info e fotos', 'Info/fotos', 'Info fotos', 'Fotos'])
+        || obterCampoPorNomes(Object.fromEntries((peca?.detalhes || []).map(item => [item.campo, item.valor])), ['Info e fotos', 'Info/fotos', 'Info fotos', 'Fotos'])
         || '';
 }
 
 function obterCombinacoesPeca(peca) {
     const combinacoes = peca.combinacoes
         || peca.combinacao
-        || obterDetalhePeca(peca, 'Combinações')
-        || obterDetalhePeca(peca, 'Combinacoes')
+        || obterCampoPorNomes(peca, ['Combinação', 'Combinacao', 'Combinações', 'Combinacoes'])
+        || obterCampoPorNomes(Object.fromEntries((peca?.detalhes || []).map(item => [item.campo, item.valor])), ['Combinação', 'Combinacao', 'Combinações', 'Combinacoes'])
         || '';
 
-    if (valorVisivel(combinacoes)) return combinacoes;
-
-    return normalizarListaPeca(peca.combinacoes_nao_permitidas)
-        .map(item => item.codigo || item.id || item.descricao)
-        .filter(valorVisivel)
-        .join(', ');
+    return valorVisivel(combinacoes) ? combinacoes : '';
 }
 
 function criarLinhaTabelaPecaFiltrada(peca, ultimoUso) {
     const dataUltimoUso = ultimoUso[peca.id];
     const ultimoUsoTexto = dataUltimoUso ? formatarDataBR(formatarDataInput(dataUltimoUso)) : '-';
-    const dataRevisao = obterDataAtualizacaoPeca(peca);
+    const dataRevisao = obterDataRevisaoPeca(peca);
+    const dataAtualizacao = obterDataAtualizacaoTabelaPeca(peca);
     const infoFotos = obterInfoFotosPeca(peca);
     const combinacoes = obterCombinacoesPeca(peca);
 
@@ -2563,6 +2582,7 @@ function criarLinhaTabelaPecaFiltrada(peca, ultimoUso) {
             <span class="tabela-pecas-info">${escapeHtml(valorTabelaPeca(infoFotos))}</span>
             <span>${escapeHtml(valorTabelaPeca(combinacoes))}</span>
             <span>${escapeHtml(dataRevisao ? formatarDataBR(dataRevisao) : '-')}</span>
+            <span>${escapeHtml(dataAtualizacao ? formatarDataHoraFicha(dataAtualizacao) : '-')}</span>
         </button>
     `;
 }
