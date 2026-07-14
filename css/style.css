@@ -3636,6 +3636,39 @@ tr:hover {
     background: #f3f4f6;
 }
 
+.secao-detalhe-historico .historico-look-grid {
+    grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+    gap: 8px;
+}
+
+.secao-detalhe-historico .historico-pecas-grid {
+    grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+    gap: 8px;
+}
+
+.secao-detalhe-historico .historico-look-card,
+.secao-detalhe-historico .historico-peca-card {
+    padding: 6px;
+    border-radius: 8px;
+}
+
+.secao-detalhe-historico .historico-look-foto,
+.secao-detalhe-historico .historico-peca-card img {
+    max-height: 76px;
+    border-radius: 6px;
+}
+
+.secao-detalhe-historico .historico-look-card strong,
+.secao-detalhe-historico .historico-peca-card span {
+    margin-top: 5px;
+    font-size: 11px;
+}
+
+.secao-detalhe-historico .historico-look-card small,
+.secao-detalhe-historico .historico-peca-card small {
+    font-size: 10px;
+}
+
 .historico-sem-foto {
     grid-column: 1 / -1;
     display: flex;
