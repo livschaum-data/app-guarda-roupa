@@ -1843,6 +1843,14 @@ body {
 
 .modal-conflitos-historico {
     max-width: 900px;
+    background: #ffffff;
+    color: #111827;
+}
+
+.modal-conflitos-historico h2,
+.modal-conflitos-historico p,
+.modal-conflitos-historico .texto-ajuda {
+    color: #111827;
 }
 
 .lista-conflitos-historico {
@@ -1855,9 +1863,9 @@ body {
     display: grid;
     gap: 12px;
     padding: 14px;
-    border: 1px solid var(--cor-borda);
+    border: 1px solid #cbd5e1;
     border-radius: 12px;
-    background: var(--cor-fundo);
+    background: #f8fafc;
 }
 
 .conflito-historico-topo {
@@ -1868,13 +1876,13 @@ body {
 }
 
 .conflito-historico-topo strong {
-    color: var(--cor-texto);
+    color: #0f172a;
     font-size: 16px;
 }
 
 .conflito-historico-topo span,
 .conflito-historico-comparacao > div > span {
-    color: var(--cor-texto-cinza);
+    color: #334155;
     font-size: 12px;
     font-weight: 800;
     text-transform: uppercase;
@@ -1889,35 +1897,46 @@ body {
 .conflito-historico-comparacao > div {
     min-width: 0;
     padding: 10px;
+    border: 1px solid #e2e8f0;
     border-radius: 10px;
-    background: #fff;
+    background: #ffffff;
+    color: #111827;
 }
 
 .conflito-historico-comparacao ul {
     margin: 8px 0 0;
     padding-left: 18px;
-    color: var(--cor-texto);
+    color: #111827;
     font-size: 12px;
     line-height: 1.45;
+}
+
+.conflito-historico-comparacao li {
+    color: #111827;
 }
 
 .conflito-historico-dia label {
     display: grid;
     gap: 6px;
-    color: var(--cor-texto);
+    color: #0f172a;
     font-size: 13px;
     font-weight: 800;
 }
 
 .conflito-historico-dia select {
     min-height: 42px;
-    border: 1px solid var(--cor-borda);
+    border: 1px solid #94a3b8;
     border-radius: 8px;
-    background: #fff;
-    color: var(--cor-texto);
+    background: #ffffff;
+    color: #111827;
     padding: 8px 10px;
     font: inherit;
     font-weight: 600;
+}
+
+.conflito-historico-dia select option {
+    background: #ffffff;
+    color: #111827;
 }
 
 .acoes-conflitos-historico {
@@ -3081,9 +3100,26 @@ tr:hover {
     background: #f3f4f6;
 }
 
+.secao-detalhe-historico {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.secao-detalhe-historico h3 {
+    flex: 0 0 auto;
+    margin-bottom: 0;
+}
+
 .detalhe-historico {
     display: grid;
     gap: 18px;
+    max-height: clamp(360px, 58vh, 760px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 6px;
 }
 
 .historico-dia {
@@ -3823,6 +3859,10 @@ tr:hover {
 
     .historico-resumo-itens {
         max-height: 300px;
+    }
+
+    .detalhe-historico {
+        max-height: 56vh;
     }
 
     .historico-dia-cabecalho {
