@@ -1806,7 +1806,7 @@ function mostrarConflitosImportacaoHistorico() {
         <div class="conflito-historico-dia">
             <div class="conflito-historico-topo">
                 <strong>${formatarDataBR(conflito.dia)}</strong>
-                <span>${conflito.existentes.length} registro(s) no app Â· ${conflito.importados.length} registro(s) no arquivo</span>
+                <span>${conflito.existentes.length} registro(s) no app · ${conflito.importados.length} registro(s) no arquivo</span>
             </div>
             <div class="conflito-historico-comparacao">
                 <div>
@@ -1821,7 +1821,7 @@ function mostrarConflitosImportacaoHistorico() {
             <label>
                 O que fazer neste dia?
                 <select data-decisao-conflito-historico="${indice}">
-                    <option value="manter">Manter como estÃ¡ no app</option>
+                    <option value="manter">Manter como está no app</option>
                     <option value="adicionar">Adicionar registros do arquivo</option>
                     <option value="substituir">Substituir este dia pelo arquivo</option>
                 </select>
@@ -1839,7 +1839,7 @@ function resumirRegistrosHistoricoConflito(registros) {
     const mesmasPecas = chavesPecas.length > 1 && new Set(chavesPecas).size === 1;
 
     return `
-        ${mesmasPecas ? '<p class="texto-ajuda conflito-historico-nota">As linhas abaixo usam as mesmas peÃ§as; a diferenÃ§a estÃ¡ no look vinculado ao registro.</p>' : ''}
+        ${mesmasPecas ? '<p class="texto-ajuda conflito-historico-nota">As linhas abaixo usam as mesmas peças; a diferença está no look vinculado ao registro.</p>' : ''}
         <ul>
             ${registros.slice(0, 4).map((registro, indice) => {
                 const looks = obterLookIdsRegistro(registro);
@@ -1847,7 +1847,7 @@ function resumirRegistrosHistoricoConflito(registros) {
                 const rotulo = looks.length
                     ? `Look vinculado: ${escapeHtml(looks.join(', '))}`
                     : 'Registro sem look vinculado';
-                return `<li><strong>${indice + 1}. ${rotulo}</strong><br><span>${pecas.length} peÃ§a(s): ${escapeHtml(pecas.slice(0, 6).join(', '))}${pecas.length > 6 ? '...' : ''}</span></li>`;
+                return `<li><strong>${indice + 1}. ${rotulo}</strong><br><span>${pecas.length} peça(s): ${escapeHtml(pecas.slice(0, 6).join(', '))}${pecas.length > 6 ? '...' : ''}</span></li>`;
             }).join('')}
             ${registros.length > 4 ? `<li>...mais ${registros.length - 4} registro(s)</li>` : ''}
         </ul>
@@ -2071,9 +2071,6 @@ function obterCaminhoPrimeiraPlanilha(arquivos) {
     return 'xl/worksheets/sheet1.xml';
 }
 
-const COLUNAS_REGISTRO_LOOKS = ['C', 'G', 'J', 'N', 'W', 'AA', 'AG', 'AL', 'AM', 'AN', 'AO', 'AP'];
-const COLUNAS_REGISTRO_PECAS = ['D', 'E', 'F', 'H', 'I', 'K', 'L', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'Y', 'Z', 'AB', 'AC', 'AD', 'AE', 'AF', 'AH', 'AI', 'AJ', 'AK'];
-
 function obterCaminhoPlanilhaRegistro(arquivos) {
     const workbook = arquivos['xl/workbook.xml'];
     const rels = arquivos['xl/_rels/workbook.xml.rels'];
@@ -2119,8 +2116,9 @@ function matrizRegistroHistoricoParaObjetos(linhas) {
 
 function extrairIdsLooksDasColunasRegistro(linha) {
     const ids = [];
-    COLUNAS_REGISTRO_LOOKS.forEach(coluna => {
-        const valor = linha[colunaParaIndice(coluna)];
+    // Os blocos da aba Registro podem mudar de posição. Preserva todos os looks
+    // informados na linha, sem depender das colunas do modelo original.
+    (linha || []).forEach(valor => {
         if (!valorVisivel(valor)) return;
         ids.push(...extrairCodigosLook(valor));
     });
@@ -2129,8 +2127,7 @@ function extrairIdsLooksDasColunasRegistro(linha) {
 
 function extrairIdsPecasDasColunasRegistro(linha) {
     const ids = [];
-    COLUNAS_REGISTRO_PECAS.forEach(coluna => {
-        const valor = linha[colunaParaIndice(coluna)];
+    (linha || []).forEach(valor => {
         if (!valorVisivel(valor)) return;
         const encontrados = String(valor).toUpperCase().match(/\bID\d{4}\b/g) || [];
         ids.push(...encontrados);
@@ -5551,7 +5548,7 @@ function consultarHistoricoPorDatas() {
     }
 
     if (inicio > fim) {
-        alert('A data inicial precisa ser anterior ou igual Ã  data final.');
+        alert('A data inicial precisa ser anterior ou igual à data final.');
         return;
     }
 
@@ -5573,7 +5570,7 @@ function renderHistorico(registrosPeriodo, inicio, fim) {
     renderCalendarioHistorico(inicio, fim);
     renderPecasSemUso();
 
-    console.log(`ðŸ“Š HistÃ³rico atualizado: ${registrosPeriodo.length} registros`);
+    console.log(`Histórico atualizado: ${registrosPeriodo.length} registros`);
 }
 
 function renderCalendarioHistorico(inicioSelecionado = null, fimSelecionado = null) {
@@ -5591,7 +5588,7 @@ function renderCalendarioHistorico(inicioSelecionado = null, fimSelecionado = nu
     const diasNoMes = new Date(ano, mes, 0).getDate();
     const inicioSemana = primeiroDia.getDay();
     const registrosPorDia = agruparRegistrosPorDia(app.historico);
-    const nomesDias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'SÃ¡b'];
+    const nomesDias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
     label.textContent = primeiroDia.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
     container.innerHTML = nomesDias.map(dia => `<div class="calendario-dia-semana">${dia}</div>`).join('');
@@ -5616,7 +5613,7 @@ function renderCalendarioHistorico(inicioSelecionado = null, fimSelecionado = nu
                     data-data="${dataISO}">
                 <span>${dia}</span>
                 <div class="calendario-miniaturas">${fotos}</div>
-                ${registros.length ? `<small>${pecas.length} peÃ§as</small>` : ''}
+                ${registros.length ? `<small>${pecas.length} peças</small>` : ''}
             </button>
         `);
     }
@@ -5670,7 +5667,7 @@ function renderPecasSemUso() {
         });
 
     if (pecas.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: #999;">Nenhuma peÃ§a encontrada para esses filtros.</p>';
+        container.innerHTML = '<p style="text-align: center; color: #999;">Nenhuma peça encontrada para esses filtros.</p>';
         return;
     }
 
@@ -5680,7 +5677,7 @@ function renderPecasSemUso() {
                  onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23eee%22 width=%22100%22 height=%22100%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>sem foto</text></svg>'">
             <strong>${peca.id}</strong>
             <span>${dias === null ? 'Nunca usada' : `${dias} dias`}</span>
-            <small>${data ? `Ãšltimo uso: ${formatarDataBR(formatarDataInput(data))}` : 'Sem registro'}</small>
+            <small>${data ? `Último uso: ${formatarDataBR(formatarDataInput(data))}` : 'Sem registro'}</small>
         </button>
     `).join('');
 }
@@ -5693,7 +5690,7 @@ function preencherFiltrosSemUso() {
 
     preencherSelectFiltroSemUso(selectTipo, 'tipo', 'Todos os tipos');
     preencherSelectFiltroSemUso(selectLocal, 'local', 'Todos os locais');
-    preencherSelectFiltroSemUso(selectSituacao, 'situacao', 'Todas as situaÃ§Ãµes');
+    preencherSelectFiltroSemUso(selectSituacao, 'situacao', 'Todas as situações');
 
     if (selectTipo) selectTipo.value = app.filtrosSemUso.tipo || '';
     if (selectLocal) selectLocal.value = app.filtrosSemUso.local || '';
@@ -5890,7 +5887,7 @@ function renderTabelaPecasMaisUsadas(registrosPeriodo) {
     if (!container) return;
 
     if (sortidos.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: #999;">Nenhum uso encontrado neste perÃ­odo.</p>';
+        container.innerHTML = '<p style="text-align: center; color: #999;">Nenhum uso encontrado neste período.</p>';
         return;
     }
 
@@ -6336,7 +6333,7 @@ function renderOrdemPecasLookHistorico() {
 
     container.innerHTML = pecas.map((id, indice) => {
         const peca = app.pecas[id] || {};
-        const descricao = [peca.tipo, peca.subtipo].filter(Boolean).join(' Â· ');
+        const descricao = [peca.tipo, peca.subtipo].filter(Boolean).join(' · ');
         return `
             <div class="look-historico-ordem-item">
                 <strong>${indice + 1}</strong>
@@ -6380,7 +6377,7 @@ async function salvarLookHistorico() {
         : document.getElementById('look-historico-indicador').value;
 
     if (pecas.length < 2) {
-        alert('Selecione pelo menos 2 peÃ§as.');
+        alert('Selecione pelo menos 2 peças.');
         return;
     }
     if (modo === 'substituir' && !lookExistente) {
@@ -6483,7 +6480,7 @@ function lerFotoLookHistorico() {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(new Error('NÃ£o consegui ler a foto do look.'));
+        reader.onerror = () => reject(new Error('Não consegui ler a foto do look.'));
         reader.readAsDataURL(arquivo);
     });
 }
@@ -6552,7 +6549,7 @@ function atualizarResumoPeriodo(registros, inicio, fim) {
     if (!resumo) return;
 
     if (!inicio || !fim) {
-        resumo.textContent = 'Nenhum histÃ³rico carregado ainda.';
+        resumo.textContent = 'Nenhum histórico carregado ainda.';
         return;
     }
 
@@ -6564,10 +6561,10 @@ function marcarFiltroPeriodoHistorico(valor) {
     botoes.forEach(botao => botao.classList.remove('ativo'));
 
     const textoEsperado = {
-        '7': 'Ãšltimos 7 dias',
-        '14': 'Ãšltimos 14 dias',
-        '30': 'Ãšltimos 30 dias',
-        todos: 'Todo histÃ³rico',
+        '7': 'Últimos 7 dias',
+        '14': 'Últimos 14 dias',
+        '30': 'Últimos 30 dias',
+        todos: 'Todo histórico',
     }[valor];
 
     if (!textoEsperado) return;
