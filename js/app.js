@@ -1837,12 +1837,19 @@ function mostrarConflitosImportacaoHistorico() {
 function resumirRegistrosHistoricoConflito(registros) {
     if (!registros?.length) return '<p class="texto-ajuda">Nenhum registro.</p>';
 
+    const chavesPecas = registros.map(registro => [...(registro.pecas || [])].sort().join(','));
+    const mesmasPecas = chavesPecas.length > 1 && new Set(chavesPecas).size === 1;
+
     return `
+        ${mesmasPecas ? '<p class="texto-ajuda conflito-historico-nota">As linhas abaixo usam as mesmas peças; a diferença está no look vinculado ao registro.</p>' : ''}
         <ul>
-            ${registros.slice(0, 4).map(registro => {
+            ${registros.slice(0, 4).map((registro, indice) => {
                 const looks = obterLookIdsRegistro(registro);
                 const pecas = registro.pecas || [];
-                return `<li>${looks.length ? `Looks: ${escapeHtml(looks.join(', '))}` : 'Sem look'} · ${pecas.length} peça(s): ${escapeHtml(pecas.slice(0, 6).join(', '))}${pecas.length > 6 ? '...' : ''}</li>`;
+                const rotulo = looks.length
+                    ? `Look vinculado: ${escapeHtml(looks.join(', '))}`
+                    : 'Registro sem look vinculado';
+                return `<li><strong>${indice + 1}. ${rotulo}</strong><br><span>${pecas.length} peça(s): ${escapeHtml(pecas.slice(0, 6).join(', '))}${pecas.length > 6 ? '...' : ''}</span></li>`;
             }).join('')}
             ${registros.length > 4 ? `<li>...mais ${registros.length - 4} registro(s)</li>` : ''}
         </ul>

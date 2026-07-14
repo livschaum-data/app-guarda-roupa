@@ -1915,6 +1915,30 @@ body {
     color: #111827;
 }
 
+.conflito-historico-comparacao li + li {
+    margin-top: 8px;
+}
+
+.conflito-historico-comparacao li strong {
+    color: #0f172a;
+    font-size: 12px;
+}
+
+.conflito-historico-comparacao li span {
+    color: #334155;
+}
+
+.conflito-historico-nota {
+    margin: 8px 0 0;
+    padding: 7px 8px;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: #1e3a8a !important;
+    font-size: 12px;
+    font-weight: 700;
+}
+
 .conflito-historico-dia label {
     display: grid;
     gap: 6px;
