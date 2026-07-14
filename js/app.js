@@ -1648,9 +1648,14 @@ function criarDataMeioDia(ano, mes, dia) {
 function normalizarLookId(valor) {
     if (!valor) return null;
 
-    const texto = String(valor).trim().toUpperCase();
-    const ids = texto.match(/\b(?:LOOK_\d+|[A-Z]{1,4}\d{4})\b/g) || [];
-    return ids[0] || null;
+    return extrairCodigosLook(valor)[0] || null;
+}
+
+// IDs de peças também têm letras e números (ex.: ID0292), mas nunca são looks.
+function extrairCodigosLook(valor) {
+    const texto = String(valor || '').toUpperCase();
+    const codigos = texto.match(/\b(?:LOOK_\d+|[A-Z]{1,4}\d{4})\b/g) || [];
+    return [...new Set(codigos.filter(codigo => !/^ID\d{4}$/.test(codigo)))];
 }
 
 function extrairIdsLooks(linha) {
@@ -1662,9 +1667,7 @@ function extrairIdsLooks(linha) {
         const chaveNormalizada = normalizarTexto(chave);
         if (!chaveNormalizada.includes('look')) return;
 
-        const texto = String(valor).toUpperCase();
-        const encontrados = texto.match(/\b(?:LOOK_\d+|[A-Z]{1,4}\d{4})\b/g) || [];
-        ids.push(...encontrados);
+        ids.push(...extrairCodigosLook(valor));
     });
 
     return [...new Set(ids)];
@@ -1912,19 +1915,6 @@ function mesclarRegistroHistorico(registro) {
     const existenteCompleto = app.historico.find(item => chaveRegistroHistorico(item) === chaveCompleta);
     if (existenteCompleto) return false;
 
-    const chaveBase = chaveRegistroHistoricoBase(normalizado);
-    const existenteBase = app.historico.find(item => chaveRegistroHistoricoBase(item) === chaveBase);
-    if (existenteBase) {
-        const lookIds = new Set(obterLookIdsRegistro(existenteBase));
-        obterLookIdsRegistro(normalizado).forEach(id => lookIds.add(id));
-        existenteBase.lookIds = [...lookIds];
-        existenteBase.lookId = existenteBase.lookId || normalizado.lookId || existenteBase.lookIds[0] || null;
-        existenteBase.alteradoEm = timestampRegistroHistorico(normalizado) > timestampRegistroHistorico(existenteBase)
-            ? normalizado.alteradoEm
-            : existenteBase.alteradoEm;
-        return true;
-    }
-
     app.historico.push(normalizado);
     return true;
 }
@@ -2132,8 +2122,7 @@ function extrairIdsLooksDasColunasRegistro(linha) {
     COLUNAS_REGISTRO_LOOKS.forEach(coluna => {
         const valor = linha[colunaParaIndice(coluna)];
         if (!valorVisivel(valor)) return;
-        const encontrados = String(valor).toUpperCase().match(/\b(?:LOOK_\d+|[A-Z]{1,4}\d{4})\b/g) || [];
-        ids.push(...encontrados);
+        ids.push(...extrairCodigosLook(valor));
     });
     return [...new Set(ids)];
 }
