@@ -3608,13 +3608,23 @@ tr:hover {
     display: inline-flex;
     width: fit-content;
     max-width: 100%;
-    margin-top: 7px;
-    padding: 3px 7px;
-    border-radius: 999px;
-    font-size: 10px;
+    margin-top: 5px;
+    padding: 3px 6px;
+    border-radius: 6px;
+    font-size: 9px;
     font-weight: 800;
-    line-height: 1.1;
-    white-space: normal;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.secao-detalhe-historico .historico-bloco-topo [data-criar-look-dia] {
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 32px;
+    margin: 0;
+    padding: 6px 10px;
+    font-size: 12px;
+    line-height: 1.2;
 }
 
 .historico-look-registrado .historico-look-origem {

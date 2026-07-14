@@ -5926,7 +5926,7 @@ function renderDetalheHistorico(registrosPeriodo) {
     if (!container) return;
 
     if (registrosPeriodo.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: #999;">Nenhum registro encontrado para esse perÃ­odo.</p>';
+        container.innerHTML = '<p style="text-align: center; color: #999;">Nenhum registro encontrado para esse período.</p>';
         return;
     }
 
@@ -5956,12 +5956,12 @@ function renderDetalheHistorico(registrosPeriodo) {
 
             const pecasHtml = pecasDia.length > 0
                 ? pecasDia.map(id => criarCardPecaHistorico(id, { dia, removivel: true })).join('')
-                : '<p class="texto-ajuda">Nenhuma peÃ§a identificada nesse dia.</p>';
+                : '<p class="texto-ajuda">Nenhuma peça identificada nesse dia.</p>';
 
             grupo.innerHTML = `
                 <div class="historico-dia-cabecalho">
                     <h4>${formatarDataBR(dia)}</h4>
-                    <span>${pecasDia.length} peÃ§as Â· ${looksDia.length} looks</span>
+                    <span>${pecasDia.length} peças · ${looksDia.length} looks</span>
                 </div>
                 <div class="historico-bloco">
                     <h5>Looks</h5>
@@ -5969,7 +5969,7 @@ function renderDetalheHistorico(registrosPeriodo) {
                 </div>
                 <div class="historico-bloco">
                     <div class="historico-bloco-topo">
-                        <h5>PeÃ§as</h5>
+                        <h5>Peças</h5>
                         <button type="button" class="btn-secundario" data-criar-look-dia onclick="abrirCriacaoLookHistorico('${dia}')" disabled>
                             Criar look
                         </button>
@@ -5988,14 +5988,14 @@ function criarCardLookHistorico(id, origem = 'registrado') {
     const pecas = (look?.pecas || []).filter(pid => app.pecas[pid]);
     const nome = look?.nome || look?.id || id;
     const origemNormalizada = origem === 'inferido' ? 'inferido' : 'registrado';
-    const origemLabel = origemNormalizada === 'inferido' ? 'Inferido pelas peÃ§as' : 'Registrado no histÃ³rico';
+    const origemLabel = origemNormalizada === 'inferido' ? 'Inferido pelas peças' : 'Registrado no histórico';
 
     return `
         <button type="button" class="historico-look-card historico-look-${origemNormalizada}" onclick="mostrarDetalhesLook('${id}')">
             <img src="${getCaminhoFotoLook(id)}" alt="${nome}" class="historico-look-foto"
                  onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23eee%22 width=%22100%22 height=%22100%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>sem foto</text></svg>'">
             <strong>${nome}</strong>
-            <small>${pecas.length} peÃ§as</small>
+            <small>${pecas.length} peças</small>
             <span class="historico-look-origem">${origemLabel}</span>
         </button>
     `;
@@ -6028,7 +6028,7 @@ function criarCardPecaHistorico(id, opcoes = {}) {
 function removerPecaDoHistoricoDia(dia, pecaId) {
     const peca = app.pecas[pecaId];
     const nome = peca?.tipo || pecaId;
-    const confirmado = confirm(`Remover ${nome} (${pecaId}) do historico de ${formatarDataBR(dia)}?`);
+    const confirmado = confirm(`Remover ${nome} (${pecaId}) do histórico de ${formatarDataBR(dia)}?`);
     if (!confirmado) return;
 
     let alterou = false;
@@ -6118,7 +6118,7 @@ function atualizarBotaoCriarLookHistorico(dia) {
 
     const total = app.pecasSelecionadasLookHistorico[dia]?.length || 0;
     botao.disabled = total < 2;
-    botao.textContent = total < 2 ? `Selecione ${2 - total} peÃ§a${total === 1 ? '' : 's'}` : `Criar look (${total})`;
+    botao.textContent = total < 2 ? `Selecione ${2 - total} peça${total === 1 ? '' : 's'}` : `Criar look (${total})`;
     atualizarAvisoLookExistenteHistorico(dia);
 }
 
@@ -6136,7 +6136,7 @@ function atualizarAvisoLookExistenteHistorico(dia) {
     }
 
     container.innerHTML = `
-        <strong>Essas peÃ§as jÃ¡ fazem parte de look cadastrado</strong>
+        <strong>Estas peças já fazem parte de look cadastrado</strong>
         <div class="historico-look-existente-lista">
             ${looks.map(look => `
                 <button type="button" onclick="mostrarDetalhesLook('${look.id}')">
@@ -6153,7 +6153,7 @@ function atualizarAvisoLookExistenteHistorico(dia) {
 function abrirCriacaoLookHistorico(dia) {
     const pecas = app.pecasSelecionadasLookHistorico[dia] || [];
     if (pecas.length < 2) {
-        alert('Selecione pelo menos 2 peÃ§as desse dia para criar um look.');
+        alert('Selecione pelo menos 2 peças desse dia para criar um look.');
         return;
     }
 
@@ -6312,7 +6312,7 @@ function atualizarPreviewLookHistorico() {
     document.getElementById('look-historico-id-preview').textContent = proximoId
         ? `${modo === 'substituir' ? 'Substituir' : 'ID'}: ${proximoId}`
         : 'ID: selecione o indicador';
-    document.getElementById('look-historico-pecas-preview').textContent = `${pecas.length} peÃ§as selecionadas: ${pecas.join(', ')}`;
+    document.getElementById('look-historico-pecas-preview').textContent = `${pecas.length} peças selecionadas: ${pecas.join(', ')}`;
 
     if (fotoPreview) {
         if (lookExistente) {
