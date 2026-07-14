@@ -22,7 +22,7 @@
             }
         })();
     </script>
-    <link rel="stylesheet" href="css/style.css?v=20260713-tabela-pecas-datas">
+    <link rel="stylesheet" href="css/style.css?v=20260713-painel-cards-pecas">
 </head>
 <body>
     <div id="app">
@@ -174,11 +174,16 @@
                 <!-- Os selects serão adicionados dinamicamente pelo JS -->
             </div>
 
-            <!-- IMPORTANTE: Aqui é onde as peças aparecem dinamicamente
-                 JavaScript irá criar cards para cada peça -->
-            <div id="galeria" class="galeria">
-                <!-- Os cards das peças serão inseridos aqui pelo JavaScript -->
-            </div>
+            <section class="secao secao-galeria-pecas">
+                <div class="resumo-periodo-topo">
+                    <h3>Peças</h3>
+                </div>
+                <!-- IMPORTANTE: Aqui é onde as peças aparecem dinamicamente
+                     JavaScript irá criar cards para cada peça -->
+                <div id="galeria" class="galeria">
+                    <!-- Os cards das peças serão inseridos aqui pelo JavaScript -->
+                </div>
+            </section>
             <div class="secao secao-tabela-pecas">
                 <div class="resumo-periodo-topo">
                     <h3>Peças filtradas</h3>
