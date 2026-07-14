@@ -1737,6 +1737,8 @@ function prepararImportacaoHistorico(registros) {
 }
 
 function diaTemDiferencasHistorico(existentes, importados) {
+    // chaveRegistroHistorico usa somente os looks gravados no registro.
+    // Looks inferidos pelas pecas nao participam da comparacao de importacao.
     const chavesExistentes = new Set((existentes || []).map(chaveRegistroHistorico));
     const chavesImportados = new Set((importados || []).map(chaveRegistroHistorico));
     if (chavesExistentes.size !== chavesImportados.size) return true;
