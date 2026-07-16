@@ -27,12 +27,12 @@ const TEMA_VISUAL_STORAGE_KEY = 'temaVisualGuardaRoupa';
 const ESTADO_FILTROS_STORAGE_KEY = 'estadoFiltrosGuardaRoupa';
 const TEMAS_VISUAIS = ['sistema', 'claro', 'escuro'];
 const GRUPOS_REGISTRO_PECAS = [
-    { id: 'roupas-principais', titulo: 'Blusas, calÃ§as, casacos, inteiros', tipos: ['blusa', 'calÃ§a', 'casaco', 'inteiro'] },
-    { id: 'intimas-funcionais', titulo: 'Sutien, calcinha, modelador, tops, segunda-pele', tipos: ['sutien', 'calcinha', 'modelador', 'top', 'segunda-pele'] },
+    { id: 'roupas-principais', titulo: 'Blusas, calças, casacos e inteiros', tipos: ['blusa', 'calça', 'casaco', 'inteiro'] },
+    { id: 'intimas-funcionais', titulo: 'Sutiãs, calcinhas, modeladores, tops e segunda pele', tipos: ['sutien', 'calcinha', 'modelador', 'top', 'segunda-pele'] },
     { id: 'pijamas', titulo: 'Pijamas', tipos: ['pijama'] },
-    { id: 'meias-calcados', titulo: 'Meias e calÃ§ados', tipos: ['meia', 'calÃ§ado'] },
+    { id: 'meias-calcados', titulo: 'Meias e calçados', tipos: ['meia', 'calçado'] },
     { id: 'bijus', titulo: 'Bijus', tipos: ['biju'] },
-    { id: 'acessorios', titulo: 'Bolsa, cinto, pra cabeÃ§a, pro pescoÃ§o', tipos: ['bolsa', 'cinto', 'pra cabeÃ§a', 'pro pescoÃ§o'] },
+    { id: 'acessorios', titulo: 'Bolsas, cintos, para a cabeça e para o pescoço', tipos: ['bolsa', 'cinto', 'pra cabeça', 'pro pescoço'] },
     { id: 'praia', titulo: 'Roupa de praia', tipos: ['roupa de praia'] },
 ];
 
@@ -459,19 +459,19 @@ function obterTiposPecasInteirasCompativeis(look) {
 function formatarNomeFiltro(campo) {
     const nomes = {
         tipo: 'Tipo',
-        funcao: 'FunÃ§Ã£o',
+        funcao: 'Função',
         subtipo: 'Subtipo',
         padronagem: 'Padronagem',
         tom: 'Tom',
         cor_detalhe: 'Cor detalhe',
         nivel_aquecimento: 'Aquecimento',
-        situacao: 'SituaÃ§Ã£o',
-        utilizacao: 'UtilizaÃ§Ã£o',
+        situacao: 'Situação',
+        utilizacao: 'Utilização',
         indicador: 'Tipo',
         clima: 'Clima',
         local: 'Local',
         htt: 'HTT',
-        ocasiao: 'OcasiÃ£o'
+        ocasiao: 'Ocasião'
     };
     if (nomes[campo]) return nomes[campo];
     return campo.toUpperCase().replace('_', ' ');
@@ -541,7 +541,8 @@ function criarFiltroMultiplo(container, campo, valores, selecionados, aoAlterar)
         marcador.className = 'filtro-chip-marcador';
         const texto = document.createElement('span');
         texto.className = 'filtro-chip-texto';
-        texto.textContent = valor.charAt(0).toUpperCase() + valor.slice(1);
+        const textoExibido = corrigirTextoMojibake(valor);
+        texto.textContent = textoExibido.charAt(0).toUpperCase() + textoExibido.slice(1);
         label.appendChild(marcador);
         label.appendChild(texto);
         opcoes.appendChild(label);
@@ -573,7 +574,10 @@ function pecaPassaNosFiltros(peca, filtros) {
     for (let campo in filtros) {
         const valores = filtros[campo];
 
-        if (Array.isArray(valores) && valores.length > 0 && !valores.includes(peca[campo])) {
+        const corresponde = Array.isArray(valores) && valores.some(valor =>
+            normalizarTexto(valor) === normalizarTexto(peca[campo])
+        );
+        if (Array.isArray(valores) && valores.length > 0 && !corresponde) {
             return false;
         }
     }
@@ -1597,11 +1601,25 @@ function mapearCamposNormalizados(linha) {
 }
 
 function normalizarTexto(texto) {
-    return String(texto || '')
+    return corrigirTextoMojibake(texto)
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
         .replace(/[^a-zA-Z0-9_]/g, '')
         .toLowerCase();
+}
+
+function corrigirTextoMojibake(texto) {
+    let resultado = String(texto || '');
+
+    for (let tentativa = 0; tentativa < 2 && /[ÃÂ]/.test(resultado); tentativa++) {
+        try {
+            resultado = decodeURIComponent(escape(resultado));
+        } catch {
+            break;
+        }
+    }
+
+    return resultado;
 }
 
 function normalizarDataHistorico(valor) {
@@ -3121,7 +3139,7 @@ function fecharModal() {
 
 function atualizarDataHoje() {
     const hoje = new Date();
-    document.getElementById('data-hoje').textContent = 'Escolha a data do uso e selecione as peÃ§as utilizadas.';
+    document.getElementById('data-hoje').textContent = 'Escolha a data do uso e selecione as peças utilizadas.';
 
     const campoData = document.getElementById('data-registro-uso');
     if (campoData && !campoData.value) {
@@ -3514,6 +3532,7 @@ function criarCardPecaRegistro(id, peca) {
         <div class="card-peca-corpo">
             <div class="card-peca-titulo">
                 <strong>${escapeHtml(id)}</strong>
+                <span>${escapeHtml(corrigirTextoMojibake(peca.tipo || ''))}</span>
             </div>
         </div>
     `;
@@ -3549,13 +3568,14 @@ function renderGaleriaUsarHoje() {
 
     GRUPOS_REGISTRO_PECAS.forEach(grupo => {
         const filtrosGrupo = obterFiltroGrupoRegistro(grupo.id);
-        const pecasBaseGrupo = Object.entries(app.pecas)
-            .filter(([, peca]) => pecaPertenceAoGrupoRegistro(peca, grupo))
+        const todasPecasGrupo = Object.entries(app.pecas)
+            .filter(([, peca]) => pecaPertenceAoGrupoRegistro(peca, grupo));
+        const pecasBaseGrupo = todasPecasGrupo
             .filter(([, peca]) => pecaPassaNosFiltros(peca, app.filtrosHoje));
         const pecasFiltradas = pecasBaseGrupo
             .filter(([, peca]) => pecaPassaNosFiltros(peca, filtrosGrupo));
 
-        if (pecasBaseGrupo.length === 0) return;
+        if (todasPecasGrupo.length === 0) return;
 
         const secao = document.createElement('section');
         secao.className = 'grupo-registro';
@@ -3564,7 +3584,7 @@ function renderGaleriaUsarHoje() {
         topo.className = 'grupo-registro-topo';
         topo.innerHTML = `
             <h4>${escapeHtml(grupo.titulo)}</h4>
-            <span>${pecasFiltradas.length} de ${pecasBaseGrupo.length}</span>
+            <span>${pecasFiltradas.length} de ${todasPecasGrupo.length}</span>
         `;
         secao.appendChild(topo);
 
@@ -3595,7 +3615,7 @@ function renderGaleriaUsarHoje() {
         grade.className = 'grupo-registro-grade';
 
         if (pecasFiltradas.length === 0) {
-            grade.innerHTML = '<p class="grupo-registro-vazio">Nenhuma peÃ§a neste grupo com os filtros atuais.</p>';
+            grade.innerHTML = '<p class="grupo-registro-vazio">Nenhuma peça neste grupo com os filtros atuais.</p>';
         } else {
             pecasFiltradas.forEach(([id, peca]) => {
                 grade.appendChild(criarCardPecaRegistro(id, peca));
@@ -3613,7 +3633,7 @@ function atualizarPecasSelecionadasHoje() {
     const container = document.getElementById('pecas-selecionadas-hoje');
 
     if (app.pecasSelecionadasHoje.length === 0) {
-        container.innerHTML = '<p class="lista-vazia">Nenhuma peÃ§a selecionada ainda</p>';
+        container.innerHTML = '<p class="lista-vazia">Nenhuma peça selecionada ainda</p>';
         app.looksSelecionadosHoje = [];
         atualizarLooksCompativeisHoje();
         return;
@@ -3632,7 +3652,7 @@ function atualizarPecasSelecionadasHoje() {
             <img src="${caminho}" alt="${peca.tipo}" data-id="${id}"
                  onerror="if(this.src.endsWith('.jpg')){this.src='fotos/'+this.dataset.id+'.png';this.onerror=function(){this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>âŒ</text></svg>'}}else{this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>âŒ</text></svg>'}">
             <div class="item-lista-info">
-                <strong>${peca.tipo || id}</strong><br>
+                <strong>${escapeHtml(corrigirTextoMojibake(peca.tipo || id))}</strong><br>
                 <small>${id}</small>
             </div>
             <button onclick="removerPecaHoje(${index})">Remover</button>
@@ -3663,8 +3683,8 @@ function atualizarLooksCompativeisHoje() {
 
     const tiposPecasInteiras = [...new Set(looks.flatMap(obterTiposPecasInteirasCompativeis))];
     const tituloSugestoes = tiposPecasInteiras.length > 0
-        ? 'Looks sugeridos para a peca inteira selecionada'
-        : 'Looks compatÃ­veis com as peÃ§as selecionadas';
+        ? 'Looks sugeridos para a peça inteira selecionada'
+        : 'Looks compatíveis com as peças selecionadas';
 
     const looksSelecionados = (app.looksSelecionadosHoje || [])
         .map(id => obterLookPorId(id))
@@ -3672,8 +3692,8 @@ function atualizarLooksCompativeisHoje() {
     const resumoSelecionado = looksSelecionados.length > 0 ? `
         <div class="look-selecionado-registro">
             <div>
-                <strong>Looks que serÃ£o registrados</strong>
-                <span>${looksSelecionados.map(look => `${look.id} (${formatarDataLook(obterDataCriacaoLook(look))})`).join(' Â· ')}</span>
+                <strong>Looks que serão registrados</strong>
+                <span>${looksSelecionados.map(look => `${look.id} (${formatarDataLook(obterDataCriacaoLook(look))})`).join(' · ')}</span>
             </div>
             <button type="button" onclick="limparLooksSelecionadosHoje()">Remover looks</button>
         </div>
@@ -3688,7 +3708,7 @@ function atualizarLooksCompativeisHoje() {
                     <img src="${getCaminhoFotoLook(look.id)}" alt="${look.id}"
                          onerror="this.style.display='none'">
                     <span>${look.id}</span>
-                    <small>${criarResumoCompatibilidadeLookHoje(look)} Â· ${formatarDataLook(obterDataCriacaoLook(look))}</small>
+                    <small>${criarResumoCompatibilidadeLookHoje(look)} · ${formatarDataLook(obterDataCriacaoLook(look))}</small>
                 </button>
             `).join('')}
         </div>
@@ -3701,7 +3721,7 @@ function criarResumoCompatibilidadeLookHoje(look) {
         return `${tiposPecasInteiras.join(' / ')} selecionado`;
     }
 
-    return `${look.pecasCompativeis.length} peÃ§as`;
+    return `${look.pecasCompativeis.length} peças`;
 }
 
 function alternarLookCompativelHoje(lookId) {
@@ -3740,7 +3760,7 @@ function selecionarPecaHoje() {
 /* SALVAR USO DO DIA */
 function salvarUsoHoje() {
     if (app.pecasSelecionadasHoje.length === 0) {
-        alert('Selecione pelo menos uma peÃ§a!');
+        alert('Selecione pelo menos uma peça!');
         return;
     }
 
@@ -3765,7 +3785,7 @@ function salvarUsoHoje() {
     salvarDados();
 
     // Feedback visual
-    alert('âœ… Uso registrado com sucesso!');
+    alert('Uso registrado com sucesso!');
 
     // Limpar
     app.pecasSelecionadasHoje = [];
