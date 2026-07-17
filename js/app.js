@@ -1,6 +1,6 @@
 ﻿/* ==================== OBJETO PRINCIPAL DA APP ====================
-   Tudo sobre o estado da aplicaÃ§Ã£o fica aqui. 
-   Ã‰ como um "banco de dados em memÃ³ria" */
+   Tudo sobre o estado da aplicação fica aqui. 
+   É como um "banco de dados em memória" */
 
 const CAMPOS_FILTROS_PECAS = ['tipo', 'funcao', 'subtipo', 'padronagem', 'cor_detalhe', 'cor', 'tom', 'nivel_aquecimento', 'formalidade', 'tendencia', 'utilizacao', 'local', 'alocacao', 'situacao', 'conservacao', 'reposicao'];
 const CAMPOS_FILTROS_LOOKS = ['situacao', 'utilizacao', 'categoria', 'indicador', 'clima', 'local', 'htt', 'ocasiao'];
@@ -47,14 +47,14 @@ const app = {
     validacaoDimensoes: {},
     ocasioes: ['Trabalho', 'Casual', 'Festa', 'Treino', 'Casa', 'Sair'],
 
-    // Dados do usuÃ¡rio (salvos em localStorage)
+    // Dados do usuário (salvos em localStorage)
     historico: [],           // Lista de {data, pecas, lookId?}
-    looksFavoritos: {},      // Meus prÃ³prios looks criados {id: {nome, pecas, ocasiao}}
+    looksFavoritos: {},      // Meus próprios looks criados {id: {nome, pecas, ocasiao}}
     looksEmExibicao: [],
     limiteLooksExibidos: 0,
     timeoutFiltroPecasLooks: null,
 
-    // Estado temporÃ¡rio (mudam conforme usuÃ¡rio interage)
+    // Estado temporário (mudam conforme usuário interage)
     pecasSelecionadasHoje: [],
     looksSelecionadosHoje: [],
     pecasSelecionadasLookHistorico: {},
@@ -74,14 +74,14 @@ const app = {
     forcarEnvioLocalSupabase: false,
     recuperandoSenhaSupabase: false,
     
-    // Filtros da pÃ¡gina Home
+    // Filtros da página Home
     filtrosHome: Object.fromEntries(CAMPOS_FILTROS_PECAS.map(campo => [campo, []])),
     
     // Filtros da aba "Usar Hoje"
     filtrosHoje: Object.fromEntries(CAMPOS_FILTROS_GERAIS_HOJE.map(campo => [campo, []])),
     filtrosHojeGrupos: Object.fromEntries(GRUPOS_REGISTRO_PECAS.map(grupo => [grupo.id, { tipo: [], subtipo: [] }])),
 
-    // Filtros da pÃ¡gina Looks
+    // Filtros da página Looks
     filtrosLooks: {
         ...Object.fromEntries(CAMPOS_FILTROS_LOOKS.map(campo => [campo, []])),
         situacao: ['em uso'],
@@ -97,7 +97,7 @@ const app = {
     },
     dropdownOcasioesAberto: null,
 
-    // Filtros do card "NÃ£o uso hÃ¡..." no histÃ³rico
+    // Filtros do card "Não uso há..." no histórico
     filtrosSemUso: {
         tipo: '',
         local: '',
@@ -122,11 +122,11 @@ const app = {
 };
 
 /* ==================== INICIALIZAR A APP ====================
-   Chamado quando a pÃ¡gina carrega. Ã‰ o "ponto de entrada" */
+   Chamado quando a página carrega. É o "ponto de entrada" */
 
 async function inicializar() {
     configurarTemaVisual();
-    console.log('ðŸš€ Inicializando aplicaÃ§Ã£o...');
+    console.log('🚀 Inicializando aplicação...');
 
     // 1. Carregar dados do Excel (JSON)
     await carregarDadosJSON();
@@ -148,10 +148,10 @@ async function inicializar() {
     await inicializarSupabase();
     atualizarDataHoje();
 
-    console.log('âœ… App inicializada!');
+    console.log('✅ App inicializada!');
 }
 
-/* ==================== FUNÃ‡ÃƒO HELPER: OBTER CAMINHO DA FOTO ====================
+/* ==================== FUNÇÃO HELPER: OBTER CAMINHO DA FOTO ====================
    Carrega imagens em formato WebP */
 
 function configurarTemaVisual() {
@@ -284,7 +284,7 @@ function obterDetalhePeca(peca, campo) {
 function criarCamposPecaHtml(peca, compacto = false) {
     const camposBase = [
         ['Tipo', peca.tipo],
-        ['FunÃ§Ã£o', peca.funcao],
+        ['Função', peca.funcao],
         ['Subtipo', peca.subtipo],
         ['Padronagem', peca.padronagem],
         ['Cor detalhe', peca.cor_detalhe],
@@ -292,13 +292,13 @@ function criarCamposPecaHtml(peca, compacto = false) {
         ['Tom', peca.tom],
         ['Aquecimento', peca.nivel_aquecimento],
         ['Formalidade', peca.formalidade],
-        ['TendÃªncia', peca.tendencia],
-        ['UtilizaÃ§Ã£o', peca.utilizacao],
+        ['Tendência', peca.tendencia],
+        ['Utilização', peca.utilizacao],
         ['Local', peca.local],
-        ['AlocaÃ§Ã£o', peca.alocacao],
-        ['SituaÃ§Ã£o', peca.situacao],
-        ['ConservaÃ§Ã£o', peca.conservacao],
-        ['ReposiÃ§Ã£o', peca.reposicao],
+        ['Alocação', peca.alocacao],
+        ['Situação', peca.situacao],
+        ['Conservação', peca.conservacao],
+        ['Reposição', peca.reposicao],
     ];
 
     const detalhes = (peca.detalhes || []).map(item => [item.campo, item.valor]);
@@ -348,7 +348,7 @@ function criarAcessoriosHtml(peca) {
 
     return `
         <div class="bloco-card-peca">
-            <h4>AcessÃ³rios</h4>
+            <h4>Acessórios</h4>
             <div class="miniaturas-peca">
                 ${acessorios.map(item => criarMiniaturaPeca(item)).join('')}
             </div>
@@ -362,7 +362,7 @@ function criarRestricoesHtml(peca) {
 
     return `
         <div class="bloco-card-peca">
-            <h4>NÃ£o combinar</h4>
+            <h4>Não combinar</h4>
             <div class="miniaturas-peca miniaturas-restricoes">
                 ${restricoes.map(item => `
                     <span class="miniatura-peca" title="${escapeHtml(item.descricao || item.codigo)}">
@@ -416,7 +416,7 @@ function obterTextoBuscaPeca(peca) {
 }
 
 function obterDataCriacaoLook(look) {
-    return look?.basicos?.['Data criaÃ§Ã£o'] || look?.dataCriacao || look?.data_criacao || '';
+    return look?.basicos?.['Data criação'] || look?.dataCriacao || look?.data_criacao || '';
 }
 
 function formatarDataLook(valor) {
@@ -443,7 +443,7 @@ function obterLooksCompativeis(pecasSelecionadas, opcoes = {}) {
 }
 
 function ehLookExcluido(look) {
-    return normalizarTexto(look?.situacao || look?.basicos?.['situaÃ§Ã£o'] || look?.basicos?.situacao) === 'excluido';
+    return normalizarTexto(look?.situacao || look?.basicos?.['situação'] || look?.basicos?.situacao) === 'excluido';
 }
 
 function ehPecaInteiraParaRegistro(id) {
@@ -606,21 +606,21 @@ async function carregarDadosJSON() {
         const tiposOcasiao = [...new Set(Object.values(app.mapaOcasioes).map(item => item.tipo).filter(Boolean))];
         if (tiposOcasiao.length > 0) app.ocasioes = tiposOcasiao;
 
-        console.log(`âœ… Carregados ${Object.keys(app.pecas).length} peÃ§as`);
-        console.log(`âœ… Carregados ${Object.keys(app.looks).length} looks`);
+        console.log(`✅ Carregados ${Object.keys(app.pecas).length} peças`);
+        console.log(`✅ Carregados ${Object.keys(app.looks).length} looks`);
     } catch (erro) {
-        console.error('âŒ Erro ao carregar dados:', erro);
+        console.error('❌ Erro ao carregar dados:', erro);
         alert('Erro ao carregar dados. Verifique se dados_guarda_roupa.json existe.');
     }
 }
 
 /* ==================== CARREGAR DADOS DO CELULAR ====================
-   Busca dados salvos em localStorage (histÃ³rico, looks favoritos) */
+   Busca dados salvos em localStorage (histórico, looks favoritos) */
 
 function carregarDados() {
     // localStorage.getItem() = busca um valor salvo
     // JSON.parse() = transforma string em objeto
-    // || [] = se nÃ£o existir, usa lista vazia
+    // || [] = se não existir, usa lista vazia
 
     try {
         const pecasSalvas = localStorage.getItem('app_pecas_personalizadas');
@@ -629,7 +629,7 @@ function carregarDados() {
         app.pecas = { ...app.pecas, ...app.pecasPersonalizadas };
         Object.values(app.pecas).forEach(normalizarDimensoesPeca);
     } catch (erro) {
-        console.warn('PeÃ§as personalizadas invÃ¡lidas. Ignorando alteraÃ§Ãµes locais.', erro);
+        console.warn('Peças personalizadas inválidas. Ignorando alterações locais.', erro);
         app.pecasPersonalizadas = {};
     }
 
@@ -638,7 +638,7 @@ function carregarDados() {
         app.historico = historicoSalvo ? JSON.parse(historicoSalvo) : [];
         if (!Array.isArray(app.historico)) app.historico = [];
     } catch (erro) {
-        console.warn('HistÃ³rico salvo invÃ¡lido. Iniciando vazio.', erro);
+        console.warn('Histórico salvo inválido. Iniciando vazio.', erro);
         app.historico = [];
     }
 
@@ -647,12 +647,12 @@ function carregarDados() {
         app.looksFavoritos = looksFavSalvos ? JSON.parse(looksFavSalvos) : {};
         if (garantirLooksFavoritosSemColisao()) salvarDadosLocal();
     } catch (erro) {
-        console.warn('Looks favoritos salvos invÃ¡lidos. Iniciando vazio.', erro);
+        console.warn('Looks favoritos salvos inválidos. Iniciando vazio.', erro);
         app.looksFavoritos = {};
     }
 
-    console.log(`âœ… Carregados ${app.historico.length} registros do histÃ³rico`);
-    console.log(`âœ… Carregados ${Object.keys(app.looksFavoritos).length} looks favoritos`);
+    console.log(`✅ Carregados ${app.historico.length} registros do histórico`);
+    console.log(`✅ Carregados ${Object.keys(app.looksFavoritos).length} looks favoritos`);
 }
 
 /* ==================== SALVAR DADOS NO CELULAR ====================
@@ -761,7 +761,7 @@ function salvarDados() {
     localStorage.setItem('app_looks_favs', JSON.stringify(app.looksFavoritos));
     localStorage.setItem('app_pecas_personalizadas', JSON.stringify(app.pecasPersonalizadas));
 
-    console.log('ðŸ’¾ Dados salvos!');
+    console.log('💾 Dados salvos!');
     agendarEnvioSupabase();
 }
 
@@ -786,8 +786,8 @@ function normalizarDimensoesPeca(peca) {
     return peca;
 }
 
-/* ==================== IMPORTAR HISTÃ“RICO ====================
-   LÃª arquivos .xlsm, .xlsx, .csv ou .json e mescla com os registros jÃ¡ salvos */
+/* ==================== IMPORTAR HISTÓRICO ====================
+   Lê arquivos .xlsm, .xlsx, .csv ou .json e mescla com os registros já salvos */
 
 function supabaseConfigurado() {
     const config = window.SUPABASE_CONFIG || {};
@@ -798,7 +798,7 @@ async function inicializarSupabase() {
     configurarEventosSupabase();
 
     if (!supabaseConfigurado()) {
-        atualizarStatusSupabase('Configure js/supabase-config.js para ativar a sincronizaÃ§Ã£o.');
+        atualizarStatusSupabase('Configure js/supabase-config.js para ativar a sincronização.');
         atualizarUISupabase(null);
         return false;
     }
@@ -820,10 +820,10 @@ async function inicializarSupabase() {
         if (baixou && app.supabaseSuportaPecas) {
             atualizarStatusSupabase('Conectado. Dados do app atualizados pela nuvem.', 'sucesso');
         } else if (baixou) {
-            atualizarStatusSupabase('Conectado, mas falta atualizar o schema para sincronizar as peÃ§as.', 'erro');
+            atualizarStatusSupabase('Conectado, mas falta atualizar o schema para sincronizar as peças.', 'erro');
         }
     } else {
-        atualizarStatusSupabase('Entre na sua conta para sincronizar peÃ§as, looks e histÃ³rico.');
+        atualizarStatusSupabase('Entre na sua conta para sincronizar peças, looks e histórico.');
     }
 
     app.supabase.auth.onAuthStateChange(async (event, session) => {
@@ -838,10 +838,10 @@ async function inicializarSupabase() {
             if (baixou && app.supabaseSuportaPecas) {
                 atualizarStatusSupabase('Conta conectada e dados atualizados.', 'sucesso');
             } else if (baixou) {
-                atualizarStatusSupabase('Conta conectada, mas falta atualizar o schema das peÃ§as.', 'erro');
+                atualizarStatusSupabase('Conta conectada, mas falta atualizar o schema das peças.', 'erro');
             }
         } else if (!app.recuperandoSenhaSupabase) {
-            atualizarStatusSupabase('Entre na sua conta para sincronizar peÃ§as, looks e histÃ³rico.');
+            atualizarStatusSupabase('Entre na sua conta para sincronizar peças, looks e histórico.');
         }
     });
 }
@@ -897,7 +897,7 @@ function atualizarUISupabase(usuario) {
         botaoGlobal.classList.toggle('indisponivel', !configurado);
     }
     if (labelGlobal) {
-        labelGlobal.textContent = !configurado ? 'Nuvem indisponÃ­vel' : (usuario ? 'Nuvem conectada' : 'Conectar nuvem');
+        labelGlobal.textContent = !configurado ? 'Nuvem indisponível' : (usuario ? 'Nuvem conectada' : 'Conectar nuvem');
     }
 
     if (app.recuperandoSenhaSupabase) {
@@ -1070,7 +1070,7 @@ async function criarContaSupabase() {
     app.usuarioSupabase = data.session.user;
     atualizarUISupabase(app.usuarioSupabase);
     const enviou = await enviarDadosSupabase({ silencioso: true });
-    atualizarStatusSupabase('Conta criada. Se o Supabase pedir confirmaÃ§Ã£o de email, confirme antes do prÃ³ximo login.', 'sucesso');
+    atualizarStatusSupabase('Conta criada. Se o Supabase pedir confirmação de email, confirme antes do próximo login.', 'sucesso');
     atualizarStatusSupabase(
         enviou ? 'Conta criada e sincronizada com a nuvem.' : 'Conta criada, mas ainda nao consegui gravar na tabela. Clique em Sincronizar novamente.',
         enviou ? 'sucesso' : 'erro'
@@ -1167,7 +1167,7 @@ async function enviarDadosSupabaseAntigo({ silencioso = false, mesclarAntes = tr
         const baixou = await baixarDadosSupabase({ silencioso: true });
         if (!baixou) {
             app.sincronizando = false;
-            if (!silencioso) atualizarStatusSupabase('NÃƒÂ£o enviei porque nÃƒÂ£o consegui conferir a nuvem primeiro.', 'erro');
+            if (!silencioso) atualizarStatusSupabase('Não enviei porque não consegui conferir a nuvem primeiro.', 'erro');
             return false;
         }
     }
@@ -1242,7 +1242,7 @@ async function enviarDadosSupabase({ silencioso = false, mesclarAntes = true } =
 
         if (!silencioso) {
             const avisoPecas = app.supabaseSuportaPecas === false
-                ? ' PeÃ§as personalizadas ainda nÃ£o foram enviadas porque falta atualizar o schema do Supabase.'
+                ? ' Peças personalizadas ainda não foram enviadas porque falta atualizar o schema do Supabase.'
                 : '';
             atualizarStatusSupabase(
                 `Dados enviados para a nuvem (${app.historico.length} registros, ${Object.keys(app.looksFavoritos).length} looks criados). Ultima gravacao: ${formatarDataHoraSupabase(data?.updated_at)}.${avisoPecas}`,
@@ -1264,9 +1264,9 @@ function agendarEnvioSupabase() {
     window.clearTimeout(app.timeoutSyncSupabase);
     const mesclarAntes = !app.forcarEnvioLocalSupabase;
     app.forcarEnvioLocalSupabase = false;
-    atualizarStatusSupabase('AlteraÃ§Ãµes locais aguardando sincronizaÃ§Ã£o.', 'sincronizando');
+    atualizarStatusSupabase('Alterações locais aguardando sincronização.', 'sincronizando');
     app.timeoutSyncSupabase = window.setTimeout(async () => {
-        atualizarStatusSupabase('Sincronizando alteraÃ§Ãµes com a nuvem...', 'sincronizando');
+        atualizarStatusSupabase('Sincronizando alterações com a nuvem...', 'sincronizando');
         const enviou = await enviarDadosSupabase({ silencioso: true, mesclarAntes });
         if (enviou) {
             app.ultimaSincronizacaoSupabase = new Date();
@@ -1314,10 +1314,10 @@ function obterDataAtualizacaoLook(look) {
     if (valorVisivel(look?.editadoEm)) return look.editadoEm;
 
     const ultimaAlteracao = obterCampoPorNomes(look?.basicos, [
-        'Data Ãºltima alteraÃ§Ã£o',
+        'Data última alteração',
         'Data ultima alteracao',
         'Data ult alt',
-        'Ãšltima alteraÃ§Ã£o',
+        'Última alteração',
     ]) || look?.dataUltimaAlteracao || look?.data_ultima_alteracao;
 
     return valorVisivel(ultimaAlteracao) ? ultimaAlteracao : obterDataCriacaoLook(look);
@@ -1333,7 +1333,7 @@ function obterDataRevisaoPeca(peca) {
 
     return obterCampoPorNomes(
         Object.fromEntries((peca?.detalhes || []).map(item => [item.campo, item.valor])),
-        ['Data revisÃ£o', 'Data revisao']
+        ['Data revisão', 'Data revisao']
     );
 }
 
@@ -1346,7 +1346,7 @@ function obterDataAtualizacaoTabelaPeca(peca) {
 
     return obterCampoPorNomes(
         Object.fromEntries((peca?.detalhes || []).map(item => [item.campo, item.valor])),
-        ['Data atualizaÃ§Ã£o', 'Data atualizacao', 'Data Ãºltima alteraÃ§Ã£o', 'Data ultima alteracao', 'Ãšltima atualizaÃ§Ã£o', 'Ultima atualizacao']
+        ['Data atualização', 'Data atualizacao', 'Data última alteração', 'Data ultima alteracao', 'Última atualização', 'Ultima atualizacao']
     );
 }
 
@@ -1491,7 +1491,7 @@ async function importarHistoricoArquivo() {
     const arquivo = input?.files?.[0];
 
     if (!arquivo) {
-        alert('Escolha um arquivo de histÃ³rico primeiro.');
+        alert('Escolha um arquivo de histórico primeiro.');
         return;
     }
 
@@ -1502,14 +1502,14 @@ async function importarHistoricoArquivo() {
         const registros = normalizarLinhasHistorico(linhas);
 
         if ((registros.ignorados || 0) > 0) {
-            alert(`${registros.ignorados} linha(s) nÃ£o tinham data ou peÃ§a/look reconhecido e foram ignoradas.`);
+            alert(`${registros.ignorados} linha(s) não tinham data ou peça/look reconhecido e foram ignoradas.`);
         }
 
         const plano = prepararImportacaoHistorico(registros);
         if (plano.conflitos.length > 0) {
             app.importacaoHistoricoPendente = { ...plano, ignorados: registros.ignorados || 0 };
             mostrarConflitosImportacaoHistorico();
-            atualizarStatusImportacao(`${plano.conflitos.length} dia(s) precisam de revisÃ£o antes de importar.`, 'erro');
+            atualizarStatusImportacao(`${plano.conflitos.length} dia(s) precisam de revisão antes de importar.`, 'erro');
             return;
         }
 
@@ -1518,9 +1518,9 @@ async function importarHistoricoArquivo() {
 
         input.value = '';
     } catch (erro) {
-        console.error('Erro ao importar histÃ³rico:', erro);
-        atualizarStatusImportacao(`NÃ£o consegui importar: ${erro.message}`, 'erro');
-        alert(`NÃ£o consegui importar esse arquivo: ${erro.message}`);
+        console.error('Erro ao importar histórico:', erro);
+        atualizarStatusImportacao(`Não consegui importar: ${erro.message}`, 'erro');
+        alert(`Não consegui importar esse arquivo: ${erro.message}`);
     }
 }
 
@@ -1811,7 +1811,7 @@ function finalizarImportacaoHistorico(resultado, ignorados = 0) {
     salvarDados();
     aplicarFiltroHistoricoAtivo();
     atualizarStatusImportacao(
-        `ImportaÃ§Ã£o concluÃ­da: ${resultado.adicionados} novo(s), ${resultado.substituidos || 0} substituÃ­do(s), ${resultado.duplicados} duplicado(s) ignorado(s), ${resultado.mantidos || 0} mantido(s) no app${ignorados ? `, ${ignorados} linha(s) ignorada(s)` : ''}.`,
+        `Importação concluída: ${resultado.adicionados} novo(s), ${resultado.substituidos || 0} substituído(s), ${resultado.duplicados} duplicado(s) ignorado(s), ${resultado.mantidos || 0} mantido(s) no app${ignorados ? `, ${ignorados} linha(s) ignorada(s)` : ''}.`,
         'sucesso'
     );
 }
@@ -1879,7 +1879,7 @@ function cancelarImportacaoHistoricoComConflitos() {
     document.getElementById('modal-conflitos-historico').style.display = 'none';
     const input = document.getElementById('arquivo-historico');
     if (input) input.value = '';
-    atualizarStatusImportacao('ImportaÃ§Ã£o cancelada. Nenhuma alteraÃ§Ã£o foi aplicada.', 'erro');
+    atualizarStatusImportacao('Importação cancelada. Nenhuma alteração foi aplicada.', 'erro');
 }
 
 function confirmarImportacaoHistoricoComConflitos() {
@@ -2055,7 +2055,7 @@ async function descomprimirZip(dados, metodo) {
     }
 
     if (metodo !== 8 || typeof DecompressionStream === 'undefined') {
-        throw new Error('este navegador nÃ£o conseguiu ler o .xlsm/.xlsx. Salve a primeira aba como CSV e tente novamente.');
+        throw new Error('este navegador não conseguiu ler o .xlsm/.xlsx. Salve a primeira aba como CSV e tente novamente.');
     }
 
     const stream = new Blob([dados]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
@@ -2218,13 +2218,13 @@ function decodificarXml(texto) {
     return String(texto || '').replace(/&(amp|lt|gt|quot|apos);/g, entidade => mapa[entidade] || entidade);
 }
 
-/* ==================== NAVEGAÃ‡ÃƒO: MOSTRAR/ESCONDER PÃGINAS ====================
-   Sistema de single-page-app: uma pÃ¡gina HTML, mÃºltiplas visualizaÃ§Ãµes */
+/* ==================== NAVEGAÇÃO: MOSTRAR/ESCONDER PÃGINAS ====================
+   Sistema de single-page-app: uma página HTML, múltiplas visualizações */
 
 function mostrarPagina(nome) {
     salvarEstadoFiltros();
 
-    // Esconde TODAS as pÃ¡ginas
+    // Esconde TODAS as páginas
     // querySelectorAll() = busca todos os elementos com essa classe
     document.querySelectorAll('.pagina').forEach(pagina => {
         pagina.style.display = 'none';
@@ -2257,10 +2257,10 @@ function mostrarPagina(nome) {
         inicializarPaginaOcasioes();
     }
 
-    console.log(`ðŸ“„ Mostrando pÃ¡gina: ${nome}`);
+    console.log(`📄 Mostrando página: ${nome}`);
 }
 
-/* Mudar botÃ£o ativo da navbar */
+/* Mudar botão ativo da navbar */
 function ativarNavBtn(index) {
     // Desativa todos
     document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -2271,25 +2271,25 @@ function ativarNavBtn(index) {
     document.querySelectorAll('.nav-btn')[index].classList.add('active');
 }
 
-/* ==================== PÃGINA HOME: GALERIA DE PEÃ‡AS ====================
-   Renderiza (desenha) a galeria com todas as peÃ§as */
+/* ==================== PÃGINA HOME: GALERIA DE PEÇAS ====================
+   Renderiza (desenha) a galeria com todas as peças */
 
 function renderGaleria() {
     const galeria = document.getElementById('galeria');
-    // innerHTML = "limpa" o conteÃºdo anterior
+    // innerHTML = "limpa" o conteúdo anterior
     galeria.innerHTML = '';
 
-    // Object.values() = pega sÃ³ os valores (nÃ£o as chaves)
+    // Object.values() = pega só os valores (não as chaves)
     // forEach() = repete para cada item
     Object.values(app.pecas).forEach(peca => {
         galeria.appendChild(criarCardPeca(peca));
     });
 
-    console.log('ðŸ–¼ï¸ Galeria renderizada!');
+    console.log('🖼️ Galeria renderizada!');
 }
 
 /* ==================== FILTROS DA PÃGINA HOME ====================
-   Preencher filtros dinamicamente com valores Ãºnicos do JSON */
+   Preencher filtros dinamicamente com valores únicos do JSON */
 
 function ordenarOpcoesDimensao(valores) {
     return [...new Set((valores || []).map(valor => String(valor ?? '').trim()).filter(valor => valor && normalizarTexto(valor) !== 'na'))]
@@ -2314,7 +2314,7 @@ function obterValoresDimensaoPeca(campo, opcoes = {}) {
 }
 
 function preencherFiltrosHome() {
-    // Extrair valores Ãºnicos para cada campo
+    // Extrair valores únicos para cada campo
     const campos = CAMPOS_FILTROS_PECAS;
     
     const container = document.getElementById('filtros-home');
@@ -2331,7 +2331,7 @@ function preencherFiltrosHome() {
         }
     });
     
-    console.log('ðŸ“‹ Filtros da Home criados!');
+    console.log('📋 Filtros da Home criados!');
 }
 
 /* Atualizar filtro da Home */
@@ -2375,7 +2375,7 @@ function renderGaleriaFiltrada() {
     renderTabelaPecasFiltradas(pecasFiltradas);
 
     if (pecasFiltradas.length === 0) {
-        galeria.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #999;">Nenhuma peÃ§a encontrada para esses filtros.</p>';
+        galeria.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #999;">Nenhuma peça encontrada para esses filtros.</p>';
         return;
     }
 
@@ -2396,7 +2396,7 @@ function obterPecasFiltradasHome() {
         
         for (let campo in app.filtrosHome) {
             const filtro = app.filtrosHome[campo];
-            // Se o filtro nÃ£o estÃ¡ vazio, tem que bater
+            // Se o filtro não está vazio, tem que bater
             if (Array.isArray(filtro) && filtro.length > 0) {
                 if (!filtro.includes(peca[campo])) {
                     passouNosFiltros = false;
@@ -2413,7 +2413,7 @@ function obterPecasFiltradasHome() {
     });
 
     if (pecasFiltradas.length === 0) {
-        galeria.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #999;">Nenhuma peÃ§a encontrada para esses filtros.</p>';
+        galeria.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #999;">Nenhuma peça encontrada para esses filtros.</p>';
         return;
     }
 
@@ -2421,7 +2421,7 @@ function obterPecasFiltradasHome() {
         galeria.appendChild(criarCardPeca(peca));
     });
 
-    console.log('ðŸ–¼ï¸ Galeria filtrada renderizada!');
+    console.log('🖼️ Galeria filtrada renderizada!');
 }
 
 function renderTabelaPecasFiltradas(pecas) {
@@ -2430,11 +2430,11 @@ function renderTabelaPecasFiltradas(pecas) {
     if (!container) return;
 
     if (contagem) {
-        contagem.textContent = `${pecas.length} peÃ§a${pecas.length === 1 ? '' : 's'}`;
+        contagem.textContent = `${pecas.length} peça${pecas.length === 1 ? '' : 's'}`;
     }
 
     if (pecas.length === 0) {
-        container.innerHTML = '<p class="texto-ajuda">Nenhuma peÃ§a encontrada para esses filtros.</p>';
+        container.innerHTML = '<p class="texto-ajuda">Nenhuma peça encontrada para esses filtros.</p>';
         return;
     }
 
@@ -2453,21 +2453,21 @@ const COLUNAS_TABELA_PECAS = [
     { campo: 'id', titulo: 'ID', classe: 'tabela-pecas-id' },
     { campo: 'ultimoUso', titulo: 'Ultimo uso' },
     { campo: 'tipo', titulo: 'Tipo' },
-    { campo: 'funcao', titulo: 'FunÃ§Ã£o' },
+    { campo: 'funcao', titulo: 'Função' },
     { campo: 'subtipo', titulo: 'Subtipo' },
     { campo: 'nivel_aquecimento', titulo: 'nivel_aquecimento' },
-    { campo: 'utilizacao', titulo: 'UtilizaÃ§Ã£o' },
+    { campo: 'utilizacao', titulo: 'Utilização' },
     { campo: 'formalidade', titulo: 'Formalidade' },
-    { campo: 'tendencia', titulo: 'TendÃªncia' },
+    { campo: 'tendencia', titulo: 'Tendência' },
     { campo: 'local', titulo: 'Local' },
-    { campo: 'alocacao', titulo: 'AlocaÃ§Ã£o' },
-    { campo: 'situacao', titulo: 'SituaÃ§Ã£o' },
-    { campo: 'conservacao', titulo: 'ConservaÃ§Ã£o' },
+    { campo: 'alocacao', titulo: 'Alocação' },
+    { campo: 'situacao', titulo: 'Situação' },
+    { campo: 'conservacao', titulo: 'Conservação' },
     { campo: 'reposicao', titulo: 'Repor' },
     { campo: 'infoFotos', titulo: 'Info e fotos' },
-    { campo: 'combinacao', titulo: 'CombinaÃ§Ã£o' },
-    { campo: 'dataRevisao', titulo: 'Data revisÃ£o' },
-    { campo: 'dataAtualizacao', titulo: 'Data atualizaÃ§Ã£o' },
+    { campo: 'combinacao', titulo: 'Combinação' },
+    { campo: 'dataRevisao', titulo: 'Data revisão' },
+    { campo: 'dataAtualizacao', titulo: 'Data atualização' },
 ];
 
 function criarCelulaCabecalhoTabelaPecas(coluna) {
@@ -2479,7 +2479,7 @@ function criarCelulaCabecalhoTabelaPecas(coluna) {
         coluna.classe || '',
         ativo ? 'ativo' : '',
     ].filter(Boolean).join(' ');
-    const indicador = ativo ? (direcao === 'desc' ? 'â†“' : 'â†‘') : '';
+    const indicador = ativo ? (direcao === 'desc' ? '↓' : '↑') : '';
 
     return `
         <button type="button" class="${classe}" onclick="ordenarTabelaPecas('${coluna.campo}')">
@@ -2551,8 +2551,8 @@ function obterInfoFotosPeca(peca) {
 function obterCombinacoesPeca(peca) {
     const combinacoes = peca.combinacoes
         || peca.combinacao
-        || obterCampoPorNomes(peca, ['CombinaÃ§Ã£o', 'Combinacao', 'CombinaÃ§Ãµes', 'Combinacoes'])
-        || obterCampoPorNomes(Object.fromEntries((peca?.detalhes || []).map(item => [item.campo, item.valor])), ['CombinaÃ§Ã£o', 'Combinacao', 'CombinaÃ§Ãµes', 'Combinacoes'])
+        || obterCampoPorNomes(peca, ['Combinação', 'Combinacao', 'Combinações', 'Combinacoes'])
+        || obterCampoPorNomes(Object.fromEntries((peca?.detalhes || []).map(item => [item.campo, item.valor])), ['Combinação', 'Combinacao', 'Combinações', 'Combinacoes'])
         || '';
 
     return valorVisivel(combinacoes) ? combinacoes : '';
@@ -2597,7 +2597,7 @@ function valorTabelaPeca(valor) {
     return valorVisivel(valor) ? String(valor) : '-';
 }
 
-/* Filtrar peÃ§as por texto na barra de pesquisa */
+/* Filtrar peças por texto na barra de pesquisa */
 function filtrarPecas() {
     const termoOriginal = document.getElementById('filtro-pesquisa')?.value || '';
     app.filtroPesquisaPecas = termoOriginal;
@@ -2653,7 +2653,7 @@ function atualizarResumoDataUsoPecas() {
     const periodo = fim && fim !== inicio
         ? `${formatarDataBR(inicio)} ate ${formatarDataBR(fim)}`
         : formatarDataBR(inicio);
-    resumo.textContent = `${ids.size} peÃ§a${ids.size === 1 ? '' : 's'} usada${ids.size === 1 ? '' : 's'} em ${periodo}.`;
+    resumo.textContent = `${ids.size} peça${ids.size === 1 ? '' : 's'} usada${ids.size === 1 ? '' : 's'} em ${periodo}.`;
 }
 
 function reconstruirFiltrosHome() {
@@ -2662,8 +2662,8 @@ function reconstruirFiltrosHome() {
     filtrarPecas();
 }
 
-/* ==================== MODAL: DETALHES DA PEÃ‡A ====================
-   Mostra informaÃ§Ãµes completas de uma peÃ§a */
+/* ==================== MODAL: DETALHES DA PEÇA ====================
+   Mostra informações completas de uma peça */
 
 function abrirDetalhsPeca(id) {
     const peca = app.pecas[id];
@@ -2673,7 +2673,7 @@ function abrirDetalhsPeca(id) {
     const modalAbertoPorBaixo = [...document.querySelectorAll('.modal')]
         .some(modal => modal !== modalPeca && modal.style.display !== 'none');
 
-    // Guardar referÃªncia para usar depois
+    // Guardar referência para usar depois
     app.pecaEmDetalhes = id;
 
     // Preencher modal com dados
@@ -2685,7 +2685,7 @@ function abrirDetalhsPeca(id) {
             </div>
             ${dataAtualizacao ? `
                 <div class="campo-ficha">
-                    <span class="label">Ãšltima atualizaÃ§Ã£o:</span>
+                    <span class="label">Última atualização:</span>
                     <span>${escapeHtml(formatarDataHoraFicha(dataAtualizacao))}</span>
                 </div>
             ` : ''}
@@ -2850,7 +2850,7 @@ function criarFiltrosLooksPeca(looks) {
             <select onchange="alterarFiltroLooksPeca('htt', this.value)">
                 <option value="todos" ${filtros.htt === 'todos' ? 'selected' : ''}>Todos</option>
                 <option value="true" ${filtros.htt === 'true' ? 'selected' : ''}>HTT</option>
-                <option value="false" ${filtros.htt === 'false' ? 'selected' : ''}>NÃ£o HTT</option>
+                <option value="false" ${filtros.htt === 'false' ? 'selected' : ''}>Não HTT</option>
             </select>
         </label>
         ${[0, 1, 2].map(indice => criarFiltroPecaLookExistente(looks, indice)).join('')}
@@ -2861,7 +2861,7 @@ function criarFiltroPecaLookExistente(looks, indice) {
     const campo = `peca${indice + 1}`;
     const selecionado = app.filtrosLooksPeca?.[campo] || '';
     const opcoes = obterOpcoesPecaPorPosicaoLooks(looks, indice);
-    const rotulo = `PeÃ§a ${indice + 1}`;
+    const rotulo = `Peça ${indice + 1}`;
     const textoSelecionado = selecionado || 'Todas';
 
     return `
@@ -2896,7 +2896,7 @@ function criarOpcaoFiltroPecaLook(campo, id, selecionado) {
             <img src="${escapeHtml(getCaminhoFoto(id))}" alt="${escapeHtml(id)}" onerror="${onErrorImagem()}">
             <span>
                 <strong>${escapeHtml(id)}</strong>
-                <small>${escapeHtml([peca.tipo, peca.subtipo].filter(valorVisivel).join(' - ') || 'PeÃ§a')}</small>
+                <small>${escapeHtml([peca.tipo, peca.subtipo].filter(valorVisivel).join(' - ') || 'Peça')}</small>
             </span>
         </button>
     `;
@@ -2914,7 +2914,7 @@ function criarGruposLooksPeca(looks) {
     if (!looks.length) return '<p class="texto-ajuda">Nenhum look encontrado com esses filtros.</p>';
 
     const grupos = looks.reduce((mapa, look) => {
-        const situacao = obterSituacaoLook(look) || 'Sem situaÃ§Ã£o';
+        const situacao = obterSituacaoLook(look) || 'Sem situação';
         mapa[situacao] = mapa[situacao] || [];
         mapa[situacao].push(look);
         return mapa;
@@ -2937,7 +2937,7 @@ function criarGruposLooksPeca(looks) {
 }
 
 function obterSituacaoLook(look) {
-    return look?.situacao || look?.basicos?.['situaÃ§Ã£o'] || look?.basicos?.['situaÃƒÂ§ÃƒÂ£o'] || '';
+    return look?.situacao || look?.basicos?.['situação'] || look?.basicos?.['situação'] || '';
 }
 
 function criarCardLookExistentePeca(look) {
@@ -3004,7 +3004,7 @@ function criarFormularioEdicaoLoteLooks() {
         <div class="form-edicao-look form-edicao-lote-looks">
             ${criarCampoAplicarEdicaoLote('situacao', `
                 <label class="campo-edicao-look">
-                    <span>SituaÃƒÂ§ÃƒÂ£o</span>
+                    <span>Situação</span>
                     <select id="edit-lote-look-situacao">${opcoesSituacao}</select>
                 </label>
             `)}
@@ -3016,13 +3016,13 @@ function criarFormularioEdicaoLoteLooks() {
             `)}
             ${criarCampoAplicarEdicaoLote('ocasioes', `
                 <label class="campo-edicao-look campo-edicao-look-largo">
-                    <span>OcasiÃƒÂµes</span>
+                    <span>Ocasiões</span>
                     <select id="edit-lote-look-ocasioes" multiple size="8">${opcoesOcasioes}</select>
                 </label>
             `)}
             ${criarCampoAplicarEdicaoLote('sugestoes', `
                 <label class="campo-edicao-look campo-edicao-look-largo">
-                    <span>AcessÃƒÂ³rios e calÃƒÂ§ados sugeridos</span>
+                    <span>Acessórios e calçados sugeridos</span>
                     <select id="edit-lote-look-sugestoes" multiple size="10">${opcoesSugestoes}</select>
                 </label>
             `)}
@@ -3074,7 +3074,7 @@ function salvarEdicaoLoteLooks() {
         if (!lookOriginal) return;
 
         const basicos = { ...(lookOriginal.basicos || {}) };
-        if (aplicarSituacao) basicos['situaÃƒÂ§ÃƒÂ£o'] = situacao;
+        if (aplicarSituacao) basicos['situação'] = situacao;
         if (aplicarSituacao) basicos.situacao = situacao;
         if (aplicarHtt) basicos.HTT = htt;
 
@@ -3135,7 +3135,7 @@ function fecharModal() {
 }
 
 /* ==================== PÃGINA USAR HOJE ====================
-   Registra quais peÃ§as foram usadas hoje */
+   Registra quais peças foram usadas hoje */
 
 function atualizarDataHoje() {
     const hoje = new Date();
@@ -3154,7 +3154,7 @@ function formatarDataParaInput(data) {
     return `${ano}-${mes}-${dia}`;
 }
 
-/* Renderizar galeria de peÃ§as com filtros aplicados na aba "Usar Hoje" */
+/* Renderizar galeria de peças com filtros aplicados na aba "Usar Hoje" */
 function preencherFiltrosHoje() {
     const container = document.getElementById('filtros-hoje');
     if (!container) return;
@@ -3299,15 +3299,15 @@ function mostrarFormularioPeca(id) {
 
     const nova = !id;
     const campos = [
-        ['tipo', 'Tipo'], ['funcao', 'FunÃ§Ã£o'], ['subtipo', 'Subtipo'],
+        ['tipo', 'Tipo'], ['funcao', 'Função'], ['subtipo', 'Subtipo'],
         ['padronagem', 'Padronagem'], ['cor_detalhe', 'Cor / detalhe'], ['tom', 'Tom'],
-        ['nivel_aquecimento', 'NÃ­vel de aquecimento'], ['formalidade', 'Formalidade'],
-        ['tendencia', 'TendÃªncia'], ['utilizacao', 'UtilizaÃ§Ã£o'], ['local', 'Local'],
-        ['alocacao', 'AlocaÃ§Ã£o'], ['situacao', 'SituaÃ§Ã£o'],
-        ['conservacao', 'ConservaÃ§Ã£o'], ['reposicao', 'ReposiÃ§Ã£o'],
+        ['nivel_aquecimento', 'Nível de aquecimento'], ['formalidade', 'Formalidade'],
+        ['tendencia', 'Tendência'], ['utilizacao', 'Utilização'], ['local', 'Local'],
+        ['alocacao', 'Alocação'], ['situacao', 'Situação'],
+        ['conservacao', 'Conservação'], ['reposicao', 'Reposição'],
     ];
 
-    document.getElementById('titulo-modal').textContent = nova ? 'Adicionar nova peÃ§a' : `Editar ${peca.id}`;
+    document.getElementById('titulo-modal').textContent = nova ? 'Adicionar nova peça' : `Editar ${peca.id}`;
     atualizarFotoModalPeca(getCaminhoFoto(peca.id));
     document.querySelector('#modal-peca .ficha-peca').innerHTML = `
         <form id="form-peca" class="form-edicao-peca" onsubmit="event.preventDefault(); salvarPeca();">
@@ -3330,15 +3330,15 @@ function mostrarFormularioPeca(id) {
                 <input id="edit-peca-foto-arquivo" type="file" accept="image/*">
             </label>
             <label class="campo-edicao-peca campo-edicao-peca-largo">
-                <span>InformaÃ§Ãµes complementares</span>
-                <textarea id="edit-peca-detalhes" rows="8" placeholder="Uma informaÃ§Ã£o por linha. Ex.: Marca: Renner">${escapeHtml(formatarDetalhesParaEdicao(peca.detalhes))}</textarea>
+                <span>Informações complementares</span>
+                <textarea id="edit-peca-detalhes" rows="8" placeholder="Uma informação por linha. Ex.: Marca: Renner">${escapeHtml(formatarDetalhesParaEdicao(peca.detalhes))}</textarea>
             </label>
             <label class="campo-edicao-peca campo-edicao-peca-largo">
-                <span>IDs de acessÃ³rios relacionados</span>
+                <span>IDs de acessórios relacionados</span>
                 <input id="edit-peca-acessorios" type="text" value="${escapeHtml(formatarIdsRelacionados(peca.acessorios, 'id'))}" placeholder="ID0002, ID0045">
             </label>
             <label class="campo-edicao-peca campo-edicao-peca-largo">
-                <span>IDs de peÃ§as que nÃ£o combinam</span>
+                <span>IDs de peças que não combinam</span>
                 <input id="edit-peca-restricoes" type="text" value="${escapeHtml(formatarIdsRelacionados(peca.combinacoes_nao_permitidas, 'codigo'))}" placeholder="ID0010, ID0032">
             </label>
             <button type="submit" class="submit-oculto" aria-hidden="true" tabindex="-1"></button>
@@ -3369,7 +3369,7 @@ function lerFotoPeca() {
     return new Promise((resolve, reject) => {
         const leitor = new FileReader();
         leitor.onload = () => resolve(String(leitor.result || ''));
-        leitor.onerror = () => reject(new Error('NÃ£o foi possÃ­vel ler a foto selecionada.'));
+        leitor.onerror = () => reject(new Error('Não foi possível ler a foto selecionada.'));
         leitor.readAsDataURL(arquivo);
     });
 }
@@ -3382,7 +3382,7 @@ async function salvarPeca() {
     const id = String(document.getElementById('edit-peca-id')?.value || '').trim().toUpperCase();
     if (!id) return;
     if (!editandoId && app.pecas[id]) {
-        alert(`JÃ¡ existe uma peÃ§a com o ID ${id}.`);
+        alert(`Já existe uma peça com o ID ${id}.`);
         return;
     }
 
@@ -3431,11 +3431,11 @@ async function salvarPeca() {
         }
         abrirDetalhsPeca(id);
         if (totalLooksAtualizados > 0) {
-            console.log(`ðŸ”„ ${totalLooksAtualizados} look(s) recalculado(s) apÃ³s atualizar a peÃ§a ${id}.`);
+            console.log(`🔄 ${totalLooksAtualizados} look(s) recalculado(s) após atualizar a peça ${id}.`);
         }
     } catch (erro) {
-        console.error('Erro ao salvar peÃ§a:', erro);
-        alert(erro.message || 'NÃ£o foi possÃ­vel salvar a peÃ§a.');
+        console.error('Erro ao salvar peça:', erro);
+        alert(erro.message || 'Não foi possível salvar a peça.');
     }
 }
 
@@ -3447,7 +3447,7 @@ function renderGaleriaUsarHojeAntiga() {
         // Verificar se atende ao filtro de tipo
         let passouNosFiltros = true;
         
-        // Verificar se atende ao filtro de funÃ§Ã£o
+        // Verificar se atende ao filtro de função
         for (let campo in app.filtrosHoje) {
             const filtro = app.filtrosHoje[campo];
             if (Array.isArray(filtro) && filtro.length > 0) {
@@ -3466,11 +3466,11 @@ function renderGaleriaUsarHojeAntiga() {
 
             card.innerHTML = `
                 <img src="${caminho}" alt="${peca.tipo}" data-id="${id}"
-                     onerror="if(this.src.endsWith('.jpg')){this.src='fotos/'+this.dataset.id+'.png';this.onerror=function(){this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>âŒ</text></svg>'}}else{this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>âŒ</text></svg>'}">
+                     onerror="if(this.src.endsWith('.jpg')){this.src='fotos/'+this.dataset.id+'.png';this.onerror=function(){this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>❌</text></svg>'}}else{this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>❌</text></svg>'}">
                 <p>${peca.id}</p>
             `;
 
-            // Clique adiciona Ã  seleÃ§Ã£o
+            // Clique adiciona Ã  seleção
             card.innerHTML = `
                 ${criarImagem(caminho, peca.tipo || id, 'foto-card-peca')}
                 <div class="card-peca-corpo">
@@ -3489,7 +3489,7 @@ function renderGaleriaUsarHojeAntiga() {
         }
     });
 
-    console.log('ðŸ–¼ï¸ Galeria "Usar Hoje" renderizada!');
+    console.log('🖼️ Galeria "Usar Hoje" renderizada!');
 }
 
 
@@ -3650,7 +3650,7 @@ function atualizarPecasSelecionadasHoje() {
         item.className = 'item-lista';
         item.innerHTML = `
             <img src="${caminho}" alt="${peca.tipo}" data-id="${id}"
-                 onerror="if(this.src.endsWith('.jpg')){this.src='fotos/'+this.dataset.id+'.png';this.onerror=function(){this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>âŒ</text></svg>'}}else{this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>âŒ</text></svg>'}">
+                 onerror="if(this.src.endsWith('.jpg')){this.src='fotos/'+this.dataset.id+'.png';this.onerror=function(){this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>❌</text></svg>'}}else{this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>❌</text></svg>'}">
             <div class="item-lista-info">
                 <strong>${escapeHtml(corrigirTextoMojibake(peca.tipo || id))}</strong><br>
                 <small>${id}</small>
@@ -3745,7 +3745,7 @@ function limparLooksSelecionadosHoje() {
     atualizarLooksCompativeisHoje();
 }
 
-/* Selecionar peÃ§a do modal e adicionar ao uso hoje */
+/* Selecionar peça do modal e adicionar ao uso hoje */
 function selecionarPecaHoje() {
     if (app.pecaEmDetalhes) {
         if (!app.pecasSelecionadasHoje.includes(app.pecaEmDetalhes)) {
@@ -3772,7 +3772,7 @@ function salvarUsoHoje() {
 
     // Verificar se usar um look favorito
 
-    // Criar registro no histÃ³rico
+    // Criar registro no histórico
     const registro = {
         data: new Date(`${dataRegistro}T12:00:00`).toISOString(),
         pecas: [...app.pecasSelecionadasHoje],
@@ -3793,9 +3793,9 @@ function salvarUsoHoje() {
     atualizarPecasSelecionadasHoje();
 }
 
-/* Mostrar/esconder select de look quando checkbox Ã© marcado */
+/* Mostrar/esconder select de look quando checkbox é marcado */
 /* ==================== PÃGINA LOOKS ====================
-   Gerencia looks (combinaÃ§Ãµes de peÃ§as) e ocasiÃµes */
+   Gerencia looks (combinações de peças) e ocasiões */
 
 function preencherSelectLooks() {
     const select = document.getElementById('select-look-definido');
@@ -3807,7 +3807,7 @@ function preencherSelectLooks() {
     Object.entries(app.looks).forEach(([id, look]) => {
         const option = document.createElement('option');
         option.value = id;
-        // Mostrar peÃ§as do look
+        // Mostrar peças do look
         const pecasNomes = look.pecas
             .map(pid => app.pecas[pid]?.tipo || pid)
             .join(' + ');
@@ -3815,11 +3815,11 @@ function preencherSelectLooks() {
         select.appendChild(option);
     });
 
-    // Adicionar looks favoritos criados pelo usuÃ¡rio
+    // Adicionar looks favoritos criados pelo usuário
     Object.entries(app.looksFavoritos).forEach(([id, look]) => {
         const option = document.createElement('option');
         option.value = id;
-        option.textContent = `â­ ${look.nome} (${look.pecas.length} peÃ§as)`;
+        option.textContent = `⭐ ${look.nome} (${look.pecas.length} peças)`;
         select.appendChild(option);
     });
 }
@@ -3853,7 +3853,7 @@ function criarFiltroPecasLooks(container) {
     const wrapper = document.createElement('label');
     wrapper.className = 'filtro-pecas-looks';
     wrapper.innerHTML = `
-        <span>IDs das peÃ§as</span>
+        <span>IDs das peças</span>
         <input type="search" id="filtro-look-pecas" placeholder="ID0430, ID0446, ID0101" autocomplete="off" value="${escapeHtml((app.filtrosLooks.pecas || []).join(', '))}">
         <small>Use 1, 2 ou 3 IDs</small>
     `;
@@ -3899,7 +3899,7 @@ function filtrarLooksPorOcasiao(ocasiao, evento) {
         // Mostrar todos os looks
         renderLooks(Object.values(app.looks).concat(Object.values(app.looksFavoritos)));
     } else {
-        // Filtrar por ocasiÃ£o
+        // Filtrar por ocasião
         const looksFiltrados = Object.values(app.looks).filter(look => lookTemOcasiao(look, ocasiao));
         renderLooks(looksFiltrados);
     }
@@ -4044,7 +4044,7 @@ function obterValoresCampoLook(look, campo) {
 
     switch (campo) {
         case 'situacao':
-            return [look.situacao || basicos['situaÃ§Ã£o'] || basicos.situacao];
+            return [look.situacao || basicos['situação'] || basicos.situacao];
         case 'utilizacao':
             return [look.utilizacao_calc || look.utilizacao];
         case 'indicador':
@@ -4325,7 +4325,7 @@ function criarCardLook(look) {
 
     const pecasTexto = (look.pecas || [])
         .map(id => escapeHtml(id))
-        .join(' Â· ');
+        .join(' · ');
     const tags = (look.ocasioes || []).slice(0, 4).map(ocasiao => `<span>${ocasiao.descricao}</span>`).join('');
     const lookId = look.id || look.nome || '';
     const totalUsos = contarUsosLook(look.id);
@@ -4380,7 +4380,7 @@ function mostrarDetalhesLook(lookId, editando = false) {
     const tags = document.getElementById('tags-look-modal');
     tags.innerHTML = (look.ocasioes || []).length
         ? look.ocasioes.map(ocasiao => `<span title="${ocasiao.codigo}">${ocasiao.descricao}</span>`).join('')
-        : '<span>Sem ocasiÃ£o definida</span>';
+        : '<span>Sem ocasião definida</span>';
 
     const ficha = document.getElementById('ficha-look-modal');
     if (editando) {
@@ -4392,12 +4392,12 @@ function mostrarDetalhesLook(lookId, editando = false) {
     document.getElementById('pecas-look-modal').innerHTML = (look.pecas || [])
         .filter(id => app.pecas[id])
         .map(id => criarCardPecaHistorico(id))
-        .join('') || '<p class="texto-ajuda">Nenhuma peÃ§a cadastrada.</p>';
+        .join('') || '<p class="texto-ajuda">Nenhuma peça cadastrada.</p>';
 
     document.getElementById('sugestoes-look-modal').innerHTML = (look.pecas_sugeridas || [])
         .filter(item => app.pecas[item.id])
         .map(item => criarCardPecaLookSugerida(item))
-        .join('') || '<p class="texto-ajuda">Nenhuma sugestÃ£o cadastrada.</p>';
+        .join('') || '<p class="texto-ajuda">Nenhuma sugestão cadastrada.</p>';
 
     modal.classList.toggle('modal-em-pilha', modalAbertoPorBaixo);
     modal.style.display = 'flex';
@@ -4408,13 +4408,13 @@ function renderFichaLookLeitura(look, ficha) {
     const totalUsos = contarUsosLook(look.id);
     const camposClima = [
         ['Total de usos', formatarTotalUsosLook(totalUsos)],
-        ['Ãšltima atualizaÃ§Ã£o', formatarDataHoraFicha(obterDataAtualizacaoLook(look))],
+        ['Última atualização', formatarDataHoraFicha(obterDataAtualizacaoLook(look))],
         ['Clima calculado', formatarClimaLook(look)],
-        ['Aquecimento das peÃ§as', (look.aquecimentos || []).map(valor => valor || '-').join(' Â· ')],
+        ['Aquecimento das peças', (look.aquecimentos || []).map(valor => valor || '-').join(' · ')],
         ['Local calculado', look.local_calc || ''],
-        ['Local das peÃ§as', (look.locais_pecas || []).map(valor => valor || '-').join(' Â· ')],
-        ['UtilizaÃ§Ã£o calculada', look.utilizacao_calc || ''],
-        ['UtilizaÃ§Ã£o das peÃ§as', (look.utilizacoes_pecas || []).map(valor => valor || '-').join(' Â· ')],
+        ['Local das peças', (look.locais_pecas || []).map(valor => valor || '-').join(' · ')],
+        ['Utilização calculada', look.utilizacao_calc || ''],
+        ['Utilização das peças', (look.utilizacoes_pecas || []).map(valor => valor || '-').join(' · ')],
     ];
 
     ficha.innerHTML = camposClima
@@ -4439,7 +4439,7 @@ function renderFichaLookLeitura(look, ficha) {
 function criarOptionsSituacaoLook(valorAtual) {
     const valores = [...new Set([
         ...(app.dimensoes?.situacoes_look || []).map(item => item.valor),
-        ...obterTodosLooks().map(look => look.situacao || look.basicos?.['situaÃ§Ã£o'] || look.basicos?.['situaÃƒÂ§ÃƒÂ£o']).filter(valorVisivel),
+        ...obterTodosLooks().map(look => look.situacao || look.basicos?.['situação'] || look.basicos?.['situação']).filter(valorVisivel),
         valorAtual,
     ].filter(valorVisivel))];
     const atualNormalizado = normalizarTexto(valorAtual);
@@ -4596,7 +4596,7 @@ function criarFormularioEdicaoLook(look) {
     const sugestoes = (look.pecas_sugeridas || [])
         .map(item => `${item.id || ''}${item.grupo ? ` | ${item.grupo}` : ''}`)
         .join('\n');
-    const situacaoAtual = look.situacao || basicos['situaÃƒÂ§ÃƒÂ£o'] || basicos['situaÃ§Ã£o'] || '';
+    const situacaoAtual = look.situacao || basicos['situação'] || basicos['situação'] || '';
     const httAtual = String(look.HTT || look.htt || basicos.HTT || '');
     const opcoesSituacao = criarOptionsSituacaoLook(situacaoAtual);
     const opcoesIndicador = criarOptionsIndicadorLook(obterIndicadorLook(look, look.id));
@@ -4638,7 +4638,7 @@ function criarFormularioEdicaoLook(look) {
                 <input type="file" id="edit-look-foto-arquivo" accept="image/*">
             </label>
             <label class="campo-edicao-look">
-                <span>SituaÃ§Ã£o</span>
+                <span>Situação</span>
                 <select id="edit-look-situacao">${opcoesSituacao}</select>
             </label>
             <label class="campo-edicao-look">
@@ -4658,37 +4658,37 @@ function criarFormularioEdicaoLook(look) {
                 <input type="text" id="edit-look-local-calc" value="${escapeHtml(look.local_calc || look.local || '')}" disabled>
             </label>
             <label class="campo-edicao-look">
-                <span>UtilizaÃ§Ã£o calculada</span>
+                <span>Utilização calculada</span>
                 <input type="text" id="edit-look-utilizacao-calc" value="${escapeHtml(look.utilizacao_calc || look.utilizacao || '')}" disabled>
             </label>
             <label class="campo-edicao-look campo-edicao-look-largo">
-                <span>PeÃ§as do look</span>
+                <span>Peças do look</span>
                 <textarea id="edit-look-pecas" rows="2">${escapeHtml((look.pecas || []).join(', '))}</textarea>
             </label>
             <label class="campo-edicao-look campo-edicao-look-largo">
-                <span>OcasiÃµes</span>
+                <span>Ocasiões</span>
                 <select id="edit-look-ocasioes" multiple size="8">${opcoesOcasioes}</select>
             </label>
             <label class="campo-edicao-look campo-edicao-look-largo">
-                <span>Aquecimentos das peÃ§as</span>
+                <span>Aquecimentos das peças</span>
                 <textarea id="edit-look-aquecimentos" rows="2" disabled>${escapeHtml((look.aquecimentos || []).join(', '))}</textarea>
             </label>
             <label class="campo-edicao-look campo-edicao-look-largo">
-                <span>Locais das peÃ§as</span>
+                <span>Locais das peças</span>
                 <textarea id="edit-look-locais-pecas" rows="2" disabled>${escapeHtml((look.locais_pecas || []).join(', '))}</textarea>
             </label>
             <label class="campo-edicao-look campo-edicao-look-largo">
-                <span>UtilizaÃ§Ãµes das peÃ§as</span>
+                <span>Utilizações das peças</span>
                 <textarea id="edit-look-utilizacoes-pecas" rows="2" disabled>${escapeHtml((look.utilizacoes_pecas || []).join(', '))}</textarea>
             </label>
             <label class="campo-edicao-look campo-edicao-look-largo">
-                <span>AcessÃ³rios e calÃ§ados sugeridos</span>
+                <span>Acessórios e calçados sugeridos</span>
                 <select id="edit-look-sugestoes" multiple size="10">${opcoesSugestoes}</select>
             </label>
             <div class="campo-edicao-look-grupo">
                 <strong>Campos da ficha</strong>
                 <div class="form-edicao-look">
-                    ${camposBasicos || '<p class="texto-ajuda">Nenhum campo bÃ¡sico cadastrado.</p>'}
+                    ${camposBasicos || '<p class="texto-ajuda">Nenhum campo básico cadastrado.</p>'}
                 </div>
             </div>
         </div>
@@ -4852,7 +4852,7 @@ async function salvarEdicaoLook() {
     basicos.ID2 = pecas[1] || '';
     basicos.ID3 = pecas[2] || '';
     basicos.Indicador = indicador;
-    basicos['situaÃ§Ã£o'] = situacao;
+    basicos['situação'] = situacao;
     basicos.HTT = htt;
 
     const lookEditado = {
@@ -4940,7 +4940,7 @@ function lerFotoEdicaoLook() {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(new Error('NÃ£o consegui ler a foto do look.'));
+        reader.onerror = () => reject(new Error('Não consegui ler a foto do look.'));
         reader.readAsDataURL(arquivo);
     });
 }
@@ -4978,8 +4978,8 @@ function usarLookHoje(lookId) {
     atualizarPecasSelecionadasHoje();
 }
 
-/* ==================== PÃGINA HISTÃ“RICO ====================
-   Mostra estatÃ­sticas de uso */
+/* ==================== PÃGINA HISTÓRICO ====================
+   Mostra estatísticas de uso */
 
 /* ==================== PAGINA OCASIOES ==================== */
 
@@ -5055,7 +5055,7 @@ function renderDropdownMultiploOcasioes(select) {
     container.innerHTML = `
         <button type="button" class="ocasioes-dropdown-toggle" aria-expanded="${estavaAberto}">
             <span>${escapeHtml(resumo || 'Selecionar')}</span>
-            <span class="ocasioes-dropdown-seta">âŒ„</span>
+            <span class="ocasioes-dropdown-seta">⌄</span>
         </button>
         <div class="ocasioes-dropdown-painel">
             <div class="ocasioes-dropdown-acoes">
@@ -5065,7 +5065,7 @@ function renderDropdownMultiploOcasioes(select) {
             <div class="ocasioes-dropdown-lista">
                 ${opcoes.map(option => `
                     <button type="button" class="ocasioes-dropdown-opcao ${selecionados.includes(option.value) ? 'ativo' : ''}" data-valor="${escapeHtml(option.value)}">
-                        <span class="ocasioes-dropdown-check">${selecionados.includes(option.value) ? 'âœ“' : ''}</span>
+                        <span class="ocasioes-dropdown-check">${selecionados.includes(option.value) ? '✓' : ''}</span>
                         <span>${escapeHtml(option.textContent)}</span>
                     </button>
                 `).join('')}
@@ -5364,7 +5364,7 @@ function renderGraficoClimasOcasioes(looks) {
                 </span>
                 <span class="barra-serie">
                     <strong>${grupo.necessario}</strong>
-                    <span class="barra-htt" style="height:${Math.max(4, (grupo.necessario / maximo) * 96)}px" title="${grupo.necessario} necessÃ¡rios"></span>
+                    <span class="barra-htt" style="height:${Math.max(4, (grupo.necessario / maximo) * 96)}px" title="${grupo.necessario} necessários"></span>
                 </span>
             </div>
             <small>${escapeHtml(grupo.label)}</small>
@@ -5674,7 +5674,7 @@ function renderPecasSemUso() {
     const referencia = new Date();
     const ultimoUso = obterUltimoUsoPorPeca();
     const pecas = Object.values(app.pecas)
-        .filter(peca => peca.situacao !== 'excluÃ­da')
+        .filter(peca => peca.situacao !== 'excluída')
         .map(peca => {
             const data = ultimoUso[peca.id] || null;
             const dias = data ? diferencaDias(data, referencia) : null;
@@ -5724,7 +5724,7 @@ function preencherSelectFiltroSemUso(select, campo, labelTodos) {
     if (!select || select.dataset.preenchido === 'true') return;
 
     const valores = [...new Set(Object.values(app.pecas)
-        .filter(peca => peca.situacao !== 'excluÃ­da' && valorVisivel(peca[campo]))
+        .filter(peca => peca.situacao !== 'excluída' && valorVisivel(peca[campo]))
         .map(peca => peca[campo]))]
         .sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
@@ -6252,7 +6252,7 @@ function preencherLooksExistentesLookHistorico() {
         .filter(look => {
             if (!busca) return true;
             const pecas = (look.pecas || []).join(' ');
-            const situacao = look.situacao || look.basicos?.['situaÃ§Ã£o'] || '';
+            const situacao = look.situacao || look.basicos?.['situação'] || '';
             const indicador = obterIndicadorLook(look, look.id);
             return normalizarTexto(`${look.id} ${situacao} ${indicador} ${pecas}`).includes(busca);
         })
@@ -6266,7 +6266,7 @@ function preencherLooksExistentesLookHistorico() {
 
     select.innerHTML = looks.map(look => {
         const pecas = (look.pecas || []).join(', ');
-        const situacao = look.situacao || look.basicos?.['situaÃ§Ã£o'] || '';
+        const situacao = look.situacao || look.basicos?.['situação'] || '';
         return `<option value="${look.id}">${look.id}${situacao ? ` - ${situacao}` : ''}${pecas ? ` (${pecas})` : ''}</option>`;
     }).join('');
 
@@ -6308,7 +6308,7 @@ function aplicarLookExistenteNoFormulario() {
     const indicador = obterIndicadorLook(look, lookId);
     document.getElementById('look-historico-indicador').value = indicador;
     document.getElementById('look-historico-data').value = normalizarDataHistorico(obterDataCriacaoLook(look))?.slice(0, 10) || '';
-    document.getElementById('look-historico-situacao').value = look.situacao || look.basicos?.['situaÃ§Ã£o'] || 'em uso';
+    document.getElementById('look-historico-situacao').value = look.situacao || look.basicos?.['situação'] || 'em uso';
     document.getElementById('look-historico-htt').value = String(look.HTT || look.htt || look.basicos?.HTT || 'false');
 
     const codigos = new Set((look.ocasioes || []).map(item => item.codigo).filter(Boolean));
@@ -6365,8 +6365,8 @@ function renderOrdemPecasLookHistorico() {
                     <strong class="look-historico-peca-id">ID: ${escapeHtml(id)}</strong>
                     <small>${escapeHtml(descricao || 'Sem tipo')}</small>
                 </span>
-                <button type="button" aria-label="Subir" onclick="moverPecaLookHistorico(${indice}, -1)" ${indice === 0 ? 'disabled' : ''}>â†‘</button>
-                <button type="button" aria-label="Descer" onclick="moverPecaLookHistorico(${indice}, 1)" ${indice === pecas.length - 1 ? 'disabled' : ''}>â†“</button>
+                <button type="button" aria-label="Subir" onclick="moverPecaLookHistorico(${indice}, -1)" ${indice === 0 ? 'disabled' : ''}>↑</button>
+                <button type="button" aria-label="Descer" onclick="moverPecaLookHistorico(${indice}, 1)" ${indice === pecas.length - 1 ? 'disabled' : ''}>↓</button>
             </div>
         `;
     }).join('');
@@ -6459,7 +6459,7 @@ async function salvarLookHistorico() {
             ID3: pecas[2] || '',
             'situação': situacao,
             Indicador: indicador,
-            'Data criaÃ§Ã£o': dataCriacao,
+            'Data criação': dataCriacao,
             'Data ult alt': dataAlteracao || basicosOriginais['Data ult alt'] || '',
             HTT: htt,
         },
@@ -6619,38 +6619,38 @@ function formatarDataBR(dataISO) {
 window.addEventListener('DOMContentLoaded', inicializar);
 
 /*
-   ðŸ’¡ ESTRUTURA GERAL DO CÃ“DIGO:
+   💡 ESTRUTURA GERAL DO CÓDIGO:
 
    1. OBJETO APP
       - Estado centralizado de toda a app
-      - FÃ¡cil de debugar e entender
+      - Fácil de debugar e entender
 
-   2. INICIALIZAÃ‡ÃƒO
+   2. INICIALIZAÇÃO
       - Carrega dados (JSON + localStorage)
       - Renderiza interface
 
-   3. NAVEGAÃ‡ÃƒO
-      - mostrarPagina() = muda qual pÃ¡gina estÃ¡ visÃ­vel
-      - Single Page App = nÃ£o recarrega
+   3. NAVEGAÇÃO
+      - mostrarPagina() = muda qual página está visível
+      - Single Page App = não recarrega
 
    4. PÃGINAS
-      - Home: galeria de peÃ§as
-      - Usar Hoje: registra uso diÃ¡rio
-      - Looks: gerencia combinaÃ§Ãµes
-      - HistÃ³rico: estatÃ­sticas
+      - Home: galeria de peças
+      - Usar Hoje: registra uso diário
+      - Looks: gerencia combinações
+      - Histórico: estatísticas
 
    5. ARMAZENAMENTO
       - localStorage = dados persistem
       - JSON = dados do Excel
 
    6. EVENTOS
-      - onclick = funÃ§Ãµes chamadas ao clicar
-      - onkeyup = funÃ§Ãµes chamadas ao digitar
+      - onclick = funções chamadas ao clicar
+      - onkeyup = funções chamadas ao digitar
       - addEventListener = escuta eventos
 
-   PRÃ“XIMOS PASSOS:
+   PRÓXIMOS PASSOS:
    - Teste a app abrindo index.html no navegador
    - Abra DevTools (F12) para debugar
-   - Customize conforme necessÃ¡rio
+   - Customize conforme necessário
 */
 
