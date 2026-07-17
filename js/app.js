@@ -329,7 +329,7 @@ function normalizarListaPeca(valor) {
 function criarMiniaturaPeca(item, opcoes = {}) {
     const id = item.id || item.codigo || '';
     const descricao = item.descricao || item.grupo || id;
-    const foto = opcoes.foto || item.foto || (item.id ? getCaminhoFoto(item.id) : '');
+    const foto = opcoes.foto || item.foto || (app.pecas[id] ? getCaminhoFoto(id) : '');
     const conteudo = foto
         ? criarImagem(foto, descricao)
         : `<span class="miniatura-sem-foto">${escapeHtml(id || 'sem foto')}</span>`;
@@ -364,12 +364,9 @@ function criarRestricoesHtml(peca) {
         <div class="bloco-card-peca">
             <h4>Não combinar</h4>
             <div class="miniaturas-peca miniaturas-restricoes">
-                ${restricoes.map(item => `
-                    <span class="miniatura-peca" title="${escapeHtml(item.descricao || item.codigo)}">
-                        ${criarImagem(`fotos/combinacoes/${item.codigo}.webp`, item.descricao || item.codigo)}
-                        <small>${escapeHtml(item.codigo)}</small>
-                    </span>
-                `).join('')}
+                ${restricoes.map(item => criarMiniaturaPeca(item, {
+                    foto: `fotos/combinacoes/${item.codigo}.webp`,
+                })).join('')}
             </div>
         </div>
     `;
@@ -1271,7 +1268,7 @@ function agendarEnvioSupabase() {
         if (enviou) {
             app.ultimaSincronizacaoSupabase = new Date();
             atualizarStatusSupabase(
-                `Sincronizado automaticamente Ã s ${app.ultimaSincronizacaoSupabase.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}.`,
+                `Sincronizado automaticamente às ${app.ultimaSincronizacaoSupabase.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}.`,
                 'sucesso'
             );
         }
@@ -2218,7 +2215,7 @@ function decodificarXml(texto) {
     return String(texto || '').replace(/&(amp|lt|gt|quot|apos);/g, entidade => mapa[entidade] || entidade);
 }
 
-/* ==================== NAVEGAÇÃO: MOSTRAR/ESCONDER PÃGINAS ====================
+/* ==================== NAVEGAÇÃO: MOSTRAR/ESCONDER PÁGINAS ====================
    Sistema de single-page-app: uma página HTML, múltiplas visualizações */
 
 function mostrarPagina(nome) {
@@ -2271,7 +2268,7 @@ function ativarNavBtn(index) {
     document.querySelectorAll('.nav-btn')[index].classList.add('active');
 }
 
-/* ==================== PÃGINA HOME: GALERIA DE PEÇAS ====================
+/* ==================== PÁGINA HOME: GALERIA DE PEÇAS ====================
    Renderiza (desenha) a galeria com todas as peças */
 
 function renderGaleria() {
@@ -2288,7 +2285,7 @@ function renderGaleria() {
     console.log('🖼️ Galeria renderizada!');
 }
 
-/* ==================== FILTROS DA PÃGINA HOME ====================
+/* ==================== FILTROS DA PÁGINA HOME ====================
    Preencher filtros dinamicamente com valores únicos do JSON */
 
 function ordenarOpcoesDimensao(valores) {
@@ -3134,7 +3131,7 @@ function fecharModal() {
     });
 }
 
-/* ==================== PÃGINA USAR HOJE ====================
+/* ==================== PÁGINA USAR HOJE ====================
    Registra quais peças foram usadas hoje */
 
 function atualizarDataHoje() {
@@ -3236,6 +3233,260 @@ function formatarIdsRelacionados(itens, campo) {
     return (itens || []).map(item => item?.[campo] || '').filter(Boolean).join(', ');
 }
 
+function obterTipoCompatibilidadePeca(peca) {
+    const tipo = normalizarTexto(peca?.tipo);
+    const aliases = {
+        blusa: 'blusa',
+        blusas: 'blusa',
+        calcado: 'calcado',
+        calcados: 'calcado',
+        casaco: 'casaco',
+        casacos: 'casaco',
+        inteiro: 'inteiro',
+        inteiros: 'inteiro',
+        meia: 'meia',
+        meias: 'meia',
+        propescoco: 'pro-pescoco',
+        pescoco: 'pro-pescoco',
+        segunda: 'segunda-pele',
+        segundapele: 'segunda-pele',
+        sutien: 'sutien',
+        sutiens: 'sutien',
+        sutia: 'sutien',
+        sutias: 'sutien',
+        top: 'top',
+        tops: 'top',
+    };
+    return aliases[tipo] || tipo;
+}
+
+function pecaTemFuncaoTreino(peca) {
+    return normalizarTexto(peca?.funcao) === 'treino';
+}
+
+function pecaEstaExcluida(peca) {
+    return ['excluida', 'excluido'].includes(normalizarTexto(peca?.situacao));
+}
+
+function relacionamentoDiretoPermitido(origem, candidata) {
+    const tipoOrigem = obterTipoCompatibilidadePeca(origem);
+    const tipoCandidata = obterTipoCompatibilidadePeca(candidata);
+    const funcaoTreino = pecaTemFuncaoTreino(origem);
+
+    if (tipoOrigem === 'blusa') {
+        return funcaoTreino
+            ? tipoCandidata === 'top'
+            : ['segunda-pele', 'pro-pescoco'].includes(tipoCandidata);
+    }
+    if (tipoOrigem === 'calcado') return tipoCandidata === 'meia';
+    if (tipoOrigem === 'casaco') return ['top', 'segunda-pele', 'pro-pescoco'].includes(tipoCandidata);
+    if (tipoOrigem === 'inteiro') return ['segunda-pele', 'pro-pescoco'].includes(tipoCandidata);
+    if (tipoOrigem === 'meia') return tipoCandidata === 'calcado';
+    if (tipoOrigem === 'pro-pescoco') return ['blusa', 'casaco', 'inteiro'].includes(tipoCandidata);
+    if (tipoOrigem === 'segunda-pele') return ['blusa', 'casaco', 'inteiro'].includes(tipoCandidata);
+    if (tipoOrigem === 'sutien') return funcaoTreino && tipoCandidata === 'top';
+    if (tipoOrigem === 'top') {
+        return (tipoCandidata === 'blusa' && pecaTemFuncaoTreino(candidata))
+            || tipoCandidata === 'casaco'
+            || (tipoCandidata === 'sutien' && pecaTemFuncaoTreino(candidata));
+    }
+
+    return false;
+}
+
+function pecasPodemSerRelacionadas(origem, candidata) {
+    if (!origem || !candidata) return false;
+    return relacionamentoDiretoPermitido(origem, candidata) || relacionamentoDiretoPermitido(candidata, origem);
+}
+
+function obterDescricaoResumoPeca(peca) {
+    return [peca?.subtipo, peca?.cor].filter(valorVisivel).join(' · ') || peca?.tipo || '';
+}
+
+function obterNomePeca(peca) {
+    return peca?.nome || peca?.descricao || [peca?.tipo, peca?.subtipo, peca?.cor].filter(valorVisivel).join(' · ') || peca?.id || '';
+}
+
+function criarItemAcessorio(id) {
+    const peca = app.pecas[id];
+    return { id, grupo: peca?.tipo || '', descricao: obterDescricaoResumoPeca(peca) || id };
+}
+
+function criarItemRestricao(id) {
+    const combinacao = obterCombinacaoNaoPermitidaPorCodigo(id);
+    return { codigo: id, descricao: combinacao?.tipo || id, grupo: combinacao?.grupo || '' };
+}
+
+function obterIdsAcessoriosPeca(peca) {
+    return [...new Set(normalizarListaPeca(peca?.acessorios)
+        .map(item => String(item?.id || item || '').trim().toUpperCase())
+        .filter(Boolean))];
+}
+
+function obterIdsRestricoesPeca(peca) {
+    return [...new Set(normalizarListaPeca(peca?.combinacoes_nao_permitidas)
+        .map(item => String(item?.codigo || item?.id || item || '').trim().toUpperCase())
+        .filter(Boolean))];
+}
+
+function obterOpcoesPecasRelacionadas(pecaBase, idAtual) {
+    return Object.values(app.pecas || {})
+        .filter(peca => peca?.id && normalizarTexto(peca.id) !== normalizarTexto(idAtual))
+        .filter(peca => !pecaEstaExcluida(peca))
+        .filter(peca => pecasPodemSerRelacionadas(pecaBase, peca))
+        .sort((a, b) => String(a.id).localeCompare(String(b.id), 'pt-BR', { numeric: true }));
+}
+
+function obterCombinacaoNaoPermitidaPorCodigo(codigo) {
+    const alvo = normalizarTexto(codigo);
+    return (app.dimensoes?.tipos_combinacao || []).find(item => normalizarTexto(item.codigo) === alvo);
+}
+
+function obterOpcoesCombinacoesNaoPermitidas() {
+    return (app.dimensoes?.tipos_combinacao || [])
+        .filter(item => item?.codigo)
+        .sort((a, b) => String(a.codigo).localeCompare(String(b.codigo), 'pt-BR', { numeric: true }));
+}
+
+function criarSeletorPecasRelacionadas(peca, idAtual) {
+    const selecionados = new Set(obterIdsAcessoriosPeca(peca));
+    const opcoes = obterOpcoesPecasRelacionadas(peca, idAtual);
+
+    if (!opcoes.length) {
+        return '<p class="texto-ajuda">Nenhuma peça compatível disponível para este tipo/função.</p>';
+    }
+
+    return `
+        <div class="pecas-relacionadas-lista">
+            ${opcoes.map(opcao => {
+                const selecionado = selecionados.has(String(opcao.id).toUpperCase());
+                const descricao = obterDescricaoResumoPeca(opcao);
+                return `
+                    <label class="peca-relacionada-opcao ${selecionado ? 'selecionada' : ''}">
+                        <input type="checkbox" name="edit-peca-acessorios" value="${escapeHtml(opcao.id)}" ${selecionado ? 'checked' : ''}>
+                        ${criarImagem(getCaminhoFoto(opcao.id), opcao.id)}
+                        <span>
+                            <strong>${escapeHtml(opcao.id)}</strong>
+                            <small>${escapeHtml(descricao)}</small>
+                        </span>
+                    </label>
+                `;
+            }).join('')}
+        </div>
+    `;
+}
+
+function criarSeletorPecasNaoCombinam(peca, idAtual) {
+    const selecionados = new Set(obterIdsRestricoesPeca(peca));
+    const opcoes = obterOpcoesCombinacoesNaoPermitidas();
+
+    if (!opcoes.length) {
+        return '<p class="texto-ajuda">Nenhuma combinação importada disponível.</p>';
+    }
+
+    return `
+        <div class="pecas-relacionadas-lista">
+            ${opcoes.map(opcao => {
+                const codigo = String(opcao.codigo || '').toUpperCase();
+                const selecionado = selecionados.has(codigo);
+                const nome = [opcao.tipo, opcao.grupo].filter(valorVisivel).join(' · ') || codigo;
+                return `
+                    <label class="peca-relacionada-opcao ${selecionado ? 'selecionada' : ''}">
+                        <input type="checkbox" name="edit-peca-restricoes" value="${escapeHtml(codigo)}" ${selecionado ? 'checked' : ''}>
+                        ${criarImagem(`fotos/combinacoes/${codigo}.webp`, codigo)}
+                        <span>
+                            <strong>${escapeHtml(codigo)}</strong>
+                            <small>${escapeHtml(nome)}</small>
+                        </span>
+                    </label>
+                `;
+            }).join('')}
+        </div>
+    `;
+}
+
+function atualizarOpcoesPecasRelacionadasFormulario() {
+    const container = document.getElementById('edit-peca-acessorios-opcoes');
+    if (!container) return;
+
+    const formulario = document.getElementById('form-peca');
+    const campos = {};
+    formulario?.querySelectorAll('[data-campo-peca]').forEach(input => {
+        campos[input.dataset.campoPeca] = input.value.trim();
+    });
+
+    const idAtual = String(document.getElementById('edit-peca-id')?.value || app.pecaEmDetalhes || '').trim().toUpperCase();
+    const pecaAtual = {
+        ...(app.pecas?.[app.pecaEmDetalhes] || {}),
+        ...campos,
+        id: idAtual,
+        acessorios: lerIdsPecasRelacionadasFormulario().map(criarItemAcessorio),
+    };
+
+    container.innerHTML = criarSeletorPecasRelacionadas(pecaAtual, idAtual);
+    configurarSelecaoPecasRelacionadas();
+}
+
+function configurarSelecaoPecasRelacionadas() {
+    document.querySelectorAll('.peca-relacionada-opcao input[type="checkbox"]').forEach(input => {
+        input.addEventListener('change', () => {
+            input.closest('.peca-relacionada-opcao')?.classList.toggle('selecionada', input.checked);
+        });
+    });
+}
+
+function lerIdsPecasRelacionadasFormulario() {
+    return [...document.querySelectorAll('input[name="edit-peca-acessorios"]:checked')]
+        .map(input => String(input.value || '').trim().toUpperCase())
+        .filter(Boolean);
+}
+
+function lerIdsPecasNaoCombinamFormulario() {
+    return [...document.querySelectorAll('input[name="edit-peca-restricoes"]:checked')]
+        .map(input => String(input.value || '').trim().toUpperCase())
+        .filter(Boolean);
+}
+
+function sincronizarPecasRelacionadas(id, idsAnteriores, idsNovos) {
+    const anteriores = new Set((idsAnteriores || []).map(item => String(item).toUpperCase()));
+    const novos = new Set((idsNovos || []).map(item => String(item).toUpperCase()));
+    const afetados = new Set([id]);
+
+    anteriores.forEach(relacionadoId => {
+        if (novos.has(relacionadoId) || !app.pecas[relacionadoId]) return;
+        const pecaRelacionada = app.pecas[relacionadoId];
+        const acessorios = normalizarListaPeca(pecaRelacionada.acessorios)
+            .filter(item => String(item?.id || item || '').toUpperCase() !== id);
+        app.pecas[relacionadoId] = {
+            ...pecaRelacionada,
+            acessorios,
+            editadaLocalmente: true,
+            editadaEm: new Date().toISOString(),
+        };
+        app.pecasPersonalizadas[relacionadoId] = app.pecas[relacionadoId];
+        afetados.add(relacionadoId);
+    });
+
+    novos.forEach(relacionadoId => {
+        const pecaRelacionada = app.pecas[relacionadoId];
+        if (!pecaRelacionada) return;
+        const idsRelacionados = new Set(obterIdsAcessoriosPeca(pecaRelacionada));
+        if (!idsRelacionados.has(id)) {
+            idsRelacionados.add(id);
+        }
+        app.pecas[relacionadoId] = {
+            ...pecaRelacionada,
+            acessorios: [...idsRelacionados].map(criarItemAcessorio),
+            editadaLocalmente: true,
+            editadaEm: new Date().toISOString(),
+        };
+        app.pecasPersonalizadas[relacionadoId] = app.pecas[relacionadoId];
+        afetados.add(relacionadoId);
+    });
+
+    return [...afetados];
+}
+
 function obterOpcoesCampoPeca(campo, valorAtual = '') {
     const tipoAtual = document.querySelector('[data-campo-peca="tipo"]')?.value || app.pecas?.[app.pecaEmDetalhes]?.tipo || '';
     return obterValoresDimensaoPeca(campo, { valorAtual, tipo: campo === 'subtipo' ? tipoAtual : '' });
@@ -3274,7 +3525,10 @@ function configurarDependenciasFormularioPeca() {
         const valores = obterValoresDimensaoPeca('subtipo', { tipo: tipo.value });
         const atual = valores.some(valor => normalizarTexto(valor) === normalizarTexto(subtipo?.value)) ? subtipo.value : '';
         preencherSelectDimensao(subtipo, valores, atual);
+        atualizarOpcoesPecasRelacionadasFormulario();
     });
+
+    document.querySelector('[data-campo-peca="funcao"]')?.addEventListener('change', atualizarOpcoesPecasRelacionadasFormulario);
 
     corDetalhe?.addEventListener('change', () => {
         const cor = (app.dimensoes?.cores_detalhe || []).find(item =>
@@ -3334,12 +3588,16 @@ function mostrarFormularioPeca(id) {
                 <textarea id="edit-peca-detalhes" rows="8" placeholder="Uma informação por linha. Ex.: Marca: Renner">${escapeHtml(formatarDetalhesParaEdicao(peca.detalhes))}</textarea>
             </label>
             <label class="campo-edicao-peca campo-edicao-peca-largo">
-                <span>IDs de acessórios relacionados</span>
-                <input id="edit-peca-acessorios" type="text" value="${escapeHtml(formatarIdsRelacionados(peca.acessorios, 'id'))}" placeholder="ID0002, ID0045">
+                <span>ID peças relacionadas</span>
+                <div id="edit-peca-acessorios-opcoes">
+                    ${criarSeletorPecasRelacionadas(peca, peca.id)}
+                </div>
             </label>
             <label class="campo-edicao-peca campo-edicao-peca-largo">
-                <span>IDs de peças que não combinam</span>
-                <input id="edit-peca-restricoes" type="text" value="${escapeHtml(formatarIdsRelacionados(peca.combinacoes_nao_permitidas, 'codigo'))}" placeholder="ID0010, ID0032">
+                <span>Combinações que não combinam</span>
+                <div id="edit-peca-restricoes-opcoes">
+                    ${criarSeletorPecasNaoCombinam(peca, peca.id)}
+                </div>
             </label>
             <button type="submit" class="submit-oculto" aria-hidden="true" tabindex="-1"></button>
         </form>
@@ -3348,6 +3606,7 @@ function mostrarFormularioPeca(id) {
     document.getElementById('editar-peca-modal').style.display = 'none';
     document.getElementById('looks-existentes-peca-modal').style.display = 'none';
     configurarDependenciasFormularioPeca();
+    configurarSelecaoPecasRelacionadas();
     document.getElementById('cancelar-edicao-peca-modal').style.display = '';
     document.getElementById('salvar-peca-modal').style.display = '';
     document.getElementById('registrar-peca-modal').style.display = 'none';
@@ -3397,10 +3656,11 @@ async function salvarPeca() {
         )?.cor || original.cor || '';
         const fotoArquivo = await lerFotoPeca();
         const fotoUrl = document.getElementById('edit-peca-foto')?.value.trim() || '';
-        const acessorios = parseListaValores(document.getElementById('edit-peca-acessorios')?.value)
-            .map(itemId => ({ id: itemId.toUpperCase(), grupo: app.pecas[itemId.toUpperCase()]?.tipo || '' }));
-        const combinacoes = parseListaValores(document.getElementById('edit-peca-restricoes')?.value)
-            .map(codigo => ({ codigo: codigo.toUpperCase(), descricao: app.pecas[codigo.toUpperCase()]?.tipo || codigo.toUpperCase() }));
+        const idsAcessoriosAnteriores = obterIdsAcessoriosPeca(original);
+        const idsAcessoriosNovos = lerIdsPecasRelacionadasFormulario();
+        const acessorios = idsAcessoriosNovos.map(criarItemAcessorio);
+        const idsRestricoesNovos = lerIdsPecasNaoCombinamFormulario();
+        const combinacoes = idsRestricoesNovos.map(criarItemRestricao);
 
         const peca = {
             ...original,
@@ -3416,7 +3676,8 @@ async function salvarPeca() {
 
         app.pecas[id] = peca;
         app.pecasPersonalizadas[id] = peca;
-        const totalLooksAtualizados = recalcularLooksAfetadosPorPeca([editandoId, id], { idAntigo: editandoId, idNovo: id });
+        const idsRelacionadosAfetados = sincronizarPecasRelacionadas(id, idsAcessoriosAnteriores, idsAcessoriosNovos);
+        const totalLooksAtualizados = recalcularLooksAfetadosPorPeca([editandoId, ...idsRelacionadosAfetados], { idAntigo: editandoId, idNovo: id });
         app.pecaEmDetalhes = id;
         salvarDados();
         reconstruirFiltrosHome();
@@ -3470,7 +3731,7 @@ function renderGaleriaUsarHojeAntiga() {
                 <p>${peca.id}</p>
             `;
 
-            // Clique adiciona Ã  seleção
+            // Clique adiciona à seleção
             card.innerHTML = `
                 ${criarImagem(caminho, peca.tipo || id, 'foto-card-peca')}
                 <div class="card-peca-corpo">
@@ -3794,7 +4055,7 @@ function salvarUsoHoje() {
 }
 
 /* Mostrar/esconder select de look quando checkbox é marcado */
-/* ==================== PÃGINA LOOKS ====================
+/* ==================== PÁGINA LOOKS ====================
    Gerencia looks (combinações de peças) e ocasiões */
 
 function preencherSelectLooks() {
@@ -4517,6 +4778,87 @@ function criarOptionsSugestoesLook(sugestoesSelecionadas) {
         .join('');
 }
 
+function normalizarGrupoSugestaoLook(tipo) {
+    const normalizado = normalizarTexto(tipo);
+    if (normalizado === 'calcado' || normalizado === 'calcados') return 'calcado';
+    if (normalizado === 'bolsa' || normalizado === 'bolsas') return 'bolsa';
+    if (normalizado === 'cinto' || normalizado === 'cintos') return 'cinto';
+    return normalizado;
+}
+
+function rotuloGrupoSugestaoLook(grupo) {
+    return {
+        calcado: 'Calçados',
+        bolsa: 'Bolsas',
+        cinto: 'Cintos',
+    }[grupo] || formatarLabelCampo(grupo);
+}
+
+function criarCardSugestaoLook(option) {
+    const id = String(option.value || '').toUpperCase();
+    const peca = app.pecas[id] || {};
+    const selecionada = option.selected;
+    const descricao = [obterNomePeca(peca), peca.cor].filter(valorVisivel).join(' · ') || option.textContent;
+
+    return `
+        <label class="look-sugestao-opcao ${selecionada ? 'selecionada' : ''}">
+            <input type="checkbox" name="edit-look-sugestoes-card" value="${escapeHtml(id)}" ${selecionada ? 'checked' : ''}>
+            ${criarImagem(getCaminhoFoto(id), id)}
+            <span>
+                <strong>${escapeHtml(id)}</strong>
+                <small>${escapeHtml(descricao)}</small>
+            </span>
+        </label>
+    `;
+}
+
+function renderSugestoesLookComFotos() {
+    const select = document.getElementById('edit-look-sugestoes');
+    if (!select) return;
+
+    select.classList.add('select-nativo-oculto');
+
+    let container = select.parentElement.querySelector('.look-sugestoes-foto-select');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'look-sugestoes-foto-select';
+        select.insertAdjacentElement('afterend', container);
+    }
+
+    const opcoes = [...select.options];
+    const selecionadas = opcoes.filter(option => option.selected).length;
+    const grupos = [
+        ['calcado', opcoes.filter(option => normalizarGrupoSugestaoLook(app.pecas[option.value]?.tipo || option.dataset.grupo) === 'calcado')],
+        ['bolsa', opcoes.filter(option => normalizarGrupoSugestaoLook(app.pecas[option.value]?.tipo || option.dataset.grupo) === 'bolsa')],
+        ['cinto', opcoes.filter(option => normalizarGrupoSugestaoLook(app.pecas[option.value]?.tipo || option.dataset.grupo) === 'cinto')],
+    ].filter(([, itens]) => itens.length > 0);
+
+    container.innerHTML = `
+        <div class="look-sugestoes-topo">
+            <span>${selecionadas} selecionada${selecionadas === 1 ? '' : 's'}</span>
+        </div>
+        <div class="look-sugestoes-grupos">
+            ${grupos.map(([grupo, itens]) => `
+                <section class="look-sugestoes-grupo">
+                    <h4>${rotuloGrupoSugestaoLook(grupo)}</h4>
+                    <div class="look-sugestoes-grid">
+                        ${itens.map(criarCardSugestaoLook).join('')}
+                    </div>
+                </section>
+            `).join('') || '<p class="texto-ajuda">Nenhuma peça disponível.</p>'}
+        </div>
+    `;
+
+    container.querySelectorAll('input[name="edit-look-sugestoes-card"]').forEach(input => {
+        input.addEventListener('change', () => {
+            const option = opcoes.find(item => String(item.value).toUpperCase() === String(input.value).toUpperCase());
+            if (option) option.selected = input.checked;
+            input.closest('.look-sugestao-opcao')?.classList.toggle('selecionada', input.checked);
+            renderSugestoesLookComFotos();
+        });
+    });
+}
+
 function obterSugestoesSelecionadasEdicaoLook() {
     const select = document.getElementById('edit-look-sugestoes');
     if (!select) return [];
@@ -4529,7 +4871,7 @@ function obterSugestoesSelecionadasEdicaoLook() {
 
 function configurarControlesVisuaisEdicaoLook() {
     renderControleVisualMultiploEdicaoLook('edit-look-ocasioes', 'Pesquisar ocasiao');
-    renderControleVisualMultiploEdicaoLook('edit-look-sugestoes', 'Pesquisar peca');
+    renderSugestoesLookComFotos();
 }
 
 function renderControleVisualMultiploEdicaoLook(selectId, placeholder) {
@@ -4978,7 +5320,7 @@ function usarLookHoje(lookId) {
     atualizarPecasSelecionadasHoje();
 }
 
-/* ==================== PÃGINA HISTÓRICO ====================
+/* ==================== PÁGINA HISTÓRICO ====================
    Mostra estatísticas de uso */
 
 /* ==================== PAGINA OCASIOES ==================== */
@@ -6613,7 +6955,7 @@ function formatarDataBR(dataISO) {
     return `${dia}/${mes}/${ano}`;
 }
 
-/* ==================== INICIAR QUANDO A PÃGINA CARREGA ====================
+/* ==================== INICIAR QUANDO A PÁGINA CARREGA ====================
    window.addEventListener('DOMContentLoaded') = espera HTML estar pronto */
 
 window.addEventListener('DOMContentLoaded', inicializar);
@@ -6633,7 +6975,7 @@ window.addEventListener('DOMContentLoaded', inicializar);
       - mostrarPagina() = muda qual página está visível
       - Single Page App = não recarrega
 
-   4. PÃGINAS
+   4. PÁGINAS
       - Home: galeria de peças
       - Usar Hoje: registra uso diário
       - Looks: gerencia combinações
