@@ -1391,6 +1391,10 @@ body {
     display: grid;
     gap: 6px;
     min-width: 0;
+    padding: 10px;
+    border: 1px solid var(--cor-borda);
+    border-left-width: 4px;
+    border-radius: 8px;
     color: var(--cor-texto);
     font-size: 13px;
     font-weight: 700;
@@ -1451,6 +1455,10 @@ body {
     grid-template-columns: minmax(140px, 0.35fr) minmax(180px, 1fr) 44px;
     gap: 8px;
     align-items: start;
+    padding: 8px;
+    border: 1px solid var(--cor-borda);
+    border-left-width: 4px;
+    border-radius: 8px;
 }
 
 .detalhe-peca-linha textarea {
@@ -2308,7 +2316,7 @@ body {
 
 .looks-peca-filtros {
     display: grid;
-    grid-template-columns: minmax(120px, 0.8fr) repeat(3, minmax(170px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 10px;
     margin-bottom: 18px;
 }
@@ -2522,8 +2530,8 @@ body {
 .looks-peca-card {
     position: relative;
     display: grid;
-    gap: 6px;
-    padding: 9px;
+    gap: 5px;
+    padding: 8px;
     border: 1px solid var(--cor-borda);
     border-radius: 8px;
     background: var(--cor-fundo-card);
@@ -2568,12 +2576,28 @@ body {
     background: #f3f4f6;
 }
 
-.looks-peca-card strong,
-.looks-peca-card small {
+.looks-peca-card strong {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.looks-peca-card small {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--cor-texto-cinza);
+    font-size: 10px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+.looks-peca-card strong em {
+    margin-left: 6px;
+    color: var(--cor-texto-cinza);
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 750;
 }
 
 .looks-peca-card > span {
@@ -2589,9 +2613,13 @@ body {
 }
 
 .looks-peca-ficha {
-    width: 100%;
+    width: auto;
+    align-self: center;
     margin: 0;
-    padding: 8px 10px;
+    min-height: 28px;
+    padding: 4px 12px;
+    font-size: 11px;
+    line-height: 1.1;
 }
 
 @media (max-width: 768px) {
@@ -6818,4 +6846,72 @@ html[data-theme="dark"] .navbar {
     color: var(--cor-texto-cinza);
     border-color: var(--cor-borda);
     background: var(--cor-fundo-card);
+}
+
+#modal-peca .form-edicao-peca .ficha-grupo-azul,
+#modal-peca .detalhes-peca-lista .ficha-grupo-azul {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.13);
+}
+
+#modal-peca .form-edicao-peca .ficha-grupo-vermelho,
+#modal-peca .detalhes-peca-lista .ficha-grupo-vermelho {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.13);
+}
+
+#modal-peca .form-edicao-peca .ficha-grupo-roxo,
+#modal-peca .detalhes-peca-lista .ficha-grupo-roxo {
+    border-color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.14);
+}
+
+#modal-peca .form-edicao-peca .ficha-grupo-verde,
+#modal-peca .detalhes-peca-lista .ficha-grupo-verde {
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.13);
+}
+
+#modal-peca .form-edicao-peca .ficha-grupo-amarelo,
+#modal-peca .detalhes-peca-lista .ficha-grupo-amarelo {
+    border-color: #eab308;
+    background: rgba(234, 179, 8, 0.15);
+}
+
+#modal-peca .form-edicao-peca .ficha-grupo-verde-claro,
+#modal-peca .detalhes-peca-lista .ficha-grupo-verde-claro {
+    border-color: #84cc16;
+    background: rgba(132, 204, 22, 0.15);
+}
+
+#modal-peca .form-edicao-peca .ficha-grupo-azul-claro,
+#modal-peca .detalhes-peca-lista .ficha-grupo-azul-claro {
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.15);
+}
+
+#modal-peca .form-edicao-peca .ficha-grupo-laranja,
+#modal-peca .detalhes-peca-lista .ficha-grupo-laranja {
+    border-color: #f97316;
+    background: rgba(249, 115, 22, 0.15);
+}
+
+#modal-peca .form-edicao-peca .ficha-grupo-rosa,
+#modal-peca .detalhes-peca-lista .ficha-grupo-rosa {
+    border-color: #ec4899;
+    background: rgba(236, 72, 153, 0.14);
+}
+
+/* Botao compacto nos cards de looks vinculados a peca. */
+.looks-peca-card .looks-peca-ficha.btn-secundario {
+    width: auto !important;
+    min-width: 58px;
+    max-width: 72px;
+    min-height: 24px !important;
+    align-self: center;
+    margin: 0 auto !important;
+    padding: 3px 9px !important;
+    border-radius: 7px;
+    font-size: 10px !important;
+    line-height: 1 !important;
 }

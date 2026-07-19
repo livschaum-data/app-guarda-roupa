@@ -202,6 +202,8 @@ const app = {
     },
     filtrosLooksPeca: {
         htt: 'todos',
+        utilizacao: '',
+        categoria: '',
         peca1: '',
         peca2: '',
         peca3: '',
@@ -393,6 +395,62 @@ function criarCampoFichaHtml(label, valor, classeGrupo = '') {
             <strong>${escapeHtml(valor)}</strong>
         </div>
     `;
+}
+
+function obterClasseGrupoFichaPecaPorLabel(label) {
+    const labelNormalizado = normalizarTexto(label);
+    const grupo = GRUPOS_FICHA_PECA.find(item =>
+        item.campos.some(campo =>
+            normalizarTexto(campo.label) === labelNormalizado
+            || normalizarTexto(campo.prop) === labelNormalizado
+            || (campo.aliases || []).some(alias => normalizarTexto(alias) === labelNormalizado)
+        )
+    );
+    return grupo?.classe || 'ficha-grupo-outros';
+}
+
+function obterDefinicoesCamposEdicaoPeca() {
+    const camposEditaveis = new Map([
+        ['tipo', { campo: 'tipo', label: 'Tipo', obrigatorio: true }],
+        ['funcao', { campo: 'funcao', label: 'Função' }],
+        ['subtipo', { campo: 'subtipo', label: 'Subtipo' }],
+        ['local', { campo: 'local', label: 'Local' }],
+        ['alocacao', { campo: 'alocacao', label: 'Alocação' }],
+        ['situacao', { campo: 'situacao', label: 'Situação' }],
+        ['conservacao', { campo: 'conservacao', label: 'Conservação' }],
+        ['reposicao', { campo: 'reposicao', label: 'Reposição' }],
+        ['utilizacao', { campo: 'utilizacao', label: 'Utilização' }],
+        ['formalidade', { campo: 'formalidade', label: 'Formalidade' }],
+        ['nivel_aquecimento', { campo: 'nivel_aquecimento', label: 'Nível de aquecimento' }],
+        ['padronagem', { campo: 'padronagem', label: 'Padronagem' }],
+        ['tom', { campo: 'tom', label: 'Tom' }],
+        ['cor_detalhe', { campo: 'cor_detalhe', label: 'Cor detalhe' }],
+        ['tendencia', { campo: 'tendencia', label: 'Tendência' }],
+    ]);
+
+    return GRUPOS_FICHA_PECA
+        .flatMap(grupo => grupo.campos
+            .filter(campoGrupo => !['id', 'data_atualizacao'].includes(campoGrupo.chave))
+            .map(campoGrupo => {
+                const campoEditavel = camposEditaveis.get(campoGrupo.chave);
+                if (campoEditavel) {
+                    return {
+                        ...campoEditavel,
+                        tipoEdicao: 'campo',
+                        classe: grupo.classe,
+                    };
+                }
+
+                return {
+                    campo: campoGrupo.aliases?.[0] || campoGrupo.label,
+                    label: campoGrupo.label,
+                    prop: campoGrupo.prop,
+                    aliases: campoGrupo.aliases || [],
+                    tipo: campoGrupo.tipo,
+                    tipoEdicao: 'detalhe',
+                    classe: grupo.classe,
+                };
+            }));
 }
 
 function criarCamposPecaHtml(peca, compacto = false, dataAtualizacao = obterDataAtualizacaoPeca(peca)) {
@@ -1420,6 +1478,11 @@ function detalhesParaObjeto(detalhes) {
     return Object.fromEntries((detalhes || []).map(item => [item.campo, item.valor]));
 }
 
+function obterDetalhePorAliases(detalhes, aliases) {
+    const aliasesNormalizados = new Set((aliases || []).map(normalizarTexto));
+    return (detalhes || []).find(item => aliasesNormalizados.has(normalizarTexto(item?.campo)));
+}
+
 function obterValorCampoImportadoPeca(peca, definicao) {
     return peca?.[definicao.prop]
         || obterCampoPorNomes(peca, definicao.aliases)
@@ -1453,12 +1516,17 @@ function mesclarPecaPersonalizadaComBase(pecaBase = {}, pecaPersonalizada = {}) 
     };
 
     CAMPOS_IMPORTADOS_PECA.forEach(definicao => {
-        const valorDetalhePersonalizado = obterCampoPorNomes(
-            detalhesParaObjeto(pecaPersonalizada?.detalhes),
-            definicao.aliases
-        );
-        const valor = valorDetalhePersonalizado
-            || obterValorCampoImportadoPeca(pecaPersonalizada, definicao)
+        const detalhePersonalizado = obterDetalhePorAliases(pecaPersonalizada?.detalhes, definicao.aliases);
+        if (detalhePersonalizado) {
+            if (valorVisivel(detalhePersonalizado.valor)) {
+                peca[definicao.prop] = detalhePersonalizado.valor;
+            } else {
+                delete peca[definicao.prop];
+            }
+            return;
+        }
+
+        const valor = obterValorCampoImportadoPeca(pecaPersonalizada, definicao)
             || obterValorCampoImportadoPeca(pecaBase, definicao);
         if (valorVisivel(valor)) peca[definicao.prop] = valor;
     });
@@ -2879,7 +2947,7 @@ function abrirLooksExistentesPeca() {
     const peca = app.pecas[pecaId];
     if (!peca) return;
 
-    app.filtrosLooksPeca = { htt: 'todos', peca1: '', peca2: '', peca3: '' };
+    app.filtrosLooksPeca = { htt: 'todos', utilizacao: '', categoria: '', peca1: '', peca2: '', peca3: '' };
     app.looksPecaSelecionados = [];
 
     const modal = document.getElementById('modal-looks-peca');
@@ -2998,6 +3066,8 @@ function filtrarLooksExistentesPeca(looks) {
     const filtros = app.filtrosLooksPeca || {};
     return looks.filter(look => {
         if (filtros.htt !== 'todos' && String(lookEhHTT(look)) !== filtros.htt) return false;
+        if (filtros.utilizacao && normalizarTexto(obterUtilizacaoLook(look)) !== normalizarTexto(filtros.utilizacao)) return false;
+        if (filtros.categoria && normalizarTexto(obterCategoriaLook(look)) !== normalizarTexto(filtros.categoria)) return false;
         if (filtros.peca1 && look.pecas?.[0] !== filtros.peca1) return false;
         if (filtros.peca2 && look.pecas?.[1] !== filtros.peca2) return false;
         if (filtros.peca3 && look.pecas?.[2] !== filtros.peca3) return false;
@@ -3016,7 +3086,34 @@ function criarFiltrosLooksPeca(looks) {
                 <option value="false" ${filtros.htt === 'false' ? 'selected' : ''}>Não HTT</option>
             </select>
         </label>
+        ${criarFiltroValorLookExistente(looks, 'utilizacao', 'Utilização', obterUtilizacaoLook)}
+        ${criarFiltroValorLookExistente(looks, 'categoria', 'Categoria', obterCategoriaLook)}
         ${[0, 1, 2].map(indice => criarFiltroPecaLookExistente(looks, indice)).join('')}
+    `;
+}
+
+function obterUtilizacaoLook(look) {
+    return look?.utilizacao_calc || look?.utilizacao || look?.basicos?.['Utilização'] || look?.basicos?.utilizacao || '';
+}
+
+function obterCategoriaLook(look) {
+    return look?.categoria || obterCategoriaIndicadorLook(obterIndicadorLook(look, look?.id)) || look?.basicos?.Categoria || '';
+}
+
+function criarFiltroValorLookExistente(looks, campo, rotulo, obterValor) {
+    const filtros = app.filtrosLooksPeca || {};
+    const selecionado = filtros[campo] || '';
+    const opcoes = [...new Set((looks || []).map(obterValor).filter(valorVisivel))]
+        .sort((a, b) => String(a).localeCompare(String(b), 'pt-BR', { numeric: true, sensitivity: 'base' }));
+
+    return `
+        <label class="looks-peca-filtro-htt">
+            <span>${escapeHtml(rotulo)}</span>
+            <select onchange="alterarFiltroLooksPeca('${campo}', this.value)">
+                <option value="" ${selecionado ? '' : 'selected'}>Todas</option>
+                ${opcoes.map(valor => `<option value="${escapeHtml(valor)}" ${String(valor) === String(selecionado) ? 'selected' : ''}>${escapeHtml(valor)}</option>`).join('')}
+            </select>
+        </label>
     `;
 }
 
@@ -3106,6 +3203,7 @@ function obterSituacaoLook(look) {
 function criarCardLookExistentePeca(look) {
     const pecasTexto = (look.pecas || []).join(' / ');
     const selecionado = (app.looksPecaSelecionados || []).includes(look.id);
+    const utilizacao = obterUtilizacaoLook(look);
     return `
         <div class="looks-peca-card ${selecionado ? 'selecionado' : ''}">
             <label class="looks-peca-check">
@@ -3113,7 +3211,7 @@ function criarCardLookExistentePeca(look) {
                 <span>Selecionar</span>
             </label>
             <img src="${escapeHtml(getCaminhoFotoLook(look.id))}" alt="${escapeHtml(look.id)}" onerror="${onErrorImagem()}">
-            <strong>${escapeHtml(look.id)}</strong>
+            <strong>${escapeHtml(look.id)}${valorVisivel(utilizacao) ? ` <em>${escapeHtml(utilizacao)}</em>` : ''}</strong>
             <small>${escapeHtml(pecasTexto)}</small>
             ${lookEhHTT(look) ? '<span>HTT</span>' : ''}
             <button type="button" class="btn-secundario looks-peca-ficha" onclick="mostrarDetalhesLook('${escapeHtml(look.id)}')">Ficha</button>
@@ -3138,7 +3236,7 @@ function abrirEdicaoLoteLooksPeca() {
 
     setTimeout(() => {
         renderControleVisualMultiploEdicaoLook('edit-lote-look-ocasioes', 'Pesquisar ocasiao');
-        renderControleVisualMultiploEdicaoLook('edit-lote-look-sugestoes', 'Pesquisar peca');
+        renderSugestoesLookComFotos('edit-lote-look-sugestoes');
     }, 0);
 
     modal.classList.add('modal-em-pilha');
@@ -3162,6 +3260,7 @@ function criarFormularioEdicaoLoteLooks() {
     const opcoesHtt = criarOptionsHttLook('false');
     const opcoesOcasioes = criarOptionsOcasioesLook([]);
     const opcoesSugestoes = criarOptionsSugestoesLook([]);
+    const opcoesPecas = criarOptionsPecasLook('');
 
     return `
         <div class="form-edicao-look form-edicao-lote-looks">
@@ -3177,6 +3276,15 @@ function criarFormularioEdicaoLoteLooks() {
                     <select id="edit-lote-look-htt">${opcoesHtt}</select>
                 </label>
             `)}
+            ${[1, 2, 3].map(numero => criarCampoAplicarEdicaoLote(`peca${numero}`, `
+                <label class="campo-edicao-look">
+                    <span>Peça ${numero}</span>
+                    <select id="edit-lote-look-peca${numero}">
+                        <option value="">Sem peça</option>
+                        ${opcoesPecas}
+                    </select>
+                </label>
+            `)).join('')}
             ${criarCampoAplicarEdicaoLote('ocasioes', `
                 <label class="campo-edicao-look campo-edicao-look-largo">
                     <span>Ocasiões</span>
@@ -3205,6 +3313,19 @@ function criarCampoAplicarEdicaoLote(campo, conteudo) {
     `;
 }
 
+function criarOptionsPecasLook(valorAtual) {
+    const atualNormalizado = normalizarTexto(valorAtual);
+    return Object.values(app.pecas || {})
+        .filter(peca => peca?.id)
+        .sort((a, b) => String(a.id).localeCompare(String(b.id), 'pt-BR', { numeric: true }))
+        .map(peca => {
+            const label = `${peca.id} - ${[peca.tipo, peca.subtipo, peca.cor_detalhe].filter(valorVisivel).join(' / ') || 'Peça'}`;
+            const selecionado = normalizarTexto(peca.id) === atualNormalizado ? 'selected' : '';
+            return `<option value="${escapeHtml(peca.id)}" ${selecionado}>${escapeHtml(label)}</option>`;
+        })
+        .join('');
+}
+
 function campoLoteDeveAplicar(campo) {
     return Boolean(document.querySelector(`[data-aplicar-lote="${campo}"]`)?.checked);
 }
@@ -3218,16 +3339,25 @@ function salvarEdicaoLoteLooks() {
 
     const aplicarSituacao = campoLoteDeveAplicar('situacao');
     const aplicarHtt = campoLoteDeveAplicar('htt');
+    const aplicarPeca1 = campoLoteDeveAplicar('peca1');
+    const aplicarPeca2 = campoLoteDeveAplicar('peca2');
+    const aplicarPeca3 = campoLoteDeveAplicar('peca3');
     const aplicarOcasioes = campoLoteDeveAplicar('ocasioes');
     const aplicarSugestoes = campoLoteDeveAplicar('sugestoes');
+    const aplicarPecas = aplicarPeca1 || aplicarPeca2 || aplicarPeca3;
 
-    if (!aplicarSituacao && !aplicarHtt && !aplicarOcasioes && !aplicarSugestoes) {
+    if (!aplicarSituacao && !aplicarHtt && !aplicarPecas && !aplicarOcasioes && !aplicarSugestoes) {
         alert('Marque pelo menos um campo para aplicar aos looks selecionados.');
         return;
     }
 
     const situacao = document.getElementById('edit-lote-look-situacao')?.value.trim() || '';
     const htt = document.getElementById('edit-lote-look-htt')?.value.trim() || '';
+    const pecasLote = [
+        document.getElementById('edit-lote-look-peca1')?.value.trim().toUpperCase() || '',
+        document.getElementById('edit-lote-look-peca2')?.value.trim().toUpperCase() || '',
+        document.getElementById('edit-lote-look-peca3')?.value.trim().toUpperCase() || '',
+    ];
     const ocasioes = parseOcasioesEdicaoLook(obterValoresSelectMultiplo('edit-lote-look-ocasioes'));
     const sugestoes = obterSugestoesSelectMultiplo('edit-lote-look-sugestoes');
     const editadoEm = new Date().toISOString();
@@ -3240,12 +3370,18 @@ function salvarEdicaoLoteLooks() {
         if (aplicarSituacao) basicos['situação'] = situacao;
         if (aplicarSituacao) basicos.situacao = situacao;
         if (aplicarHtt) basicos.HTT = htt;
+        const pecasAtualizadas = [...(lookOriginal.pecas || [])];
+        if (aplicarPeca1) pecasAtualizadas[0] = pecasLote[0];
+        if (aplicarPeca2) pecasAtualizadas[1] = pecasLote[1];
+        if (aplicarPeca3) pecasAtualizadas[2] = pecasLote[2];
+        const pecasNormalizadas = pecasAtualizadas.map(id => String(id || '').trim().toUpperCase()).filter(Boolean);
 
-        const lookEditado = {
+        const lookBaseEditado = {
             ...lookOriginal,
             id: lookId,
             ...(aplicarSituacao ? { situacao } : {}),
             ...(aplicarHtt ? { HTT: htt, htt } : {}),
+            ...(aplicarPecas ? { pecas: pecasNormalizadas } : {}),
             ...(aplicarOcasioes ? {
                 ocasioes,
                 ocasiao: ocasioes.map(item => item.descricao).join(', '),
@@ -3260,6 +3396,9 @@ function salvarEdicaoLoteLooks() {
             substituiLookBase: Boolean(app.looks[lookId] || lookOriginal.substituiLookBase) || undefined,
             id_original: undefined,
         };
+        const lookEditado = aplicarPecas
+            ? atualizarCalculadosLook(lookBaseEditado, pecasNormalizadas, editadoEm)
+            : lookBaseEditado;
 
         app.looksFavoritos[lookId] = lookEditado;
     });
@@ -3398,8 +3537,9 @@ function obterDetalhesEditaveisPeca(detalhes) {
 }
 
 function criarLinhaDetalhePeca(item = {}) {
+    const classeGrupo = obterClasseGrupoFichaPecaPorLabel(item.campo || '');
     return `
-        <div class="detalhe-peca-linha">
+        <div class="detalhe-peca-linha ${classeGrupo}">
             <input type="text" data-detalhe-peca-campo value="${escapeHtml(item.campo || '')}" placeholder="Campo">
             <textarea data-detalhe-peca-valor rows="2" placeholder="Valor">${escapeHtml(item.valor || '')}</textarea>
             <button class="btn-remover-detalhe" type="button" onclick="removerDetalhePeca(this)" title="Remover informação" aria-label="Remover informação">x</button>
@@ -3444,12 +3584,23 @@ function removerDetalhePeca(botao) {
 }
 
 function lerDetalhesPecaFormulario() {
-    return [...document.querySelectorAll('#edit-peca-detalhes-lista .detalhe-peca-linha')]
+    const detalhesEmCampos = [...document.querySelectorAll('[data-detalhe-peca-campo-fixo]')]
+        .map(input => ({
+            campo: input.dataset.detalhePecaCampoFixo || '',
+            valor: input.value.trim(),
+            tinhaValorOriginal: input.dataset.detalhePecaOriginal === '1',
+        }))
+        .filter(item => valorVisivel(item.valor) || item.tinhaValorOriginal)
+        .map(({ campo, valor }) => ({ campo, valor }));
+
+    const detalhesEmLista = [...document.querySelectorAll('#edit-peca-detalhes-lista .detalhe-peca-linha')]
         .map(linha => ({
             campo: linha.querySelector('[data-detalhe-peca-campo]')?.value.trim() || '',
             valor: linha.querySelector('[data-detalhe-peca-valor]')?.value.trim() || '',
         }))
         .filter(item => valorVisivel(item.campo) || valorVisivel(item.valor));
+
+    return [...detalhesEmCampos, ...detalhesEmLista];
 }
 
 function formatarIdsRelacionados(itens, campo) {
@@ -3731,6 +3882,46 @@ function criarCampoListaPeca(campo, label, valorAtual, obrigatorio = false) {
     `;
 }
 
+function criarCampoDetalhePeca(campo, valorAtual, tipo = '') {
+    const tipoInput = tipo === 'data' ? 'date' : 'text';
+    const valor = tipo === 'data' ? formatarDataInput(valorAtual) : valorAtual;
+
+    return `<input type="${tipoInput}" data-detalhe-peca-campo-fixo="${escapeHtml(campo)}" data-detalhe-peca-original="${valorVisivel(valorAtual) ? '1' : ''}" value="${escapeHtml(valor || '')}">`;
+}
+
+function obterValorDetalheEdicaoPeca(peca, definicao) {
+    const aliases = [definicao.campo, definicao.label, definicao.prop, ...(definicao.aliases || [])].filter(Boolean);
+    return (definicao.prop ? peca?.[definicao.prop] : '')
+        || obterCampoPorNomes(peca, aliases)
+        || obterCampoPorNomes(detalhesParaObjeto(peca?.detalhes), aliases)
+        || '';
+}
+
+function obterDetalhesExtrasEdicaoPeca(peca, definicoes) {
+    const camposUsados = new Set();
+    GRUPOS_FICHA_PECA.forEach(grupo => {
+        grupo.campos.forEach(campo => {
+            camposUsados.add(normalizarTexto(campo.label));
+            camposUsados.add(normalizarTexto(campo.prop));
+            (campo.aliases || []).forEach(alias => camposUsados.add(normalizarTexto(alias)));
+        });
+    });
+    definicoes.forEach(definicao => {
+        camposUsados.add(normalizarTexto(definicao.campo));
+        camposUsados.add(normalizarTexto(definicao.label));
+    });
+
+    return obterDetalhesEditaveisPeca(peca?.detalhes)
+        .filter(item => !camposUsados.has(normalizarTexto(item?.campo)))
+        .map(item => ({
+            campo: item.campo,
+            label: formatarLabelCampo(item.campo),
+            tipoEdicao: 'detalhe',
+            classe: obterClasseGrupoFichaPecaPorLabel(item.campo || ''),
+            valor: item.valor || '',
+        }));
+}
+
 function preencherSelectDimensao(select, valores, valorAtual = '') {
     if (!select) return;
     select.innerHTML = '<option value="">Selecione...</option>' + ordenarOpcoesDimensao([...valores, valorAtual])
@@ -3775,41 +3966,30 @@ function mostrarFormularioPeca(id) {
     if (!peca) return;
 
     const nova = !id;
-    const campos = [
-        ['tipo', 'Tipo'], ['funcao', 'Função'], ['subtipo', 'Subtipo'],
-        ['padronagem', 'Padronagem'], ['cor_detalhe', 'Cor / detalhe'], ['tom', 'Tom'],
-        ['nivel_aquecimento', 'Nível de aquecimento'], ['formalidade', 'Formalidade'],
-        ['tendencia', 'Tendência'], ['utilizacao', 'Utilização'], ['local', 'Local'],
-        ['alocacao', 'Alocação'], ['situacao', 'Situação'],
-        ['conservacao', 'Conservação'], ['reposicao', 'Reposição'],
-    ];
+    const campos = obterDefinicoesCamposEdicaoPeca();
+    const camposFormulario = [...campos, ...obterDetalhesExtrasEdicaoPeca(peca, campos)];
+    const dataAtualizacao = obterDataAtualizacaoPeca(peca);
 
     document.getElementById('titulo-modal').textContent = nova ? 'Adicionar nova peça' : `Editar ${peca.id}`;
     atualizarFotoModalPeca(getCaminhoFoto(peca.id));
     document.querySelector('#modal-peca .ficha-peca').innerHTML = `
         <form id="form-peca" class="form-edicao-peca" onsubmit="event.preventDefault(); salvarPeca();">
-            <label class="campo-edicao-peca">
+            <label class="campo-edicao-peca ${obterClasseGrupoFichaPecaPorLabel('ID')}">
                 <span>ID *</span>
                 <input id="edit-peca-id" type="text" value="${escapeHtml(peca.id)}" ${nova ? '' : 'disabled'} required>
             </label>
-            ${campos.map(([campo, label]) => `
-                <label class="campo-edicao-peca">
-                    <span>${label}${campo === 'tipo' ? ' *' : ''}</span>
-                    ${criarCampoListaPeca(campo, label, peca[campo] || '', campo === 'tipo')}
+            <label class="campo-edicao-peca ${obterClasseGrupoFichaPecaPorLabel('Data de atualização')}">
+                <span>Data de atualização</span>
+                <input type="text" value="${escapeHtml(dataAtualizacao ? formatarDataHoraFicha(dataAtualizacao) : '-')}" disabled>
+            </label>
+            ${camposFormulario.map(({ campo, label, obrigatorio, classe, tipoEdicao, tipo, valor, prop, aliases }) => `
+                <label class="campo-edicao-peca ${classe}">
+                    <span>${label}${obrigatorio ? ' *' : ''}</span>
+                    ${tipoEdicao === 'detalhe'
+                        ? criarCampoDetalhePeca(campo, valor ?? obterValorDetalheEdicaoPeca(peca, { campo, label, prop, aliases }), tipo)
+                        : criarCampoListaPeca(campo, label, peca[campo] || '', Boolean(obrigatorio))}
                 </label>
             `).join('')}
-            <label class="campo-edicao-peca campo-edicao-peca-largo">
-                <span>URL da foto</span>
-                <input id="edit-peca-foto" type="text" value="${escapeHtml(peca.foto || '')}" placeholder="https://...">
-            </label>
-            <label class="campo-edicao-peca campo-edicao-peca-largo">
-                <span>Enviar nova foto</span>
-                <input id="edit-peca-foto-arquivo" type="file" accept="image/*">
-            </label>
-            <div class="campo-edicao-peca campo-edicao-peca-largo">
-                <span>Informações complementares</span>
-                ${criarEditorDetalhesPeca(peca.detalhes)}
-            </div>
             <label class="campo-edicao-peca campo-edicao-peca-largo">
                 <span>ID peças relacionadas</span>
                 <div id="edit-peca-acessorios-opcoes">
@@ -3821,6 +4001,14 @@ function mostrarFormularioPeca(id) {
                 <div id="edit-peca-restricoes-opcoes">
                     ${criarSeletorPecasNaoCombinam(peca, peca.id)}
                 </div>
+            </label>
+            <label class="campo-edicao-peca campo-edicao-peca-largo">
+                <span>URL da foto</span>
+                <input id="edit-peca-foto" type="text" value="${escapeHtml(peca.foto || '')}" placeholder="https://...">
+            </label>
+            <label class="campo-edicao-peca campo-edicao-peca-largo">
+                <span>Enviar nova foto</span>
+                <input id="edit-peca-foto-arquivo" type="file" accept="image/*">
             </label>
             <button type="submit" class="submit-oculto" aria-hidden="true" tabindex="-1"></button>
         </form>
@@ -3892,6 +4080,16 @@ async function salvarPeca() {
             editadaEm: new Date().toISOString(),
         };
         CAMPOS_IMPORTADOS_PECA.forEach(definicao => {
+            const detalheEditado = obterDetalhePorAliases(detalhes, definicao.aliases);
+            if (detalheEditado) {
+                if (valorVisivel(detalheEditado.valor)) {
+                    peca[definicao.prop] = detalheEditado.valor;
+                } else {
+                    delete peca[definicao.prop];
+                }
+                return;
+            }
+
             const valorEditado = obterValorCampoImportadoPeca({ detalhes }, definicao);
             const valorPreservado = obterValorCampoImportadoPeca({ ...original, detalhes }, definicao);
             const valor = valorEditado || valorPreservado;
@@ -5018,7 +5216,7 @@ function rotuloGrupoSugestaoLook(grupo) {
     }[grupo] || formatarLabelCampo(grupo);
 }
 
-function criarCardSugestaoLook(option) {
+function criarCardSugestaoLook(option, nomeInput = 'edit-look-sugestoes-card') {
     const id = String(option.value || '').toUpperCase();
     const peca = app.pecas[id] || {};
     const selecionada = option.selected;
@@ -5026,7 +5224,7 @@ function criarCardSugestaoLook(option) {
 
     return `
         <label class="look-sugestao-opcao ${selecionada ? 'selecionada' : ''}">
-            <input type="checkbox" name="edit-look-sugestoes-card" value="${escapeHtml(id)}" ${selecionada ? 'checked' : ''}>
+            <input type="checkbox" name="${escapeHtml(nomeInput)}" value="${escapeHtml(id)}" ${selecionada ? 'checked' : ''}>
             ${criarImagem(getCaminhoFoto(id), id)}
             <span>
                 <strong>${escapeHtml(id)}</strong>
@@ -5036,11 +5234,12 @@ function criarCardSugestaoLook(option) {
     `;
 }
 
-function renderSugestoesLookComFotos() {
-    const select = document.getElementById('edit-look-sugestoes');
+function renderSugestoesLookComFotos(selectId = 'edit-look-sugestoes') {
+    const select = document.getElementById(selectId);
     if (!select) return;
 
     select.classList.add('select-nativo-oculto');
+    const nomeInput = `${selectId}-card`;
 
     let container = select.parentElement.querySelector('.look-sugestoes-foto-select');
     if (!container) {
@@ -5066,19 +5265,19 @@ function renderSugestoesLookComFotos() {
                 <section class="look-sugestoes-grupo">
                     <h4>${rotuloGrupoSugestaoLook(grupo)}</h4>
                     <div class="look-sugestoes-grid">
-                        ${itens.map(criarCardSugestaoLook).join('')}
+                        ${itens.map(option => criarCardSugestaoLook(option, nomeInput)).join('')}
                     </div>
                 </section>
             `).join('') || '<p class="texto-ajuda">Nenhuma peça disponível.</p>'}
         </div>
     `;
 
-    container.querySelectorAll('input[name="edit-look-sugestoes-card"]').forEach(input => {
+    container.querySelectorAll(`input[name="${nomeInput}"]`).forEach(input => {
         input.addEventListener('change', () => {
             const option = opcoes.find(item => String(item.value).toUpperCase() === String(input.value).toUpperCase());
             if (option) option.selected = input.checked;
             input.closest('.look-sugestao-opcao')?.classList.toggle('selecionada', input.checked);
-            renderSugestoesLookComFotos();
+            renderSugestoesLookComFotos(selectId);
         });
     });
 }
