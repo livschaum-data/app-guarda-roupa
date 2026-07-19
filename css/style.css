@@ -2600,10 +2600,17 @@ body {
     font-weight: 750;
 }
 
-.looks-peca-card > span {
+.looks-peca-tags {
     position: absolute;
     top: 34px;
     right: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.looks-peca-tags span {
     padding: 3px 6px;
     border-radius: 999px;
     background: var(--cor-primaria);

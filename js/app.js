@@ -2980,10 +2980,36 @@ function fecharModalLookDetalhes() {
     modal.style.display = 'none';
 }
 
+function pecaPodeAparecerComoSugestaoLook(peca) {
+    return ['calcado', 'bolsa', 'cinto'].includes(normalizarGrupoSugestaoLook(peca?.tipo));
+}
+
+function lookTemPecaSugerida(look, pecaId) {
+    const alvo = String(pecaId || '').trim().toUpperCase();
+    if (!alvo) return false;
+
+    return (look?.pecas_sugeridas || []).some(item =>
+        String(item?.id || item || '').trim().toUpperCase() === alvo
+    );
+}
+
 function obterLooksDaPeca(pecaId) {
-    return obterTodosLooks()
+    const peca = app.pecas?.[pecaId];
+    const incluirSugestoes = pecaPodeAparecerComoSugestaoLook(peca);
+    const looksDiretos = obterTodosLooks()
         .filter(look => look?.id && Array.isArray(look.pecas))
         .filter(look => look.pecas.includes(pecaId))
+        .map(look => ({ ...look, vinculoPeca: 'peca' }));
+
+    const idsDiretos = new Set(looksDiretos.map(look => look.id));
+    const looksSugeridos = incluirSugestoes
+        ? obterTodosLooks()
+            .filter(look => look?.id && !idsDiretos.has(look.id))
+            .filter(look => lookTemPecaSugerida(look, pecaId))
+            .map(look => ({ ...look, vinculoPeca: 'sugerida' }))
+        : [];
+
+    return [...looksDiretos, ...looksSugeridos]
         .sort((a, b) => String(a.id).localeCompare(String(b.id), 'pt-BR', { numeric: true }));
 }
 
@@ -3010,6 +3036,12 @@ function criarAcoesLoteLooksPeca(looksFiltrados) {
     const idsFiltrados = (looksFiltrados || []).map(look => look.id);
     const totalFiltrados = idsFiltrados.length;
     const todosFiltradosSelecionados = totalFiltrados > 0 && idsFiltrados.every(id => app.looksPecaSelecionados.includes(id));
+    const modal = document.getElementById('modal-looks-peca');
+    const pecaId = modal?.dataset.pecaId || app.pecaEmDetalhes;
+    const totalSelecionadosSugeridos = (app.looksPecaSelecionados || [])
+        .map(id => obterLookPorId(id))
+        .filter(look => lookTemPecaSugerida(look, pecaId))
+        .length;
 
     return `
         <div class="looks-peca-lote-info">
@@ -3021,6 +3053,7 @@ function criarAcoesLoteLooksPeca(looksFiltrados) {
                 ${todosFiltradosSelecionados ? 'Desmarcar lista' : 'Selecionar lista'}
             </button>
             <button type="button" class="btn-secundario" onclick="limparSelecaoLooksPeca()" ${totalSelecionados ? '' : 'disabled'}>Limpar</button>
+            <button type="button" class="btn-secundario" onclick="removerPecaDasSugestoesLooksSelecionados()" ${totalSelecionadosSugeridos ? '' : 'disabled'}>Remover das sugestões</button>
             <button type="button" class="btn-principal" onclick="abrirEdicaoLoteLooksPeca()" ${totalSelecionados ? '' : 'disabled'}>Editar selecionados</button>
         </div>
     `;
@@ -3060,6 +3093,54 @@ function selecionarLooksPecaFiltrados() {
 function limparSelecaoLooksPeca() {
     app.looksPecaSelecionados = [];
     renderLooksExistentesPeca();
+}
+
+function removerPecaDasSugestoesLooksSelecionados() {
+    const modal = document.getElementById('modal-looks-peca');
+    const pecaId = String(modal?.dataset.pecaId || app.pecaEmDetalhes || '').trim().toUpperCase();
+    const idsSelecionados = obterIdsLooksSelecionadosParaEdicaoLote();
+    if (!pecaId || !idsSelecionados.length) return;
+
+    const looksComSugestao = idsSelecionados
+        .map(id => obterLookPorId(id))
+        .filter(look => lookTemPecaSugerida(look, pecaId));
+
+    if (!looksComSugestao.length) {
+        alert('Nenhum look selecionado tem essa peça como sugestão.');
+        return;
+    }
+
+    if (!confirm(`Remover ${pecaId} das sugestões de ${looksComSugestao.length} look${looksComSugestao.length === 1 ? '' : 's'} selecionado${looksComSugestao.length === 1 ? '' : 's'}?`)) {
+        return;
+    }
+
+    const editadoEm = new Date().toISOString();
+    looksComSugestao.forEach(look => {
+        const pecasSugeridas = (look.pecas_sugeridas || [])
+            .filter(item => String(item?.id || item || '').trim().toUpperCase() !== pecaId)
+            .map(item => typeof item === 'string'
+                ? { id: item.toUpperCase(), grupo: app.pecas?.[item]?.tipo || '' }
+                : item);
+
+        app.looksFavoritos[look.id] = {
+            ...look,
+            pecas_sugeridas: pecasSugeridas,
+            editadoLocalmente: true,
+            editadoEm,
+            substituiLookBase: Boolean(app.looks[look.id] || look.substituiLookBase) || undefined,
+            id_original: undefined,
+        };
+    });
+
+    salvarDados();
+    preencherSelectLooks();
+    preencherFiltrosOcasiao();
+    if (document.getElementById('looks')?.style.display !== 'none') {
+        renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
+    }
+    app.looksPecaSelecionados = app.looksPecaSelecionados.filter(id => !looksComSugestao.some(look => look.id === id));
+    renderLooksExistentesPeca();
+    alert(`${pecaId} removida das sugestões de ${looksComSugestao.length} look${looksComSugestao.length === 1 ? '' : 's'}.`);
 }
 
 function filtrarLooksExistentesPeca(looks) {
@@ -3204,6 +3285,7 @@ function criarCardLookExistentePeca(look) {
     const pecasTexto = (look.pecas || []).join(' / ');
     const selecionado = (app.looksPecaSelecionados || []).includes(look.id);
     const utilizacao = obterUtilizacaoLook(look);
+    const ehSugestao = look.vinculoPeca === 'sugerida';
     return `
         <div class="looks-peca-card ${selecionado ? 'selecionado' : ''}">
             <label class="looks-peca-check">
@@ -3213,7 +3295,10 @@ function criarCardLookExistentePeca(look) {
             <img src="${escapeHtml(getCaminhoFotoLook(look.id))}" alt="${escapeHtml(look.id)}" onerror="${onErrorImagem()}">
             <strong>${escapeHtml(look.id)}${valorVisivel(utilizacao) ? ` <em>${escapeHtml(utilizacao)}</em>` : ''}</strong>
             <small>${escapeHtml(pecasTexto)}</small>
-            ${lookEhHTT(look) ? '<span>HTT</span>' : ''}
+            <div class="looks-peca-tags">
+                ${lookEhHTT(look) ? '<span>HTT</span>' : ''}
+                <span>${ehSugestao ? 'Sugerida' : 'Peça'}</span>
+            </div>
             <button type="button" class="btn-secundario looks-peca-ficha" onclick="mostrarDetalhesLook('${escapeHtml(look.id)}')">Ficha</button>
         </div>
     `;
