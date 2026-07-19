@@ -26,6 +26,94 @@ const CAMPOS_FILTROS_GERAIS_HOJE = CAMPOS_FILTROS_PECAS.filter(campo => !['tipo'
 const TEMA_VISUAL_STORAGE_KEY = 'temaVisualGuardaRoupa';
 const ESTADO_FILTROS_STORAGE_KEY = 'estadoFiltrosGuardaRoupa';
 const TEMAS_VISUAIS = ['sistema', 'claro', 'escuro'];
+const CAMPOS_IMPORTADOS_PECA = [
+    {
+        prop: 'info_fotos',
+        aliases: ['Info e fotos', 'Info/fotos', 'Info fotos', 'Fotos'],
+    },
+    {
+        prop: 'combinacoes',
+        aliases: ['Combinação', 'Combinacao', 'Combinações', 'Combinacoes'],
+    },
+    {
+        prop: 'data_revisao',
+        aliases: ['Data revisão', 'Data revisao'],
+    },
+];
+const GRUPOS_FICHA_PECA = [
+    {
+        classe: 'ficha-grupo-azul',
+        campos: [
+            { chave: 'id', label: 'ID', prop: 'id', sempre: true },
+            { chave: 'data_atualizacao', label: 'Data de atualização', tipo: 'dataHoraAtualizacao' },
+        ],
+    },
+    {
+        classe: 'ficha-grupo-vermelho',
+        campos: [
+            { chave: 'tipo', label: 'Tipo', prop: 'tipo' },
+            { chave: 'funcao', label: 'Função', prop: 'funcao' },
+            { chave: 'subtipo', label: 'Subtipo', prop: 'subtipo' },
+        ],
+    },
+    {
+        classe: 'ficha-grupo-roxo',
+        campos: [
+            { chave: 'local', label: 'Local', prop: 'local' },
+            { chave: 'alocacao', label: 'Alocação', prop: 'alocacao' },
+        ],
+    },
+    {
+        classe: 'ficha-grupo-verde',
+        campos: [
+            { chave: 'situacao', label: 'Situação', prop: 'situacao' },
+            { chave: 'conservacao', label: 'Conservação', prop: 'conservacao' },
+            { chave: 'repor', label: 'Repor', prop: 'reposicao', aliases: ['Repor', 'Reposição', 'Reposicao'] },
+        ],
+    },
+    {
+        classe: 'ficha-grupo-amarelo',
+        campos: [
+            { chave: 'utilizacao', label: 'Utilização', prop: 'utilizacao' },
+            { chave: 'formalidade', label: 'Formalidade', prop: 'formalidade' },
+            { chave: 'nivel_aquecimento', label: 'Nível de aquecimento', prop: 'nivel_aquecimento' },
+        ],
+    },
+    {
+        classe: 'ficha-grupo-verde-claro',
+        campos: [
+            { chave: 'padronagem', label: 'Padronagem', prop: 'padronagem' },
+            { chave: 'modelagem', label: 'Modelagem', aliases: ['Modelagem'] },
+            { chave: 'tom', label: 'Tom', prop: 'tom' },
+            { chave: 'cor_detalhe', label: 'Cor detalhe', prop: 'cor_detalhe' },
+            { chave: 'tendencia', label: 'Tendência', prop: 'tendencia' },
+        ],
+    },
+    {
+        classe: 'ficha-grupo-azul-claro',
+        campos: [
+            { chave: 'data_aquisicao', label: 'Data aquisição', aliases: ['Data aquisição', 'Data aquisicao'], tipo: 'data' },
+            { chave: 'data_revisao', label: 'Data revisão', prop: 'data_revisao', aliases: ['Data revisão', 'Data revisao'], tipo: 'data' },
+            { chave: 'data_descarte', label: 'Data descarte', aliases: ['Data descarte'], tipo: 'data' },
+        ],
+    },
+    {
+        classe: 'ficha-grupo-laranja',
+        campos: [
+            { chave: 'info_fotos', label: 'Info e fotos', prop: 'info_fotos', aliases: ['Info e fotos', 'Info/fotos', 'Info fotos', 'Fotos'] },
+            { chave: 'combinacoes', label: 'Combinação', prop: 'combinacoes', aliases: ['Combinação', 'Combinacao', 'Combinações', 'Combinacoes'] },
+        ],
+    },
+    {
+        classe: 'ficha-grupo-rosa',
+        campos: [
+            { chave: 'marca', label: 'Marca', aliases: ['Marca'] },
+            { chave: 'loja', label: 'Loja', aliases: ['Loja'] },
+            { chave: 'tamanho', label: 'Tamanho', aliases: ['Tamanho'] },
+            { chave: 'custo', label: 'Custo', aliases: ['Custo'] },
+        ],
+    },
+];
 const GRUPOS_REGISTRO_PECAS = [
     { id: 'roupas-principais', titulo: 'Blusas, calças, casacos e inteiros', tipos: ['blusa', 'calça', 'casaco', 'inteiro'] },
     { id: 'intimas-funcionais', titulo: 'Sutiãs, calcinhas, modeladores, tops e segunda pele', tipos: ['sutien', 'calcinha', 'modelador', 'top', 'segunda-pele'] },
@@ -281,44 +369,61 @@ function obterDetalhePeca(peca, campo) {
     return (peca.detalhes || []).find(item => String(item.campo || '').toLowerCase() === campo.toLowerCase())?.valor || '';
 }
 
-function criarCamposPecaHtml(peca, compacto = false) {
-    const camposBase = [
-        ['Tipo', peca.tipo],
-        ['Função', peca.funcao],
-        ['Subtipo', peca.subtipo],
-        ['Padronagem', peca.padronagem],
-        ['Cor detalhe', peca.cor_detalhe],
-        ['Cor', peca.cor],
-        ['Tom', peca.tom],
-        ['Aquecimento', peca.nivel_aquecimento],
-        ['Formalidade', peca.formalidade],
-        ['Tendência', peca.tendencia],
-        ['Utilização', peca.utilizacao],
-        ['Local', peca.local],
-        ['Alocação', peca.alocacao],
-        ['Situação', peca.situacao],
-        ['Conservação', peca.conservacao],
-        ['Reposição', peca.reposicao],
-    ];
+function formatarValorCampoFichaPeca(valor, tipo) {
+    if (!valorVisivel(valor)) return '';
+    if (tipo === 'dataHoraAtualizacao') return formatarDataHoraFicha(valor);
+    if (tipo === 'data') return formatarDataBR(valor);
+    return valor;
+}
 
-    const detalhes = (peca.detalhes || []).map(item => [item.campo, item.valor]);
-    const camposSemDuplicidade = new Map();
-    [...camposBase, ...detalhes].forEach(([label, valor]) => {
-        if (!valorVisivel(valor)) return;
-        const chave = String(label || '').toLowerCase();
-        if (!camposSemDuplicidade.has(chave)) {
-            camposSemDuplicidade.set(chave, [label, valor]);
-        }
-    });
-    const campos = [...camposSemDuplicidade.values()];
-    const limite = compacto ? 6 : campos.length;
+function obterValorCampoFichaPeca(peca, campo, dataAtualizacao) {
+    if (campo.tipo === 'dataHoraAtualizacao') return dataAtualizacao || '';
 
-    return campos.slice(0, limite).map(([label, valor]) => `
-        <div class="campo-card-peca">
-            <span>${escapeHtml(formatarLabelCampo(label))}</span>
+    const detalhes = detalhesParaObjeto(peca?.detalhes);
+    return peca?.[campo.prop]
+        || obterCampoPorNomes(peca, campo.aliases || [])
+        || obterCampoPorNomes(detalhes, campo.aliases || [campo.label])
+        || '';
+}
+
+function criarCampoFichaHtml(label, valor, classeGrupo = '') {
+    return `
+        <div class="campo-card-peca ${classeGrupo}">
+            <span>${escapeHtml(label)}</span>
             <strong>${escapeHtml(valor)}</strong>
         </div>
-    `).join('');
+    `;
+}
+
+function criarCamposPecaHtml(peca, compacto = false, dataAtualizacao = obterDataAtualizacaoPeca(peca)) {
+    const camposUsados = new Set();
+    const camposOrdenados = [];
+
+    GRUPOS_FICHA_PECA.forEach(grupo => {
+        grupo.campos.forEach(campo => {
+            camposUsados.add(normalizarTexto(campo.label));
+            (campo.aliases || []).forEach(alias => camposUsados.add(normalizarTexto(alias)));
+
+            const valor = formatarValorCampoFichaPeca(
+                obterValorCampoFichaPeca(peca, campo, dataAtualizacao),
+                campo.tipo
+            );
+
+            camposOrdenados.push([campo.label, valor || '-', grupo.classe]);
+        });
+    });
+
+    const extras = (peca.detalhes || [])
+        .filter(item => valorVisivel(item?.campo) || valorVisivel(item?.valor))
+        .filter(item => !camposUsados.has(normalizarTexto(item?.campo)))
+        .map(item => [formatarLabelCampo(item.campo), item.valor || '-', 'ficha-grupo-outros']);
+
+    const campos = [...camposOrdenados, ...extras];
+    const limite = compacto ? 6 : campos.length;
+
+    return campos.slice(0, limite)
+        .map(([label, valor, classeGrupo]) => criarCampoFichaHtml(label, valor, classeGrupo))
+        .join('');
 }
 
 function normalizarListaPeca(valor) {
@@ -623,7 +728,7 @@ function carregarDados() {
         const pecasSalvas = localStorage.getItem('app_pecas_personalizadas');
         app.pecasPersonalizadas = pecasSalvas ? JSON.parse(pecasSalvas) : {};
         if (!app.pecasPersonalizadas || Array.isArray(app.pecasPersonalizadas)) app.pecasPersonalizadas = {};
-        app.pecas = { ...app.pecas, ...app.pecasPersonalizadas };
+        aplicarPecasPersonalizadas();
         Object.values(app.pecas).forEach(normalizarDimensoesPeca);
     } catch (erro) {
         console.warn('Peças personalizadas inválidas. Ignorando alterações locais.', erro);
@@ -646,6 +751,10 @@ function carregarDados() {
     } catch (erro) {
         console.warn('Looks favoritos salvos inválidos. Iniciando vazio.', erro);
         app.looksFavoritos = {};
+    }
+
+    if (Object.keys(app.pecasPersonalizadas || {}).length > 0) {
+        salvarDadosLocal();
     }
 
     console.log(`✅ Carregados ${app.historico.length} registros do histórico`);
@@ -1307,6 +1416,73 @@ function obterCampoPorNomes(objeto, nomes) {
     return entrada?.[1] || '';
 }
 
+function detalhesParaObjeto(detalhes) {
+    return Object.fromEntries((detalhes || []).map(item => [item.campo, item.valor]));
+}
+
+function obterValorCampoImportadoPeca(peca, definicao) {
+    return peca?.[definicao.prop]
+        || obterCampoPorNomes(peca, definicao.aliases)
+        || obterCampoPorNomes(detalhesParaObjeto(peca?.detalhes), definicao.aliases)
+        || '';
+}
+
+function preservarDetalhesImportadosPeca(origem, detalhesEditados) {
+    const detalhes = Array.isArray(detalhesEditados) ? [...detalhesEditados] : [];
+    const camposExistentes = new Set(detalhes.map(item => normalizarTexto(item?.campo)));
+
+    CAMPOS_IMPORTADOS_PECA.forEach(definicao => {
+        if (definicao.aliases.some(alias => camposExistentes.has(normalizarTexto(alias)))) return;
+
+        const valor = obterValorCampoImportadoPeca(origem, definicao);
+        if (!valorVisivel(valor)) return;
+
+        detalhes.push({
+            campo: definicao.aliases[0],
+            valor,
+        });
+    });
+
+    return detalhes;
+}
+
+function mesclarPecaPersonalizadaComBase(pecaBase = {}, pecaPersonalizada = {}) {
+    const peca = {
+        ...pecaBase,
+        ...pecaPersonalizada,
+    };
+
+    CAMPOS_IMPORTADOS_PECA.forEach(definicao => {
+        const valorDetalhePersonalizado = obterCampoPorNomes(
+            detalhesParaObjeto(pecaPersonalizada?.detalhes),
+            definicao.aliases
+        );
+        const valor = valorDetalhePersonalizado
+            || obterValorCampoImportadoPeca(pecaPersonalizada, definicao)
+            || obterValorCampoImportadoPeca(pecaBase, definicao);
+        if (valorVisivel(valor)) peca[definicao.prop] = valor;
+    });
+
+    peca.detalhes = preservarDetalhesImportadosPeca(
+        peca,
+        Array.isArray(pecaPersonalizada.detalhes) ? pecaPersonalizada.detalhes : pecaBase.detalhes
+    );
+
+    return peca;
+}
+
+function aplicarPecasPersonalizadas() {
+    const pecasBase = { ...app.pecas };
+    const personalizadas = {};
+
+    Object.entries(app.pecasPersonalizadas || {}).forEach(([id, pecaPersonalizada]) => {
+        personalizadas[id] = mesclarPecaPersonalizadaComBase(pecasBase[id], pecaPersonalizada);
+    });
+
+    app.pecasPersonalizadas = personalizadas;
+    app.pecas = { ...pecasBase, ...personalizadas };
+}
+
 function obterDataAtualizacaoLook(look) {
     if (valorVisivel(look?.editadoEm)) return look.editadoEm;
 
@@ -1430,7 +1606,7 @@ function mesclarDadosNuvem(data) {
 
     app.looksFavoritos = mesclarMapaPorMaisRecente(app.looksFavoritos, data.looks_favoritos || {}, timestampLookSync);
     app.pecasPersonalizadas = mesclarMapaPorMaisRecente(app.pecasPersonalizadas, data.pecas_personalizadas || {}, timestampPecaSync);
-    app.pecas = { ...app.pecas, ...app.pecasPersonalizadas };
+    aplicarPecasPersonalizadas();
     app.mapaUsosLooksAtual = null;
     app.indiceLooksPorPecasAtual = null;
     garantirLooksFavoritosSemColisao();
@@ -2676,17 +2852,7 @@ function abrirDetalhsPeca(id) {
     // Preencher modal com dados
     document.querySelector('#modal-peca .ficha-peca').innerHTML = `
         <div class="campos-modal-peca">
-            <div class="campo-ficha">
-                <span class="label">ID:</span>
-                <span>${escapeHtml(peca.id)}</span>
-            </div>
-            ${dataAtualizacao ? `
-                <div class="campo-ficha">
-                    <span class="label">Última atualização:</span>
-                    <span>${escapeHtml(formatarDataHoraFicha(dataAtualizacao))}</span>
-                </div>
-            ` : ''}
-            ${criarCamposPecaHtml(peca)}
+            ${criarCamposPecaHtml(peca, false, dataAtualizacao)}
         </div>
         ${criarAcessoriosHtml(peca)}
         ${criarRestricoesHtml(peca)}
@@ -3220,13 +3386,70 @@ function cancelarEdicaoPeca() {
     else fecharModal();
 }
 
-function formatarDetalhesParaEdicao(detalhes) {
-    const camposGerenciados = new Set(['formalidade', 'tendencia', 'alocacao', 'situacao', 'conservacao', 'repor', 'reposicao']);
+function camposDetalhesGerenciadosPeca() {
+    return new Set(['formalidade', 'tendencia', 'alocacao', 'situacao', 'conservacao', 'repor', 'reposicao']);
+}
+
+function obterDetalhesEditaveisPeca(detalhes) {
+    const camposGerenciados = camposDetalhesGerenciadosPeca();
     return (detalhes || [])
         .filter(item => !camposGerenciados.has(normalizarTexto(item?.campo)))
-        .filter(item => valorVisivel(item?.campo) || valorVisivel(item?.valor))
-        .map(item => `${item.campo || ''}: ${item.valor || ''}`)
-        .join('\n');
+        .filter(item => valorVisivel(item?.campo) || valorVisivel(item?.valor));
+}
+
+function criarLinhaDetalhePeca(item = {}) {
+    return `
+        <div class="detalhe-peca-linha">
+            <input type="text" data-detalhe-peca-campo value="${escapeHtml(item.campo || '')}" placeholder="Campo">
+            <textarea data-detalhe-peca-valor rows="2" placeholder="Valor">${escapeHtml(item.valor || '')}</textarea>
+            <button class="btn-remover-detalhe" type="button" onclick="removerDetalhePeca(this)" title="Remover informação" aria-label="Remover informação">x</button>
+        </div>
+    `;
+}
+
+function criarEditorDetalhesPeca(detalhes) {
+    const itens = obterDetalhesEditaveisPeca(detalhes);
+    const linhas = itens.length ? itens : [{ campo: '', valor: '' }];
+
+    return `
+        <div class="detalhes-peca-editor">
+            <div id="edit-peca-detalhes-lista" class="detalhes-peca-lista">
+                ${linhas.map(criarLinhaDetalhePeca).join('')}
+            </div>
+            <button class="btn-secundario btn-adicionar-detalhe" type="button" onclick="adicionarDetalhePeca()">Adicionar informação</button>
+        </div>
+    `;
+}
+
+function adicionarDetalhePeca() {
+    const lista = document.getElementById('edit-peca-detalhes-lista');
+    if (!lista) return;
+
+    lista.insertAdjacentHTML('beforeend', criarLinhaDetalhePeca());
+    lista.querySelector('.detalhe-peca-linha:last-child [data-detalhe-peca-campo]')?.focus();
+}
+
+function removerDetalhePeca(botao) {
+    const lista = document.getElementById('edit-peca-detalhes-lista');
+    const linha = botao?.closest('.detalhe-peca-linha');
+    if (!lista || !linha) return;
+
+    if (lista.querySelectorAll('.detalhe-peca-linha').length === 1) {
+        linha.querySelector('[data-detalhe-peca-campo]').value = '';
+        linha.querySelector('[data-detalhe-peca-valor]').value = '';
+        return;
+    }
+
+    linha.remove();
+}
+
+function lerDetalhesPecaFormulario() {
+    return [...document.querySelectorAll('#edit-peca-detalhes-lista .detalhe-peca-linha')]
+        .map(linha => ({
+            campo: linha.querySelector('[data-detalhe-peca-campo]')?.value.trim() || '',
+            valor: linha.querySelector('[data-detalhe-peca-valor]')?.value.trim() || '',
+        }))
+        .filter(item => valorVisivel(item.campo) || valorVisivel(item.valor));
 }
 
 function formatarIdsRelacionados(itens, campo) {
@@ -3583,10 +3806,10 @@ function mostrarFormularioPeca(id) {
                 <span>Enviar nova foto</span>
                 <input id="edit-peca-foto-arquivo" type="file" accept="image/*">
             </label>
-            <label class="campo-edicao-peca campo-edicao-peca-largo">
+            <div class="campo-edicao-peca campo-edicao-peca-largo">
                 <span>Informações complementares</span>
-                <textarea id="edit-peca-detalhes" rows="8" placeholder="Uma informação por linha. Ex.: Marca: Renner">${escapeHtml(formatarDetalhesParaEdicao(peca.detalhes))}</textarea>
-            </label>
+                ${criarEditorDetalhesPeca(peca.detalhes)}
+            </div>
             <label class="campo-edicao-peca campo-edicao-peca-largo">
                 <span>ID peças relacionadas</span>
                 <div id="edit-peca-acessorios-opcoes">
@@ -3611,15 +3834,6 @@ function mostrarFormularioPeca(id) {
     document.getElementById('salvar-peca-modal').style.display = '';
     document.getElementById('registrar-peca-modal').style.display = 'none';
     document.getElementById('modal-peca').style.display = 'flex';
-}
-
-function parseDetalhesPeca(valor) {
-    return String(valor || '').split(/\r?\n/).map(linha => linha.trim()).filter(Boolean).map(linha => {
-        const separador = linha.indexOf(':');
-        return separador < 0
-            ? { campo: linha, valor: '' }
-            : { campo: linha.slice(0, separador).trim(), valor: linha.slice(separador + 1).trim() };
-    }).filter(item => item.campo || item.valor);
 }
 
 function lerFotoPeca() {
@@ -3661,18 +3875,28 @@ async function salvarPeca() {
         const acessorios = idsAcessoriosNovos.map(criarItemAcessorio);
         const idsRestricoesNovos = lerIdsPecasNaoCombinamFormulario();
         const combinacoes = idsRestricoesNovos.map(criarItemRestricao);
+        const detalhes = preservarDetalhesImportadosPeca(
+            original,
+            lerDetalhesPecaFormulario()
+        );
 
         const peca = {
             ...original,
             ...campos,
             id,
             foto: fotoArquivo || fotoUrl || original.foto || '',
-            detalhes: parseDetalhesPeca(document.getElementById('edit-peca-detalhes')?.value),
+            detalhes,
             acessorios,
             combinacoes_nao_permitidas: combinacoes,
             editadaLocalmente: true,
             editadaEm: new Date().toISOString(),
         };
+        CAMPOS_IMPORTADOS_PECA.forEach(definicao => {
+            const valorEditado = obterValorCampoImportadoPeca({ detalhes }, definicao);
+            const valorPreservado = obterValorCampoImportadoPeca({ ...original, detalhes }, definicao);
+            const valor = valorEditado || valorPreservado;
+            if (valorVisivel(valor)) peca[definicao.prop] = valor;
+        });
 
         app.pecas[id] = peca;
         app.pecasPersonalizadas[id] = peca;

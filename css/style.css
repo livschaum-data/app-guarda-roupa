@@ -1228,6 +1228,117 @@ body {
     overflow-wrap: anywhere;
 }
 
+.campos-modal-peca .campo-card-peca {
+    position: relative;
+    overflow: hidden;
+    border-width: 1px 1px 1px 6px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+.campos-modal-peca .campo-card-peca::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: currentColor;
+    opacity: 0.55;
+}
+
+.campos-modal-peca .campo-card-peca span {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.campos-modal-peca .campo-card-peca strong {
+    color: var(--cor-texto);
+}
+
+.ficha-grupo-azul {
+    border-color: #2563eb;
+    background: color-mix(in srgb, #2563eb 20%, var(--cor-fundo-card));
+}
+
+.ficha-grupo-azul span {
+    color: color-mix(in srgb, #2563eb 72%, var(--cor-texto));
+}
+
+.ficha-grupo-vermelho {
+    border-color: #ef4444;
+    background: color-mix(in srgb, #ef4444 20%, var(--cor-fundo-card));
+}
+
+.ficha-grupo-vermelho span {
+    color: color-mix(in srgb, #ef4444 72%, var(--cor-texto));
+}
+
+.ficha-grupo-roxo {
+    border-color: #7c3aed;
+    background: color-mix(in srgb, #7c3aed 20%, var(--cor-fundo-card));
+}
+
+.ficha-grupo-roxo span {
+    color: color-mix(in srgb, #7c3aed 72%, var(--cor-texto));
+}
+
+.ficha-grupo-verde {
+    border-color: #16a34a;
+    background: color-mix(in srgb, #16a34a 20%, var(--cor-fundo-card));
+}
+
+.ficha-grupo-verde span {
+    color: color-mix(in srgb, #16a34a 72%, var(--cor-texto));
+}
+
+.ficha-grupo-amarelo {
+    border-color: #eab308;
+    background: color-mix(in srgb, #eab308 26%, var(--cor-fundo-card));
+}
+
+.ficha-grupo-amarelo span {
+    color: color-mix(in srgb, #ca8a04 72%, var(--cor-texto));
+}
+
+.ficha-grupo-verde-claro {
+    border-color: #84cc16;
+    background: color-mix(in srgb, #84cc16 26%, var(--cor-fundo-card));
+}
+
+.ficha-grupo-verde-claro span {
+    color: color-mix(in srgb, #65a30d 72%, var(--cor-texto));
+}
+
+.ficha-grupo-azul-claro {
+    border-color: #38bdf8;
+    background: color-mix(in srgb, #38bdf8 26%, var(--cor-fundo-card));
+}
+
+.ficha-grupo-azul-claro span {
+    color: color-mix(in srgb, #0284c7 72%, var(--cor-texto));
+}
+
+.ficha-grupo-laranja {
+    border-color: #f97316;
+    background: color-mix(in srgb, #f97316 24%, var(--cor-fundo-card));
+}
+
+.ficha-grupo-laranja span {
+    color: color-mix(in srgb, #f97316 72%, var(--cor-texto));
+}
+
+.ficha-grupo-rosa {
+    border-color: #ec4899;
+    background: color-mix(in srgb, #ec4899 22%, var(--cor-fundo-card));
+}
+
+.ficha-grupo-rosa span {
+    color: color-mix(in srgb, #ec4899 72%, var(--cor-texto));
+}
+
+.ficha-grupo-outros {
+    border-color: var(--cor-borda);
+}
+
 .campo-ficha:last-child {
     border-bottom: none;
 }
@@ -1323,6 +1434,54 @@ body {
 
 .campo-edicao-peca select {
     cursor: pointer;
+}
+
+.detalhes-peca-editor {
+    display: grid;
+    gap: 10px;
+}
+
+.detalhes-peca-lista {
+    display: grid;
+    gap: 10px;
+}
+
+.detalhe-peca-linha {
+    display: grid;
+    grid-template-columns: minmax(140px, 0.35fr) minmax(180px, 1fr) 44px;
+    gap: 8px;
+    align-items: start;
+}
+
+.detalhe-peca-linha textarea {
+    resize: vertical;
+    line-height: 1.45;
+}
+
+.btn-remover-detalhe {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    background: var(--cor-fundo-card);
+    color: var(--cor-texto-cinza);
+    font: inherit;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: var(--transicao);
+}
+
+.btn-remover-detalhe:hover,
+.btn-remover-detalhe:focus {
+    border-color: var(--cor-alerta);
+    color: var(--cor-alerta);
+    outline: none;
+}
+
+.btn-adicionar-detalhe {
+    justify-self: start;
 }
 
 .pecas-relacionadas-lista {
@@ -1424,6 +1583,20 @@ body {
 
     .campo-edicao-peca-largo {
         grid-column: auto;
+    }
+
+    .detalhe-peca-linha {
+        grid-template-columns: 1fr 44px;
+    }
+
+    .detalhe-peca-linha [data-detalhe-peca-campo],
+    .detalhe-peca-linha [data-detalhe-peca-valor] {
+        grid-column: 1;
+    }
+
+    .detalhe-peca-linha .btn-remover-detalhe {
+        grid-column: 2;
+        grid-row: 1 / span 2;
     }
 }
 
@@ -6562,4 +6735,87 @@ html[data-theme="dark"] .navbar {
         min-width: 112px;
         padding: 8px 10px;
     }
+}
+
+/* Cores finais da ficha de peças: ficam no fim do arquivo para vencer os temas. */
+#modal-peca .campos-modal-peca .campo-card-peca {
+    position: relative;
+    overflow: hidden;
+    border-width: 1px 1px 1px 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10);
+}
+
+#modal-peca .campos-modal-peca .campo-card-peca::before {
+    display: none;
+}
+
+#modal-peca .campos-modal-peca .campo-card-peca span {
+    color: currentColor;
+    font-size: 11px;
+    font-weight: 850;
+    text-transform: uppercase;
+}
+
+#modal-peca .campos-modal-peca .campo-card-peca strong {
+    color: var(--cor-texto);
+}
+
+#modal-peca .ficha-grupo-azul {
+    color: #60a5fa;
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.13);
+}
+
+#modal-peca .ficha-grupo-vermelho {
+    color: #f87171;
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.13);
+}
+
+#modal-peca .ficha-grupo-roxo {
+    color: #a78bfa;
+    border-color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.14);
+}
+
+#modal-peca .ficha-grupo-verde {
+    color: #4ade80;
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.13);
+}
+
+#modal-peca .ficha-grupo-amarelo {
+    color: #facc15;
+    border-color: #eab308;
+    background: rgba(234, 179, 8, 0.15);
+}
+
+#modal-peca .ficha-grupo-verde-claro {
+    color: #a3e635;
+    border-color: #84cc16;
+    background: rgba(132, 204, 22, 0.15);
+}
+
+#modal-peca .ficha-grupo-azul-claro {
+    color: #38bdf8;
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.15);
+}
+
+#modal-peca .ficha-grupo-laranja {
+    color: #fb923c;
+    border-color: #f97316;
+    background: rgba(249, 115, 22, 0.15);
+}
+
+#modal-peca .ficha-grupo-rosa {
+    color: #f472b6;
+    border-color: #ec4899;
+    background: rgba(236, 72, 153, 0.14);
+}
+
+#modal-peca .ficha-grupo-outros {
+    color: var(--cor-texto-cinza);
+    border-color: var(--cor-borda);
+    background: var(--cor-fundo-card);
 }
