@@ -5877,7 +5877,7 @@ function calcularDadosLookPorPecas(pecas) {
     };
 }
 
-function atualizarCalculadosLook(look, pecas, dataAtualizacao) {
+function atualizarCalculadosLook(look, pecas, dataAtualizacao, opcoes = {}) {
     const calculados = calcularDadosLookPorPecas(pecas);
     const basicos = {
         ...(look.basicos || {}),
@@ -5886,6 +5886,9 @@ function atualizarCalculadosLook(look, pecas, dataAtualizacao) {
         ID2: pecas[1] || '',
         ID3: pecas[2] || '',
     };
+    const atualizacoes = opcoes.preservarDataAtualizacao
+        ? (valorVisivel(look.editadoEm) ? { editadoEm: look.editadoEm } : {})
+        : { editadoEm: dataAtualizacao };
 
     return {
         ...look,
@@ -5901,7 +5904,7 @@ function atualizarCalculadosLook(look, pecas, dataAtualizacao) {
         utilizacoes_pecas: calculados.utilizacoes_pecas,
         basicos,
         editadoLocalmente: true,
-        editadoEm: dataAtualizacao,
+        ...atualizacoes,
         substituiLookBase: Boolean(app.looks[look.id] || look.substituiLookBase) || undefined,
         id_original: undefined,
     };
@@ -5913,7 +5916,6 @@ function recalcularLooksAfetadosPorPeca(pecaIds, opcoes = {}) {
 
     const idAntigo = String(opcoes.idAntigo || '').trim().toUpperCase();
     const idNovo = String(opcoes.idNovo || '').trim().toUpperCase();
-    const dataAtualizacao = opcoes.dataAtualizacao || new Date().toISOString();
     let total = 0;
 
     obterTodosLooks().forEach(look => {
@@ -5933,7 +5935,7 @@ function recalcularLooksAfetadosPorPeca(pecaIds, opcoes = {}) {
         if (!usaPecaAfetada && !trocouId) return;
 
         const pecasUnicas = [...new Set(pecas.filter(Boolean))];
-        const lookAtualizado = atualizarCalculadosLook(look, pecasUnicas, dataAtualizacao);
+        const lookAtualizado = atualizarCalculadosLook(look, pecasUnicas, null, { preservarDataAtualizacao: true });
         app.looksFavoritos[look.id] = lookAtualizado;
         total += 1;
     });
