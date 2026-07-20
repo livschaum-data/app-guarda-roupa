@@ -22,7 +22,7 @@
             }
         })();
     </script>
-    <link rel="stylesheet" href="css/style.css?v=20260719-peca-looks-sugeridos">
+    <link rel="stylesheet" href="css/style.css?v=20260719-looks-e-acessorio-label">
 </head>
 <body>
     <div id="app">
@@ -546,6 +546,7 @@
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
                     <button class="btn-secundario" onclick="fecharModal()">Fechar</button>
                     <button id="looks-existentes-peca-modal" class="btn-secundario" type="button" onclick="abrirLooksExistentesPeca()">Looks existentes</button>
+                    <button id="looks-sugeridos-peca-modal" class="btn-secundario" type="button" onclick="abrirLooksSugeridosPeca()" style="display:none;">Looks é acessório</button>
                     <button id="editar-peca-modal" class="btn-secundario" type="button" onclick="abrirEdicaoPeca()">Editar</button>
                     <button id="cancelar-edicao-peca-modal" class="btn-secundario" type="button" onclick="cancelarEdicaoPeca()" style="display:none;">Cancelar</button>
                     <button id="salvar-peca-modal" class="btn-principal" type="button" onclick="salvarPeca()" style="display:none;">Salvar peça</button>
@@ -568,7 +569,7 @@
                         </span>
                     </div>
                     <div>
-                        <h2>Looks existentes</h2>
+                        <h2 id="looks-peca-titulo">Looks existentes</h2>
                         <p id="looks-peca-resumo" class="texto-ajuda"></p>
                     </div>
                 </div>
@@ -716,7 +717,7 @@
          A ordem importa! CSS deve carregar antes, depois o app.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js?v=20260624-config-supabase"></script>
-    <script src="js/app.js?v=20260719-peca-looks-sugeridos"></script>
+    <script src="js/app.js?v=20260719-looks-e-acessorio-label"></script>
 </body>
 </html>
 

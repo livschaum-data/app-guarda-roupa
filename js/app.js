@@ -2929,6 +2929,7 @@ function abrirDetalhsPeca(id) {
     atualizarFotoModalPeca(getCaminhoFoto(peca.id));
     document.getElementById('editar-peca-modal').style.display = '';
     document.getElementById('looks-existentes-peca-modal').style.display = '';
+    document.getElementById('looks-sugeridos-peca-modal').style.display = pecaPodeAparecerComoSugestaoLook(peca) ? '' : 'none';
     document.getElementById('cancelar-edicao-peca-modal').style.display = 'none';
     document.getElementById('salvar-peca-modal').style.display = 'none';
     document.getElementById('registrar-peca-modal').style.display = '';
@@ -2943,15 +2944,25 @@ function mostrarDetalhesPeca(id) {
 }
 
 function abrirLooksExistentesPeca() {
+    abrirFichaLooksPeca('existentes');
+}
+
+function abrirLooksSugeridosPeca() {
+    abrirFichaLooksPeca('sugeridos');
+}
+
+function abrirFichaLooksPeca(modo = 'existentes') {
     const pecaId = app.pecaEmDetalhes;
     const peca = app.pecas[pecaId];
     if (!peca) return;
+    if (modo === 'sugeridos' && !pecaPodeAparecerComoSugestaoLook(peca)) return;
 
     app.filtrosLooksPeca = { htt: 'todos', utilizacao: '', categoria: '', peca1: '', peca2: '', peca3: '' };
     app.looksPecaSelecionados = [];
 
     const modal = document.getElementById('modal-looks-peca');
     modal.dataset.pecaId = pecaId;
+    modal.dataset.modo = modo;
     document.getElementById('looks-peca-foto').src = getCaminhoFoto(pecaId);
     document.getElementById('looks-peca-id').textContent = pecaId;
     renderLooksExistentesPeca();
@@ -2994,35 +3005,34 @@ function lookTemPecaSugerida(look, pecaId) {
 }
 
 function obterLooksDaPeca(pecaId) {
-    const peca = app.pecas?.[pecaId];
-    const incluirSugestoes = pecaPodeAparecerComoSugestaoLook(peca);
-    const looksDiretos = obterTodosLooks()
+    return obterTodosLooks()
         .filter(look => look?.id && Array.isArray(look.pecas))
         .filter(look => look.pecas.includes(pecaId))
-        .map(look => ({ ...look, vinculoPeca: 'peca' }));
+        .map(look => ({ ...look, vinculoPeca: 'peca' }))
+        .sort((a, b) => String(a.id).localeCompare(String(b.id), 'pt-BR', { numeric: true }));
+}
 
-    const idsDiretos = new Set(looksDiretos.map(look => look.id));
-    const looksSugeridos = incluirSugestoes
-        ? obterTodosLooks()
-            .filter(look => look?.id && !idsDiretos.has(look.id))
-            .filter(look => lookTemPecaSugerida(look, pecaId))
-            .map(look => ({ ...look, vinculoPeca: 'sugerida' }))
-        : [];
-
-    return [...looksDiretos, ...looksSugeridos]
+function obterLooksSugeridosDaPeca(pecaId) {
+    return obterTodosLooks()
+        .filter(look => look?.id)
+        .filter(look => lookTemPecaSugerida(look, pecaId))
+        .map(look => ({ ...look, vinculoPeca: 'sugerida' }))
         .sort((a, b) => String(a.id).localeCompare(String(b.id), 'pt-BR', { numeric: true }));
 }
 
 function renderLooksExistentesPeca() {
     const modal = document.getElementById('modal-looks-peca');
     const pecaId = modal?.dataset.pecaId || app.pecaEmDetalhes;
-    const todosLooks = obterLooksDaPeca(pecaId);
+    const modo = modal?.dataset.modo || 'existentes';
+    const ehModoSugeridos = modo === 'sugeridos';
+    const todosLooks = ehModoSugeridos ? obterLooksSugeridosDaPeca(pecaId) : obterLooksDaPeca(pecaId);
     const looksFiltrados = filtrarLooksExistentesPeca(todosLooks);
     app.looksPecaSelecionados = obterIdsLooksPecaSelecionadosValidos(todosLooks);
 
+    document.getElementById('looks-peca-titulo').textContent = ehModoSugeridos ? 'Looks é acessório' : 'Looks existentes';
     document.getElementById('looks-peca-resumo').textContent = `${looksFiltrados.length} de ${todosLooks.length} look${todosLooks.length === 1 ? '' : 's'} encontrado${todosLooks.length === 1 ? '' : 's'}.`;
     document.getElementById('looks-peca-filtros').innerHTML = criarFiltrosLooksPeca(todosLooks);
-    document.getElementById('looks-peca-acoes-lote').innerHTML = criarAcoesLoteLooksPeca(looksFiltrados);
+    document.getElementById('looks-peca-acoes-lote').innerHTML = criarAcoesLoteLooksPeca(looksFiltrados, modo);
     document.getElementById('looks-peca-lista').innerHTML = criarGruposLooksPeca(looksFiltrados);
 }
 
@@ -3031,17 +3041,12 @@ function obterIdsLooksPecaSelecionadosValidos(looks) {
     return [...new Set(app.looksPecaSelecionados || [])].filter(id => idsValidos.has(id));
 }
 
-function criarAcoesLoteLooksPeca(looksFiltrados) {
+function criarAcoesLoteLooksPeca(looksFiltrados, modo = 'existentes') {
     const totalSelecionados = (app.looksPecaSelecionados || []).length;
     const idsFiltrados = (looksFiltrados || []).map(look => look.id);
     const totalFiltrados = idsFiltrados.length;
     const todosFiltradosSelecionados = totalFiltrados > 0 && idsFiltrados.every(id => app.looksPecaSelecionados.includes(id));
-    const modal = document.getElementById('modal-looks-peca');
-    const pecaId = modal?.dataset.pecaId || app.pecaEmDetalhes;
-    const totalSelecionadosSugeridos = (app.looksPecaSelecionados || [])
-        .map(id => obterLookPorId(id))
-        .filter(look => lookTemPecaSugerida(look, pecaId))
-        .length;
+    const ehModoSugeridos = modo === 'sugeridos';
 
     return `
         <div class="looks-peca-lote-info">
@@ -3053,7 +3058,7 @@ function criarAcoesLoteLooksPeca(looksFiltrados) {
                 ${todosFiltradosSelecionados ? 'Desmarcar lista' : 'Selecionar lista'}
             </button>
             <button type="button" class="btn-secundario" onclick="limparSelecaoLooksPeca()" ${totalSelecionados ? '' : 'disabled'}>Limpar</button>
-            <button type="button" class="btn-secundario" onclick="removerPecaDasSugestoesLooksSelecionados()" ${totalSelecionadosSugeridos ? '' : 'disabled'}>Remover das sugestões</button>
+            ${ehModoSugeridos ? `<button type="button" class="btn-secundario" onclick="removerPecaDasSugestoesLooksSelecionados()" ${totalSelecionados ? '' : 'disabled'}>Remover das sugestões</button>` : ''}
             <button type="button" class="btn-principal" onclick="abrirEdicaoLoteLooksPeca()" ${totalSelecionados ? '' : 'disabled'}>Editar selecionados</button>
         </div>
     `;
@@ -3073,7 +3078,8 @@ function alternarSelecaoLookPeca(lookId) {
 function selecionarLooksPecaFiltrados() {
     const modal = document.getElementById('modal-looks-peca');
     const pecaId = modal?.dataset.pecaId || app.pecaEmDetalhes;
-    const looksFiltrados = filtrarLooksExistentesPeca(obterLooksDaPeca(pecaId));
+    const looksBase = modal?.dataset.modo === 'sugeridos' ? obterLooksSugeridosDaPeca(pecaId) : obterLooksDaPeca(pecaId);
+    const looksFiltrados = filtrarLooksExistentesPeca(looksBase);
     const idsFiltrados = looksFiltrados.map(look => look.id);
     const selecionados = new Set(app.looksPecaSelecionados || []);
     const todosSelecionados = idsFiltrados.length > 0 && idsFiltrados.every(id => selecionados.has(id));
@@ -3285,7 +3291,6 @@ function criarCardLookExistentePeca(look) {
     const pecasTexto = (look.pecas || []).join(' / ');
     const selecionado = (app.looksPecaSelecionados || []).includes(look.id);
     const utilizacao = obterUtilizacaoLook(look);
-    const ehSugestao = look.vinculoPeca === 'sugerida';
     return `
         <div class="looks-peca-card ${selecionado ? 'selecionado' : ''}">
             <label class="looks-peca-check">
@@ -3295,10 +3300,7 @@ function criarCardLookExistentePeca(look) {
             <img src="${escapeHtml(getCaminhoFotoLook(look.id))}" alt="${escapeHtml(look.id)}" onerror="${onErrorImagem()}">
             <strong>${escapeHtml(look.id)}${valorVisivel(utilizacao) ? ` <em>${escapeHtml(utilizacao)}</em>` : ''}</strong>
             <small>${escapeHtml(pecasTexto)}</small>
-            <div class="looks-peca-tags">
-                ${lookEhHTT(look) ? '<span>HTT</span>' : ''}
-                <span>${ehSugestao ? 'Sugerida' : 'Peça'}</span>
-            </div>
+            ${lookEhHTT(look) ? '<div class="looks-peca-tags"><span>HTT</span></div>' : ''}
             <button type="button" class="btn-secundario looks-peca-ficha" onclick="mostrarDetalhesLook('${escapeHtml(look.id)}')">Ficha</button>
         </div>
     `;
@@ -3969,9 +3971,14 @@ function criarCampoListaPeca(campo, label, valorAtual, obrigatorio = false) {
 
 function criarCampoDetalhePeca(campo, valorAtual, tipo = '') {
     const tipoInput = tipo === 'data' ? 'date' : 'text';
-    const valor = tipo === 'data' ? formatarDataInput(valorAtual) : valorAtual;
+    const valor = tipo === 'data' ? formatarDataInputDetalhePeca(valorAtual) : valorAtual;
 
     return `<input type="${tipoInput}" data-detalhe-peca-campo-fixo="${escapeHtml(campo)}" data-detalhe-peca-original="${valorVisivel(valorAtual) ? '1' : ''}" value="${escapeHtml(valor || '')}">`;
+}
+
+function formatarDataInputDetalhePeca(valor) {
+    const dataNormalizada = normalizarDataHistorico(valor);
+    return dataNormalizada ? dataNormalizada.slice(0, 10) : '';
 }
 
 function obterValorDetalheEdicaoPeca(peca, definicao) {
@@ -4101,6 +4108,7 @@ function mostrarFormularioPeca(id) {
 
     document.getElementById('editar-peca-modal').style.display = 'none';
     document.getElementById('looks-existentes-peca-modal').style.display = 'none';
+    document.getElementById('looks-sugeridos-peca-modal').style.display = 'none';
     configurarDependenciasFormularioPeca();
     configurarSelecaoPecasRelacionadas();
     document.getElementById('cancelar-edicao-peca-modal').style.display = '';
