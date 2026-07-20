@@ -3347,7 +3347,6 @@ function criarFormularioEdicaoLoteLooks() {
     const opcoesHtt = criarOptionsHttLook('false');
     const opcoesOcasioes = criarOptionsOcasioesLook([]);
     const opcoesSugestoes = criarOptionsSugestoesLook([]);
-    const opcoesPecas = criarOptionsPecasLook('');
 
     return `
         <div class="form-edicao-look form-edicao-lote-looks">
@@ -5152,6 +5151,7 @@ function mostrarDetalhesLook(lookId, editando = false) {
     document.getElementById('cancelar-edicao-look-modal').style.display = editando ? '' : 'none';
     document.getElementById('salvar-look-modal').style.display = editando ? '' : 'none';
     document.getElementById('usar-look-modal').style.display = editando ? 'none' : '';
+    document.getElementById('secao-sugestoes-look-modal').style.display = editando ? 'none' : '';
 
     const tags = document.getElementById('tags-look-modal');
     tags.innerHTML = (look.ocasioes || []).length
@@ -5167,7 +5167,7 @@ function mostrarDetalhesLook(lookId, editando = false) {
 
     document.getElementById('pecas-look-modal').innerHTML = (look.pecas || [])
         .filter(id => app.pecas[id])
-        .map(id => criarCardPecaHistorico(id))
+        .map(id => criarCardPecaHistorico(id, { semSeletor: true, compacto: true }))
         .join('') || '<p class="texto-ajuda">Nenhuma peça cadastrada.</p>';
 
     document.getElementById('sugestoes-look-modal').innerHTML = (look.pecas_sugeridas || [])
@@ -5180,36 +5180,76 @@ function mostrarDetalhesLook(lookId, editando = false) {
 }
 
 function renderFichaLookLeitura(look, ficha) {
-    const campos = look.basicos || {};
-    const totalUsos = contarUsosLook(look.id);
-    const camposClima = [
-        ['Total de usos', formatarTotalUsosLook(totalUsos)],
-        ['Última atualização', formatarDataHoraFicha(obterDataAtualizacaoLook(look))],
-        ['Clima calculado', formatarClimaLook(look)],
-        ['Aquecimento das peças', (look.aquecimentos || []).map(valor => valor || '-').join(' · ')],
-        ['Local calculado', look.local_calc || ''],
-        ['Local das peças', (look.locais_pecas || []).map(valor => valor || '-').join(' · ')],
-        ['Utilização calculada', look.utilizacao_calc || ''],
-        ['Utilização das peças', (look.utilizacoes_pecas || []).map(valor => valor || '-').join(' · ')],
+    ficha.innerHTML = `
+        <div class="campos-modal-peca campos-modal-look">
+            ${criarCamposLookHtml(look)}
+        </div>
+    `;
+}
+
+function criarCamposLookHtml(look) {
+    const campos = [
+        ['ID', look.id, 'ficha-grupo-azul'],
+        ['Data de atualização', formatarDataHoraFicha(obterDataAtualizacaoLook(look)), 'ficha-grupo-azul'],
+        ['Peça 1', obterPecaLookPorIndice(look, 0), 'ficha-grupo-laranja'],
+        ['Peça 2', obterPecaLookPorIndice(look, 1), 'ficha-grupo-laranja'],
+        ['Peça 3', obterPecaLookPorIndice(look, 2), 'ficha-grupo-laranja'],
+        ['Categoria', obterCategoriaLook(look), 'ficha-grupo-vermelho'],
+        ['Indicador', obterIndicadorLook(look, look.id), 'ficha-grupo-vermelho'],
+        ['Local', look.local_calc || look.local || obterCampoLookPorNomes(look, ['Local', 'local']), 'ficha-grupo-roxo'],
+        ['Situação', obterSituacaoLook(look), 'ficha-grupo-verde'],
+        ['Utilização', obterUtilizacaoLook(look), 'ficha-grupo-amarelo'],
+        ['Clima', formatarClimaLook(look), 'ficha-grupo-amarelo'],
+        ['Data criação', formatarDataLookFicha(obterDataCriacaoLook(look)), 'ficha-grupo-azul-claro'],
+        ['Data última alteração', formatarDataLookFicha(obterDataUltimaAlteracaoLook(look)), 'ficha-grupo-azul-claro'],
+        ['HTT', obterHttLook(look), 'ficha-grupo-rosa'],
+        ['Data criação HTT', formatarDataLookFicha(obterCampoLookPorNomes(look, ['Data criação HTT', 'Data criacao HTT', 'Data HTT'])), 'ficha-grupo-rosa'],
+        ['Data revisão HTT', formatarDataLookFicha(obterCampoLookPorNomes(look, ['Data revisão HTT', 'Data revisao HTT', 'Revisão HTT', 'Revisao HTT'])), 'ficha-grupo-rosa'],
+        ['Local peças', formatarListaCampoLook(look.locais_pecas), 'ficha-grupo-laranja'],
+        ['Utilização peças', formatarListaCampoLook(look.utilizacoes_pecas), 'ficha-grupo-laranja'],
+        ['Nível aquecimento peças', formatarListaCampoLook(look.aquecimentos), 'ficha-grupo-laranja'],
     ];
 
-    ficha.innerHTML = camposClima
-        .filter(([, valor]) => valor)
-        .map(([campo, valor]) => `
-            <div class="campo-ficha">
-                <span class="label">${campo}:</span>
-                <span>${valor}</span>
-            </div>
-        `)
-        .join('') + Object.entries(campos)
-        .filter(([, valor]) => valor)
-        .map(([campo, valor]) => `
-            <div class="campo-ficha">
-                <span class="label">${campo}:</span>
-                <span>${valor}</span>
-            </div>
-        `)
+    return campos
+        .map(([label, valor, classe]) => criarCampoFichaHtml(label, valorVisivel(valor) ? valor : '-', classe))
         .join('');
+}
+
+function obterCampoLookPorNomes(look, nomes) {
+    return obterCampoPorNomes(look, nomes)
+        || obterCampoPorNomes(look?.basicos, nomes)
+        || '';
+}
+
+function obterPecaLookPorIndice(look, indice) {
+    return look?.pecas?.[indice]
+        || obterCampoLookPorNomes(look, [`ID${indice + 1}`, `Peça ${indice + 1}`, `Peca ${indice + 1}`])
+        || '';
+}
+
+function obterDataUltimaAlteracaoLook(look) {
+    return look?.editadoEm
+        || obterCampoLookPorNomes(look, ['Data última alteração', 'Data ultima alteracao', 'Última alteração', 'Ultima alteracao'])
+        || look?.dataUltimaAlteracao
+        || look?.data_ultima_alteracao
+        || '';
+}
+
+function obterHttLook(look) {
+    const valor = look?.HTT ?? look?.htt ?? look?.basicos?.HTT ?? '';
+    return valor === true ? 'true' : String(valor || '');
+}
+
+function formatarListaCampoLook(valores) {
+    if (!Array.isArray(valores)) return valores || '';
+    return valores.map(valor => valorVisivel(valor) ? valor : '-').join(' · ');
+}
+
+function formatarDataLookFicha(valor) {
+    if (!valor && valor !== 0) return '';
+    const data = normalizarDataHistorico(valor);
+    if (data) return formatarDataBR(data.slice(0, 10));
+    return String(valor);
 }
 
 function criarOptionsSituacaoLook(valorAtual) {
@@ -5445,15 +5485,35 @@ function renderControleVisualMultiploEdicaoLook(selectId, placeholder) {
 }
 
 function campoBasicoEditavelLook(campo) {
-    const camposGerenciados = new Set(['id', 'id1', 'id2', 'id3', 'situacao', 'indicador', 'htt', 'col_5']);
+    const camposGerenciados = new Set([
+        'id',
+        'id1',
+        'id2',
+        'id3',
+        'situacao',
+        'indicador',
+        'htt',
+        'categoria',
+        'local',
+        'utilizacao',
+        'clima',
+        'data criacao',
+        'data criação',
+        'data ultima alteracao',
+        'data última alteração',
+        'ultima alteracao',
+        'última alteração',
+        'data criacao htt',
+        'data criação htt',
+        'data revisao htt',
+        'data revisão htt',
+        'col_5',
+    ]);
     return !camposGerenciados.has(normalizarTexto(campo));
 }
 
 function criarFormularioEdicaoLook(look) {
     const basicos = look.basicos || {};
-    const sugestoes = (look.pecas_sugeridas || [])
-        .map(item => `${item.id || ''}${item.grupo ? ` | ${item.grupo}` : ''}`)
-        .join('\n');
     const situacaoAtual = look.situacao || basicos['situação'] || basicos['situação'] || '';
     const httAtual = String(look.HTT || look.htt || basicos.HTT || '');
     const opcoesSituacao = criarOptionsSituacaoLook(situacaoAtual);
@@ -5461,17 +5521,7 @@ function criarFormularioEdicaoLook(look) {
     const opcoesHtt = criarOptionsHttLook(httAtual);
     const opcoesOcasioes = criarOptionsOcasioesLook(look.ocasioes || []);
     const opcoesSugestoes = criarOptionsSugestoesLook(look.pecas_sugeridas || []);
-    const camposBasicos = Object.entries(basicos)
-        .filter(([campo]) => campoBasicoEditavelLook(campo))
-        .sort(([a], [b]) => a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }))
-        .map(([campo, valor]) => `
-            <label class="campo-edicao-look">
-                <span>${escapeHtml(campo)}</span>
-                <input type="text" data-basico="${escapeHtml(campo)}" value="${escapeHtml(valor)}">
-            </label>
-        `)
-        .join('');
-
+    const opcoesPecas = criarOptionsPecasLook('');
     setTimeout(() => {
         configurarRecalculoEdicaoLook();
         configurarControlesVisuaisEdicaoLook();
@@ -5479,102 +5529,137 @@ function criarFormularioEdicaoLook(look) {
 
     return `
         <div id="form-edicao-look" class="form-edicao-look">
-            <label class="campo-edicao-look">
+            <label class="campo-edicao-look ficha-grupo-azul">
                 <span>ID do look</span>
                 <input type="text" id="edit-look-id" value="${escapeHtml(look.id || '')}" disabled>
             </label>
-            <label class="campo-edicao-look">
-                <span>Nome</span>
-                <input type="text" id="edit-look-nome" value="${escapeHtml(look.nome || look.id || '')}">
+            <label class="campo-edicao-look ficha-grupo-azul">
+                <span>Data de atualização</span>
+                <input type="text" value="${escapeHtml(formatarDataHoraFicha(obterDataAtualizacaoLook(look)) || '-')}" disabled>
             </label>
-            <label class="campo-edicao-look">
-                <span>Foto URL</span>
-                <input type="text" id="edit-look-foto" value="${escapeHtml(look.foto || '')}">
+            ${[0, 1, 2].map(indice => `
+                <label class="campo-edicao-look ficha-grupo-laranja">
+                    <span>Peça ${indice + 1}</span>
+                    <select id="edit-look-peca${indice + 1}">
+                        <option value="">Sem peça</option>
+                        ${criarOptionsPecasLook(obterPecaLookPorIndice(look, indice))}
+                    </select>
+                </label>
+            `).join('')}
+            <label class="campo-edicao-look ficha-grupo-vermelho">
+                <span>Categoria</span>
+                <input type="text" id="edit-look-categoria-calc" value="${escapeHtml(obterCategoriaLook(look) || '-')}" disabled>
             </label>
-            <label class="campo-edicao-look campo-edicao-look-largo">
-                <span>Nova foto</span>
-                <input type="file" id="edit-look-foto-arquivo" accept="image/*">
-            </label>
-            <label class="campo-edicao-look">
-                <span>Situação</span>
-                <select id="edit-look-situacao">${opcoesSituacao}</select>
-            </label>
-            <label class="campo-edicao-look">
+            <label class="campo-edicao-look ficha-grupo-vermelho">
                 <span>Indicador</span>
                 <select id="edit-look-indicador">${opcoesIndicador}</select>
             </label>
-            <label class="campo-edicao-look">
+            <label class="campo-edicao-look ficha-grupo-roxo">
+                <span>Local</span>
+                <input type="text" id="edit-look-local-calc" value="${escapeHtml(look.local_calc || look.local || '')}" disabled>
+            </label>
+            <label class="campo-edicao-look ficha-grupo-verde">
+                <span>Situação</span>
+                <select id="edit-look-situacao">${opcoesSituacao}</select>
+            </label>
+            <label class="campo-edicao-look ficha-grupo-amarelo">
+                <span>Utilização</span>
+                <input type="text" id="edit-look-utilizacao-calc" value="${escapeHtml(look.utilizacao_calc || look.utilizacao || '')}" disabled>
+            </label>
+            <label class="campo-edicao-look ficha-grupo-amarelo">
+                <span>Clima</span>
+                <input type="text" id="edit-look-clima-calc" value="${escapeHtml(look.clima_calc || look.clima || '')}" disabled>
+            </label>
+            <label class="campo-edicao-look ficha-grupo-azul-claro">
+                <span>Data criação</span>
+                <input type="date" data-basico="Data criação" value="${escapeHtml(formatarDataInputDetalhePeca(obterDataCriacaoLook(look)))}">
+            </label>
+            <label class="campo-edicao-look ficha-grupo-azul-claro">
+                <span>Data última alteração</span>
+                <input type="date" data-basico="Data última alteração" value="${escapeHtml(formatarDataInputDetalhePeca(obterDataUltimaAlteracaoLook(look)))}">
+            </label>
+            <label class="campo-edicao-look ficha-grupo-rosa">
                 <span>HTT</span>
                 <select id="edit-look-htt">${opcoesHtt}</select>
             </label>
-            <label class="campo-edicao-look">
-                <span>Clima calculado</span>
-                <input type="text" id="edit-look-clima-calc" value="${escapeHtml(look.clima_calc || look.clima || '')}" disabled>
+            <label class="campo-edicao-look ficha-grupo-rosa">
+                <span>Data criação HTT</span>
+                <input type="date" data-basico="Data criação HTT" value="${escapeHtml(formatarDataInputDetalhePeca(obterCampoLookPorNomes(look, ['Data criação HTT', 'Data criacao HTT', 'Data HTT'])))}">
             </label>
-            <label class="campo-edicao-look">
-                <span>Local calculado</span>
-                <input type="text" id="edit-look-local-calc" value="${escapeHtml(look.local_calc || look.local || '')}" disabled>
+            <label class="campo-edicao-look ficha-grupo-rosa">
+                <span>Data revisão HTT</span>
+                <input type="date" data-basico="Data revisão HTT" value="${escapeHtml(formatarDataInputDetalhePeca(obterCampoLookPorNomes(look, ['Data revisão HTT', 'Data revisao HTT', 'Revisão HTT', 'Revisao HTT'])))}">
             </label>
-            <label class="campo-edicao-look">
-                <span>Utilização calculada</span>
-                <input type="text" id="edit-look-utilizacao-calc" value="${escapeHtml(look.utilizacao_calc || look.utilizacao || '')}" disabled>
+            <label class="campo-edicao-look ficha-grupo-outros">
+                <span>Nome</span>
+                <input type="text" id="edit-look-nome" value="${escapeHtml(look.nome || look.id || '')}">
             </label>
-            <label class="campo-edicao-look campo-edicao-look-largo">
-                <span>Peças do look</span>
-                <textarea id="edit-look-pecas" rows="2">${escapeHtml((look.pecas || []).join(', '))}</textarea>
+            <label class="campo-edicao-look ficha-grupo-outros">
+                <span>Foto URL</span>
+                <input type="text" id="edit-look-foto" value="${escapeHtml(look.foto || '')}">
             </label>
-            <label class="campo-edicao-look campo-edicao-look-largo">
+            <label class="campo-edicao-look campo-edicao-look-largo ficha-grupo-outros">
+                <span>Nova foto</span>
+                <input type="file" id="edit-look-foto-arquivo" accept="image/*">
+            </label>
+            <label class="campo-edicao-look campo-edicao-look-largo ficha-grupo-azul-claro">
                 <span>Ocasiões</span>
                 <select id="edit-look-ocasioes" multiple size="8">${opcoesOcasioes}</select>
             </label>
-            <label class="campo-edicao-look campo-edicao-look-largo">
-                <span>Aquecimentos das peças</span>
-                <textarea id="edit-look-aquecimentos" rows="2" disabled>${escapeHtml((look.aquecimentos || []).join(', '))}</textarea>
-            </label>
-            <label class="campo-edicao-look campo-edicao-look-largo">
-                <span>Locais das peças</span>
-                <textarea id="edit-look-locais-pecas" rows="2" disabled>${escapeHtml((look.locais_pecas || []).join(', '))}</textarea>
-            </label>
-            <label class="campo-edicao-look campo-edicao-look-largo">
-                <span>Utilizações das peças</span>
-                <textarea id="edit-look-utilizacoes-pecas" rows="2" disabled>${escapeHtml((look.utilizacoes_pecas || []).join(', '))}</textarea>
-            </label>
-            <label class="campo-edicao-look campo-edicao-look-largo">
+            <label class="campo-edicao-look campo-edicao-look-largo ficha-grupo-outros">
                 <span>Acessórios e calçados sugeridos</span>
                 <select id="edit-look-sugestoes" multiple size="10">${opcoesSugestoes}</select>
             </label>
-            <div class="campo-edicao-look-grupo">
-                <strong>Campos da ficha</strong>
-                <div class="form-edicao-look">
-                    ${camposBasicos || '<p class="texto-ajuda">Nenhum campo básico cadastrado.</p>'}
-                </div>
-            </div>
         </div>
     `;
 }
 
 function configurarRecalculoEdicaoLook() {
-    const campoPecas = document.getElementById('edit-look-pecas');
-    if (!campoPecas) return;
+    const camposPecas = [1, 2, 3]
+        .map(numero => document.getElementById(`edit-look-peca${numero}`))
+        .filter(Boolean);
 
     const atualizar = () => {
-        const calculados = calcularDadosLookPorPecas(parseListaIdsEdicaoLook(campoPecas.value));
+        const calculados = calcularDadosLookPorPecas(obterPecasSelecionadasEdicaoLook());
         const clima = document.getElementById('edit-look-clima-calc');
         const local = document.getElementById('edit-look-local-calc');
         const utilizacao = document.getElementById('edit-look-utilizacao-calc');
         const aquecimentos = document.getElementById('edit-look-aquecimentos');
         const locais = document.getElementById('edit-look-locais-pecas');
         const utilizacoes = document.getElementById('edit-look-utilizacoes-pecas');
+        const categoria = document.getElementById('edit-look-categoria-calc');
+        const indicador = document.getElementById('edit-look-indicador')?.value || '';
         if (clima) clima.value = calculados.clima_calc || '';
         if (local) local.value = calculados.local_calc || '';
         if (utilizacao) utilizacao.value = calculados.utilizacao_calc || '';
-        if (aquecimentos) aquecimentos.value = calculados.aquecimentos.filter(Boolean).join(', ');
-        if (locais) locais.value = calculados.locais_pecas.filter(Boolean).join(', ');
-        if (utilizacoes) utilizacoes.value = calculados.utilizacoes_pecas.filter(Boolean).join(', ');
+        if (aquecimentos) aquecimentos.value = formatarListaCampoLook(calculados.aquecimentos);
+        if (locais) locais.value = formatarListaCampoLook(calculados.locais_pecas);
+        if (utilizacoes) utilizacoes.value = formatarListaCampoLook(calculados.utilizacoes_pecas);
+        if (categoria) categoria.value = obterCategoriaIndicadorLook(indicador) || '-';
     };
 
-    campoPecas.addEventListener('input', atualizar);
+    camposPecas.forEach(campo => campo.addEventListener('change', atualizar));
+    document.getElementById('edit-look-indicador')?.addEventListener('change', atualizar);
     atualizar();
+}
+
+function obterPecasSelecionadasEdicaoLook() {
+    const camposIndividuais = [1, 2, 3]
+        .map(numero => document.getElementById(`edit-look-peca${numero}`))
+        .filter(Boolean);
+    if (camposIndividuais.length) {
+        return camposIndividuais
+            .map(campo => String(campo.value || '').trim().toUpperCase())
+            .filter(Boolean);
+    }
+
+    const pecasFixas = document.getElementById('edit-look-pecas-fixas')?.value || '';
+    if (pecasFixas) {
+        return parseListaIdsEdicaoLook(pecasFixas).map(id => id.toUpperCase());
+    }
+
+    return parseListaIdsEdicaoLook(document.getElementById('edit-look-pecas')?.value || '')
+        .map(id => id.toUpperCase());
 }
 
 function calcularDadosLookPorPecas(pecas) {
@@ -5700,8 +5785,7 @@ async function salvarEdicaoLook() {
     const htt = document.getElementById('edit-look-htt')?.value.trim() || '';
     const fotoArquivo = await lerFotoEdicaoLook();
     const fotoUrl = document.getElementById('edit-look-foto')?.value.trim() || '';
-    const pecas = parseListaIdsEdicaoLook(document.getElementById('edit-look-pecas')?.value || '')
-        .map(id => id.toUpperCase());
+    const pecas = obterPecasSelecionadasEdicaoLook();
     const ocasioes = parseOcasioesEdicaoLook(obterOcasioesSelecionadasEdicaoLook());
     const calculados = calcularDadosLookPorPecas(pecas);
 
@@ -6881,17 +6965,18 @@ function criarCardLookHistorico(id, origem = 'registrado') {
 function criarCardPecaHistorico(id, opcoes = {}) {
     const peca = app.pecas[id];
     if (!peca) return '';
+    const semSeletor = Boolean(opcoes.semSeletor);
 
     const acaoRemover = opcoes.removivel && opcoes.dia
         ? `<button type="button" class="historico-peca-remover" onclick="removerPecaDoHistoricoDia('${opcoes.dia}', '${id}')">Remover</button>`
         : '';
 
     return `
-        <div class="historico-peca-card historico-peca-selecionavel" onclick="alternarCardPecaLookHistorico(event, this)">
-            <label class="historico-peca-check" title="Selecionar para criar look">
+        <div class="historico-peca-card ${semSeletor ? 'historico-peca-sem-seletor' : 'historico-peca-selecionavel'} ${opcoes.compacto ? 'historico-peca-compacto' : ''}" ${semSeletor ? '' : 'onclick="alternarCardPecaLookHistorico(event, this)"'}>
+            ${semSeletor ? '' : `<label class="historico-peca-check" title="Selecionar para criar look">
                 <input type="checkbox" value="${id}" onchange="alternarPecaLookHistorico(this)">
                 <span></span>
-            </label>
+            </label>`}
             <img src="${getCaminhoFoto(id)}" alt="${peca.tipo}" data-id="${id}"
                  onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23eee%22 width=%22100%22 height=%22100%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>sem foto</text></svg>'">
             <span>${peca.tipo}</span>

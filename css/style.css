@@ -6773,83 +6773,83 @@ html[data-theme="dark"] .navbar {
 }
 
 /* Cores finais da ficha de peças: ficam no fim do arquivo para vencer os temas. */
-#modal-peca .campos-modal-peca .campo-card-peca {
+:is(#modal-peca, #modal-look-detalhes) .campos-modal-peca .campo-card-peca {
     position: relative;
     overflow: hidden;
     border-width: 1px 1px 1px 4px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10);
 }
 
-#modal-peca .campos-modal-peca .campo-card-peca::before {
+:is(#modal-peca, #modal-look-detalhes) .campos-modal-peca .campo-card-peca::before {
     display: none;
 }
 
-#modal-peca .campos-modal-peca .campo-card-peca span {
+:is(#modal-peca, #modal-look-detalhes) .campos-modal-peca .campo-card-peca span {
     color: currentColor;
     font-size: 11px;
     font-weight: 850;
     text-transform: uppercase;
 }
 
-#modal-peca .campos-modal-peca .campo-card-peca strong {
+:is(#modal-peca, #modal-look-detalhes) .campos-modal-peca .campo-card-peca strong {
     color: var(--cor-texto);
 }
 
-#modal-peca .ficha-grupo-azul {
+:is(#modal-peca, #modal-look-detalhes) .ficha-grupo-azul {
     color: #60a5fa;
     border-color: #3b82f6;
     background: rgba(59, 130, 246, 0.13);
 }
 
-#modal-peca .ficha-grupo-vermelho {
+:is(#modal-peca, #modal-look-detalhes) .ficha-grupo-vermelho {
     color: #f87171;
     border-color: #ef4444;
     background: rgba(239, 68, 68, 0.13);
 }
 
-#modal-peca .ficha-grupo-roxo {
+:is(#modal-peca, #modal-look-detalhes) .ficha-grupo-roxo {
     color: #a78bfa;
     border-color: #8b5cf6;
     background: rgba(139, 92, 246, 0.14);
 }
 
-#modal-peca .ficha-grupo-verde {
+:is(#modal-peca, #modal-look-detalhes) .ficha-grupo-verde {
     color: #4ade80;
     border-color: #22c55e;
     background: rgba(34, 197, 94, 0.13);
 }
 
-#modal-peca .ficha-grupo-amarelo {
+:is(#modal-peca, #modal-look-detalhes) .ficha-grupo-amarelo {
     color: #facc15;
     border-color: #eab308;
     background: rgba(234, 179, 8, 0.15);
 }
 
-#modal-peca .ficha-grupo-verde-claro {
+:is(#modal-peca, #modal-look-detalhes) .ficha-grupo-verde-claro {
     color: #a3e635;
     border-color: #84cc16;
     background: rgba(132, 204, 22, 0.15);
 }
 
-#modal-peca .ficha-grupo-azul-claro {
+:is(#modal-peca, #modal-look-detalhes) .ficha-grupo-azul-claro {
     color: #38bdf8;
     border-color: #38bdf8;
     background: rgba(56, 189, 248, 0.15);
 }
 
-#modal-peca .ficha-grupo-laranja {
+:is(#modal-peca, #modal-look-detalhes) .ficha-grupo-laranja {
     color: #fb923c;
     border-color: #f97316;
     background: rgba(249, 115, 22, 0.15);
 }
 
-#modal-peca .ficha-grupo-rosa {
+:is(#modal-peca, #modal-look-detalhes) .ficha-grupo-rosa {
     color: #f472b6;
     border-color: #ec4899;
     background: rgba(236, 72, 153, 0.14);
 }
 
-#modal-peca .ficha-grupo-outros {
+:is(#modal-peca, #modal-look-detalhes) .ficha-grupo-outros {
     color: var(--cor-texto-cinza);
     border-color: var(--cor-borda);
     background: var(--cor-fundo-card);
@@ -6907,6 +6907,89 @@ html[data-theme="dark"] .navbar {
 #modal-peca .detalhes-peca-lista .ficha-grupo-rosa {
     border-color: #ec4899;
     background: rgba(236, 72, 153, 0.14);
+}
+
+#ficha-look-modal .form-edicao-look > .campo-edicao-look,
+#ficha-look-modal .form-edicao-look > .campo-edicao-look-grupo {
+    padding: 10px;
+    border: 1px solid var(--cor-borda);
+    border-left-width: 4px;
+    border-radius: 8px;
+    background: var(--cor-fundo-card);
+    color: var(--cor-texto);
+}
+
+#ficha-look-modal .form-edicao-look > .ficha-grupo-azul {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.13);
+}
+
+#ficha-look-modal .form-edicao-look > .ficha-grupo-vermelho {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.13);
+}
+
+#ficha-look-modal .form-edicao-look > .ficha-grupo-roxo {
+    border-color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.14);
+}
+
+#ficha-look-modal .form-edicao-look > .ficha-grupo-verde {
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.13);
+}
+
+#ficha-look-modal .form-edicao-look > .ficha-grupo-amarelo {
+    border-color: #eab308;
+    background: rgba(234, 179, 8, 0.15);
+}
+
+#ficha-look-modal .form-edicao-look > .ficha-grupo-azul-claro {
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.15);
+}
+
+#ficha-look-modal .form-edicao-look > .ficha-grupo-laranja {
+    border-color: #f97316;
+    background: rgba(249, 115, 22, 0.15);
+}
+
+#ficha-look-modal .form-edicao-look > .ficha-grupo-rosa {
+    border-color: #ec4899;
+    background: rgba(236, 72, 153, 0.14);
+}
+
+#ficha-look-modal .form-edicao-look > .ficha-grupo-outros {
+    border-color: var(--cor-borda);
+    background: var(--cor-fundo-card);
+}
+
+#pecas-look-modal.historico-pecas-grid {
+    grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+    gap: 8px;
+}
+
+#pecas-look-modal .historico-peca-card {
+    padding: 6px;
+    border-radius: 8px;
+}
+
+#pecas-look-modal .historico-peca-card img {
+    max-height: 72px;
+    border-radius: 6px;
+}
+
+#pecas-look-modal .historico-peca-card span {
+    margin-top: 5px;
+    font-size: 11px;
+}
+
+#pecas-look-modal .historico-peca-card small {
+    font-size: 10px;
+}
+
+#pecas-look-modal .historico-peca-sem-seletor {
+    cursor: default;
 }
 
 /* Botao compacto nos cards de looks vinculados a peca. */
