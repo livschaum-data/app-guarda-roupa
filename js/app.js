@@ -1592,15 +1592,19 @@ function aplicarPecasPersonalizadas() {
 
 function obterDataAtualizacaoLook(look) {
     if (valorVisivel(look?.editadoEm)) return look.editadoEm;
+    if (valorVisivel(look?.updatedAt)) return look.updatedAt;
+    if (valorVisivel(look?.updated_at)) return look.updated_at;
+    if (valorVisivel(look?.dataAtualizacao)) return look.dataAtualizacao;
+    if (valorVisivel(look?.data_atualizacao)) return look.data_atualizacao;
 
-    const ultimaAlteracao = obterCampoPorNomes(look?.basicos, [
-        'Data última alteração',
-        'Data ultima alteracao',
-        'Data ult alt',
-        'Última alteração',
-    ]) || look?.dataUltimaAlteracao || look?.data_ultima_alteracao;
+    const dataAtualizacao = obterCampoPorNomes(look?.basicos, [
+        'Data atualização',
+        'Data atualizacao',
+        'Última atualização',
+        'Ultima atualizacao',
+    ]);
 
-    return valorVisivel(ultimaAlteracao) ? ultimaAlteracao : obterDataCriacaoLook(look);
+    return valorVisivel(dataAtualizacao) ? dataAtualizacao : obterDataCriacaoLook(look);
 }
 
 function obterDataAtualizacaoPeca(peca) {
@@ -5319,8 +5323,7 @@ function obterPecaLookPorIndice(look, indice) {
 }
 
 function obterDataUltimaAlteracaoLook(look) {
-    return look?.editadoEm
-        || obterCampoLookPorNomes(look, ['Data última alteração', 'Data ultima alteracao', 'Última alteração', 'Ultima alteracao'])
+    return obterCampoLookPorNomes(look, ['Data última alteração', 'Data ultima alteracao', 'Data ult alt', 'Última alteração', 'Ultima alteracao'])
         || look?.dataUltimaAlteracao
         || look?.data_ultima_alteracao
         || '';
