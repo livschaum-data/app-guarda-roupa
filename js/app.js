@@ -1592,19 +1592,11 @@ function aplicarPecasPersonalizadas() {
 
 function obterDataAtualizacaoLook(look) {
     if (valorVisivel(look?.editadoEm)) return look.editadoEm;
-    if (valorVisivel(look?.updatedAt)) return look.updatedAt;
-    if (valorVisivel(look?.updated_at)) return look.updated_at;
-    if (valorVisivel(look?.dataAtualizacao)) return look.dataAtualizacao;
-    if (valorVisivel(look?.data_atualizacao)) return look.data_atualizacao;
 
-    const dataAtualizacao = obterCampoPorNomes(look?.basicos, [
-        'Data atualização',
-        'Data atualizacao',
-        'Última atualização',
-        'Ultima atualizacao',
-    ]);
+    const dataUltimaAlteracao = obterDataUltimaAlteracaoLook(look);
+    if (valorVisivel(dataUltimaAlteracao)) return dataUltimaAlteracao;
 
-    return valorVisivel(dataAtualizacao) ? dataAtualizacao : obterDataCriacaoLook(look);
+    return obterDataCriacaoLook(look);
 }
 
 function obterDataAtualizacaoPeca(peca) {
