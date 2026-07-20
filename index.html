@@ -22,7 +22,7 @@
             }
         })();
     </script>
-    <link rel="stylesheet" href="css/style.css?v=20260719-pecas-look-campos-voltam">
+    <link rel="stylesheet" href="css/style.css?v=20260719-historico-tabela-looks">
 </head>
 <body>
     <div id="app">
@@ -437,11 +437,8 @@
             <div class="secao secao-resumo-periodo">
                 <div class="resumo-periodo-topo">
                     <h3>Usados no periodo</h3>
-                    <select id="historico-resumo-tipo" onchange="alterarTipoResumoHistorico(this.value)">
-                        <option value="looks">Looks</option>
-                        <option value="pecas">Pecas</option>
-                    </select>
                 </div>
+                <div id="historico-resumo-filtros" class="historico-resumo-filtros"></div>
                 <div id="historico-resumo-itens" class="historico-resumo-itens">
                     <p class="texto-ajuda">Escolha um periodo para ver os itens usados.</p>
                 </div>
@@ -717,7 +714,7 @@
          A ordem importa! CSS deve carregar antes, depois o app.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js?v=20260624-config-supabase"></script>
-    <script src="js/app.js?v=20260719-pecas-look-campos-voltam"></script>
+    <script src="js/app.js?v=20260719-historico-tabela-looks"></script>
 </body>
 </html>
 

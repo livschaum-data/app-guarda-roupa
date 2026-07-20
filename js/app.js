@@ -152,6 +152,8 @@ const app = {
     mesCalendarioHistorico: null,
     filtroHistoricoAtivo: null,
     resumoHistoricoTipo: 'looks',
+    filtrosResumoHistorico: { categoria: '', utilizacao: '' },
+    ordenacaoResumoHistorico: { campo: 'periodo', direcao: 'desc' },
     registrosHistoricoPeriodo: [],
     importacaoHistoricoPendente: null,
     supabase: null,
@@ -865,6 +867,14 @@ function carregarEstadoFiltros() {
             eixoGrafico: estado.filtrosOcasioes?.eixoGrafico === 'ocasioes' ? 'ocasioes' : 'climas',
         };
         app.filtroHistoricoAtivo = estado.filtroHistoricoAtivo || app.filtroHistoricoAtivo;
+        app.filtrosResumoHistorico = {
+            categoria: estado.filtrosResumoHistorico?.categoria || '',
+            utilizacao: estado.filtrosResumoHistorico?.utilizacao || '',
+        };
+        app.ordenacaoResumoHistorico = {
+            campo: estado.ordenacaoResumoHistorico?.campo || 'periodo',
+            direcao: estado.ordenacaoResumoHistorico?.direcao === 'asc' ? 'asc' : 'desc',
+        };
         app.mesCalendarioHistorico = estado.mesCalendarioHistorico || app.mesCalendarioHistorico;
         app.filtrosSemUso = {
             tipo: estado.filtrosSemUso?.tipo || '',
@@ -894,6 +904,8 @@ function salvarEstadoFiltros() {
             filtrosLooks: clonarEstado(app.filtrosLooks, {}),
             filtrosOcasioes: clonarEstado(app.filtrosOcasioes, {}),
             filtroHistoricoAtivo: clonarEstado(app.filtroHistoricoAtivo, null),
+            filtrosResumoHistorico: clonarEstado(app.filtrosResumoHistorico, {}),
+            ordenacaoResumoHistorico: clonarEstado(app.ordenacaoResumoHistorico, {}),
             mesCalendarioHistorico: app.mesCalendarioHistorico || '',
             filtrosSemUso: clonarEstado(app.filtrosSemUso, {}),
             filtroDataUsoPecas: clonarEstado(app.filtroDataUsoPecas, {}),
@@ -6735,35 +6747,160 @@ function diferencaDias(dataInicio, dataFim) {
 }
 
 function alterarTipoResumoHistorico(tipo) {
-    app.resumoHistoricoTipo = tipo === 'pecas' ? 'pecas' : 'looks';
+    app.resumoHistoricoTipo = 'looks';
     renderResumoItensPeriodo(app.registrosHistoricoPeriodo || []);
 }
 
 function renderResumoItensPeriodo(registrosPeriodo) {
     const container = document.getElementById('historico-resumo-itens');
-    const select = document.getElementById('historico-resumo-tipo');
+    const filtrosContainer = document.getElementById('historico-resumo-filtros');
     if (!container) return;
 
-    const tipo = app.resumoHistoricoTipo === 'pecas' ? 'pecas' : 'looks';
-    if (select) select.value = tipo;
+    app.resumoHistoricoTipo = 'looks';
+    const resumoCompleto = calcularResumoUsoHistorico(registrosPeriodo, 'looks')
+        .map(criarItemResumoLookHistorico)
+        .filter(item => item.look);
 
-    const resumo = calcularResumoUsoHistorico(registrosPeriodo, tipo);
+    if (filtrosContainer) {
+        filtrosContainer.innerHTML = criarFiltrosResumoHistorico(resumoCompleto);
+    }
 
+    const resumo = ordenarResumoHistorico(filtrarResumoHistorico(resumoCompleto));
     if (resumo.length === 0) {
-        container.innerHTML = `<p class="texto-ajuda">Nenhum ${tipo === 'pecas' ? 'item' : 'look'} usado neste periodo.</p>`;
+        container.innerHTML = '<p class="texto-ajuda">Nenhum look usado neste periodo com esses filtros.</p>';
         return;
     }
 
     container.innerHTML = `
         <div class="historico-resumo-cabecalho">
-            <span>ID</span>
-            <span>Periodo</span>
-            <span>Total</span>
-            <span>1 uso</span>
-            <span>Ult. uso</span>
+            ${COLUNAS_RESUMO_HISTORICO_LOOKS.map(criarCabecalhoResumoHistorico).join('')}
         </div>
-        ${resumo.map(item => criarLinhaResumoHistorico(item, tipo)).join('')}
+        ${resumo.map(criarLinhaResumoHistoricoLook).join('')}
     `;
+}
+
+const COLUNAS_RESUMO_HISTORICO_LOOKS = [
+    { campo: 'id', titulo: 'Foto e ID', classe: 'historico-resumo-id' },
+    { campo: 'htt', titulo: 'HTT' },
+    { campo: 'dataRevisaoHtt', titulo: 'Data revisão HTT' },
+    { campo: 'periodo', titulo: 'Usos período' },
+    { campo: 'total', titulo: 'Usos total' },
+    { campo: 'primeiro', titulo: 'Primeiro uso' },
+    { campo: 'ultimo', titulo: 'Último uso' },
+    { campo: 'dataCriacao', titulo: 'Data criação' },
+    { campo: 'dataUltimaAlteracao', titulo: 'Data últ. alteração' },
+    { campo: 'dataAtualizacao', titulo: 'Data atualização' },
+];
+
+function criarCabecalhoResumoHistorico(coluna) {
+    const ordenacao = app.ordenacaoResumoHistorico || {};
+    const ativo = ordenacao.campo === coluna.campo;
+    const indicador = ativo ? (ordenacao.direcao === 'desc' ? '↓' : '↑') : '';
+    return `
+        <button type="button" class="historico-resumo-ordenar ${coluna.classe || ''} ${ativo ? 'ativo' : ''}" onclick="ordenarResumoHistoricoPor('${coluna.campo}')">
+            <span>${escapeHtml(coluna.titulo)}</span>
+            <small aria-hidden="true">${indicador}</small>
+        </button>
+    `;
+}
+
+function criarItemResumoLookHistorico(item) {
+    const look = obterLookPorId(item.id);
+    const dataRevisaoHtt = obterCampoLookPorNomes(look, ['Data revisão HTT', 'Data revisao HTT', 'Revisão HTT', 'Revisao HTT']);
+    const dataCriacao = obterDataCriacaoLook(look);
+    const dataUltimaAlteracao = obterDataUltimaAlteracaoLook(look);
+    const dataAtualizacao = obterDataAtualizacaoLook(look);
+    return {
+        ...item,
+        look,
+        htt: obterHttLook(look),
+        dataRevisaoHtt,
+        dataCriacao,
+        dataUltimaAlteracao,
+        dataAtualizacao,
+        categoria: obterCategoriaLook(look),
+        utilizacao: obterUtilizacaoLook(look),
+    };
+}
+
+function criarFiltrosResumoHistorico(resumo) {
+    const filtros = app.filtrosResumoHistorico || {};
+    return `
+        ${criarFiltroResumoHistorico('categoria', 'Categoria', resumo.map(item => item.categoria), filtros.categoria)}
+        ${criarFiltroResumoHistorico('utilizacao', 'Utilização', resumo.map(item => item.utilizacao), filtros.utilizacao)}
+    `;
+}
+
+function criarFiltroResumoHistorico(campo, rotulo, valores, selecionado = '') {
+    const opcoes = [...new Set((valores || []).filter(valorVisivel))]
+        .sort((a, b) => String(a).localeCompare(String(b), 'pt-BR', { numeric: true, sensitivity: 'base' }));
+    return `
+        <label>
+            <span>${escapeHtml(rotulo)}</span>
+            <select onchange="alterarFiltroResumoHistorico('${campo}', this.value)">
+                <option value="" ${selecionado ? '' : 'selected'}>Todas</option>
+                ${opcoes.map(valor => `<option value="${escapeHtml(valor)}" ${String(valor) === String(selecionado) ? 'selected' : ''}>${escapeHtml(valor)}</option>`).join('')}
+            </select>
+        </label>
+    `;
+}
+
+function alterarFiltroResumoHistorico(campo, valor) {
+    app.filtrosResumoHistorico = {
+        ...(app.filtrosResumoHistorico || {}),
+        [campo]: valor,
+    };
+    salvarEstadoFiltros();
+    renderResumoItensPeriodo(app.registrosHistoricoPeriodo || []);
+}
+
+function filtrarResumoHistorico(resumo) {
+    const filtros = app.filtrosResumoHistorico || {};
+    return (resumo || []).filter(item => {
+        if (filtros.categoria && normalizarTexto(item.categoria) !== normalizarTexto(filtros.categoria)) return false;
+        if (filtros.utilizacao && normalizarTexto(item.utilizacao) !== normalizarTexto(filtros.utilizacao)) return false;
+        return true;
+    });
+}
+
+function ordenarResumoHistoricoPor(campo) {
+    const atual = app.ordenacaoResumoHistorico || {};
+    const direcao = atual.campo === campo && atual.direcao === 'asc' ? 'desc' : 'asc';
+    app.ordenacaoResumoHistorico = { campo, direcao };
+    salvarEstadoFiltros();
+    renderResumoItensPeriodo(app.registrosHistoricoPeriodo || []);
+}
+
+function ordenarResumoHistorico(resumo) {
+    const { campo = 'periodo', direcao = 'desc' } = app.ordenacaoResumoHistorico || {};
+    const multiplicador = direcao === 'desc' ? -1 : 1;
+    return [...(resumo || [])].sort((a, b) =>
+        compararValoresResumoHistorico(obterValorResumoHistorico(a, campo), obterValorResumoHistorico(b, campo)) * multiplicador
+        || String(a.id).localeCompare(String(b.id), 'pt-BR', { numeric: true })
+    );
+}
+
+function obterValorResumoHistorico(item, campo) {
+    if (campo === 'id') return item.id;
+    return item[campo] ?? '';
+}
+
+function compararValoresResumoHistorico(valorA, valorB) {
+    const vazioA = !valorVisivel(valorA);
+    const vazioB = !valorVisivel(valorB);
+    if (vazioA && vazioB) return 0;
+    if (vazioA) return 1;
+    if (vazioB) return -1;
+
+    const numeroA = Number(String(valorA).replace(',', '.'));
+    const numeroB = Number(String(valorB).replace(',', '.'));
+    if (Number.isFinite(numeroA) && Number.isFinite(numeroB)) return numeroA - numeroB;
+
+    const dataA = normalizarDataHistorico(valorA);
+    const dataB = normalizarDataHistorico(valorB);
+    if (dataA && dataB) return dataA.localeCompare(dataB);
+
+    return String(valorA).localeCompare(String(valorB), 'pt-BR', { numeric: true, sensitivity: 'base' });
 }
 
 function calcularResumoUsoHistorico(registrosPeriodo, tipo) {
@@ -6833,6 +6970,41 @@ function criarLinhaResumoHistorico(item, tipo) {
             <span>${formatarDataBR(item.ultimo)}</span>
         </button>
     `;
+}
+
+function criarLinhaResumoHistoricoLook(item) {
+    const look = item.look;
+    const detalhe = look?.nome || 'Look';
+    const foto = getCaminhoFotoLook(item.id);
+
+    return `
+        <button type="button" class="historico-resumo-linha" onclick="mostrarDetalhesLook('${escapeHtml(item.id)}')">
+            <span class="historico-resumo-id">
+                <img src="${escapeHtml(foto)}" alt="${escapeHtml(item.id)}"
+                     onerror="this.src='${imagemFallback()}'">
+                <span>
+                    <strong>${escapeHtml(item.id)}</strong>
+                    <small>${escapeHtml(detalhe)}</small>
+                </span>
+            </span>
+            <span>${escapeHtml(valorTabelaPeca(item.htt))}</span>
+            <span>${escapeHtml(formatarDataResumoHistorico(item.dataRevisaoHtt))}</span>
+            <span>${escapeHtml(String(item.periodo || 0))}</span>
+            <span>${escapeHtml(String(item.total || 0))}</span>
+            <span>${escapeHtml(formatarDataResumoHistorico(item.primeiro))}</span>
+            <span>${escapeHtml(formatarDataResumoHistorico(item.ultimo))}</span>
+            <span>${escapeHtml(formatarDataResumoHistorico(item.dataCriacao))}</span>
+            <span>${escapeHtml(formatarDataResumoHistorico(item.dataUltimaAlteracao))}</span>
+            <span>${escapeHtml(formatarDataResumoHistorico(item.dataAtualizacao))}</span>
+        </button>
+    `;
+}
+
+function formatarDataResumoHistorico(valor) {
+    if (!valor && valor !== 0) return '-';
+    const data = normalizarDataHistorico(valor);
+    if (data) return formatarDataBR(data.slice(0, 10));
+    return String(valor);
 }
 
 function renderTabelaPecasMaisUsadas(registrosPeriodo) {

@@ -2896,27 +2896,87 @@ tr:hover {
 .historico-resumo-itens {
     display: grid;
     gap: 6px;
-    max-height: 360px;
+    max-height: 460px;
     overflow: auto;
     padding-right: 4px;
     overscroll-behavior: contain;
 }
 
+.historico-resumo-filtros {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+}
+
+.historico-resumo-filtros label {
+    display: grid;
+    gap: 6px;
+    color: var(--cor-texto);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.historico-resumo-filtros select {
+    min-height: 38px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    background: var(--cor-fundo-card);
+    color: var(--cor-texto);
+    padding: 8px 10px;
+    font: inherit;
+}
+
 .historico-resumo-cabecalho,
 .historico-resumo-linha {
     display: grid;
-    grid-template-columns: minmax(112px, 1.4fr) 54px 48px minmax(72px, 0.9fr) minmax(72px, 0.9fr);
+    grid-template-columns: minmax(138px, 1.4fr) 58px minmax(96px, 0.9fr) 76px 70px minmax(86px, 0.85fr) minmax(86px, 0.85fr) minmax(86px, 0.85fr) minmax(98px, 0.95fr) minmax(98px, 0.95fr);
     gap: 4px;
     align-items: center;
-    min-width: 0;
+    min-width: 980px;
 }
 
 .historico-resumo-cabecalho {
-    padding: 0 6px 2px;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    padding: 0 6px 4px;
+    background: var(--cor-fundo);
     color: var(--cor-texto-cinza);
     font-size: 10px;
     font-weight: 800;
     text-transform: uppercase;
+}
+
+.historico-resumo-ordenar {
+    min-width: 0;
+    min-height: 32px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: inherit;
+    padding: 4px 6px;
+    font: inherit;
+    text-transform: uppercase;
+    text-align: left;
+    cursor: pointer;
+}
+
+.historico-resumo-ordenar span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.historico-resumo-ordenar small {
+    margin-left: 4px;
+    color: var(--cor-primaria);
+}
+
+.historico-resumo-ordenar:hover,
+.historico-resumo-ordenar.ativo {
+    border-color: var(--cor-primaria);
+    background: rgba(139, 92, 246, 0.10);
+    color: var(--cor-primaria);
 }
 
 .historico-resumo-linha {
@@ -5359,7 +5419,7 @@ body {
 
 .historico-resumo-cabecalho,
 .historico-resumo-linha {
-    grid-template-columns: minmax(150px, 1.4fr) 92px 74px 112px 112px;
+    grid-template-columns: minmax(138px, 1.4fr) 58px minmax(96px, 0.9fr) 76px 70px minmax(86px, 0.85fr) minmax(86px, 0.85fr) minmax(86px, 0.85fr) minmax(98px, 0.95fr) minmax(98px, 0.95fr);
     column-gap: 10px;
 }
 
@@ -5478,7 +5538,7 @@ body {
 
     .historico-resumo-cabecalho,
     .historico-resumo-linha {
-        grid-template-columns: minmax(132px, 1.3fr) 70px 62px 92px 92px;
+        grid-template-columns: minmax(132px, 1.3fr) 54px 92px 72px 66px 82px 82px 82px 94px 94px;
         column-gap: 8px;
     }
 
