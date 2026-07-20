@@ -5146,7 +5146,9 @@ function inferirLookIdsPelasPecas(pecas) {
 
 function obterLookIdsRegistroOuInferidos(registro) {
     const explicitos = obterLookIdsRegistro(registro);
-    const inferidos = inferirLookIdsPelasPecas(registro?.pecas || []);
+    const ignorados = obterIdsLooksIgnoradosRegistro(registro);
+    const inferidos = inferirLookIdsPelasPecas(registro?.pecas || [])
+        .filter(id => !ignorados.has(normalizarTexto(id)));
     return [...new Set([...explicitos, ...inferidos])];
 }
 
@@ -5157,9 +5159,10 @@ function obterLooksRegistroComOrigem(registro) {
         if (chave && !explicitos.has(chave)) explicitos.set(chave, id);
     });
     const inferidos = new Map();
+    const ignorados = obterIdsLooksIgnoradosRegistro(registro);
     inferirLookIdsPelasPecas(registro?.pecas || []).forEach(id => {
         const chave = normalizarTexto(id);
-        if (chave && !explicitos.has(chave) && !inferidos.has(chave)) inferidos.set(chave, id);
+        if (chave && !ignorados.has(chave) && !explicitos.has(chave) && !inferidos.has(chave)) inferidos.set(chave, id);
     });
     const itens = [
         ...[...explicitos.values()].map(id => ({ id, origem: 'registrado' })),
@@ -5184,9 +5187,10 @@ function obterUsosLooksAgrupadosPorDia(registros) {
         });
 
         registrosDia.forEach(registro => {
+            const ignorados = obterIdsLooksIgnoradosRegistro(registro);
             inferirLookIdsPelasPecas(registro?.pecas || []).forEach(id => {
                 const chave = normalizarTexto(id);
-                if (!chave || registrados.has(chave) || inferidos.has(chave)) return;
+                if (!chave || ignorados.has(chave) || registrados.has(chave) || inferidos.has(chave)) return;
                 inferidos.set(chave, id);
             });
         });
@@ -7271,7 +7275,7 @@ function renderDetalheHistorico(registrosPeriodo) {
             grupo.dataset.dia = dia;
 
             const looksHtml = looksDia.length > 0
-                ? looksDia.map(item => criarCardLookHistorico(item.id, item.origem)).join('')
+                ? looksDia.map(item => criarCardLookHistorico(item.id, item.origem, { dia, removivel: true })).join('')
                 : '<p class="texto-ajuda">Nenhum look identificado nesse dia.</p>';
 
             const pecasHtml = pecasDia.length > 0
@@ -7303,21 +7307,27 @@ function renderDetalheHistorico(registrosPeriodo) {
         });
 }
 
-function criarCardLookHistorico(id, origem = 'registrado') {
+function criarCardLookHistorico(id, origem = 'registrado', opcoes = {}) {
     const look = obterLookPorId(id);
     const pecas = (look?.pecas || []).filter(pid => app.pecas[pid]);
     const nome = look?.nome || look?.id || id;
     const origemNormalizada = origem === 'inferido' ? 'inferido' : 'registrado';
     const origemLabel = origemNormalizada === 'inferido' ? 'Inferido pelas peças' : 'Registrado no histórico';
+    const idJs = escapeHtml(JSON.stringify(String(id)));
+    const diaJs = escapeHtml(JSON.stringify(String(opcoes.dia || '')));
+    const acaoRemover = opcoes.removivel && opcoes.dia
+        ? `<button type="button" class="historico-look-remover" onclick="event.stopPropagation(); removerLookDoHistoricoDia(${diaJs}, ${idJs})">Remover</button>`
+        : '';
 
     return `
-        <button type="button" class="historico-look-card historico-look-${origemNormalizada}" onclick="mostrarDetalhesLook('${id}')">
-            <img src="${getCaminhoFotoLook(id)}" alt="${nome}" class="historico-look-foto"
+        <div class="historico-look-card historico-look-${origemNormalizada}" onclick="mostrarDetalhesLook(${idJs})">
+            <img src="${getCaminhoFotoLook(id)}" alt="${escapeHtml(nome)}" class="historico-look-foto"
                  onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23eee%22 width=%22100%22 height=%22100%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>sem foto</text></svg>'">
-            <strong>${nome}</strong>
+            <strong>${escapeHtml(nome)}</strong>
             <small>${pecas.length} peças</small>
             <span class="historico-look-origem">${origemLabel}</span>
-        </button>
+            ${acaoRemover}
+        </div>
     `;
 }
 
@@ -7381,6 +7391,45 @@ function removerPecaDoHistoricoDia(dia, pecaId) {
         app.pecasSelecionadasLookHistorico[dia] = app.pecasSelecionadasLookHistorico[dia].filter(id => id !== pecaId);
     }
 
+    salvarDados();
+    atualizarHistoricoAposEdicao();
+}
+
+function removerLookDoHistoricoDia(dia, lookId) {
+    const look = obterLookPorId(lookId);
+    const nome = look?.nome || look?.id || lookId;
+    const confirmado = confirm(`Remover ${nome} do histórico de ${formatarDataBR(dia)}?`);
+    if (!confirmado) return;
+
+    const alvo = normalizarTexto(lookId);
+    let alterou = false;
+
+    app.historico = app.historico.map(registro => {
+        if (obterDiaRegistro(registro) !== dia) return registro;
+
+        const registrados = [registro.lookId, ...(registro.lookIds || [])].filter(Boolean);
+        const inferidos = inferirLookIdsPelasPecas(registro.pecas || []);
+        const apareceNoRegistro = [...registrados, ...inferidos].some(id => normalizarTexto(id) === alvo);
+
+        if (!apareceNoRegistro) return registro;
+
+        alterou = true;
+        const lookIdsAtualizados = registrados.filter(id => normalizarTexto(id) !== alvo);
+        const ignorados = obterIdsLooksIgnoradosRegistro(registro);
+        ignorados.add(alvo);
+
+        return {
+            ...registro,
+            lookId: lookIdsAtualizados[0] || null,
+            lookIds: [...new Set(lookIdsAtualizados)],
+            looksIgnorados: [...ignorados],
+            alteradoEm: new Date().toISOString(),
+        };
+    });
+
+    if (!alterou) return;
+
+    app.mapaUsosLooksAtual = null;
     salvarDados();
     atualizarHistoricoAposEdicao();
 }
@@ -7794,6 +7843,8 @@ function vincularLookAoHistorico(dia, lookId, pecasLook) {
     lookIds.add(lookId);
     alvo.lookId = alvo.lookId || lookId;
     alvo.lookIds = [...lookIds];
+    alvo.looksIgnorados = [...obterIdsLooksIgnoradosRegistro(alvo)]
+        .filter(id => normalizarTexto(id) !== normalizarTexto(lookId));
     alvo.alteradoEm = new Date().toISOString();
 }
 
@@ -7810,7 +7861,17 @@ function lerFotoLookHistorico() {
 }
 
 function obterLookIdsRegistro(registro) {
-    return [...new Set([registro.lookId, ...(registro.lookIds || [])].filter(Boolean))];
+    const ignorados = obterIdsLooksIgnoradosRegistro(registro);
+    return [...new Set([registro.lookId, ...(registro.lookIds || [])]
+        .filter(Boolean)
+        .filter(id => !ignorados.has(normalizarTexto(id))))];
+}
+
+function obterIdsLooksIgnoradosRegistro(registro) {
+    return new Set([
+        ...(Array.isArray(registro?.looksIgnorados) ? registro.looksIgnorados : []),
+        ...(Array.isArray(registro?.looks_ignorados) ? registro.looks_ignorados : []),
+    ].map(id => normalizarTexto(id)).filter(Boolean));
 }
 
 function agruparRegistrosPorDia(registros) {

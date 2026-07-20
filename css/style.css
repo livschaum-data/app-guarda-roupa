@@ -3611,7 +3611,8 @@ tr:hover {
     color: white;
 }
 
-.historico-peca-remover {
+.historico-peca-remover,
+.historico-look-remover {
     width: 100%;
     margin-top: 6px;
     border: 1px solid #fecaca;
@@ -3625,7 +3626,8 @@ tr:hover {
     cursor: pointer;
 }
 
-.historico-peca-remover:hover {
+.historico-peca-remover:hover,
+.historico-look-remover:hover {
     background: #ef4444;
     border-color: #ef4444;
     color: white;
@@ -5245,6 +5247,7 @@ body {
 .calendario-historico-acoes button,
 .historico-bloco-topo button,
 .historico-peca-remover,
+.historico-look-remover,
 .historico-look-existente-lista button {
     border-radius: var(--ui-radius);
     font-weight: 800;
