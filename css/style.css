@@ -7052,6 +7052,74 @@ html[data-theme="dark"] .navbar {
     cursor: default;
 }
 
+/* Cores dos filtros seguindo os grupos das fichas. */
+.filtro-multiplo.ficha-grupo-azul .filtro-multiplo-toggle,
+.filtro-pecas-looks.ficha-grupo-azul {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.13);
+}
+
+.filtro-multiplo.ficha-grupo-vermelho .filtro-multiplo-toggle,
+.filtro-pecas-looks.ficha-grupo-vermelho {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.13);
+}
+
+.filtro-multiplo.ficha-grupo-roxo .filtro-multiplo-toggle,
+.filtro-pecas-looks.ficha-grupo-roxo {
+    border-color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.14);
+}
+
+.filtro-multiplo.ficha-grupo-verde .filtro-multiplo-toggle,
+.filtro-pecas-looks.ficha-grupo-verde {
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.13);
+}
+
+.filtro-multiplo.ficha-grupo-amarelo .filtro-multiplo-toggle,
+.filtro-pecas-looks.ficha-grupo-amarelo {
+    border-color: #eab308;
+    background: rgba(234, 179, 8, 0.15);
+}
+
+.filtro-multiplo.ficha-grupo-verde-claro .filtro-multiplo-toggle,
+.filtro-pecas-looks.ficha-grupo-verde-claro {
+    border-color: #84cc16;
+    background: rgba(132, 204, 22, 0.15);
+}
+
+.filtro-multiplo.ficha-grupo-azul-claro .filtro-multiplo-toggle,
+.filtro-pecas-looks.ficha-grupo-azul-claro {
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.15);
+}
+
+.filtro-multiplo.ficha-grupo-laranja .filtro-multiplo-toggle,
+.filtro-pecas-looks.ficha-grupo-laranja {
+    border-color: #f97316;
+    background: rgba(249, 115, 22, 0.15);
+}
+
+.filtro-multiplo.ficha-grupo-rosa .filtro-multiplo-toggle,
+.filtro-pecas-looks.ficha-grupo-rosa {
+    border-color: #ec4899;
+    background: rgba(236, 72, 153, 0.14);
+}
+
+.filtro-multiplo[class*="ficha-grupo-"] .filtro-multiplo-toggle,
+.filtro-pecas-looks[class*="ficha-grupo-"] {
+    border-left-width: 4px;
+    color: var(--cor-texto);
+}
+
+.filtro-pecas-looks[class*="ficha-grupo-"] {
+    padding: 8px;
+    border-style: solid;
+    border-width: 1px 1px 1px 4px;
+    border-radius: 8px;
+}
+
 /* Botao compacto nos cards de looks vinculados a peca. */
 .looks-peca-card .looks-peca-ficha.btn-secundario {
     width: auto !important;

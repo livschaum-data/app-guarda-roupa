@@ -2,8 +2,8 @@
    Tudo sobre o estado da aplicação fica aqui. 
    É como um "banco de dados em memória" */
 
-const CAMPOS_FILTROS_PECAS = ['tipo', 'funcao', 'subtipo', 'padronagem', 'cor_detalhe', 'cor', 'tom', 'nivel_aquecimento', 'formalidade', 'tendencia', 'utilizacao', 'local', 'alocacao', 'situacao', 'conservacao', 'reposicao'];
-const CAMPOS_FILTROS_LOOKS = ['situacao', 'utilizacao', 'categoria', 'indicador', 'clima', 'local', 'htt', 'ocasiao'];
+const CAMPOS_FILTROS_PECAS = ['tipo', 'funcao', 'subtipo', 'local', 'alocacao', 'situacao', 'conservacao', 'reposicao', 'utilizacao', 'formalidade', 'nivel_aquecimento', 'padronagem', 'modelagem', 'tom', 'cor_detalhe', 'cor', 'tendencia', 'info_fotos', 'combinacoes'];
+const CAMPOS_FILTROS_LOOKS = ['pecas', 'categoria', 'indicador', 'local', 'situacao', 'utilizacao', 'clima', 'htt', 'ocasiao'];
 const DIMENSAO_POR_CAMPO_PECA = {
     tipo: ['tipos_peca', 'tipo'],
     funcao: ['funcoes_peca', 'valor'],
@@ -23,6 +23,7 @@ const DIMENSAO_POR_CAMPO_PECA = {
     reposicao: ['reposicoes_peca', 'valor'],
 };
 const CAMPOS_FILTROS_GERAIS_HOJE = CAMPOS_FILTROS_PECAS.filter(campo => !['tipo', 'subtipo'].includes(campo));
+const CAMPOS_FILTROS_LOOKS_MULTIPLOS = CAMPOS_FILTROS_LOOKS.filter(campo => campo !== 'pecas');
 const TEMA_VISUAL_STORAGE_KEY = 'temaVisualGuardaRoupa';
 const ESTADO_FILTROS_STORAGE_KEY = 'estadoFiltrosGuardaRoupa';
 const TEMAS_VISUAIS = ['sistema', 'claro', 'escuro'];
@@ -86,6 +87,7 @@ const GRUPOS_FICHA_PECA = [
             { chave: 'modelagem', label: 'Modelagem', aliases: ['Modelagem'] },
             { chave: 'tom', label: 'Tom', prop: 'tom' },
             { chave: 'cor_detalhe', label: 'Cor detalhe', prop: 'cor_detalhe' },
+            { chave: 'cor', label: 'Cor', prop: 'cor' },
             { chave: 'tendencia', label: 'Tendência', prop: 'tendencia' },
         ],
     },
@@ -173,7 +175,7 @@ const app = {
 
     // Filtros da página Looks
     filtrosLooks: {
-        ...Object.fromEntries(CAMPOS_FILTROS_LOOKS.map(campo => [campo, []])),
+        ...Object.fromEntries(CAMPOS_FILTROS_LOOKS_MULTIPLOS.map(campo => [campo, []])),
         situacao: ['em uso'],
         pecas: [],
     },
@@ -427,6 +429,7 @@ function obterDefinicoesCamposEdicaoPeca() {
         ['padronagem', { campo: 'padronagem', label: 'Padronagem' }],
         ['tom', { campo: 'tom', label: 'Tom' }],
         ['cor_detalhe', { campo: 'cor_detalhe', label: 'Cor detalhe' }],
+        ['cor', { campo: 'cor', label: 'Cor' }],
         ['tendencia', { campo: 'tendencia', label: 'Tendência' }],
     ]);
 
@@ -626,6 +629,9 @@ function formatarNomeFiltro(campo) {
         padronagem: 'Padronagem',
         tom: 'Tom',
         cor_detalhe: 'Cor detalhe',
+        info_fotos: 'Info e fotos',
+        combinacoes: 'Combinação',
+        modelagem: 'Modelagem',
         nivel_aquecimento: 'Aquecimento',
         situacao: 'Situação',
         utilizacao: 'Utilização',
@@ -639,9 +645,9 @@ function formatarNomeFiltro(campo) {
     return campo.toUpperCase().replace('_', ' ');
 }
 
-function criarFiltroMultiplo(container, campo, valores, selecionados, aoAlterar) {
+function criarFiltroMultiplo(container, campo, valores, selecionados, aoAlterar, opcoesFiltro = {}) {
     const filtro = document.createElement('div');
-    filtro.className = 'filtro-multiplo';
+    filtro.className = ['filtro-multiplo', opcoesFiltro.classeGrupo || obterClasseGrupoFiltroPeca(campo)].filter(Boolean).join(' ');
 
     const botao = document.createElement('button');
     botao.type = 'button';
@@ -715,6 +721,27 @@ function criarFiltroMultiplo(container, campo, valores, selecionados, aoAlterar)
     container.appendChild(filtro);
     atualizarResumo();
     return filtro;
+}
+
+function obterClasseGrupoFiltroPeca(campo) {
+    if (campo === 'cor') return 'ficha-grupo-verde-claro';
+    if (campo === 'modelagem') return 'ficha-grupo-verde-claro';
+    if (campo === 'info_fotos' || campo === 'combinacoes') return 'ficha-grupo-laranja';
+    return obterClasseGrupoFichaPecaPorLabel(campo);
+}
+
+function obterClasseGrupoFiltroLook(campo) {
+    return {
+        pecas: 'ficha-grupo-laranja',
+        categoria: 'ficha-grupo-vermelho',
+        indicador: 'ficha-grupo-vermelho',
+        local: 'ficha-grupo-roxo',
+        situacao: 'ficha-grupo-verde',
+        utilizacao: 'ficha-grupo-amarelo',
+        clima: 'ficha-grupo-amarelo',
+        htt: 'ficha-grupo-rosa',
+        ocasiao: 'ficha-grupo-azul-claro',
+    }[campo] || 'ficha-grupo-outros';
 }
 
 document.addEventListener('click', evento => {
@@ -856,7 +883,7 @@ function carregarEstadoFiltros() {
         app.filtrosHoje = normalizarMapaFiltrosArrays(estado.filtrosHoje, CAMPOS_FILTROS_GERAIS_HOJE);
         app.filtrosHojeGrupos = normalizarFiltrosHojeGrupos(estado.filtrosHojeGrupos);
         app.filtrosLooks = {
-            ...normalizarMapaFiltrosArrays(estado.filtrosLooks, CAMPOS_FILTROS_LOOKS),
+            ...normalizarMapaFiltrosArrays(estado.filtrosLooks, CAMPOS_FILTROS_LOOKS_MULTIPLOS),
             pecas: Array.isArray(estado.filtrosLooks?.pecas) ? estado.filtrosLooks.pecas.filter(Boolean) : [],
         };
         app.filtrosOcasioes = {
@@ -2562,8 +2589,15 @@ function obterValoresDimensaoPeca(campo, opcoes = {}) {
     const pecasAtuais = campo === 'subtipo' && opcoes.tipo
         ? Object.values(app.pecas || {}).filter(peca => normalizarTexto(peca.tipo) === normalizarTexto(opcoes.tipo))
         : Object.values(app.pecas || {});
-    const valoresAtuais = pecasAtuais.map(peca => peca?.[campo]);
+    const valoresAtuais = pecasAtuais.map(peca => obterValorFiltroPeca(peca, campo));
     return ordenarOpcoesDimensao([...valoresDimensao, ...valoresAtuais, opcoes.valorAtual]);
+}
+
+function obterValorFiltroPeca(peca, campo) {
+    if (campo === 'modelagem') return obterValorCampoFichaPeca(peca, { label: 'Modelagem', aliases: ['Modelagem'] });
+    if (campo === 'info_fotos') return obterInfoFotosPeca(peca);
+    if (campo === 'combinacoes') return obterCombinacoesPeca(peca);
+    return peca?.[campo] || '';
 }
 
 function preencherFiltrosHome() {
@@ -2651,7 +2685,7 @@ function obterPecasFiltradasHome() {
             const filtro = app.filtrosHome[campo];
             // Se o filtro não está vazio, tem que bater
             if (Array.isArray(filtro) && filtro.length > 0) {
-                if (!filtro.includes(peca[campo])) {
+                if (!filtro.includes(obterValorFiltroPeca(peca, campo))) {
                     passouNosFiltros = false;
                     break;
                 }
@@ -4617,14 +4651,16 @@ function preencherFiltrosOcasiao() {
 
     container.innerHTML = '';
 
-    criarFiltroPecasLooks(container);
-
     CAMPOS_FILTROS_LOOKS.forEach(campo => {
+        if (campo === 'pecas') {
+            criarFiltroPecasLooks(container);
+            return;
+        }
         const valores = obterValoresFiltroLooks(campo);
         if (valores.length > 0) {
             criarFiltroMultiplo(container, campo, valores, app.filtrosLooks[campo], novosValores => {
                 filtrarLooks(campo, novosValores);
-            });
+            }, { classeGrupo: obterClasseGrupoFiltroLook(campo) });
         }
     });
 
@@ -4638,7 +4674,7 @@ function preencherFiltrosOcasiao() {
 
 function criarFiltroPecasLooks(container) {
     const wrapper = document.createElement('label');
-    wrapper.className = 'filtro-pecas-looks';
+    wrapper.className = `filtro-pecas-looks ${obterClasseGrupoFiltroLook('pecas')}`;
     wrapper.innerHTML = `
         <span>IDs das peças</span>
         <input type="search" id="filtro-look-pecas" placeholder="ID0430, ID0446, ID0101" autocomplete="off" value="${escapeHtml((app.filtrosLooks.pecas || []).join(', '))}">
