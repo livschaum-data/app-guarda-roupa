@@ -5091,27 +5091,58 @@ function obterLookIdsRegistroOuInferidos(registro) {
 }
 
 function obterLooksRegistroComOrigem(registro) {
-    const explicitos = new Set(obterLookIdsRegistro(registro));
-    const inferidos = new Set(inferirLookIdsPelasPecas(registro?.pecas || []));
-    const ids = [...new Set([...explicitos, ...inferidos])];
+    const explicitos = new Map();
+    obterLookIdsRegistro(registro).forEach(id => {
+        const chave = normalizarTexto(id);
+        if (chave && !explicitos.has(chave)) explicitos.set(chave, id);
+    });
+    const inferidos = new Map();
+    inferirLookIdsPelasPecas(registro?.pecas || []).forEach(id => {
+        const chave = normalizarTexto(id);
+        if (chave && !explicitos.has(chave) && !inferidos.has(chave)) inferidos.set(chave, id);
+    });
+    const itens = [
+        ...[...explicitos.values()].map(id => ({ id, origem: 'registrado' })),
+        ...[...inferidos.values()].map(id => ({ id, origem: 'inferido' })),
+    ];
 
-    return ids.map(id => ({
-        id,
-        origem: explicitos.has(id) ? 'registrado' : 'inferido',
-    }));
+    return itens;
+}
+
+function obterUsosLooksAgrupadosPorDia(registros) {
+    const grupos = agruparRegistrosPorDia(registros || []);
+
+    return Object.entries(grupos).map(([dia, registrosDia]) => {
+        const registrados = new Map();
+        const inferidos = new Map();
+
+        registrosDia.forEach(registro => {
+            obterLookIdsRegistro(registro).forEach(id => {
+                const chave = normalizarTexto(id);
+                if (chave && !registrados.has(chave)) registrados.set(chave, id);
+            });
+        });
+
+        registrosDia.forEach(registro => {
+            inferirLookIdsPelasPecas(registro?.pecas || []).forEach(id => {
+                const chave = normalizarTexto(id);
+                if (!chave || registrados.has(chave) || inferidos.has(chave)) return;
+                inferidos.set(chave, id);
+            });
+        });
+
+        return {
+            dia,
+            registrados: [...registrados.values()],
+            inferidos: [...inferidos.values()],
+        };
+    });
 }
 
 function calcularMapaUsosLooks() {
     const mapa = new Map();
 
-    (app.historico || []).forEach(registro => {
-        const dia = obterDiaRegistro(registro);
-        if (!dia) return;
-        const registrados = obterLookIdsRegistro(registro);
-        const registradosNormalizados = new Set(registrados.map(normalizarTexto));
-        const inferidos = inferirLookIdsPelasPecas(registro?.pecas || [])
-            .filter(id => !registradosNormalizados.has(normalizarTexto(id)));
-
+    obterUsosLooksAgrupadosPorDia(app.historico).forEach(({ dia, registrados, inferidos }) => {
         registrados.forEach(id => incrementarUsoLookDetalhado(mapa, id, 'registrado', dia));
         inferidos.forEach(id => incrementarUsoLookDetalhado(mapa, id, 'inferido', dia));
     });
@@ -6996,7 +7027,7 @@ function calcularResumoUsoHistorico(registrosPeriodo, tipo) {
 
     return [...contagemPeriodo.values()]
         .map(itemPeriodo => {
-            const itemTotal = contagemTotal.get(itemPeriodo.id) || itemPeriodo;
+            const itemTotal = contagemTotal.get(normalizarTexto(itemPeriodo.id)) || itemPeriodo;
             return {
                 ...itemPeriodo,
                 totalRegistrados: itemTotal.registrados || 0,
@@ -7012,20 +7043,17 @@ function calcularResumoUsoHistorico(registrosPeriodo, tipo) {
 function contarUsosHistorico(registros, tipo) {
     const mapa = new Map();
 
+    if (tipo === 'looks') {
+        obterUsosLooksAgrupadosPorDia(registros).forEach(({ dia, registrados, inferidos }) => {
+            registrados.forEach(id => incrementarUsoLookDetalhado(mapa, id, 'registrado', dia));
+            inferidos.forEach(id => incrementarUsoLookDetalhado(mapa, id, 'inferido', dia));
+        });
+        return mapa;
+    }
+
     (registros || []).forEach(registro => {
         const dia = obterDiaRegistro(registro);
         if (!dia) return;
-
-        if (tipo === 'looks') {
-            const registrados = obterLookIdsRegistro(registro);
-            const registradosNormalizados = new Set(registrados.map(normalizarTexto));
-            const inferidos = inferirLookIdsPelasPecas(registro?.pecas || [])
-                .filter(id => !registradosNormalizados.has(normalizarTexto(id)));
-
-            registrados.forEach(id => incrementarUsoLookDetalhado(mapa, id, 'registrado', dia));
-            inferidos.forEach(id => incrementarUsoLookDetalhado(mapa, id, 'inferido', dia));
-            return;
-        }
 
         const ids = [...new Set(registro.pecas || [])].filter(Boolean);
 
