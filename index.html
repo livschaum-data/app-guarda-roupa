@@ -22,7 +22,7 @@
             }
         })();
     </script>
-    <link rel="stylesheet" href="css/style.css?v=20260720-usos-look-dia-dedup">
+    <link rel="stylesheet" href="css/style.css?v=20260720-datas-uso-look">
 </head>
 <body>
     <div id="app">
@@ -606,10 +606,29 @@
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
                     <button class="btn-secundario" onclick="fecharModalLookDetalhes()">Fechar</button>
+                    <button id="datas-uso-look-modal" class="btn-secundario" type="button">Datas de uso</button>
                     <button id="editar-look-modal" class="btn-secundario" type="button">Editar</button>
                     <button id="cancelar-edicao-look-modal" class="btn-secundario" type="button" style="display:none;">Cancelar edição</button>
                     <button id="salvar-look-modal" class="btn-principal" type="button" style="display:none;">Salvar</button>
                     <button id="usar-look-modal" class="btn-principal" type="button">Usar Este Look</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-datas-uso-look" class="modal" style="display:none;">
+            <div class="modal-content modal-look-detalhes modal-datas-uso-look">
+                <button class="btn-fechar" onclick="fecharModalDatasUsoLook()">âœ•</button>
+                <h2 id="titulo-datas-uso-look">Datas de uso</h2>
+                <p id="resumo-datas-uso-look" class="texto-ajuda"></p>
+                <div class="datas-uso-look-listas">
+                    <section class="look-modal-secao">
+                        <h3>Registradas</h3>
+                        <div id="datas-uso-look-registradas" class="datas-uso-look-lista"></div>
+                    </section>
+                    <section class="look-modal-secao">
+                        <h3>Inferidas pelas peÃ§as</h3>
+                        <div id="datas-uso-look-inferidas" class="datas-uso-look-lista"></div>
+                    </section>
                 </div>
             </div>
         </div>
@@ -714,7 +733,7 @@
          A ordem importa! CSS deve carregar antes, depois o app.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js?v=20260624-config-supabase"></script>
-    <script src="js/app.js?v=20260720-usos-look-dia-dedup"></script>
+    <script src="js/app.js?v=20260720-datas-uso-look"></script>
 </body>
 </html>
 

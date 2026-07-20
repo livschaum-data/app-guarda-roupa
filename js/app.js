@@ -3041,6 +3041,66 @@ function fecharModalLookDetalhes() {
     modal.style.display = 'none';
 }
 
+function abrirDatasUsoLook(lookId) {
+    const look = obterLookPorId(lookId);
+    if (!look) return;
+
+    const modal = document.getElementById('modal-datas-uso-look');
+    const usos = obterDatasUsoLook(lookId);
+    if (!modal) return;
+
+    document.getElementById('titulo-datas-uso-look').textContent = `Datas de uso - ${look.id}`;
+    document.getElementById('resumo-datas-uso-look').textContent = `${usos.registradas.length} registrada${usos.registradas.length === 1 ? '' : 's'} e ${usos.inferidas.length} inferida${usos.inferidas.length === 1 ? '' : 's'} pelas peças.`;
+    document.getElementById('datas-uso-look-registradas').innerHTML = criarListaDatasUsoLook(usos.registradas, 'registrada');
+    document.getElementById('datas-uso-look-inferidas').innerHTML = criarListaDatasUsoLook(usos.inferidas, 'inferida');
+
+    modal.classList.add('modal-em-pilha');
+    modal.style.display = 'flex';
+}
+
+function fecharModalDatasUsoLook() {
+    const modal = document.getElementById('modal-datas-uso-look');
+    if (!modal) return;
+    modal.classList.remove('modal-em-pilha');
+    modal.style.display = 'none';
+}
+
+function obterDatasUsoLook(lookId) {
+    const alvo = normalizarTexto(lookId);
+    const registradas = [];
+    const inferidas = [];
+
+    obterUsosLooksAgrupadosPorDia(app.historico).forEach(({ dia, registrados, inferidos }) => {
+        if (registrados.some(id => normalizarTexto(id) === alvo)) registradas.push(dia);
+        if (inferidos.some(id => normalizarTexto(id) === alvo)) inferidas.push(dia);
+    });
+
+    return {
+        registradas: registradas.sort((a, b) => b.localeCompare(a)),
+        inferidas: inferidas.sort((a, b) => b.localeCompare(a)),
+    };
+}
+
+function criarListaDatasUsoLook(datas, origem) {
+    if (!datas.length) return `<p class="texto-ajuda">Nenhuma data ${origem}.</p>`;
+
+    return datas.map(dia => `
+        <button type="button" class="data-uso-look-item" onclick="abrirHistoricoNaData('${escapeHtml(dia)}')">
+            <strong>${escapeHtml(formatarDataBR(dia))}</strong>
+            <span>${escapeHtml(origem)}</span>
+        </button>
+    `).join('');
+}
+
+function abrirHistoricoNaData(dia) {
+    app.filtroHistoricoAtivo = { tipo: 'intervalo', inicio: dia, fim: dia };
+    salvarEstadoFiltros();
+    preencherDatasHistorico(dia, dia);
+    renderHistorico(obterRegistrosHistoricoEntre(dia, dia), dia, dia);
+    marcarFiltroPeriodoHistorico(null);
+    fecharModalDatasUsoLook();
+}
+
 function pecaPodeAparecerComoSugestaoLook(peca) {
     return ['calcado', 'bolsa', 'cinto'].includes(normalizarGrupoSugestaoLook(peca?.tipo));
 }
@@ -5270,6 +5330,7 @@ function mostrarDetalhesLook(lookId, editando = false) {
     document.getElementById('titulo-look-modal').textContent = look.nome || look.id;
     document.getElementById('foto-look-modal').src = getCaminhoFotoLook(look.id);
     document.getElementById('usar-look-modal').onclick = () => usarLookHoje(look.id);
+    document.getElementById('datas-uso-look-modal').onclick = () => abrirDatasUsoLook(look.id);
     document.getElementById('editar-look-modal').onclick = () => mostrarDetalhesLook(lookId, true);
     document.getElementById('cancelar-edicao-look-modal').onclick = () => mostrarDetalhesLook(lookId, false);
     document.getElementById('salvar-look-modal').onclick = salvarEdicaoLook;
@@ -5277,6 +5338,7 @@ function mostrarDetalhesLook(lookId, editando = false) {
     document.getElementById('cancelar-edicao-look-modal').style.display = editando ? '' : 'none';
     document.getElementById('salvar-look-modal').style.display = editando ? '' : 'none';
     document.getElementById('usar-look-modal').style.display = editando ? 'none' : '';
+    document.getElementById('datas-uso-look-modal').style.display = editando ? 'none' : '';
     document.getElementById('secao-sugestoes-look-modal').style.display = editando ? 'none' : '';
 
     const tags = document.getElementById('tags-look-modal');

@@ -7052,6 +7052,58 @@ html[data-theme="dark"] .navbar {
     cursor: default;
 }
 
+.modal-datas-uso-look {
+    max-width: 760px;
+}
+
+.datas-uso-look-listas {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.datas-uso-look-lista {
+    display: grid;
+    gap: 8px;
+    max-height: 360px;
+    overflow: auto;
+    padding-right: 4px;
+}
+
+.data-uso-look-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    min-height: 42px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    background: var(--cor-fundo-card);
+    color: var(--cor-texto);
+    padding: 8px 10px;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.data-uso-look-item:hover {
+    border-color: var(--cor-primaria);
+    box-shadow: var(--sombra);
+}
+
+.data-uso-look-item span {
+    color: var(--cor-texto-cinza);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+@media (max-width: 768px) {
+    .datas-uso-look-listas {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Cores dos filtros seguindo os grupos das fichas. */
 .filtro-multiplo.ficha-grupo-azul .filtro-multiplo-toggle,
 .filtro-pecas-looks.ficha-grupo-azul {
