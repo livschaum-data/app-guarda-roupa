@@ -5003,6 +5003,34 @@ function incrementarUsoLook(mapa, lookId) {
     mapa.set(chave, (mapa.get(chave) || 0) + 1);
 }
 
+function criarResumoUsoLook(id, dia = '') {
+    return {
+        id,
+        registrados: 0,
+        inferidos: 0,
+        total: 0,
+        primeiro: dia,
+        ultimo: dia,
+    };
+}
+
+function incrementarUsoLookDetalhado(mapa, lookId, origem, dia) {
+    const id = String(lookId || '').trim();
+    const chave = normalizarTexto(id);
+    if (!chave) return;
+
+    const atual = mapa.get(chave) || criarResumoUsoLook(id, dia);
+    if (origem === 'registrado') {
+        atual.registrados += 1;
+    } else {
+        atual.inferidos += 1;
+    }
+    atual.total = atual.registrados + atual.inferidos;
+    if (dia && (!atual.primeiro || dia < atual.primeiro)) atual.primeiro = dia;
+    if (dia && (!atual.ultimo || dia > atual.ultimo)) atual.ultimo = dia;
+    mapa.set(chave, atual);
+}
+
 function construirIndiceLooksPorPecas() {
     const looks = obterTodosLooks().filter(look => look?.id && Array.isArray(look.pecas) && look.pecas.length > 0);
     const looksPorPeca = new Map();
@@ -5073,7 +5101,15 @@ function calcularMapaUsosLooks() {
     const mapa = new Map();
 
     (app.historico || []).forEach(registro => {
-        obterLookIdsRegistroOuInferidos(registro).forEach(id => incrementarUsoLook(mapa, id));
+        const dia = obterDiaRegistro(registro);
+        if (!dia) return;
+        const registrados = obterLookIdsRegistro(registro);
+        const registradosNormalizados = new Set(registrados.map(normalizarTexto));
+        const inferidos = inferirLookIdsPelasPecas(registro?.pecas || [])
+            .filter(id => !registradosNormalizados.has(normalizarTexto(id)));
+
+        registrados.forEach(id => incrementarUsoLookDetalhado(mapa, id, 'registrado', dia));
+        inferidos.forEach(id => incrementarUsoLookDetalhado(mapa, id, 'inferido', dia));
     });
 
     return mapa;
@@ -5087,11 +5123,18 @@ function obterMapaUsosLooksAtual() {
 }
 
 function contarUsosLook(lookId) {
-    return obterMapaUsosLooksAtual().get(normalizarTexto(lookId)) || 0;
+    return obterMapaUsosLooksAtual().get(normalizarTexto(lookId)) || criarResumoUsoLook(lookId);
 }
 
-function formatarTotalUsosLook(total) {
-    return `${total} ${total === 1 ? 'uso' : 'usos'}`;
+function formatarTotalUsosLook(usos) {
+    if (typeof usos === 'number') return `${usos} ${usos === 1 ? 'uso' : 'usos'}`;
+    const registrados = Number(usos?.registrados || 0);
+    const inferidos = Number(usos?.inferidos || 0);
+    return `${registrados}(${inferidos}) usos`;
+}
+
+function formatarUsosLookCompacto(registrados, inferidos) {
+    return `${Number(registrados || 0)}(${Number(inferidos || 0)})`;
 }
 
 function obterTamanhoLoteLooks() {
@@ -6849,6 +6892,9 @@ function criarItemResumoLookHistorico(item) {
     return {
         ...item,
         look,
+        periodo: item.total,
+        usosPeriodoTexto: formatarUsosLookCompacto(item.registrados, item.inferidos),
+        usosTotalTexto: formatarUsosLookCompacto(item.totalRegistrados, item.totalInferidos),
         htt: obterHttLook(look),
         dataRevisaoHtt,
         dataCriacao,
@@ -6918,6 +6964,8 @@ function ordenarResumoHistorico(resumo) {
 
 function obterValorResumoHistorico(item, campo) {
     if (campo === 'id') return item.id;
+    if (campo === 'periodo') return item.total;
+    if (campo === 'total') return item.totalGeral;
     return item[campo] ?? '';
 }
 
@@ -6948,12 +6996,14 @@ function calcularResumoUsoHistorico(registrosPeriodo, tipo) {
             const itemTotal = contagemTotal.get(itemPeriodo.id) || itemPeriodo;
             return {
                 ...itemPeriodo,
-                total: itemTotal.total || itemPeriodo.total,
+                totalRegistrados: itemTotal.registrados || 0,
+                totalInferidos: itemTotal.inferidos || 0,
+                totalGeral: itemTotal.total || itemPeriodo.total,
                 primeiro: itemTotal.primeiro || itemPeriodo.primeiro,
                 ultimo: itemTotal.ultimo || itemPeriodo.ultimo,
             };
         })
-        .sort((a, b) => b.periodo - a.periodo || String(a.id).localeCompare(String(b.id), 'pt-BR', { numeric: true }));
+        .sort((a, b) => b.total - a.total || String(a.id).localeCompare(String(b.id), 'pt-BR', { numeric: true }));
 }
 
 function contarUsosHistorico(registros, tipo) {
@@ -6963,13 +7013,21 @@ function contarUsosHistorico(registros, tipo) {
         const dia = obterDiaRegistro(registro);
         if (!dia) return;
 
-        const ids = tipo === 'pecas'
-            ? [...new Set(registro.pecas || [])].filter(Boolean)
-            : obterLookIdsRegistroOuInferidos(registro);
+        if (tipo === 'looks') {
+            const registrados = obterLookIdsRegistro(registro);
+            const registradosNormalizados = new Set(registrados.map(normalizarTexto));
+            const inferidos = inferirLookIdsPelasPecas(registro?.pecas || [])
+                .filter(id => !registradosNormalizados.has(normalizarTexto(id)));
+
+            registrados.forEach(id => incrementarUsoLookDetalhado(mapa, id, 'registrado', dia));
+            inferidos.forEach(id => incrementarUsoLookDetalhado(mapa, id, 'inferido', dia));
+            return;
+        }
+
+        const ids = [...new Set(registro.pecas || [])].filter(Boolean);
 
         ids.forEach(id => {
-            const atual = mapa.get(id) || { id, periodo: 0, total: 0, primeiro: dia, ultimo: dia };
-            atual.periodo += 1;
+            const atual = mapa.get(id) || { id, registrados: 0, inferidos: 0, total: 0, primeiro: dia, ultimo: dia };
             atual.total += 1;
             if (dia < atual.primeiro) atual.primeiro = dia;
             if (dia > atual.ultimo) atual.ultimo = dia;
@@ -7025,8 +7083,8 @@ function criarLinhaResumoHistoricoLook(item) {
             </span>
             <span>${escapeHtml(valorTabelaPeca(item.htt))}</span>
             <span>${escapeHtml(formatarDataResumoHistorico(item.dataRevisaoHtt))}</span>
-            <span>${escapeHtml(String(item.periodo || 0))}</span>
-            <span>${escapeHtml(String(item.total || 0))}</span>
+            <span>${escapeHtml(item.usosPeriodoTexto)}</span>
+            <span>${escapeHtml(item.usosTotalTexto)}</span>
             <span>${escapeHtml(formatarDataResumoHistorico(item.primeiro))}</span>
             <span>${escapeHtml(formatarDataResumoHistorico(item.ultimo))}</span>
             <span>${escapeHtml(formatarDataResumoHistorico(item.dataCriacao))}</span>
