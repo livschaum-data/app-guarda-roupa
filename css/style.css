@@ -1756,7 +1756,7 @@ body {
 
 .ocasioes-painel {
     display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-columns: repeat(14, minmax(0, 1fr));
     gap: 10px;
     padding: 14px;
     background: #f7eff8;
@@ -1782,7 +1782,7 @@ body {
 }
 
 .ocasioes-destaque {
-    grid-column: span 3;
+    grid-column: span 2;
     text-align: center;
 }
 
@@ -1800,7 +1800,7 @@ body {
 }
 
 .ocasioes-destaque strong {
-    font-size: 24px;
+    font-size: 18px;
 }
 
 .ocasioes-codigo {
@@ -1809,7 +1809,11 @@ body {
 }
 
 .ocasioes-filtro {
-    grid-column: span 2;
+    grid-column: span 4;
+}
+
+.ocasioes-filtro-ocasiao {
+    grid-column: span 10;
 }
 
 .ocasioes-filtro select {
@@ -1894,13 +1898,40 @@ body {
     color: #111827;
 }
 
+.ocasioes-grafico-controles {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    min-width: 0;
+}
+
+.ocasioes-filtro-inline {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    padding: 0;
+}
+
+.ocasioes-filtro-inline-label,
+.ocasioes-bloco-topo .ocasioes-filtro-inline-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
 .ocasioes-looks {
-    grid-column: span 5;
+    grid-column: span 14;
     min-height: 310px;
 }
 
 .ocasioes-grafico {
-    grid-column: span 7;
+    grid-column: span 14;
     min-height: 270px;
 }
 
@@ -1910,7 +1941,7 @@ body {
 }
 
 .ocasioes-sugestoes {
-    grid-column: span 6;
+    grid-column: span 7;
     min-height: 300px;
 }
 
@@ -2086,11 +2117,23 @@ body {
         grid-column: span 4;
     }
 
+    .ocasioes-filtro-ocasiao {
+        grid-column: span 14;
+    }
+
     .ocasioes-looks,
     .ocasioes-grafico,
     .ocasioes-outras,
     .ocasioes-sugestoes {
-        grid-column: span 12;
+        grid-column: span 14;
+    }
+
+    .ocasioes-grafico .ocasioes-bloco-topo {
+        align-items: flex-start;
+    }
+
+    .ocasioes-grafico-controles {
+        flex-wrap: wrap;
     }
 }
 
@@ -6516,6 +6559,68 @@ body {
     pointer-events: none;
 }
 
+.ocasioes-filtro-inline .select-nativo-oculto {
+    position: absolute;
+}
+
+.ocasioes-filtro-inline .ocasioes-dropdown-multiplo {
+    width: 110px;
+}
+
+.ocasioes-filtro-inline .ocasioes-dropdown-toggle {
+    min-height: 42px;
+    border-radius: 8px;
+    padding: 6px 9px;
+    font-size: 12px;
+}
+
+.ocasioes-bloco-topo .ocasioes-dropdown-toggle span {
+    min-width: 0;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: 1.2;
+    text-align: left;
+    text-transform: none;
+}
+
+.ocasioes-bloco-topo .ocasioes-dropdown-toggle .ocasioes-dropdown-seta {
+    flex: 0 0 auto;
+    text-align: center;
+}
+
+.ocasioes-bloco-topo .ocasioes-dropdown-painel span {
+    min-width: 0;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: 1.2;
+    text-align: left;
+    text-transform: none;
+}
+
+.ocasioes-bloco-topo .ocasioes-dropdown-painel .ocasioes-dropdown-check {
+    display: grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    border: 1px solid var(--modern-border);
+    color: transparent;
+}
+
+.ocasioes-bloco-topo .ocasioes-dropdown-opcao.ativo .ocasioes-dropdown-check {
+    border-color: var(--modern-accent);
+    background: var(--modern-accent);
+    color: #ffffff;
+}
+
 .ocasioes-chip-select {
     display: flex;
     flex-wrap: wrap;
@@ -6529,6 +6634,13 @@ body {
     background: var(--modern-surface-2);
 }
 
+.ocasioes-filtro-ocasiao .ocasioes-chip-select {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+    max-height: 156px;
+    gap: 5px;
+}
+
 .ocasioes-chip-opcao {
     min-height: 32px;
     border: 1px solid var(--modern-border);
@@ -6540,6 +6652,16 @@ body {
     font-weight: 750;
     cursor: pointer;
     transition: var(--transicao);
+}
+
+.ocasioes-filtro-ocasiao .ocasioes-chip-opcao {
+    min-height: 30px;
+    justify-content: flex-start;
+    padding: 5px 8px;
+    font-size: 12px;
+    text-align: left;
+    line-height: 1.2;
+    white-space: normal;
 }
 
 .ocasioes-chip-opcao:hover {
@@ -6575,6 +6697,12 @@ body {
     font-size: 13px;
     font-weight: 800;
     cursor: pointer;
+}
+
+.ocasioes-filtro-inline .ocasioes-dropdown-painel {
+    left: auto;
+    right: 0;
+    width: min(280px, 78vw);
 }
 
 .ocasioes-dropdown-toggle:hover,
@@ -6643,6 +6771,11 @@ body {
     overflow-y: auto;
 }
 
+.ocasioes-filtro-tipo .ocasioes-dropdown-lista,
+.ocasioes-filtro-clima .ocasioes-dropdown-lista {
+    max-height: 260px;
+}
+
 .ocasioes-dropdown-opcao {
     display: grid;
     grid-template-columns: 20px minmax(0, 1fr);
@@ -6683,6 +6816,45 @@ body {
     color: #ffffff !important;
 }
 
+#ocasioes .ocasioes-destaque,
+#ocasioes .ocasioes-codigo,
+#ocasioes .ocasioes-stat {
+    display: grid;
+    align-content: center;
+    min-height: 74px;
+    padding: 8px 10px;
+    border-color: var(--modern-border);
+    background: var(--modern-surface);
+    text-align: left;
+}
+
+#ocasioes .ocasioes-painel {
+    gap: 8px;
+}
+
+#ocasioes .ocasioes-destaque > span,
+#ocasioes .ocasioes-codigo > span,
+#ocasioes .ocasioes-stat > span {
+    color: var(--modern-text-soft);
+    font-size: 10px;
+    line-height: 1.15;
+    letter-spacing: 0;
+}
+
+#ocasioes .ocasioes-destaque strong,
+#ocasioes .ocasioes-codigo strong,
+#ocasioes .ocasioes-stat strong,
+#ocasioes .ocasioes-stat.destaque-laranja strong {
+    margin-top: 4px;
+    color: var(--modern-accent-strong);
+    font-size: 22px;
+    line-height: 1;
+}
+
+#ocasioes .ocasioes-destaque strong {
+    font-size: 20px;
+}
+
 @media (max-width: 768px) {
     .header,
     .home-hero,
@@ -6711,6 +6883,11 @@ body {
 
     .ocasioes-chip-select {
         max-height: 116px;
+    }
+
+    .ocasioes-filtro-ocasiao .ocasioes-chip-select {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-height: 180px;
     }
 
     .ocasioes-dropdown-painel {

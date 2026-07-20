@@ -22,7 +22,7 @@
             }
         })();
     </script>
-    <link rel="stylesheet" href="css/style.css?v=20260720-regra-data-atualizacao-look-v2">
+    <link rel="stylesheet" href="css/style.css?v=20260720-ocasioes-cards-compactos">
 </head>
 <body>
     <div id="app">
@@ -274,6 +274,16 @@
             </div>
 
             <div class="ocasioes-painel">
+                <section class="ocasioes-card ocasioes-filtro ocasioes-filtro-clima">
+                    <span>Clima</span>
+                    <select id="ocasioes-filtro-clima" multiple size="4" onchange="filtrarPaginaOcasioes()"></select>
+                </section>
+
+                <section class="ocasioes-card ocasioes-filtro ocasioes-filtro-ocasiao">
+                    <span>Ocasião</span>
+                    <select id="ocasioes-select" multiple size="4" onchange="selecionarOcasiaoPagina()"></select>
+                </section>
+
                 <section class="ocasioes-card ocasioes-destaque">
                     <span>Ocasiao selecionada</span>
                     <strong id="ocasiao-selecionada-nome">Selecione</strong>
@@ -282,21 +292,6 @@
                 <section class="ocasioes-card ocasioes-codigo">
                     <span>Codigo</span>
                     <strong id="ocasiao-selecionada-codigo">-</strong>
-                </section>
-
-                <section class="ocasioes-card ocasioes-filtro">
-                    <span>Tipo de ocasião</span>
-                    <select id="ocasioes-filtro-tipo" multiple size="4" onchange="filtrarPaginaOcasioes()"></select>
-                </section>
-
-                <section class="ocasioes-card ocasioes-filtro">
-                    <span>Clima</span>
-                    <select id="ocasioes-filtro-clima" multiple size="4" onchange="filtrarPaginaOcasioes()"></select>
-                </section>
-
-                <section class="ocasioes-card ocasioes-filtro">
-                    <span>Ocasiao</span>
-                    <select id="ocasioes-select" multiple size="4" onchange="selecionarOcasiaoPagina()"></select>
                 </section>
 
                 <section class="ocasioes-card ocasioes-stat">
@@ -324,23 +319,29 @@
                     <strong id="ocasioes-temperaturas">-</strong>
                 </section>
 
+                <section class="ocasioes-card ocasioes-bloco ocasioes-grafico">
+                    <div class="ocasioes-bloco-topo">
+                        <h3>HTT atual e necessarios</h3>
+                        <div class="ocasioes-grafico-controles">
+                            <label class="ocasioes-filtro ocasioes-filtro-inline">
+                                <span class="ocasioes-filtro-inline-label">Tipo</span>
+                                <select id="ocasioes-filtro-tipo" multiple size="4" onchange="filtrarPaginaOcasioes()"></select>
+                            </label>
+                            <select id="ocasioes-grafico-eixo" onchange="alterarEixoGraficoOcasioes(this.value)">
+                                <option value="climas">Climas</option>
+                                <option value="ocasioes">Ocasioes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="ocasioes-grafico-climas" class="ocasioes-grafico-climas"></div>
+                </section>
+
                 <section class="ocasioes-card ocasioes-bloco ocasioes-looks">
                     <div class="ocasioes-bloco-topo">
                         <h3>Looks</h3>
                         <span id="ocasioes-looks-contagem">0</span>
                     </div>
                     <div id="ocasioes-lista-looks" class="ocasioes-mini-grid"></div>
-                </section>
-
-                <section class="ocasioes-card ocasioes-bloco ocasioes-grafico">
-                    <div class="ocasioes-bloco-topo">
-                        <h3>HTT atual e necessarios</h3>
-                        <select id="ocasioes-grafico-eixo" onchange="alterarEixoGraficoOcasioes(this.value)">
-                            <option value="climas">Climas</option>
-                            <option value="ocasioes">Ocasioes</option>
-                        </select>
-                    </div>
-                    <div id="ocasioes-grafico-climas" class="ocasioes-grafico-climas"></div>
                 </section>
 
                 <section class="ocasioes-card ocasioes-bloco ocasioes-sugestoes">
@@ -733,7 +734,7 @@
          A ordem importa! CSS deve carregar antes, depois o app.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js?v=20260624-config-supabase"></script>
-    <script src="js/app.js?v=20260720-regra-data-atualizacao-look-v2"></script>
+    <script src="js/app.js?v=20260720-ocasioes-cards-compactos"></script>
 </body>
 </html>
 
