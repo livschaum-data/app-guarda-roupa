@@ -760,6 +760,13 @@ function obterClasseGrupoFiltroLook(campo) {
 }
 
 document.addEventListener('click', evento => {
+    const botaoEditarLoteLooks = evento.target.closest('[data-editar-lote-looks]');
+    if (botaoEditarLoteLooks) {
+        evento.preventDefault();
+        abrirEdicaoLoteLooksPeca();
+        return;
+    }
+
     if (!evento.target.closest('.filtro-multiplo')) {
         document.querySelectorAll('.filtro-multiplo.aberto').forEach(item => {
             item.classList.remove('aberto');
@@ -3063,6 +3070,7 @@ function abrirDatasUsoLook(lookId) {
 
     modal.classList.add('modal-em-pilha');
     modal.style.display = 'flex';
+    modal.style.zIndex = '340';
     modal.scrollTop = 0;
 }
 
@@ -3070,6 +3078,7 @@ function fecharModalDatasUsoLook() {
     const modal = document.getElementById('modal-datas-uso-look');
     if (!modal) return;
     modal.classList.remove('modal-em-pilha');
+    modal.style.zIndex = '';
     modal.style.display = 'none';
 }
 
@@ -3177,7 +3186,7 @@ function criarAcoesLoteLooksPeca(looksFiltrados, modo = 'existentes') {
             </button>
             <button type="button" class="btn-secundario" onclick="limparSelecaoLooksPeca()" ${totalSelecionados ? '' : 'disabled'}>Limpar</button>
             ${ehModoSugeridos ? `<button type="button" class="btn-secundario" onclick="removerPecaDasSugestoesLooksSelecionados()" ${totalSelecionados ? '' : 'disabled'}>Remover das sugestões</button>` : ''}
-            <button type="button" class="btn-principal" onclick="abrirEdicaoLoteLooksPeca()" ${totalSelecionados ? '' : 'disabled'}>Editar selecionados</button>
+            <button type="button" class="btn-principal" data-editar-lote-looks>Editar selecionados</button>
         </div>
     `;
 }
@@ -3410,9 +3419,9 @@ function criarCardLookExistentePeca(look) {
     const selecionado = (app.looksPecaSelecionados || []).includes(look.id);
     const utilizacao = obterUtilizacaoLook(look);
     return `
-        <div class="looks-peca-card ${selecionado ? 'selecionado' : ''}">
+        <div class="looks-peca-card ${selecionado ? 'selecionado' : ''}" data-look-id="${escapeHtml(look.id)}">
             <label class="looks-peca-check">
-                <input type="checkbox" ${selecionado ? 'checked' : ''} onchange="alternarSelecaoLookPeca('${escapeHtml(look.id)}')">
+                <input type="checkbox" value="${escapeHtml(look.id)}" ${selecionado ? 'checked' : ''} onchange="alternarSelecaoLookPeca('${escapeHtml(look.id)}')">
                 <span>Selecionar</span>
             </label>
             <img src="${escapeHtml(getCaminhoFotoLook(look.id))}" alt="${escapeHtml(look.id)}" onerror="${onErrorImagem()}">
@@ -3426,6 +3435,7 @@ function criarCardLookExistentePeca(look) {
 
 function abrirEdicaoLoteLooksPeca() {
     const idsSelecionados = obterIdsLooksSelecionadosParaEdicaoLote();
+    app.looksPecaSelecionados = idsSelecionados;
     if (!idsSelecionados.length) {
         alert('Selecione pelo menos um look para editar.');
         return;
@@ -3437,7 +3447,13 @@ function abrirEdicaoLoteLooksPeca() {
     if (!modal || !form) return;
 
     resumo.textContent = `${idsSelecionados.length} look${idsSelecionados.length === 1 ? '' : 's'} selecionado${idsSelecionados.length === 1 ? '' : 's'}: ${idsSelecionados.join(', ')}`;
-    form.innerHTML = criarFormularioEdicaoLoteLooks();
+    try {
+        form.innerHTML = criarFormularioEdicaoLoteLooks();
+    } catch (erro) {
+        console.error('Erro ao abrir edição em lote dos looks:', erro);
+        alert('Não consegui abrir a edição em lote. Veja o console para detalhes.');
+        return;
+    }
 
     setTimeout(() => {
         renderControleVisualMultiploEdicaoLook('edit-lote-look-ocasioes', 'Pesquisar ocasiao');
@@ -3446,6 +3462,7 @@ function abrirEdicaoLoteLooksPeca() {
 
     modal.classList.add('modal-em-pilha');
     modal.style.display = 'flex';
+    modal.style.zIndex = '340';
     modal.scrollTop = 0;
 }
 
@@ -3453,17 +3470,23 @@ function fecharModalEdicaoLoteLooks() {
     const modal = document.getElementById('modal-edicao-lote-looks');
     if (!modal) return;
     modal.classList.remove('modal-em-pilha');
+    modal.style.zIndex = '';
     modal.style.display = 'none';
 }
 
 function obterIdsLooksSelecionadosParaEdicaoLote() {
-    return [...new Set(app.looksPecaSelecionados || [])]
+    const marcadosNoModal = [...document.querySelectorAll('#modal-looks-peca .looks-peca-check input:checked')]
+        .map(input => input.value || input.closest('.looks-peca-card')?.dataset.lookId)
+        .filter(Boolean);
+    const ids = marcadosNoModal.length ? marcadosNoModal : (app.looksPecaSelecionados || []);
+    return [...new Set(ids)]
         .filter(id => Boolean(obterLookPorId(id)));
 }
 
 function criarFormularioEdicaoLoteLooks() {
     const opcoesSituacao = criarOptionsSituacaoLook('');
     const opcoesHtt = criarOptionsHttLook('false');
+    const opcoesPecas = criarOptionsPecasLook('');
     const opcoesOcasioes = criarOptionsOcasioesLook([]);
     const opcoesSugestoes = criarOptionsSugestoesLook([]);
 
