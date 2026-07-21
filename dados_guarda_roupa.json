@@ -19,6 +19,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0642",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -89,6 +91,11 @@
           "campo": "Data descarte",
           "valor": "2024-11-06",
           "coluna": 29
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0642",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -114,6 +121,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0643",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -184,6 +193,11 @@
           "campo": "Data descarte",
           "valor": "2024-12-15",
           "coluna": 29
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0643",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -209,6 +223,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -299,6 +315,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -379,6 +397,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0579",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -434,6 +454,11 @@
           "campo": "Data descarte",
           "valor": "2024-11-19",
           "coluna": 29
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0579",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -459,6 +484,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -549,6 +576,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -619,6 +648,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -689,6 +720,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -759,6 +792,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -849,6 +884,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -934,6 +971,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -1009,6 +1048,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -1099,6 +1140,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -1194,6 +1237,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0660",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -1249,6 +1294,11 @@
           "campo": "Data descarte",
           "valor": "2025-01-30",
           "coluna": 29
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0660",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -1274,6 +1324,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -1359,6 +1411,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -1429,6 +1483,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -1504,6 +1560,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -1579,6 +1637,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -1674,6 +1734,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -1759,6 +1821,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -1834,6 +1898,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -1909,6 +1975,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -2004,6 +2072,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0656",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -2074,6 +2144,11 @@
           "campo": "Data descarte",
           "valor": "2024-12-10",
           "coluna": 29
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0656",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -2099,6 +2174,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0658",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -2169,6 +2246,11 @@
           "campo": "Data descarte",
           "valor": "2024-12-15",
           "coluna": 29
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0658",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -2194,6 +2276,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -2284,6 +2368,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -2374,6 +2460,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -2459,6 +2547,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -2549,6 +2639,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -2639,6 +2731,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -2729,6 +2823,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -2824,6 +2920,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -2899,6 +2997,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -2994,6 +3094,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -3089,6 +3191,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0661",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -3139,6 +3243,11 @@
           "campo": "Data descarte",
           "valor": "2021-12-20",
           "coluna": 29
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0661",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -3164,6 +3273,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -3249,6 +3360,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -3334,6 +3447,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -3424,6 +3539,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -3514,6 +3631,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -3604,6 +3723,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -3699,6 +3820,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -3805,6 +3928,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -3875,6 +4000,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -3945,6 +4072,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -4015,6 +4144,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -4085,6 +4216,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -4170,6 +4303,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -4260,6 +4395,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -4345,6 +4482,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -4430,6 +4569,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -4505,6 +4646,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -4580,6 +4723,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -4650,6 +4795,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -4730,6 +4877,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -4815,6 +4964,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -4885,6 +5036,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -4975,6 +5128,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -5050,6 +5205,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -5125,6 +5282,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -5190,6 +5349,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -5291,6 +5452,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -5371,6 +5534,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -5446,6 +5611,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -5526,6 +5693,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -5612,6 +5781,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -5688,6 +5859,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -5758,6 +5931,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -5828,6 +6003,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -5898,6 +6075,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -5963,6 +6142,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -6028,6 +6209,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -6098,6 +6281,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -6168,6 +6353,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -6243,6 +6430,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -6313,6 +6502,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -6388,6 +6579,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -6458,6 +6651,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -6523,6 +6718,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -6593,6 +6790,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -6658,6 +6857,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -6723,6 +6924,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -6788,6 +6991,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -6853,6 +7058,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -6918,6 +7125,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -6983,6 +7192,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -7048,6 +7259,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -7118,6 +7331,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -7183,6 +7398,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -7253,6 +7470,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -7318,6 +7537,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -7398,6 +7619,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -7463,6 +7686,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -7528,6 +7753,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -7593,6 +7820,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -7663,6 +7892,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -7728,6 +7959,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -7798,6 +8031,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -7869,6 +8104,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -7939,6 +8176,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -8009,6 +8248,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -8079,6 +8320,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -8149,6 +8392,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -8224,6 +8469,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -8310,6 +8557,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -8385,6 +8634,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -8470,6 +8721,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -8555,6 +8808,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -8630,6 +8885,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -8710,6 +8967,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -8785,6 +9044,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -8865,6 +9126,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -8935,6 +9198,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -9005,6 +9270,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -9085,6 +9352,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -9160,6 +9429,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -9230,6 +9501,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -9300,6 +9573,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -9409,6 +9684,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -9479,6 +9756,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -9549,6 +9828,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -9619,6 +9900,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -9710,6 +9993,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -9816,6 +10101,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -9922,6 +10209,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -10023,6 +10312,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -10103,6 +10394,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -10234,6 +10527,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -10335,6 +10630,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -10471,6 +10768,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -10612,6 +10911,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -10723,6 +11024,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -10839,6 +11142,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -10940,6 +11245,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -11066,6 +11373,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -11182,6 +11491,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -11277,6 +11588,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -11372,6 +11685,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -11469,6 +11784,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -11581,6 +11898,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -11683,6 +12002,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -11795,6 +12116,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -11907,6 +12230,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -11982,6 +12307,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -12062,6 +12389,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -12157,6 +12486,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -12237,6 +12568,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -12312,6 +12645,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -12407,6 +12742,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -12497,6 +12834,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -12595,6 +12934,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -12706,6 +13047,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -12776,6 +13119,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -12846,6 +13191,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -12921,6 +13268,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -12991,6 +13340,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -13056,6 +13407,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -13121,6 +13474,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -13191,6 +13546,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -13261,6 +13618,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -13336,6 +13695,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -13458,6 +13819,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -13575,6 +13938,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -13692,6 +14057,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -13777,6 +14144,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -13889,6 +14258,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -13989,6 +14360,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -14106,6 +14479,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -14223,6 +14598,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -14345,6 +14722,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -14467,6 +14846,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -14569,6 +14950,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -14691,6 +15074,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0182",
+      "substituida_por": "ID0604",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -14756,6 +15141,16 @@
           "campo": "Data revisão",
           "valor": "2024-12-11",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0182",
+          "coluna": 73
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0604",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -14803,6 +15198,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0547",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -14858,6 +15255,11 @@
           "campo": "Data revisão",
           "valor": "2025-03-05",
           "coluna": 28
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0547",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -14912,6 +15314,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -15031,6 +15435,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -15150,6 +15556,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -15264,6 +15672,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -15359,6 +15769,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -15459,6 +15871,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0175",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -15519,6 +15933,11 @@
           "campo": "Data descarte",
           "valor": "2024-02-24",
           "coluna": 29
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0175",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -15544,6 +15963,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -15661,6 +16082,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -15783,6 +16206,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -15900,6 +16325,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -15985,6 +16412,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -16070,6 +16499,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -16155,6 +16586,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -16270,6 +16703,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -16365,6 +16800,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -16465,6 +16902,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0520",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -16530,6 +16969,11 @@
           "campo": "Data descarte",
           "valor": "2024-02-24",
           "coluna": 29
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0520",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -16555,6 +16999,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -16665,6 +17111,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -16775,6 +17223,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -16875,6 +17325,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -16985,6 +17437,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -17085,6 +17539,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -17195,6 +17651,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -17305,6 +17763,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -17415,6 +17875,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -17525,6 +17987,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -17625,6 +18089,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -17715,6 +18181,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -17825,6 +18293,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -17940,6 +18410,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0620",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -18010,6 +18482,11 @@
           "campo": "Data revisão",
           "valor": "2025-01-24",
           "coluna": 28
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0620",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -18050,6 +18527,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -18160,6 +18639,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -18255,6 +18736,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -18350,6 +18833,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -18455,6 +18940,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -18555,6 +19042,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -18660,6 +19149,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -18766,6 +19257,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -18897,6 +19390,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -19028,6 +19523,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -19169,6 +19666,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -19340,6 +19839,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -19439,6 +19940,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -19530,6 +20033,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -19679,6 +20184,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -19833,6 +20340,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -19943,6 +20452,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -20031,6 +20542,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -20141,6 +20654,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -20244,6 +20759,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -20354,6 +20871,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -20447,6 +20966,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -20557,6 +21078,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -20726,6 +21249,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -20840,6 +21365,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -20925,6 +21452,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -21034,6 +21563,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -21165,6 +21696,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -21264,6 +21797,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -21373,6 +21908,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -21492,6 +22029,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -21626,6 +22165,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -21755,6 +22296,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -21869,6 +22412,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -21988,6 +22533,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -22087,6 +22634,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -22177,6 +22726,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -22336,6 +22887,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -22416,6 +22969,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -22496,6 +23051,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -22576,6 +23133,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -22676,6 +23235,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0533",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -22746,6 +23307,11 @@
           "campo": "Data descarte",
           "valor": "2025-02-18",
           "coluna": 29
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0533",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -22771,6 +23337,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -22902,6 +23470,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -23038,6 +23608,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -23174,6 +23746,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -23300,6 +23874,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -23405,6 +23981,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -23514,6 +24092,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -23609,6 +24189,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -23709,6 +24291,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -23823,6 +24407,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -23937,6 +24523,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -24037,6 +24625,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -24127,6 +24717,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -24217,6 +24809,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0568",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -24292,6 +24886,11 @@
           "campo": "Data descarte",
           "valor": "2024-02-24",
           "coluna": 29
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0568",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -24317,6 +24916,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -24422,6 +25023,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -24522,6 +25125,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -24622,6 +25227,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0635",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -24702,6 +25309,11 @@
           "campo": "Data descarte",
           "valor": "2024-11-18",
           "coluna": 29
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0635",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -24727,6 +25339,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -24827,6 +25441,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -24927,6 +25543,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -25027,6 +25645,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -25142,6 +25762,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -25227,6 +25849,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -25327,6 +25951,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -25422,6 +26048,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -25532,6 +26160,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -25620,6 +26250,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -25735,6 +26367,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -25830,6 +26464,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -25940,6 +26576,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -26041,6 +26679,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -26194,6 +26834,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -26295,6 +26937,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -26443,6 +27087,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -26559,6 +27205,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0634",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -26634,6 +27282,11 @@
           "campo": "Data revisão",
           "valor": "2025-06-20",
           "coluna": 28
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0634",
+          "coluna": 74
         }
       ],
       "acessorios": [
@@ -26720,6 +27373,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -26834,6 +27489,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -26955,6 +27612,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -27086,6 +27745,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -27207,6 +27868,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -27338,6 +28001,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -27442,6 +28107,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -27537,6 +28204,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -27647,6 +28316,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -27752,6 +28423,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -27862,6 +28535,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -27972,6 +28647,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0625",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -28047,6 +28724,11 @@
           "campo": "Data descarte",
           "valor": "2024-08-01",
           "coluna": 29
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0625",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -28087,6 +28769,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -28207,6 +28891,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -28324,6 +29010,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -28426,6 +29114,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -28541,6 +29231,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -28692,6 +29384,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -28844,6 +29538,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -28990,6 +29686,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -29131,6 +29829,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -29272,6 +29972,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -29372,6 +30074,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -29470,6 +30174,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -29545,6 +30251,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -29625,6 +30333,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -29700,6 +30410,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -29775,6 +30487,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -29855,6 +30569,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -29930,6 +30646,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -30000,6 +30718,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -30080,6 +30800,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -30150,6 +30872,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -30230,6 +30954,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0319",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -30290,6 +31016,11 @@
           "campo": "Data revisão",
           "valor": "2024-12-11",
           "coluna": 28
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0319",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -30315,6 +31046,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0318",
+      "substituida_por": "ID0667",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -30380,6 +31113,16 @@
           "campo": "Data revisão",
           "valor": "2024-12-11",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0318",
+          "coluna": 73
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0667",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -30405,6 +31148,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -30496,6 +31241,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -30607,6 +31354,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0678",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -30677,6 +31426,11 @@
           "campo": "Data descarte",
           "valor": "2025-06-16",
           "coluna": 29
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0678",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -30702,6 +31456,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -30792,6 +31548,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -30882,6 +31640,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -30972,6 +31732,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -31058,6 +31820,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -31148,6 +31912,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -31259,6 +32025,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -31375,6 +32143,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -31455,6 +32225,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -31536,6 +32308,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -31712,6 +32486,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -31908,6 +32684,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -32003,6 +32781,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -32139,6 +32919,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -32225,6 +33007,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -32321,6 +33105,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -32416,6 +33202,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -32557,6 +33345,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -32637,6 +33427,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -32728,6 +33520,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -32864,6 +33658,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -32954,6 +33750,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -33035,6 +33833,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -33166,6 +33966,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -33241,6 +34043,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -33352,6 +34156,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -33437,6 +34243,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -33522,6 +34330,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -33663,6 +34473,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -33799,6 +34611,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -33884,6 +34698,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -33969,6 +34785,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -34054,6 +34872,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -34139,6 +34959,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -34219,6 +35041,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -34304,6 +35128,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -34384,6 +35210,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -34474,6 +35302,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -34559,6 +35389,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -34644,6 +35476,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -34724,6 +35558,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -34809,6 +35645,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -34894,6 +35732,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -34974,6 +35814,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -35054,6 +35896,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -35134,6 +35978,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -35224,6 +36070,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -35314,6 +36162,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -35399,6 +36249,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -35494,6 +36346,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -35584,6 +36438,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -35664,6 +36520,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -35749,6 +36607,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -35834,6 +36694,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -35914,6 +36776,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -35989,6 +36853,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -36064,6 +36930,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -36139,6 +37007,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -36214,6 +37084,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -36289,6 +37161,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -36364,6 +37238,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -36439,6 +37315,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -36514,6 +37392,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -36594,6 +37474,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -36674,6 +37556,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -36749,6 +37633,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -36829,6 +37715,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -36904,6 +37792,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -36989,6 +37879,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -37064,6 +37956,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -37134,6 +38028,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -37204,6 +38100,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -37274,6 +38172,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -37344,6 +38244,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -37414,6 +38316,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -37484,6 +38388,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -37554,6 +38460,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -37624,6 +38532,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -37694,6 +38604,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -37764,6 +38676,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -37839,6 +38753,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -37914,6 +38830,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -37984,6 +38902,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -38054,6 +38974,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -38124,6 +39046,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -38194,6 +39118,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -38264,6 +39190,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -38329,6 +39257,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -38399,6 +39329,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -38474,6 +39406,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -38544,6 +39478,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -38614,6 +39550,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -38684,6 +39622,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -38754,6 +39694,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -38824,6 +39766,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -38904,6 +39848,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -38974,6 +39920,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -39054,6 +40002,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -39124,6 +40074,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -39189,6 +40141,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -39264,6 +40218,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -39339,6 +40295,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -39419,6 +40377,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -39484,6 +40444,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -39554,6 +40516,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -39619,6 +40583,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -39689,6 +40655,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -39759,6 +40727,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -39829,6 +40799,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -39899,6 +40871,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -39974,6 +40948,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -40049,6 +41025,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -40124,6 +41102,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -40199,6 +41179,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -40274,6 +41256,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -40349,6 +41333,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -40429,6 +41415,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -40504,6 +41492,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -40579,6 +41569,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -40644,6 +41636,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -40709,6 +41703,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -40789,6 +41785,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -40869,6 +41867,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -40959,6 +41959,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -41044,6 +42046,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -41119,6 +42123,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -41189,6 +42195,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -41259,6 +42267,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -41329,6 +42339,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -41399,6 +42411,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -41464,6 +42478,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -41539,6 +42555,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -41604,6 +42622,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -41669,6 +42689,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -41729,6 +42751,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -41789,6 +42813,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -41849,6 +42875,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -41909,6 +42937,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -41969,6 +42999,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -42029,6 +43061,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -42089,6 +43123,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -42149,6 +43185,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -42219,6 +43257,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -42289,6 +43329,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -42349,6 +43391,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -42419,6 +43463,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -42479,6 +43525,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -42549,6 +43597,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -42619,6 +43669,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -42689,6 +43741,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "ID0473",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -42739,6 +43793,11 @@
           "campo": "Data descarte",
           "valor": "2024-12-12",
           "coluna": 29
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0473",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -42764,6 +43823,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "ID0472",
+      "substituida_por": "ID0637",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -42824,6 +43885,16 @@
           "campo": "Data descarte",
           "valor": "2024-12-12",
           "coluna": 29
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0472",
+          "coluna": 73
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0637",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -42849,6 +43920,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -42924,6 +43997,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -43009,6 +44084,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -43109,6 +44186,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -43184,6 +44263,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -43331,6 +44412,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -43406,6 +44489,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -43517,6 +44602,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -43627,6 +44714,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -43737,6 +44826,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -43837,6 +44928,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -43932,6 +45025,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -44042,6 +45137,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -44135,6 +45232,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -44210,6 +45309,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -44285,6 +45386,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -44365,6 +45468,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -44445,6 +45550,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -44546,6 +45653,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -44672,6 +45781,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -44747,6 +45858,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -44822,6 +45935,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -44897,6 +46012,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -45033,6 +46150,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -45133,6 +46252,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -45228,6 +46349,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -45323,6 +46446,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -45413,6 +46538,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -45503,6 +46630,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -45593,6 +46722,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -45683,6 +46814,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -45758,6 +46891,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -45863,6 +46998,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -45989,6 +47126,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -46084,6 +47223,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -46154,6 +47295,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -46254,6 +47397,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -46349,6 +47494,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -46503,6 +47650,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -46573,6 +47722,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -46663,6 +47814,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -46787,6 +47940,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -46867,6 +48022,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -46957,6 +48114,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -47128,6 +48287,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -47218,6 +48379,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -47340,6 +48503,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0192",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -47405,6 +48570,11 @@
           "campo": "Data revisão",
           "valor": "2025-03-05",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0192",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -47445,6 +48615,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -47540,6 +48712,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0693",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -47605,6 +48779,11 @@
           "campo": "Data revisão",
           "valor": "2025-03-05",
           "coluna": 28
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0693",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -47630,6 +48809,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -47720,6 +48901,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -47835,6 +49018,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0692",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -47900,6 +49085,11 @@
           "campo": "Data revisão",
           "valor": "2025-05-26",
           "coluna": 28
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0692",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -47925,6 +49115,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -48015,6 +49207,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -48161,6 +49355,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -48276,6 +49472,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -48356,6 +49554,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -48436,6 +49636,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -48516,6 +49718,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -48642,6 +49846,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0248",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -48707,6 +49913,11 @@
           "campo": "Data revisão",
           "valor": "2025-02-18",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0248",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -48761,6 +49972,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -48880,6 +50093,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -49011,6 +50226,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -49122,6 +50339,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -49202,6 +50421,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -49282,6 +50503,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -49362,6 +50585,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "ID0624",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -49427,6 +50652,11 @@
           "campo": "Data revisão",
           "valor": "2024-03-24",
           "coluna": 28
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0624",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -49452,6 +50682,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -49532,6 +50764,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -49612,6 +50846,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -49692,6 +50928,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -49782,6 +51020,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -49904,6 +51144,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -50026,6 +51268,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0176",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -50101,6 +51345,11 @@
           "campo": "Data revisão",
           "valor": "2025-01-31",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0176",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -50148,6 +51397,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -50233,6 +51484,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -50318,6 +51571,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -50403,6 +51658,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -50488,6 +51745,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -50578,6 +51837,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -50668,6 +51929,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -50753,6 +52016,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -50848,6 +52113,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -50928,6 +52195,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -51008,6 +52277,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -51088,6 +52359,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -51168,6 +52441,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -51248,6 +52523,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -51328,6 +52605,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -51408,6 +52687,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -51488,6 +52769,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -51583,6 +52866,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -51678,6 +52963,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -51768,6 +53055,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -51858,6 +53147,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0262",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -51933,6 +53224,11 @@
           "campo": "Data revisão",
           "valor": "2024-10-27",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0262",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -51958,6 +53254,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -52058,6 +53356,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -52158,6 +53458,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -52243,6 +53545,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -52333,6 +53637,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -52423,6 +53729,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -52513,6 +53821,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -52642,6 +53952,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -52732,6 +54044,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -52808,6 +54122,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -52972,6 +54288,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0005",
+      "substituida_por": "ID0646",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -53032,6 +54350,16 @@
           "campo": "Data revisão",
           "valor": "2025-08-13",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0005",
+          "coluna": 73
+        },
+        {
+          "campo": "substituida por",
+          "valor": "ID0646",
+          "coluna": 74
         }
       ],
       "acessorios": [],
@@ -53057,6 +54385,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -53142,6 +54472,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -53227,6 +54559,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -53406,6 +54740,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -53491,6 +54827,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -53576,6 +54914,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -53661,6 +55001,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -53746,6 +55088,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -53892,6 +55236,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -54086,6 +55432,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -54275,6 +55623,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -54370,6 +55720,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -54486,6 +55838,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -54576,6 +55930,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -54666,6 +56022,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -54822,6 +56180,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -54961,6 +56321,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -55061,6 +56423,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -55136,6 +56500,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -55221,6 +56587,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -55336,6 +56704,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -55451,6 +56821,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -55573,6 +56945,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -55695,6 +57069,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -55817,6 +57193,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0175",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -55892,6 +57270,11 @@
           "campo": "Data revisão",
           "valor": "2025-01-31",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0175",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -55939,6 +57322,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -56061,6 +57446,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -56156,6 +57543,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -56272,6 +57661,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -56357,6 +57748,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -56442,6 +57835,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -56527,6 +57922,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -56602,6 +57999,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -56687,6 +58086,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -56777,6 +58178,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -56898,6 +58301,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -56988,6 +58393,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -57116,6 +58523,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -57230,6 +58639,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -57330,6 +58741,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -57445,6 +58858,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0206",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -57520,6 +58935,11 @@
           "campo": "Data revisão",
           "valor": "2025-05-29",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0206",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -57560,6 +58980,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -57675,6 +59097,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -57790,6 +59214,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -57905,6 +59331,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0540",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -57970,6 +59398,11 @@
           "campo": "Data revisão",
           "valor": "2025-05-23",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0540",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -57995,6 +59428,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0296",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -58070,6 +59505,11 @@
           "campo": "Data revisão",
           "valor": "2025-05-29",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0296",
+          "coluna": 73
         }
       ],
       "acessorios": [
@@ -58124,6 +59564,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -58263,6 +59705,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -58369,6 +59813,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -58454,6 +59900,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -58539,6 +59987,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -58639,6 +60089,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -58719,6 +60171,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -58799,6 +60253,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -58874,6 +60330,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0284",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -58944,6 +60402,11 @@
           "campo": "Data revisão",
           "valor": "2025-05-28",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0284",
+          "coluna": 73
         }
       ],
       "acessorios": [
@@ -59045,6 +60508,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0266",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -59115,6 +60580,11 @@
           "campo": "Data revisão",
           "valor": "2025-05-29",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0266",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -59140,6 +60610,8 @@
       "reposicao": "sim",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -59225,6 +60697,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0473",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -59280,6 +60754,11 @@
           "campo": "Data revisão",
           "valor": "2025-05-29",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0473",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -59305,6 +60784,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -59386,6 +60867,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -59461,6 +60944,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -59536,6 +61021,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -59626,6 +61113,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0001",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -59691,6 +61180,11 @@
           "campo": "Data revisão",
           "valor": "2025-01-24",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0001",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -59716,6 +61210,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0002",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -59781,6 +61277,11 @@
           "campo": "Data revisão",
           "valor": "2025-01-24",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0002",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -59806,6 +61307,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -59896,6 +61399,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -59986,6 +61491,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0579",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -60051,6 +61558,11 @@
           "campo": "Data revisão",
           "valor": "2025-09-05",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0579",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -60076,6 +61588,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -60166,6 +61680,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -60256,6 +61772,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -60346,6 +61864,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -60507,6 +62027,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -60653,6 +62175,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -60728,6 +62252,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -60803,6 +62329,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -60878,6 +62406,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -61057,6 +62587,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0025",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -61117,6 +62649,11 @@
           "campo": "Data revisão",
           "valor": "2025-01-29",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0025",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -61142,6 +62679,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -61227,6 +62766,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0026",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -61287,6 +62828,11 @@
           "campo": "Data revisão",
           "valor": "2025-01-24",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0026",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -61312,6 +62858,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -61397,6 +62945,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0015",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -61457,6 +63007,11 @@
           "campo": "Data revisão",
           "valor": "2025-01-30",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0015",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -61482,6 +63037,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0037",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -61542,6 +63099,11 @@
           "campo": "Data revisão",
           "valor": "2025-01-30",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0037",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -61567,6 +63129,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -61657,6 +63221,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -61747,6 +63313,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -61842,6 +63410,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -61959,6 +63529,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -62055,6 +63627,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0319",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -62120,6 +63694,11 @@
           "campo": "Data revisão",
           "valor": "2025-02-18",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0319",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -62145,6 +63724,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -62281,6 +63862,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -62376,6 +63959,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -62466,6 +64051,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -62556,6 +64143,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -62641,6 +64230,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Tendência",
@@ -62716,6 +64307,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -62806,6 +64399,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -62925,6 +64520,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -62995,6 +64592,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -63070,6 +64669,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0322",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -63135,6 +64736,11 @@
           "campo": "Data revisão",
           "valor": "2025-09-03",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0322",
+          "coluna": 73
         }
       ],
       "acessorios": [
@@ -63221,6 +64827,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -63319,6 +64927,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -63448,6 +65058,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -63533,6 +65145,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -63623,6 +65237,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -63713,6 +65329,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -63798,6 +65416,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -63883,6 +65503,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -63963,6 +65585,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -64043,6 +65667,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -64123,6 +65749,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -64208,6 +65836,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -64303,6 +65933,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -64398,6 +66030,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0525",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -64463,6 +66097,11 @@
           "campo": "Data revisão",
           "valor": "2026-06-11",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0525",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -64488,6 +66127,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "ID0522",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -64553,6 +66194,11 @@
           "campo": "Data revisão",
           "valor": "2026-06-11",
           "coluna": 28
+        },
+        {
+          "campo": "no lugar de",
+          "valor": "ID0522",
+          "coluna": 73
         }
       ],
       "acessorios": [],
@@ -64578,6 +66224,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -64658,6 +66306,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -64728,6 +66378,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -64803,6 +66455,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -64878,6 +66532,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -64953,6 +66609,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -65028,6 +66686,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -65103,6 +66763,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "não tem",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -65188,6 +66850,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -65273,6 +66937,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -65358,6 +67024,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -65428,6 +67096,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -65508,6 +67178,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -65588,6 +67260,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -65668,6 +67342,8 @@
       "reposicao": "não",
       "info_fotos": "ok",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -65748,6 +67424,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -65833,6 +67511,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -65918,6 +67598,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -65988,6 +67670,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -66048,6 +67732,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -66108,6 +67794,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -66168,6 +67856,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -66233,6 +67923,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -66298,6 +67990,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Alocação",
@@ -66363,6 +68057,8 @@
       "reposicao": "não",
       "info_fotos": "",
       "combinacoes": "ok",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -66433,6 +68129,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -66574,6 +68272,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "Modelagem",
@@ -66659,6 +68359,8 @@
       "reposicao": "não",
       "info_fotos": "falta",
       "combinacoes": "falta",
+      "no_lugar_de": "",
+      "substituida_por": "",
       "detalhes": [
         {
           "campo": "formalidade",
@@ -465558,7 +467260,7 @@
     "campos_com_opcoes_faltantes": 0,
     "faltantes": {}
   },
-  "ultima_atualizacao": "2026-07-10T23:37:16.437419",
+  "ultima_atualizacao": "2026-07-21T01:26:39.071838",
   "total_pecas": 721,
   "total_looks": 6888
 }

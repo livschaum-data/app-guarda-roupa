@@ -1335,6 +1335,15 @@ body {
     color: color-mix(in srgb, #ec4899 72%, var(--cor-texto));
 }
 
+.ficha-grupo-marrom {
+    border-color: #a16207;
+    background: color-mix(in srgb, #a16207 22%, var(--cor-fundo-card));
+}
+
+.ficha-grupo-marrom span {
+    color: color-mix(in srgb, #92400e 76%, var(--cor-texto));
+}
+
 .ficha-grupo-outros {
     border-color: var(--cor-borda);
 }
@@ -7107,6 +7116,12 @@ html[data-theme="dark"] .navbar {
     background: rgba(236, 72, 153, 0.14);
 }
 
+:is(#modal-peca, #modal-look-detalhes) .ficha-grupo-marrom {
+    color: #d97706;
+    border-color: #a16207;
+    background: rgba(161, 98, 7, 0.16);
+}
+
 :is(#modal-peca, #modal-look-detalhes) .ficha-grupo-outros {
     color: var(--cor-texto-cinza);
     border-color: var(--cor-borda);
@@ -7165,6 +7180,12 @@ html[data-theme="dark"] .navbar {
 #modal-peca .detalhes-peca-lista .ficha-grupo-rosa {
     border-color: #ec4899;
     background: rgba(236, 72, 153, 0.14);
+}
+
+#modal-peca .form-edicao-peca .ficha-grupo-marrom,
+#modal-peca .detalhes-peca-lista .ficha-grupo-marrom {
+    border-color: #a16207;
+    background: rgba(161, 98, 7, 0.16);
 }
 
 #ficha-look-modal .form-edicao-look > .campo-edicao-look,

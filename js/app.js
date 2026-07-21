@@ -40,6 +40,14 @@ const CAMPOS_IMPORTADOS_PECA = [
         prop: 'data_revisao',
         aliases: ['Data revisão', 'Data revisao'],
     },
+    {
+        prop: 'no_lugar_de',
+        aliases: ['No lugar de', 'no lugar de'],
+    },
+    {
+        prop: 'substituida_por',
+        aliases: ['Substituída por', 'Substituida por', 'substituida por'],
+    },
 ];
 const GRUPOS_FICHA_PECA = [
     {
@@ -113,6 +121,13 @@ const GRUPOS_FICHA_PECA = [
             { chave: 'loja', label: 'Loja', aliases: ['Loja'] },
             { chave: 'tamanho', label: 'Tamanho', aliases: ['Tamanho'] },
             { chave: 'custo', label: 'Custo', aliases: ['Custo'] },
+        ],
+    },
+    {
+        classe: 'ficha-grupo-marrom',
+        campos: [
+            { chave: 'no_lugar_de', label: 'No lugar de', prop: 'no_lugar_de', aliases: ['No lugar de', 'no lugar de'] },
+            { chave: 'substituida_por', label: 'Substituída por', prop: 'substituida_por', aliases: ['Substituída por', 'Substituida por', 'substituida por'] },
         ],
     },
 ];
