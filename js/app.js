@@ -3063,6 +3063,7 @@ function abrirDatasUsoLook(lookId) {
 
     modal.classList.add('modal-em-pilha');
     modal.style.display = 'flex';
+    modal.scrollTop = 0;
 }
 
 function fecharModalDatasUsoLook() {
@@ -3445,6 +3446,7 @@ function abrirEdicaoLoteLooksPeca() {
 
     modal.classList.add('modal-em-pilha');
     modal.style.display = 'flex';
+    modal.scrollTop = 0;
 }
 
 function fecharModalEdicaoLoteLooks() {

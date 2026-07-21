@@ -1174,6 +1174,10 @@ body {
     z-index: 260;
 }
 
+#modal-edicao-lote-looks.modal-em-pilha {
+    z-index: 340;
+}
+
 .modal-content {
     background: white;
     border-radius: var(--radius);
