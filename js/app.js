@@ -3307,7 +3307,18 @@ function criarFiltrosLooksPeca(looks) {
 }
 
 function obterUtilizacaoLook(look) {
-    return look?.utilizacao_calc || look?.utilizacao || look?.basicos?.['Utilização'] || look?.basicos?.utilizacao || '';
+    const calculados = obterCalculadosAtuaisLook(look);
+    return calculados?.utilizacao_calc || look?.utilizacao_calc || look?.utilizacao || look?.basicos?.['Utilização'] || look?.basicos?.utilizacao || '';
+}
+
+function obterCalculadosAtuaisLook(look) {
+    const pecas = [0, 1, 2]
+        .map(indice => obterPecaLookPorIndice(look, indice))
+        .map(id => String(id || '').trim().toUpperCase())
+        .filter(Boolean);
+
+    if (pecas.length === 0 || !pecas.some(id => app.pecas?.[id])) return null;
+    return calcularDadosLookPorPecas(pecas);
 }
 
 function obterCategoriaLook(look) {
@@ -5325,6 +5336,7 @@ function criarCardLook(look) {
         .join(' · ');
     const tags = (look.ocasioes || []).slice(0, 4).map(ocasiao => `<span>${ocasiao.descricao}</span>`).join('');
     const lookId = look.id || look.nome || '';
+    const utilizacao = obterUtilizacaoLook(look);
     const totalUsos = contarUsosLook(look.id);
 
     card.innerHTML = `
@@ -5335,7 +5347,7 @@ function criarCardLook(look) {
         </div>
         <div class="look-card-usos">${formatarTotalUsosLook(totalUsos)}</div>
         <div class="look-card-info">
-            <h3>${escapeHtml(lookId)}</h3>
+            <h3>${escapeHtml(lookId)}${valorVisivel(utilizacao) ? ` <em>${escapeHtml(utilizacao)}</em>` : ''}</h3>
             <p>${pecasTexto}</p>
             <div class="tags-look">${tags}</div>
             <div class="look-card-acoes">
@@ -5412,26 +5424,33 @@ function renderFichaLookLeitura(look, ficha) {
 }
 
 function criarCamposLookHtml(look) {
+    const calculados = obterCalculadosAtuaisLook(look) || {};
+    const lookAtual = {
+        ...look,
+        ...calculados,
+        local: calculados.local_calc || look.local,
+        utilizacao: calculados.utilizacao_calc || look.utilizacao,
+    };
     const campos = [
-        ['ID', look.id, 'ficha-grupo-azul'],
-        ['Data de atualização', formatarDataHoraFicha(obterDataAtualizacaoLook(look)), 'ficha-grupo-azul'],
-        ['Peça 1', obterPecaLookPorIndice(look, 0), 'ficha-grupo-laranja'],
-        ['Peça 2', obterPecaLookPorIndice(look, 1), 'ficha-grupo-laranja'],
-        ['Peça 3', obterPecaLookPorIndice(look, 2), 'ficha-grupo-laranja'],
-        ['Categoria', obterCategoriaLook(look), 'ficha-grupo-vermelho'],
-        ['Indicador', obterIndicadorLook(look, look.id), 'ficha-grupo-vermelho'],
-        ['Local', look.local_calc || look.local || obterCampoLookPorNomes(look, ['Local', 'local']), 'ficha-grupo-roxo'],
-        ['Situação', obterSituacaoLook(look), 'ficha-grupo-verde'],
-        ['Utilização', obterUtilizacaoLook(look), 'ficha-grupo-amarelo'],
-        ['Clima', formatarClimaLook(look), 'ficha-grupo-amarelo'],
-        ['Data criação', formatarDataLookFicha(obterDataCriacaoLook(look)), 'ficha-grupo-azul-claro'],
-        ['Data última alteração', formatarDataLookFicha(obterDataUltimaAlteracaoLook(look)), 'ficha-grupo-azul-claro'],
-        ['HTT', obterHttLook(look), 'ficha-grupo-rosa'],
-        ['Data criação HTT', formatarDataLookFicha(obterCampoLookPorNomes(look, ['Data criação HTT', 'Data criacao HTT', 'Data HTT'])), 'ficha-grupo-rosa'],
-        ['Data revisão HTT', formatarDataLookFicha(obterCampoLookPorNomes(look, ['Data revisão HTT', 'Data revisao HTT', 'Revisão HTT', 'Revisao HTT'])), 'ficha-grupo-rosa'],
-        ['Local peças', formatarListaCampoLook(look.locais_pecas), 'ficha-grupo-laranja'],
-        ['Utilização peças', formatarListaCampoLook(look.utilizacoes_pecas), 'ficha-grupo-laranja'],
-        ['Nível aquecimento peças', formatarListaCampoLook(look.aquecimentos), 'ficha-grupo-laranja'],
+        ['ID', lookAtual.id, 'ficha-grupo-azul'],
+        ['Data de atualização', formatarDataHoraFicha(obterDataAtualizacaoLook(lookAtual)), 'ficha-grupo-azul'],
+        ['Peça 1', obterPecaLookPorIndice(lookAtual, 0), 'ficha-grupo-laranja'],
+        ['Peça 2', obterPecaLookPorIndice(lookAtual, 1), 'ficha-grupo-laranja'],
+        ['Peça 3', obterPecaLookPorIndice(lookAtual, 2), 'ficha-grupo-laranja'],
+        ['Categoria', obterCategoriaLook(lookAtual), 'ficha-grupo-vermelho'],
+        ['Indicador', obterIndicadorLook(lookAtual, lookAtual.id), 'ficha-grupo-vermelho'],
+        ['Local', lookAtual.local_calc || lookAtual.local || obterCampoLookPorNomes(lookAtual, ['Local', 'local']), 'ficha-grupo-roxo'],
+        ['Situação', obterSituacaoLook(lookAtual), 'ficha-grupo-verde'],
+        ['Utilização', obterUtilizacaoLook(lookAtual), 'ficha-grupo-amarelo'],
+        ['Clima', formatarClimaLook(lookAtual), 'ficha-grupo-amarelo'],
+        ['Data criação', formatarDataLookFicha(obterDataCriacaoLook(lookAtual)), 'ficha-grupo-azul-claro'],
+        ['Data última alteração', formatarDataLookFicha(obterDataUltimaAlteracaoLook(lookAtual)), 'ficha-grupo-azul-claro'],
+        ['HTT', obterHttLook(lookAtual), 'ficha-grupo-rosa'],
+        ['Data criação HTT', formatarDataLookFicha(obterCampoLookPorNomes(lookAtual, ['Data criação HTT', 'Data criacao HTT', 'Data HTT'])), 'ficha-grupo-rosa'],
+        ['Data revisão HTT', formatarDataLookFicha(obterCampoLookPorNomes(lookAtual, ['Data revisão HTT', 'Data revisao HTT', 'Revisão HTT', 'Revisao HTT'])), 'ficha-grupo-rosa'],
+        ['Local peças', formatarListaCampoLook(lookAtual.locais_pecas), 'ficha-grupo-laranja'],
+        ['Utilização peças', formatarListaCampoLook(lookAtual.utilizacoes_pecas), 'ficha-grupo-laranja'],
+        ['Nível aquecimento peças', formatarListaCampoLook(lookAtual.aquecimentos), 'ficha-grupo-laranja'],
     ];
 
     return campos

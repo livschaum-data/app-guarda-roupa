@@ -1722,6 +1722,14 @@ body {
     white-space: nowrap;
 }
 
+.look-card-info h3 em {
+    margin-left: 6px;
+    color: var(--cor-texto-cinza);
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 750;
+}
+
 .look-card-info p {
     margin: 0 0 8px;
     color: var(--cor-texto-cinza);
