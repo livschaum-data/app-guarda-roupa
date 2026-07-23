@@ -319,6 +319,18 @@
                     <strong id="ocasioes-temperaturas">-</strong>
                 </section>
 
+                <section class="ocasioes-card ocasioes-bloco ocasioes-ficha">
+                    <div class="ocasioes-bloco-topo">
+                        <h3>Ficha da ocasião</h3>
+                        <div class="ocasioes-ficha-acoes">
+                            <button id="ocasioes-editar-ficha" type="button" class="btn-secundario" onclick="editarFichaOcasiao()">Editar</button>
+                            <button id="ocasioes-cancelar-ficha" type="button" class="btn-secundario" onclick="cancelarEdicaoFichaOcasiao()" style="display:none;">Cancelar</button>
+                            <button id="ocasioes-salvar-ficha" type="button" class="btn-principal" onclick="salvarFichaOcasiao()" style="display:none;">Salvar</button>
+                        </div>
+                    </div>
+                    <div id="ocasioes-ficha-conteudo" class="ocasioes-ficha-conteudo"></div>
+                </section>
+
                 <section class="ocasioes-card ocasioes-bloco ocasioes-grafico">
                     <div class="ocasioes-bloco-topo">
                         <h3>HTT atual e necessarios</h3>
@@ -341,6 +353,7 @@
                         <h3>Looks</h3>
                         <span id="ocasioes-looks-contagem">0</span>
                     </div>
+                    <div id="ocasioes-looks-acoes" class="ocasioes-looks-acoes"></div>
                     <div id="ocasioes-lista-looks" class="ocasioes-mini-grid"></div>
                 </section>
 

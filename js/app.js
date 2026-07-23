@@ -146,6 +146,8 @@ const app = {
     pecas: {},
     pecasPersonalizadas: {},
     looks: {},
+    mapaOcasioesBase: {},
+    ocasioesPersonalizadas: {},
     mapaOcasioes: {},
     climas: {},
     dimensoes: {},
@@ -178,6 +180,7 @@ const app = {
     sincronizando: false,
     ultimaSincronizacaoSupabase: null,
     supabaseSuportaPecas: true,
+    supabaseSuportaOcasioes: true,
     forcarEnvioLocalSupabase: false,
     recuperandoSenhaSupabase: false,
     
@@ -202,6 +205,8 @@ const app = {
         lookId: '',
         eixoGrafico: 'climas',
     },
+    editandoOcasiao: false,
+    looksOcasioesSelecionados: [],
     dropdownOcasioesAberto: null,
 
     // Filtros do card "Não uso há..." no histórico
@@ -810,7 +815,8 @@ async function carregarDadosJSON() {
         // Atribui ao app
         app.pecas = dados.pecas;
         app.looks = dados.looks;
-        app.mapaOcasioes = dados.ocasioes || {};
+        app.mapaOcasioesBase = dados.ocasioes || {};
+        app.mapaOcasioes = { ...app.mapaOcasioesBase };
         app.climas = dados.climas || {};
         app.dimensoes = dados.dimensoes || {};
         app.validacaoDimensoes = dados.validacao_dimensoes || {};
@@ -862,7 +868,18 @@ function carregarDados() {
         app.looksFavoritos = {};
     }
 
-    if (Object.keys(app.pecasPersonalizadas || {}).length > 0) {
+    try {
+        const ocasioesSalvas = localStorage.getItem('app_ocasioes_personalizadas');
+        app.ocasioesPersonalizadas = ocasioesSalvas ? JSON.parse(ocasioesSalvas) : {};
+        if (!app.ocasioesPersonalizadas || Array.isArray(app.ocasioesPersonalizadas)) app.ocasioesPersonalizadas = {};
+        aplicarOcasioesPersonalizadas();
+    } catch (erro) {
+        console.warn('Ocasiões personalizadas inválidas. Ignorando alterações locais.', erro);
+        app.ocasioesPersonalizadas = {};
+        aplicarOcasioesPersonalizadas();
+    }
+
+    if (Object.keys(app.pecasPersonalizadas || {}).length > 0 || Object.keys(app.ocasioesPersonalizadas || {}).length > 0) {
         salvarDadosLocal();
     }
 
@@ -1042,10 +1059,10 @@ async function inicializarSupabase() {
 
     if (app.usuarioSupabase) {
         const baixou = await baixarDadosSupabase({ silencioso: true });
-        if (baixou && app.supabaseSuportaPecas) {
+        if (baixou && app.supabaseSuportaPecas && app.supabaseSuportaOcasioes) {
             atualizarStatusSupabase('Conectado. Dados do app atualizados pela nuvem.', 'sucesso');
         } else if (baixou) {
-            atualizarStatusSupabase('Conectado, mas falta atualizar o schema para sincronizar as peças.', 'erro');
+            atualizarStatusSupabase('Conectado, mas falta atualizar o schema para sincronizar todas as edições.', 'erro');
         }
     } else {
         atualizarStatusSupabase('Entre na sua conta para sincronizar peças, looks e histórico.');
@@ -1060,10 +1077,10 @@ async function inicializarSupabase() {
         atualizarUISupabase(app.usuarioSupabase);
         if (app.usuarioSupabase && !app.recuperandoSenhaSupabase) {
             const baixou = await baixarDadosSupabase({ silencioso: true });
-            if (baixou && app.supabaseSuportaPecas) {
+            if (baixou && app.supabaseSuportaPecas && app.supabaseSuportaOcasioes) {
                 atualizarStatusSupabase('Conta conectada e dados atualizados.', 'sucesso');
             } else if (baixou) {
-                atualizarStatusSupabase('Conta conectada, mas falta atualizar o schema das peças.', 'erro');
+                atualizarStatusSupabase('Conta conectada, mas falta atualizar o schema para sincronizar todas as edições.', 'erro');
             }
         } else if (!app.recuperandoSenhaSupabase) {
             atualizarStatusSupabase('Entre na sua conta para sincronizar peças, looks e histórico.');
@@ -1354,15 +1371,19 @@ async function baixarDadosSupabase({ silencioso = false } = {}) {
 
     let { data, error } = await app.supabase
         .from('wardrobe_sync')
-        .select('historico, looks_favoritos, pecas_personalizadas')
+        .select('historico, looks_favoritos, pecas_personalizadas, ocasioes_personalizadas')
         .eq('user_id', app.usuarioSupabase.id)
         .maybeSingle();
 
     app.supabaseSuportaPecas = !(error && /pecas_personalizadas/i.test(`${error.message || ''} ${error.details || ''}`));
-    if (!app.supabaseSuportaPecas) {
+    app.supabaseSuportaOcasioes = !(error && /ocasioes_personalizadas/i.test(`${error.message || ''} ${error.details || ''}`));
+    if (!app.supabaseSuportaPecas || !app.supabaseSuportaOcasioes) {
+        const colunas = ['historico', 'looks_favoritos'];
+        if (app.supabaseSuportaPecas) colunas.push('pecas_personalizadas');
+        if (app.supabaseSuportaOcasioes) colunas.push('ocasioes_personalizadas');
         ({ data, error } = await app.supabase
             .from('wardrobe_sync')
-            .select('historico, looks_favoritos')
+            .select(colunas.join(', '))
             .eq('user_id', app.usuarioSupabase.id)
             .maybeSingle());
     }
@@ -1404,6 +1425,7 @@ async function enviarDadosSupabaseAntigo({ silencioso = false, mesclarAntes = tr
             historico: app.historico,
             looks_favoritos: app.looksFavoritos,
             pecas_personalizadas: app.pecasPersonalizadas,
+            ocasioes_personalizadas: app.ocasioesPersonalizadas,
             updated_at: new Date().toISOString(),
         }, { onConflict: 'user_id' });
 
@@ -1438,25 +1460,28 @@ async function enviarDadosSupabase({ silencioso = false, mesclarAntes = true } =
             }
         }
 
-        const montarPayload = incluirPecas => ({
+        const montarPayload = (incluirPecas, incluirOcasioes) => ({
             user_id: app.usuarioSupabase.id,
             historico: app.historico,
             looks_favoritos: app.looksFavoritos,
             ...(incluirPecas ? { pecas_personalizadas: app.pecasPersonalizadas } : {}),
+            ...(incluirOcasioes ? { ocasioes_personalizadas: app.ocasioesPersonalizadas } : {}),
             updated_at: new Date().toISOString(),
         });
 
-        const enviarPayload = incluirPecas => app.supabase
+        const enviarPayload = (incluirPecas, incluirOcasioes) => app.supabase
             .from('wardrobe_sync')
-            .upsert(montarPayload(incluirPecas), { onConflict: 'user_id' })
+            .upsert(montarPayload(incluirPecas, incluirOcasioes), { onConflict: 'user_id' })
             .select('updated_at')
             .single();
 
-        let { data, error } = await enviarPayload(app.supabaseSuportaPecas !== false);
+        let { data, error } = await enviarPayload(app.supabaseSuportaPecas !== false, app.supabaseSuportaOcasioes !== false);
 
-        if (error && /pecas_personalizadas/i.test(`${error.message || ''} ${error.details || ''}`)) {
-            app.supabaseSuportaPecas = false;
-            ({ data, error } = await enviarPayload(false));
+        if (error && /pecas_personalizadas|ocasioes_personalizadas/i.test(`${error.message || ''} ${error.details || ''}`)) {
+            const textoErro = `${error.message || ''} ${error.details || ''}`;
+            if (/pecas_personalizadas/i.test(textoErro)) app.supabaseSuportaPecas = false;
+            if (/ocasioes_personalizadas/i.test(textoErro)) app.supabaseSuportaOcasioes = false;
+            ({ data, error } = await enviarPayload(app.supabaseSuportaPecas !== false, app.supabaseSuportaOcasioes !== false));
         }
 
         if (error) {
@@ -1469,8 +1494,11 @@ async function enviarDadosSupabase({ silencioso = false, mesclarAntes = true } =
             const avisoPecas = app.supabaseSuportaPecas === false
                 ? ' Peças personalizadas ainda não foram enviadas porque falta atualizar o schema do Supabase.'
                 : '';
+            const avisoOcasioes = app.supabaseSuportaOcasioes === false
+                ? ' Ocasiões editadas ainda não foram enviadas porque falta atualizar o schema do Supabase.'
+                : '';
             atualizarStatusSupabase(
-                `Dados enviados para a nuvem (${app.historico.length} registros, ${Object.keys(app.looksFavoritos).length} looks criados). Ultima gravacao: ${formatarDataHoraSupabase(data?.updated_at)}.${avisoPecas}`,
+                `Dados enviados para a nuvem (${app.historico.length} registros, ${Object.keys(app.looksFavoritos).length} looks criados). Ultima gravacao: ${formatarDataHoraSupabase(data?.updated_at)}.${avisoPecas}${avisoOcasioes}`,
                 'sucesso'
             );
         }
@@ -1612,6 +1640,25 @@ function aplicarPecasPersonalizadas() {
     app.pecas = { ...pecasBase, ...personalizadas };
 }
 
+function aplicarOcasioesPersonalizadas() {
+    const base = { ...(app.mapaOcasioesBase || app.mapaOcasioes || {}) };
+    Object.entries(app.ocasioesPersonalizadas || {}).forEach(([codigo, ocasiao]) => {
+        if (!ocasiao || typeof ocasiao !== 'object') return;
+        if (ocasiao.removida) {
+            delete base[codigo];
+            return;
+        }
+        base[codigo] = {
+            ...(base[codigo] || {}),
+            ...ocasiao,
+            codigo,
+        };
+    });
+    app.mapaOcasioes = base;
+    const tiposOcasiao = [...new Set(Object.values(app.mapaOcasioes).map(item => item.tipo).filter(Boolean))];
+    if (tiposOcasiao.length > 0) app.ocasioes = tiposOcasiao;
+}
+
 function obterDataAtualizacaoLook(look) {
     if (valorVisivel(look?.editadoEm)) return look.editadoEm;
 
@@ -1652,6 +1699,7 @@ function salvarDadosLocal() {
     localStorage.setItem('app_historico', JSON.stringify(app.historico));
     localStorage.setItem('app_looks_favs', JSON.stringify(app.looksFavoritos));
     localStorage.setItem('app_pecas_personalizadas', JSON.stringify(app.pecasPersonalizadas));
+    localStorage.setItem('app_ocasioes_personalizadas', JSON.stringify(app.ocasioesPersonalizadas));
 }
 
 function timestampValor(valor) {
@@ -1674,6 +1722,10 @@ function timestampLookSync(look) {
 
 function timestampPecaSync(peca) {
     return timestampValor(peca?.editadaEm || peca?.updatedAt || peca?.updated_at || obterDataAtualizacaoPeca(peca));
+}
+
+function timestampOcasiaoSync(ocasiao) {
+    return timestampValor(ocasiao?.editadaEm || ocasiao?.updatedAt || ocasiao?.updated_at || ocasiao?.data_revisao);
 }
 
 function mesclarMapaPorMaisRecente(local = {}, nuvem = {}, obterTimestamp) {
@@ -1731,7 +1783,9 @@ function mesclarDadosNuvem(data) {
 
     app.looksFavoritos = mesclarMapaPorMaisRecente(app.looksFavoritos, data.looks_favoritos || {}, timestampLookSync);
     app.pecasPersonalizadas = mesclarMapaPorMaisRecente(app.pecasPersonalizadas, data.pecas_personalizadas || {}, timestampPecaSync);
+    app.ocasioesPersonalizadas = mesclarMapaPorMaisRecente(app.ocasioesPersonalizadas, data.ocasioes_personalizadas || {}, timestampOcasiaoSync);
     aplicarPecasPersonalizadas();
+    aplicarOcasioesPersonalizadas();
     app.mapaUsosLooksAtual = null;
     app.indiceLooksPorPecasAtual = null;
     garantirLooksFavoritosSemColisao();
@@ -1909,7 +1963,7 @@ function normalizarTexto(texto) {
 function corrigirTextoMojibake(texto) {
     let resultado = String(texto || '');
 
-    for (let tentativa = 0; tentativa < 2 && /[ÃÂ]/.test(resultado); tentativa++) {
+    for (let tentativa = 0; tentativa < 2 && /[\u00c3\u00c2]/.test(resultado); tentativa++) {
         try {
             resultado = decodeURIComponent(escape(resultado));
         } catch {
@@ -6447,6 +6501,7 @@ function renderPaginaOcasioes() {
     document.getElementById('ocasioes-data-revisao').textContent = resumoOcasiao.dataRevisao;
     document.getElementById('ocasioes-temperaturas').textContent = obterTemperaturasOcasiao(looks);
 
+    renderFichaOcasiao(codigosSelecionados, looks);
     renderLooksPaginaOcasioes(looks);
     renderGraficoClimasOcasioes(looks);
     renderSugestoesOcasioes(looks);
@@ -6489,12 +6544,14 @@ function lookTemOcasiao(look, codigo) {
     const alvo = normalizarTexto(codigo);
     const info = app.mapaOcasioes?.[codigo];
     const descricao = normalizarTexto(info?.descricao || '');
+    const valores = obterValoresOcasiaoLook(look).map(valor => normalizarTexto(valor));
 
     if ((look.ocasioes || []).some(item => normalizarTexto(item.codigo) === alvo || normalizarTexto(item.descricao) === descricao)) {
         return true;
     }
 
-    return descricao && obterValoresOcasiaoLook(look).some(valor => normalizarTexto(valor) === descricao);
+    if (descricao && valores.some(valor => valor === descricao)) return true;
+    return valores.some(valor => valor.includes(alvo));
 }
 
 function lookEhHTT(look) {
@@ -6523,21 +6580,133 @@ function renderLooksPaginaOcasioes(looks) {
     const contador = document.getElementById('ocasioes-looks-contagem');
     if (!container) return;
 
+    renderAcoesLooksOcasioes(looks);
     if (contador) contador.textContent = looks.length;
     container.innerHTML = looks.length
         ? looks.map(look => criarMiniCardLookOcasioes(look)).join('')
         : '<p class="texto-ajuda">Nenhum look encontrado para essa ocasiao.</p>';
 }
 
+function renderAcoesLooksOcasioes(looks) {
+    const container = document.getElementById('ocasioes-looks-acoes');
+    if (!container) return;
+
+    const idsDisponiveis = new Set(looks.map(look => look.id));
+    app.looksOcasioesSelecionados = (app.looksOcasioesSelecionados || []).filter(id => idsDisponiveis.has(id));
+    const selecionados = app.looksOcasioesSelecionados.length;
+    const opcoesOcasioes = criarOptionsOcasioesLook([]);
+    const opcoesSugestoes = criarOptionsSugestoesLook([]);
+
+    container.innerHTML = `
+        <div class="ocasioes-looks-selecao">
+            <button type="button" class="btn-secundario" onclick="selecionarTodosLooksOcasioes()">Selecionar todos</button>
+            <button type="button" class="btn-secundario" onclick="limparSelecaoLooksOcasioes()">Limpar</button>
+            <span>${selecionados} selecionado${selecionados === 1 ? '' : 's'}</span>
+        </div>
+        <div class="ocasioes-lote">
+            <label>
+                <span>Acessório/calçado</span>
+                <select id="ocasioes-lote-acessorio">
+                    <option value="">Selecione</option>
+                    ${opcoesSugestoes}
+                </select>
+            </label>
+            <button type="button" class="btn-secundario" onclick="aplicarAcessorioLooksOcasioes('adicionar')">Adicionar</button>
+            <button type="button" class="btn-secundario" onclick="aplicarAcessorioLooksOcasioes('remover')">Remover</button>
+            <label>
+                <span>Ocasião</span>
+                <select id="ocasioes-lote-ocasiao">
+                    <option value="">Selecione</option>
+                    ${opcoesOcasioes}
+                </select>
+            </label>
+            <button type="button" class="btn-secundario" onclick="aplicarOcasiaoLooksOcasioes('adicionar')">Adicionar</button>
+            <button type="button" class="btn-secundario" onclick="aplicarOcasiaoLooksOcasioes('remover')">Remover</button>
+        </div>
+    `;
+}
+
 function criarMiniCardLookOcasioes(look) {
     const selecionado = app.filtrosOcasioes.lookId === look.id;
+    const marcado = (app.looksOcasioesSelecionados || []).includes(look.id);
     return `
-        <button type="button" class="ocasioes-mini-card ${selecionado ? 'selecionado' : ''}" onclick="selecionarLookOcasioes('${escapeHtml(look.id)}')" title="Filtrar acessorios por este look">
+        <div class="ocasioes-mini-card ocasioes-mini-card-look ${selecionado ? 'selecionado' : ''} ${marcado ? 'marcado' : ''}">
+            <label class="ocasioes-mini-check">
+                <input type="checkbox" ${marcado ? 'checked' : ''} onchange="alternarSelecaoLookOcasioes('${escapeHtml(look.id)}')">
+                <span>Selecionar</span>
+            </label>
             <img src="${getCaminhoFotoLook(look.id)}" alt="${escapeHtml(look.id)}"
                  onerror="this.src='${imagemFallback()}';">
             <strong>${escapeHtml(look.id)}</strong>
-        </button>
+            <div class="ocasioes-mini-acoes">
+                <button type="button" class="btn-secundario" onclick="mostrarDetalhesLook('${escapeHtml(look.id)}')">Ficha</button>
+                <button type="button" class="btn-secundario" onclick="selecionarLookOcasioes('${escapeHtml(look.id)}')" title="Filtrar acessórios por este look">Filtrar</button>
+            </div>
+        </div>
     `;
+}
+
+function alternarSelecaoLookOcasioes(lookId) {
+    const selecionados = new Set(app.looksOcasioesSelecionados || []);
+    if (selecionados.has(lookId)) {
+        selecionados.delete(lookId);
+    } else {
+        selecionados.add(lookId);
+    }
+    app.looksOcasioesSelecionados = [...selecionados];
+    renderPaginaOcasioes();
+}
+
+function selecionarTodosLooksOcasioes() {
+    app.looksOcasioesSelecionados = obterLooksPaginaOcasioes(app.filtrosOcasioes.ocasiao || []).map(look => look.id);
+    renderPaginaOcasioes();
+}
+
+function limparSelecaoLooksOcasioes() {
+    app.looksOcasioesSelecionados = [];
+    renderPaginaOcasioes();
+}
+
+function obterIdsLooksSelecionadosOcasioes() {
+    return [...new Set(app.looksOcasioesSelecionados || [])].filter(id => Boolean(obterLookPorId(id)));
+}
+
+function aplicarAcessorioLooksOcasioes(acao) {
+    const ids = obterIdsLooksSelecionadosOcasioes();
+    const pecaId = String(document.getElementById('ocasioes-lote-acessorio')?.value || '').trim().toUpperCase();
+    if (!ids.length) {
+        alert('Selecione pelo menos um look.');
+        return;
+    }
+    if (!pecaId || !app.pecas[pecaId]) {
+        alert('Selecione um acessório ou calçado válido.');
+        return;
+    }
+
+    if (acao === 'remover') {
+        removerAcessorioDosLooks(ids, pecaId);
+    } else {
+        adicionarAcessorioAosLooks(ids, pecaId);
+    }
+}
+
+function aplicarOcasiaoLooksOcasioes(acao) {
+    const ids = obterIdsLooksSelecionadosOcasioes();
+    const codigo = String(document.getElementById('ocasioes-lote-ocasiao')?.value || '').trim();
+    if (!ids.length) {
+        alert('Selecione pelo menos um look.');
+        return;
+    }
+    if (!codigo || !app.mapaOcasioes[codigo]) {
+        alert('Selecione uma ocasião válida.');
+        return;
+    }
+
+    if (acao === 'remover') {
+        removerOcasioesDosLooks(ids, [codigo]);
+    } else {
+        adicionarOcasioesAosLooks(ids, [codigo]);
+    }
 }
 
 function renderGraficoClimasOcasioes(looks) {
@@ -6615,6 +6784,302 @@ function obterGruposGraficoOcasioes() {
             necessario,
         };
     });
+}
+
+function renderFichaOcasiao(codigosSelecionados, looks) {
+    const container = document.getElementById('ocasioes-ficha-conteudo');
+    const botaoEditar = document.getElementById('ocasioes-editar-ficha');
+    const botaoSalvar = document.getElementById('ocasioes-salvar-ficha');
+    const botaoCancelar = document.getElementById('ocasioes-cancelar-ficha');
+    if (!container) return;
+
+    const codigo = codigosSelecionados.length === 1 ? codigosSelecionados[0] : '';
+    const ocasiao = codigo ? app.mapaOcasioes?.[codigo] || {} : null;
+    const podeEditar = Boolean(codigo && ocasiao);
+    if (botaoEditar) botaoEditar.style.display = podeEditar && !app.editandoOcasiao ? '' : 'none';
+    if (botaoSalvar) botaoSalvar.style.display = podeEditar && app.editandoOcasiao ? '' : 'none';
+    if (botaoCancelar) botaoCancelar.style.display = podeEditar && app.editandoOcasiao ? '' : 'none';
+
+    if (!podeEditar) {
+        app.editandoOcasiao = false;
+        container.innerHTML = '<p class="texto-ajuda">Selecione uma única ocasião para ver e editar a ficha.</p>';
+        return;
+    }
+
+    const looksCount = looks.length;
+    if (app.editandoOcasiao) {
+        const tipos = [...new Set([
+            ...Object.values(app.mapaOcasioes || {}).map(item => item.tipo).filter(Boolean),
+            ...(app.ocasioes || []),
+        ])].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+        container.innerHTML = `
+            <div class="ocasioes-ficha-form">
+                <label>
+                    <span>Código</span>
+                    <input id="ocasiao-edit-codigo" type="text" value="${escapeHtml(codigo)}">
+                </label>
+                <label>
+                    <span>Nome</span>
+                    <input id="ocasiao-edit-nome" type="text" value="${escapeHtml(ocasiao.descricao || '')}">
+                </label>
+                <label>
+                    <span>Tipo</span>
+                    <input id="ocasiao-edit-tipo" type="text" list="ocasioes-tipos-lista" value="${escapeHtml(ocasiao.tipo || '')}">
+                    <datalist id="ocasioes-tipos-lista">
+                        ${tipos.map(tipo => `<option value="${escapeHtml(tipo)}"></option>`).join('')}
+                    </datalist>
+                </label>
+                <label>
+                    <span>Data de revisão</span>
+                    <input id="ocasiao-edit-data-revisao" type="date" value="${escapeHtml(ocasiao.data_revisao || '')}">
+                </label>
+                <label>
+                    <span>Looks</span>
+                    <input type="text" value="${looksCount}" disabled>
+                </label>
+                <div class="ocasioes-adicionar-look">
+                    <label>
+                        <span>Pesquisar look para adicionar</span>
+                        <input id="ocasiao-look-busca" type="search" list="ocasioes-looks-disponiveis" placeholder="Ex.: AL0001">
+                        <datalist id="ocasioes-looks-disponiveis">
+                            ${obterTodosLooks().map(look => `<option value="${escapeHtml(look.id)}">${escapeHtml(look.id)}</option>`).join('')}
+                        </datalist>
+                    </label>
+                    <button type="button" class="btn-secundario" onclick="adicionarLookPesquisadoNaOcasiao()">Adicionar</button>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = `
+        <div class="ficha-peca ocasioes-ficha-propriedades">
+            ${criarCampoFichaHtml('Código', codigo, 'ficha-grupo-azul')}
+            ${criarCampoFichaHtml('Nome', ocasiao.descricao || codigo, 'ficha-grupo-vermelho')}
+            ${criarCampoFichaHtml('Tipo', ocasiao.tipo || '-', 'ficha-grupo-roxo')}
+            ${criarCampoFichaHtml('Data revisão', ocasiao.data_revisao ? formatarDataBR(ocasiao.data_revisao) : '-', 'ficha-grupo-azul-claro')}
+            ${criarCampoFichaHtml('Looks', looksCount, 'ficha-grupo-verde')}
+        </div>
+    `;
+}
+
+function editarFichaOcasiao() {
+    if ((app.filtrosOcasioes.ocasiao || []).length !== 1) {
+        alert('Selecione uma única ocasião para editar.');
+        return;
+    }
+    app.editandoOcasiao = true;
+    renderPaginaOcasioes();
+}
+
+function cancelarEdicaoFichaOcasiao() {
+    app.editandoOcasiao = false;
+    renderPaginaOcasioes();
+}
+
+function salvarFichaOcasiao() {
+    const codigoAtual = (app.filtrosOcasioes.ocasiao || [])[0];
+    if (!codigoAtual) return;
+
+    const codigoNovo = String(document.getElementById('ocasiao-edit-codigo')?.value || '').trim().toUpperCase();
+    const descricao = String(document.getElementById('ocasiao-edit-nome')?.value || '').trim();
+    const tipo = String(document.getElementById('ocasiao-edit-tipo')?.value || '').trim();
+    const dataRevisao = String(document.getElementById('ocasiao-edit-data-revisao')?.value || '').trim();
+    if (!codigoNovo || !descricao) {
+        alert('Preencha pelo menos código e nome da ocasião.');
+        return;
+    }
+    if (codigoNovo !== codigoAtual && app.mapaOcasioes[codigoNovo]) {
+        alert('Já existe uma ocasião com esse código. Escolha outro código.');
+        return;
+    }
+
+    const editadaEm = new Date().toISOString();
+    const ocasiaoOriginal = app.mapaOcasioes?.[codigoAtual] || {};
+    const ocasiaoEditada = {
+        ...ocasiaoOriginal,
+        codigo: codigoNovo,
+        descricao,
+        tipo,
+        data_revisao: dataRevisao,
+        editadaEm,
+    };
+
+    if (codigoNovo !== codigoAtual) {
+        app.ocasioesPersonalizadas[codigoAtual] = {
+            ...(app.mapaOcasioes?.[codigoAtual] || {}),
+            removida: true,
+            editadaEm,
+        };
+        substituirCodigoOcasiaoNosLooks(codigoAtual, codigoNovo, ocasiaoEditada);
+    }
+
+    app.ocasioesPersonalizadas[codigoNovo] = ocasiaoEditada;
+    aplicarOcasioesPersonalizadas();
+    app.filtrosOcasioes.ocasiao = [codigoNovo];
+    app.editandoOcasiao = false;
+    salvarDados();
+    preencherFiltrosPaginaOcasioes();
+    renderPaginaOcasioes();
+}
+
+function substituirCodigoOcasiaoNosLooks(codigoAtual, codigoNovo, ocasiaoNova) {
+    obterTodosLooks()
+        .filter(look => lookTemOcasiao(look, codigoAtual))
+        .forEach(look => {
+            const editado = obterLookEditavelParaOcasioes(look.id);
+            editado.ocasioes = normalizarOcasioesLook(editado)
+                .filter(item => normalizarTexto(item.codigo) !== normalizarTexto(codigoAtual))
+                .concat([criarOcasiaoLook(codigoNovo, ocasiaoNova)]);
+            editado.ocasiao = editado.ocasioes.map(item => item.descricao).join(', ');
+            salvarLookEditadoPorOcasioes(editado);
+        });
+}
+
+function adicionarLookPesquisadoNaOcasiao() {
+    const codigo = (app.filtrosOcasioes.ocasiao || [])[0];
+    const lookId = String(document.getElementById('ocasiao-look-busca')?.value || '').trim().toUpperCase();
+    if (!codigo || !lookId) return;
+    if (!obterLookPorId(lookId)) {
+        alert('Look não encontrado.');
+        return;
+    }
+    adicionarOcasioesAosLooks([lookId], [codigo]);
+    const input = document.getElementById('ocasiao-look-busca');
+    if (input) input.value = '';
+}
+
+function obterLookEditavelParaOcasioes(lookId) {
+    const lookOriginal = obterLookPorId(lookId);
+    if (!lookOriginal) return null;
+    return {
+        ...lookOriginal,
+        id: lookId,
+        pecas: [...(lookOriginal.pecas || [])],
+        pecas_sugeridas: [...(lookOriginal.pecas_sugeridas || [])],
+        ocasioes: normalizarOcasioesLook(lookOriginal),
+        basicos: {
+            ...(lookOriginal.basicos || {}),
+            ID: lookId,
+        },
+        editadoLocalmente: true,
+        editadoEm: new Date().toISOString(),
+        substituiLookBase: Boolean(app.looks[lookId] || lookOriginal.substituiLookBase) || undefined,
+        id_original: undefined,
+    };
+}
+
+function salvarLookEditadoPorOcasioes(lookEditado) {
+    if (!lookEditado?.id) return;
+    app.looksFavoritos[lookEditado.id] = {
+        ...lookEditado,
+        ocasiao: normalizarOcasioesLook(lookEditado).map(item => item.descricao).join(', '),
+    };
+}
+
+function normalizarOcasioesLook(look) {
+    const mapa = new Map();
+    const adicionar = item => {
+        if (!item) return;
+        const codigo = String(item.codigo || '').trim();
+        const descricao = String(item.descricao || item.nome || '').trim();
+        const chave = normalizarTexto(codigo || descricao);
+        if (!chave) return;
+        const info = codigo ? app.mapaOcasioes?.[codigo] : null;
+        mapa.set(chave, {
+            codigo: codigo || obterCodigoOcasiaoPorDescricao(descricao),
+            descricao: descricao || info?.descricao || codigo,
+            tipo: item.tipo || info?.tipo || '',
+        });
+    };
+
+    (look?.ocasioes || []).forEach(adicionar);
+    if (look?.ocasiao) {
+        String(look.ocasiao).split(',').map(item => item.trim()).filter(Boolean).forEach(descricao => adicionar({ descricao }));
+    }
+
+    return [...mapa.values()];
+}
+
+function obterCodigoOcasiaoPorDescricao(descricao) {
+    const alvo = normalizarTexto(descricao);
+    if (!alvo) return '';
+    return Object.entries(app.mapaOcasioes || {}).find(([, info]) => normalizarTexto(info?.descricao) === alvo)?.[0] || '';
+}
+
+function criarOcasiaoLook(codigo, info = app.mapaOcasioes?.[codigo]) {
+    return {
+        codigo,
+        descricao: info?.descricao || codigo,
+        tipo: info?.tipo || '',
+    };
+}
+
+function adicionarOcasioesAosLooks(lookIds, codigos) {
+    const validos = (codigos || []).filter(codigo => app.mapaOcasioes?.[codigo]);
+    if (!validos.length) return;
+    lookIds.forEach(lookId => {
+        const lookEditado = obterLookEditavelParaOcasioes(lookId);
+        if (!lookEditado) return;
+        const mapa = new Map(normalizarOcasioesLook(lookEditado).map(item => [normalizarTexto(item.codigo || item.descricao), item]));
+        validos.forEach(codigo => {
+            mapa.set(normalizarTexto(codigo), criarOcasiaoLook(codigo));
+        });
+        lookEditado.ocasioes = [...mapa.values()];
+        salvarLookEditadoPorOcasioes(lookEditado);
+    });
+    finalizarEdicaoLooksOcasioes();
+}
+
+function removerOcasioesDosLooks(lookIds, codigos) {
+    const remover = new Set((codigos || []).map(normalizarTexto));
+    if (!remover.size) return;
+    lookIds.forEach(lookId => {
+        const lookEditado = obterLookEditavelParaOcasioes(lookId);
+        if (!lookEditado) return;
+        lookEditado.ocasioes = normalizarOcasioesLook(lookEditado)
+            .filter(item => !remover.has(normalizarTexto(item.codigo || item.descricao)));
+        salvarLookEditadoPorOcasioes(lookEditado);
+    });
+    finalizarEdicaoLooksOcasioes();
+}
+
+function criarSugestaoLookPorPeca(pecaId) {
+    return {
+        id: pecaId,
+        grupo: app.pecas?.[pecaId]?.tipo || '',
+    };
+}
+
+function adicionarAcessorioAosLooks(lookIds, pecaId) {
+    lookIds.forEach(lookId => {
+        const lookEditado = obterLookEditavelParaOcasioes(lookId);
+        if (!lookEditado) return;
+        const mapa = new Map((lookEditado.pecas_sugeridas || []).filter(item => item?.id).map(item => [normalizarTexto(item.id), item]));
+        mapa.set(normalizarTexto(pecaId), criarSugestaoLookPorPeca(pecaId));
+        lookEditado.pecas_sugeridas = [...mapa.values()];
+        salvarLookEditadoPorOcasioes(lookEditado);
+    });
+    finalizarEdicaoLooksOcasioes();
+}
+
+function removerAcessorioDosLooks(lookIds, pecaId) {
+    const alvo = normalizarTexto(pecaId);
+    lookIds.forEach(lookId => {
+        const lookEditado = obterLookEditavelParaOcasioes(lookId);
+        if (!lookEditado) return;
+        lookEditado.pecas_sugeridas = (lookEditado.pecas_sugeridas || []).filter(item => normalizarTexto(item?.id) !== alvo);
+        salvarLookEditadoPorOcasioes(lookEditado);
+    });
+    finalizarEdicaoLooksOcasioes();
+}
+
+function finalizarEdicaoLooksOcasioes() {
+    salvarDados();
+    preencherSelectLooks();
+    preencherFiltrosOcasiao();
+    preencherFiltrosPaginaOcasioes();
+    renderPaginaOcasioes();
 }
 
 function obterQuantidadeNecessariaOcasiao(ocasiao, climaCodigo) {

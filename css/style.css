@@ -1869,6 +1869,78 @@ body {
     color: #c95b2d;
 }
 
+.ocasioes-ficha {
+    grid-column: span 14;
+}
+
+.ocasioes-ficha-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-end;
+}
+
+.ocasioes-ficha-acoes button,
+.ocasioes-mini-acoes button,
+.ocasioes-looks-acoes button {
+    min-width: 0;
+    margin: 0;
+    padding: 6px 9px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+.ocasioes-ficha-conteudo {
+    min-height: 84px;
+}
+
+.ocasioes-ficha-propriedades {
+    margin-top: 0;
+}
+
+.ocasioes-ficha-form {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.ocasioes-ficha-form label,
+.ocasioes-lote label {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+    color: var(--cor-texto);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.ocasioes-ficha-form input,
+.ocasioes-lote select {
+    width: 100%;
+    min-width: 0;
+    padding: 8px 9px;
+    border: 1px solid #caa1cf;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #111827;
+    font: inherit;
+    font-size: 13px;
+}
+
+.ocasioes-ficha-form input:disabled {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+.ocasioes-adicionar-look {
+    grid-column: span 5;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: end;
+}
+
 .ocasioes-bloco {
     display: flex;
     flex-direction: column;
@@ -1951,6 +2023,35 @@ body {
     min-height: 310px;
 }
 
+.ocasioes-looks-acoes {
+    display: grid;
+    gap: 8px;
+    padding: 8px;
+    border: 1px solid #ead4ee;
+    border-radius: 8px;
+    background: #fbf7fc;
+}
+
+.ocasioes-looks-selecao {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+.ocasioes-looks-selecao span {
+    color: #6f0b82;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.ocasioes-lote {
+    display: grid;
+    grid-template-columns: minmax(150px, 1fr) auto auto minmax(150px, 1fr) auto auto;
+    gap: 8px;
+    align-items: end;
+}
+
 .ocasioes-grafico {
     grid-column: span 14;
     min-height: 270px;
@@ -1993,6 +2094,43 @@ body {
     font: inherit;
     text-align: center;
     cursor: pointer;
+}
+
+.ocasioes-mini-card-look {
+    cursor: default;
+}
+
+.ocasioes-mini-card.marcado {
+    border-color: #1f8cf0;
+    box-shadow: 0 0 0 2px rgba(31, 140, 240, 0.16);
+}
+
+.ocasioes-mini-check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: #4b5563;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.ocasioes-mini-check input {
+    width: 14px;
+    height: 14px;
+    margin: 0;
+}
+
+.ocasioes-mini-acoes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+}
+
+.ocasioes-mini-acoes button {
+    width: 100%;
+    padding: 5px 4px;
+    font-size: 11px;
 }
 
 .ocasioes-mini-card:hover {
@@ -2145,8 +2283,21 @@ body {
     .ocasioes-looks,
     .ocasioes-grafico,
     .ocasioes-outras,
-    .ocasioes-sugestoes {
+    .ocasioes-sugestoes,
+    .ocasioes-ficha {
         grid-column: span 14;
+    }
+
+    .ocasioes-ficha-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ocasioes-adicionar-look {
+        grid-column: span 2;
+    }
+
+    .ocasioes-lote {
+        grid-template-columns: minmax(0, 1fr) 1fr 1fr;
     }
 
     .ocasioes-grafico .ocasioes-bloco-topo {
