@@ -6869,12 +6869,16 @@ body {
 #ocasioes .ocasioes-stat.destaque-laranja strong {
     margin-top: 4px;
     color: var(--modern-accent-strong);
-    font-size: 22px;
-    line-height: 1;
+    font-size: 18px;
+    line-height: 1.08;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 
 #ocasioes .ocasioes-destaque strong {
-    font-size: 20px;
+    font-size: 17px;
 }
 
 @media (max-width: 768px) {
