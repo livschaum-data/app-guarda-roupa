@@ -3,7 +3,7 @@
    É como um "banco de dados em memória" */
 
 const CAMPOS_FILTROS_PECAS = ['tipo', 'funcao', 'subtipo', 'local', 'alocacao', 'situacao', 'conservacao', 'reposicao', 'utilizacao', 'formalidade', 'nivel_aquecimento', 'padronagem', 'modelagem', 'tom', 'cor_detalhe', 'cor', 'tendencia', 'info_fotos', 'combinacoes'];
-const CAMPOS_FILTROS_LOOKS = ['pecas', 'categoria', 'indicador', 'local', 'situacao', 'utilizacao', 'clima', 'htt', 'ocasiao'];
+const CAMPOS_FILTROS_LOOKS = ['lookId', 'pecas', 'categoria', 'indicador', 'local', 'situacao', 'utilizacao', 'clima', 'htt', 'ocasiao'];
 const DIMENSAO_POR_CAMPO_PECA = {
     tipo: ['tipos_peca', 'tipo'],
     funcao: ['funcoes_peca', 'valor'],
@@ -3461,9 +3461,21 @@ function criarGruposLooksPeca(looks) {
 
     return Object.entries(grupos)
         .sort(([a], [b]) => a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }))
-        .map(([situacao, itens]) => `
-            <section class="looks-peca-grupo">
+        .map(([situacao, itens], indice) => {
+            const idsGrupo = itens.map(look => look.id);
+            const selecionados = new Set(app.looksPecaSelecionados || []);
+            const todosSelecionados = idsGrupo.length > 0 && idsGrupo.every(id => selecionados.has(id));
+            const algunsSelecionados = idsGrupo.some(id => selecionados.has(id));
+            return `
+            <section class="looks-peca-grupo looks-peca-grupo-cor-${indice % 6}">
                 <div class="looks-peca-grupo-topo">
+                    <label class="looks-peca-grupo-check">
+                        <input type="checkbox"
+                               ${todosSelecionados ? 'checked' : ''}
+                               ${algunsSelecionados && !todosSelecionados ? 'data-parcial="true"' : ''}
+                               onchange="alternarSelecaoGrupoLooksPeca('${escapeHtml(idsGrupo.join(','))}')">
+                        <span>Selecionar grupo</span>
+                    </label>
                     <h3>${escapeHtml(situacao)}</h3>
                     <span>${itens.length}</span>
                 </div>
@@ -3471,8 +3483,27 @@ function criarGruposLooksPeca(looks) {
                     ${itens.map(criarCardLookExistentePeca).join('')}
                 </div>
             </section>
-        `)
+        `;
+        })
         .join('');
+}
+
+function alternarSelecaoGrupoLooksPeca(idsTexto) {
+    const idsGrupo = String(idsTexto || '').split(',').map(id => id.trim()).filter(Boolean);
+    if (!idsGrupo.length) return;
+
+    const selecionados = new Set(app.looksPecaSelecionados || []);
+    const todosSelecionados = idsGrupo.every(id => selecionados.has(id));
+    idsGrupo.forEach(id => {
+        if (todosSelecionados) {
+            selecionados.delete(id);
+        } else {
+            selecionados.add(id);
+        }
+    });
+
+    app.looksPecaSelecionados = [...selecionados];
+    renderLooksExistentesPeca();
 }
 
 function obterSituacaoLook(look) {
@@ -4813,6 +4844,10 @@ function preencherFiltrosOcasiao() {
     container.innerHTML = '';
 
     CAMPOS_FILTROS_LOOKS.forEach(campo => {
+        if (campo === 'lookId') {
+            criarFiltroIdLook(container);
+            return;
+        }
         if (campo === 'pecas') {
             criarFiltroPecasLooks(container);
             return;
@@ -4831,6 +4866,31 @@ function preencherFiltrosOcasiao() {
     btnLimpar.textContent = 'Limpar filtros';
     btnLimpar.onclick = limparFiltrosLooks;
     container.appendChild(btnLimpar);
+}
+
+function criarFiltroIdLook(container) {
+    const wrapper = document.createElement('label');
+    wrapper.className = `filtro-pecas-looks ${obterClasseGrupoFiltroLook('indicador')}`;
+    wrapper.innerHTML = `
+        <span>ID do look</span>
+        <input type="search" id="filtro-look-id" placeholder="AL0001, BL0123" autocomplete="off" value="${escapeHtml((app.filtrosLooks.lookId || []).join(', '))}">
+        <small>Use um ou mais IDs</small>
+    `;
+
+    const input = wrapper.querySelector('input');
+    input.addEventListener('input', evento => {
+        app.filtrosLooks.lookId = normalizarFiltroIdsLooks(evento.target.value);
+        salvarEstadoFiltros();
+        window.clearTimeout(app.timeoutFiltroPecasLooks);
+        app.timeoutFiltroPecasLooks = window.setTimeout(() => {
+            renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
+        }, 180);
+    });
+    input.addEventListener('change', () => {
+        input.value = (app.filtrosLooks.lookId || []).join(', ');
+    });
+
+    container.appendChild(wrapper);
 }
 
 function criarFiltroPecasLooks(container) {
@@ -4866,6 +4926,14 @@ function normalizarFiltroPecasLooks(valor) {
         .map(item => item.trim())
         .filter(Boolean))]
         .slice(0, 3);
+}
+
+function normalizarFiltroIdsLooks(valor) {
+    return [...new Set(String(valor || '')
+        .toUpperCase()
+        .split(/[\s,;]+/)
+        .map(item => item.trim())
+        .filter(Boolean))];
 }
 
 function filtrarLooksPorOcasiao(ocasiao, evento) {
@@ -5122,6 +5190,8 @@ function limparFiltrosLooks() {
 
     const filtroPecas = document.getElementById('filtro-look-pecas');
     if (filtroPecas) filtroPecas.value = '';
+    const filtroLookId = document.getElementById('filtro-look-id');
+    if (filtroLookId) filtroLookId.value = '';
 
     salvarEstadoFiltros();
     renderLooks(obterTodosLooks());
@@ -5131,6 +5201,13 @@ function lookPassaNosFiltros(look) {
     for (let campo in app.filtrosLooks) {
         const selecionados = app.filtrosLooks[campo];
         if (!Array.isArray(selecionados) || selecionados.length === 0) continue;
+
+        if (campo === 'lookId') {
+            const idLook = normalizarTexto(look.id);
+            const passouId = selecionados.some(idFiltro => idLook.includes(normalizarTexto(idFiltro)));
+            if (!passouId) return false;
+            continue;
+        }
 
         if (campo === 'pecas') {
             const pecasLook = (look.pecas || []).map(id => normalizarTexto(id));

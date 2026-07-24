@@ -2714,27 +2714,78 @@ body {
 .looks-peca-grupo {
     display: grid;
     gap: 10px;
+    padding: 10px;
+    --looks-peca-grupo-cor: var(--cor-primaria);
+    border: 1px solid color-mix(in srgb, var(--looks-peca-grupo-cor) 58%, var(--cor-borda));
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--looks-peca-grupo-cor) 13%, var(--cor-fundo-card));
+}
+
+.looks-peca-grupo-cor-0 {
+    --looks-peca-grupo-cor: #3b82f6;
+}
+
+.looks-peca-grupo-cor-1 {
+    --looks-peca-grupo-cor: #22c55e;
+}
+
+.looks-peca-grupo-cor-2 {
+    --looks-peca-grupo-cor: #eab308;
+}
+
+.looks-peca-grupo-cor-3 {
+    --looks-peca-grupo-cor: #ec4899;
+}
+
+.looks-peca-grupo-cor-4 {
+    --looks-peca-grupo-cor: #8b5cf6;
+}
+
+.looks-peca-grupo-cor-5 {
+    --looks-peca-grupo-cor: #f97316;
 }
 
 .looks-peca-grupo-topo {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    justify-content: space-between;
     gap: 10px;
     padding-bottom: 6px;
-    border-bottom: 1px solid var(--cor-borda);
+    border-bottom: 1px solid color-mix(in srgb, var(--looks-peca-grupo-cor) 34%, var(--cor-borda));
 }
 
 .looks-peca-grupo-topo h3 {
     margin: 0;
-    color: var(--cor-texto);
+    color: color-mix(in srgb, var(--looks-peca-grupo-cor) 62%, var(--cor-texto));
     font-size: 15px;
 }
 
 .looks-peca-grupo-topo span {
-    color: var(--cor-texto-cinza);
+    color: color-mix(in srgb, var(--looks-peca-grupo-cor) 52%, var(--cor-texto-cinza));
     font-size: 12px;
     font-weight: 800;
+}
+
+.looks-peca-grupo-check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    color: color-mix(in srgb, var(--looks-peca-grupo-cor) 45%, var(--cor-texto));
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.looks-peca-grupo-check input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--cor-primaria);
+}
+
+.looks-peca-grupo-check input[data-parcial="true"] {
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18);
 }
 
 .looks-peca-grid {
