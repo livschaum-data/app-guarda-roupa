@@ -2029,10 +2029,15 @@ body {
 
 .ocasioes-mini-card-look-simples {
     min-height: 0;
+    cursor: pointer;
 }
 
 .ocasioes-mini-card-look-simples img {
     aspect-ratio: 1;
+}
+
+.ocasioes-mini-acoes-simples {
+    grid-template-columns: 1fr;
 }
 
 .ocasioes-looks-acoes {
@@ -2188,6 +2193,11 @@ body {
     gap: 8px;
     min-width: 58px;
     text-align: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
 }
 
 .ocasioes-barras {
@@ -2231,6 +2241,16 @@ body {
     color: var(--cor-texto-cinza);
     font-size: 11px;
     line-height: 1.2;
+}
+
+.ocasioes-barra-clima:hover small,
+.ocasioes-barra-clima.selecionado small {
+    color: var(--cor-primaria);
+    font-weight: 800;
+}
+
+.ocasioes-barra-clima.selecionado .ocasioes-barras {
+    border-bottom-color: var(--cor-primaria);
 }
 
 .ocasioes-outras-lista {
@@ -7119,6 +7139,119 @@ body {
 
     .secao-galeria-pecas > #galeria {
         max-height: 38vh;
+    }
+
+    #ocasioes {
+        padding-bottom: 72px;
+    }
+
+    #ocasioes .ocasioes-painel {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 0 0 12px;
+        background: transparent;
+    }
+
+    #ocasioes .ocasioes-card,
+    #ocasioes .ocasioes-bloco,
+    #ocasioes .ocasioes-filtro,
+    #ocasioes .ocasioes-destaque,
+    #ocasioes .ocasioes-codigo,
+    #ocasioes .ocasioes-stat,
+    #ocasioes .ocasioes-looks,
+    #ocasioes .ocasioes-grafico,
+    #ocasioes .ocasioes-sugestoes,
+    #ocasioes .ocasioes-ficha {
+        width: auto;
+        min-height: 0;
+        margin: 0 10px;
+        grid-column: auto;
+    }
+
+    #ocasioes .ocasioes-filtro {
+        order: 1;
+    }
+
+    #ocasioes .ocasioes-filtro-ocasiao {
+        order: 2;
+    }
+
+    #ocasioes .ocasioes-destaque,
+    #ocasioes .ocasioes-codigo,
+    #ocasioes .ocasioes-stat {
+        order: 3;
+        text-align: left;
+    }
+
+    #ocasioes .ocasioes-ficha {
+        order: 4;
+    }
+
+    #ocasioes .ocasioes-grafico {
+        order: 5;
+    }
+
+    #ocasioes .ocasioes-looks:not(.ocasioes-looks-editor) {
+        order: 6;
+    }
+
+    #ocasioes .ocasioes-sugestoes {
+        order: 7;
+    }
+
+    #ocasioes .ocasioes-looks-editor {
+        order: 20;
+    }
+
+    #ocasioes .ocasioes-bloco-topo,
+    #ocasioes .ocasioes-grafico-controles,
+    #ocasioes .ocasioes-looks-selecao {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    #ocasioes .ocasioes-bloco-topo {
+        gap: 10px;
+    }
+
+    #ocasioes .ocasioes-grafico-controles {
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-content: stretch;
+        width: 100%;
+    }
+
+    #ocasioes .ocasioes-grafico-controles select,
+    #ocasioes .ocasioes-dropdown-multiplo,
+    #ocasioes .ocasioes-dropdown-toggle {
+        width: 100%;
+    }
+
+    #ocasioes .ocasioes-ficha-form,
+    #ocasioes .ocasioes-adicionar-look,
+    #ocasioes .ocasioes-lote {
+        grid-template-columns: 1fr;
+    }
+
+    #ocasioes .ocasioes-adicionar-look {
+        align-items: stretch;
+    }
+
+    #ocasioes .ocasioes-lote button,
+    #ocasioes .ocasioes-looks-selecao button {
+        width: 100%;
+    }
+
+    #ocasioes .ocasioes-mini-grid,
+    #ocasioes .ocasioes-sugestoes .ocasioes-mini-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-height: none;
+        overflow: visible;
+    }
+
+    #ocasioes .ocasioes-grafico-climas {
+        min-height: 180px;
     }
 
     .ocasioes-chip-select {

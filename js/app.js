@@ -6558,6 +6558,21 @@ function selecionarLookOcasioes(lookId) {
     renderPaginaOcasioes();
 }
 
+function selecionarGrupoGraficoOcasioes(tipo, valor) {
+    const campo = tipo === 'ocasiao' ? 'ocasiao' : 'clima';
+    const valorNormalizado = String(valor || '');
+    if (!valorNormalizado) return;
+
+    const selecionados = app.filtrosOcasioes[campo] || [];
+    app.filtrosOcasioes[campo] = selecionados.length === 1 && selecionados[0] === valorNormalizado
+        ? []
+        : [valorNormalizado];
+    app.filtrosOcasioes.lookId = '';
+    salvarEstadoFiltros();
+    preencherFiltrosPaginaOcasioes();
+    renderPaginaOcasioes();
+}
+
 function renderPaginaOcasioes() {
     const codigosSelecionados = app.filtrosOcasioes.ocasiao || [];
     const looks = obterLooksPaginaOcasioes(codigosSelecionados);
@@ -6665,11 +6680,19 @@ function renderLooksSimplesPaginaOcasioes(looks) {
 function criarMiniCardLookSimplesOcasioes(look) {
     const selecionado = app.filtrosOcasioes.lookId === look.id;
     return `
-        <button type="button" class="ocasioes-mini-card ocasioes-mini-card-look-simples ${selecionado ? 'selecionado' : ''}" onclick="mostrarDetalhesLook('${escapeHtml(look.id)}')" title="Abrir ficha do look">
+        <div class="ocasioes-mini-card ocasioes-mini-card-look-simples ${selecionado ? 'selecionado' : ''}"
+             role="button"
+             tabindex="0"
+             onclick="selecionarLookOcasioes('${escapeHtml(look.id)}')"
+             onkeydown="if(event.key === 'Enter' || event.key === ' '){event.preventDefault(); selecionarLookOcasioes('${escapeHtml(look.id)}');}"
+             title="Filtrar sugestoes por este look">
             <img src="${getCaminhoFotoLook(look.id)}" alt="${escapeHtml(look.id)}"
                  onerror="this.src='${imagemFallback()}';">
             <strong>${escapeHtml(look.id)}</strong>
-        </button>
+            <div class="ocasioes-mini-acoes ocasioes-mini-acoes-simples">
+                <button type="button" onclick="event.stopPropagation(); mostrarDetalhesLook('${escapeHtml(look.id)}')">Ficha</button>
+            </div>
+        </div>
     `;
 }
 
@@ -6826,7 +6849,10 @@ function renderGraficoClimasOcasioes(looks) {
     const maximo = Math.max(1, ...grupos.map(grupo => Math.max(grupo.atual, grupo.necessario)));
 
     container.innerHTML = grupos.map(grupo => `
-        <div class="ocasioes-barra-clima">
+        <button type="button"
+                class="ocasioes-barra-clima ${grupo.selecionado ? 'selecionado' : ''}"
+                onclick="selecionarGrupoGraficoOcasioes('${grupo.tipo}', '${escapeHtml(grupo.valor)}')"
+                title="Filtrar looks e acessorios por ${escapeHtml(grupo.label)}">
             <div class="ocasioes-barras">
                 <span class="barra-serie">
                     <strong>${grupo.atual}</strong>
@@ -6838,7 +6864,7 @@ function renderGraficoClimasOcasioes(looks) {
                 </span>
             </div>
             <small>${escapeHtml(grupo.label)}</small>
-        </div>
+        </button>
     `).join('');
 }
 
@@ -6854,8 +6880,12 @@ function obterGruposGraficoClimas(looks) {
             : obterOcasioesFiltradasPagina().map(ocasiao => ocasiao.codigo);
         const necessario = codigos.reduce((total, codigo) =>
             total + obterQuantidadeNecessariaOcasiao(app.mapaOcasioes?.[codigo], clima.codigo), 0);
+        const valor = String(clima.codigo);
         return {
             label: clima.descricao || clima.codigo,
+            valor,
+            tipo: 'clima',
+            selecionado: (app.filtrosOcasioes.clima || []).includes(valor),
             atual,
             necessario,
         };
@@ -6878,6 +6908,9 @@ function obterGruposGraficoOcasioes() {
             : obterTotalNecessarioOcasiao(ocasiao);
         return {
             label: `${ocasiao.codigo} ${ocasiao.descricao}`,
+            valor: ocasiao.codigo,
+            tipo: 'ocasiao',
+            selecionado: (app.filtrosOcasioes.ocasiao || []).includes(ocasiao.codigo),
             atual: looks.filter(lookEhHTT).length,
             necessario,
         };
