@@ -7251,10 +7251,12 @@ function renderSugestoesOcasioes(looks) {
         : looks;
     const sugestoes = coletarSugestoesPecasOcasioes(looksBase);
     const calcados = sugestoes.filter(item => normalizarTexto(app.pecas[item.id]?.tipo) === 'calcado');
-    const bolsas = sugestoes.filter(item => ['bolsa', 'cinto'].includes(normalizarTexto(app.pecas[item.id]?.tipo)));
+    const bolsas = sugestoes.filter(item => normalizarTexto(app.pecas[item.id]?.tipo) === 'bolsa');
+    const cintos = sugestoes.filter(item => normalizarTexto(app.pecas[item.id]?.tipo) === 'cinto');
 
     renderPecasSugestaoOcasioes('ocasioes-calcados', 'ocasioes-calcados-contagem', calcados);
     renderPecasSugestaoOcasioes('ocasioes-bolsas', 'ocasioes-bolsas-contagem', bolsas);
+    renderPecasSugestaoOcasioes('ocasioes-cintos', 'ocasioes-cintos-contagem', cintos);
 }
 
 function coletarSugestoesPecasOcasioes(looks) {
