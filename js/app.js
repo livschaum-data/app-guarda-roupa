@@ -4159,7 +4159,6 @@ function sincronizarPecasRelacionadas(id, idsAnteriores, idsNovos) {
             ...pecaRelacionada,
             acessorios,
             editadaLocalmente: true,
-            editadaEm: new Date().toISOString(),
         };
         app.pecasPersonalizadas[relacionadoId] = app.pecas[relacionadoId];
         afetados.add(relacionadoId);
@@ -4176,7 +4175,6 @@ function sincronizarPecasRelacionadas(id, idsAnteriores, idsNovos) {
             ...pecaRelacionada,
             acessorios: [...idsRelacionados].map(criarItemAcessorio),
             editadaLocalmente: true,
-            editadaEm: new Date().toISOString(),
         };
         app.pecasPersonalizadas[relacionadoId] = app.pecas[relacionadoId];
         afetados.add(relacionadoId);
