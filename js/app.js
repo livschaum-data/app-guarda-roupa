@@ -6577,6 +6577,7 @@ function renderPaginaOcasioes() {
     document.getElementById('ocasioes-temperaturas').textContent = obterTemperaturasOcasiao(looks);
 
     renderFichaOcasiao(codigosSelecionados, looks);
+    renderLooksSimplesPaginaOcasioes(looks);
     renderLooksPaginaOcasioes(looks);
     renderGraficoClimasOcasioes(looks);
     renderSugestoesOcasioes(looks);
@@ -6648,6 +6649,28 @@ function obterTemperaturasOcasiao(looks) {
         .filter(Boolean))];
 
     return temperaturas.length ? temperaturas.slice(0, 3).join(' / ') : '-';
+}
+
+function renderLooksSimplesPaginaOcasioes(looks) {
+    const container = document.getElementById('ocasioes-lista-looks-simples');
+    const contador = document.getElementById('ocasioes-looks-simples-contagem');
+    if (!container) return;
+
+    if (contador) contador.textContent = looks.length;
+    container.innerHTML = looks.length
+        ? looks.map(look => criarMiniCardLookSimplesOcasioes(look)).join('')
+        : '<p class="texto-ajuda">Nenhum look encontrado para essa ocasiao.</p>';
+}
+
+function criarMiniCardLookSimplesOcasioes(look) {
+    const selecionado = app.filtrosOcasioes.lookId === look.id;
+    return `
+        <button type="button" class="ocasioes-mini-card ocasioes-mini-card-look-simples ${selecionado ? 'selecionado' : ''}" onclick="mostrarDetalhesLook('${escapeHtml(look.id)}')" title="Abrir ficha do look">
+            <img src="${getCaminhoFotoLook(look.id)}" alt="${escapeHtml(look.id)}"
+                 onerror="this.src='${imagemFallback()}';">
+            <strong>${escapeHtml(look.id)}</strong>
+        </button>
+    `;
 }
 
 function renderLooksPaginaOcasioes(looks) {

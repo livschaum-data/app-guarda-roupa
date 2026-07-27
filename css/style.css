@@ -2023,6 +2023,18 @@ body {
     min-height: 310px;
 }
 
+.ocasioes-looks-editor {
+    order: 20;
+}
+
+.ocasioes-mini-card-look-simples {
+    min-height: 0;
+}
+
+.ocasioes-mini-card-look-simples img {
+    aspect-ratio: 1;
+}
+
 .ocasioes-looks-acoes {
     display: grid;
     gap: 8px;
