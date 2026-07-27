@@ -6938,6 +6938,8 @@ function renderFichaOcasiao(codigosSelecionados, looks) {
     }
 
     const looksCount = looks.length;
+    const climasNecessarios = obterClimasEditaveisOcasioes();
+    const quantidadesNecessarias = obterQuantidadesNecessariasOcasiao(ocasiao);
     if (app.editandoOcasiao) {
         const tipos = [...new Set([
             ...Object.values(app.mapaOcasioes || {}).map(item => item.tipo).filter(Boolean),
@@ -6968,6 +6970,23 @@ function renderFichaOcasiao(codigosSelecionados, looks) {
                     <span>Looks</span>
                     <input type="text" value="${looksCount}" disabled>
                 </label>
+                <div class="ocasioes-necessarios-edicao">
+                    <span>Quantidade necessária por clima</span>
+                    <div class="ocasioes-necessarios-grid">
+                        ${climasNecessarios.map(clima => `
+                            <label>
+                                <span>${escapeHtml(clima.descricao || clima.codigo)}</span>
+                                <input class="ocasiao-edit-necessario"
+                                       type="number"
+                                       min="0"
+                                       step="1"
+                                       inputmode="numeric"
+                                       data-clima="${escapeHtml(clima.codigo)}"
+                                       value="${escapeHtml(Number(quantidadesNecessarias[String(clima.codigo)] || quantidadesNecessarias[clima.codigo] || 0))}">
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
                 <div class="ocasioes-adicionar-look">
                     <label>
                         <span>Pesquisar look para adicionar</span>
@@ -6990,6 +7009,17 @@ function renderFichaOcasiao(codigosSelecionados, looks) {
             ${criarCampoFichaHtml('Tipo', ocasiao.tipo || '-', 'ficha-grupo-roxo')}
             ${criarCampoFichaHtml('Data revisão', ocasiao.data_revisao ? formatarDataBR(ocasiao.data_revisao) : '-', 'ficha-grupo-azul-claro')}
             ${criarCampoFichaHtml('Looks', looksCount, 'ficha-grupo-verde')}
+        </div>
+        <div class="ocasioes-necessarios-resumo">
+            <h4>Quantidade necessária por clima</h4>
+            <div class="ocasioes-necessarios-grid">
+                ${climasNecessarios.map(clima => `
+                    <div class="ocasioes-necessario-card">
+                        <span>${escapeHtml(clima.descricao || clima.codigo)}</span>
+                        <strong>${escapeHtml(Number(quantidadesNecessarias[String(clima.codigo)] || quantidadesNecessarias[clima.codigo] || 0))}</strong>
+                    </div>
+                `).join('')}
+            </div>
         </div>
     `;
 }
@@ -7016,6 +7046,12 @@ function salvarFichaOcasiao() {
     const descricao = String(document.getElementById('ocasiao-edit-nome')?.value || '').trim();
     const tipo = String(document.getElementById('ocasiao-edit-tipo')?.value || '').trim();
     const dataRevisao = String(document.getElementById('ocasiao-edit-data-revisao')?.value || '').trim();
+    const quantidadesNecessarias = {};
+    document.querySelectorAll('.ocasiao-edit-necessario').forEach(input => {
+        const clima = String(input.dataset.clima || '').trim();
+        if (!clima) return;
+        quantidadesNecessarias[clima] = Math.max(0, Number.parseInt(input.value, 10) || 0);
+    });
     if (!codigoNovo || !descricao) {
         alert('Preencha pelo menos código e nome da ocasião.');
         return;
@@ -7033,6 +7069,8 @@ function salvarFichaOcasiao() {
         descricao,
         tipo,
         data_revisao: dataRevisao,
+        quantidades_necessarias: quantidadesNecessarias,
+        total_necessario: Object.values(quantidadesNecessarias).reduce((soma, valor) => soma + valor, 0),
         editadaEm,
     };
 
@@ -7227,6 +7265,19 @@ function obterTotalNecessarioOcasiao(ocasiao) {
     if (total !== undefined && total !== null && total !== '') return Number(total || 0);
     const quantidades = ocasiao.quantidades_necessarias || ocasiao.quantidadesNecessarias || {};
     return Object.values(quantidades).reduce((soma, valor) => soma + Number(valor || 0), 0);
+}
+
+function obterClimasEditaveisOcasioes() {
+    return Object.values(app.climas || {})
+        .filter(clima => clima.codigo && String(clima.codigo) !== '0')
+        .sort((a, b) => String(a.codigo).localeCompare(String(b.codigo), 'pt-BR', { numeric: true }));
+}
+
+function obterQuantidadesNecessariasOcasiao(ocasiao) {
+    return {
+        ...(ocasiao?.quantidadesNecessarias || {}),
+        ...(ocasiao?.quantidades_necessarias || {}),
+    };
 }
 
 function renderOutrasOcasioesPagina(codigoSelecionado) {

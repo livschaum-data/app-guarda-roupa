@@ -1933,6 +1933,48 @@ body {
     color: #4b5563;
 }
 
+.ocasioes-necessarios-edicao,
+.ocasioes-necessarios-resumo {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: 8px;
+}
+
+.ocasioes-necessarios-edicao > span,
+.ocasioes-necessarios-resumo h4 {
+    margin: 0;
+    color: var(--cor-texto);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.ocasioes-necessarios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 8px;
+}
+
+.ocasioes-necessario-card {
+    display: grid;
+    gap: 4px;
+    padding: 8px;
+    border: 1px solid color-mix(in srgb, var(--cor-primaria) 40%, var(--cor-borda));
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--cor-primaria) 10%, var(--cor-fundo-card));
+}
+
+.ocasioes-necessario-card span {
+    color: var(--cor-texto-cinza);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.ocasioes-necessario-card strong {
+    color: var(--cor-texto);
+    font-size: 18px;
+    line-height: 1;
+}
+
 .ocasioes-adicionar-look {
     grid-column: span 5;
     display: grid;
