@@ -5463,7 +5463,7 @@ function criarCardLook(look) {
     const pecasTexto = (look.pecas || [])
         .map(id => escapeHtml(id))
         .join(' · ');
-    const tags = (look.ocasioes || []).slice(0, 4).map(ocasiao => `<span>${ocasiao.descricao}</span>`).join('');
+    const tags = normalizarOcasioesLook(look).slice(0, 4).map(ocasiao => `<span>${escapeHtml(ocasiao.descricao)}</span>`).join('');
     const lookId = look.id || look.nome || '';
     const utilizacao = obterUtilizacaoLook(look);
     const totalUsos = contarUsosLook(look.id);
@@ -5519,8 +5519,9 @@ function mostrarDetalhesLook(lookId, editando = false) {
     document.getElementById('secao-sugestoes-look-modal').style.display = editando ? 'none' : '';
 
     const tags = document.getElementById('tags-look-modal');
-    tags.innerHTML = (look.ocasioes || []).length
-        ? look.ocasioes.map(ocasiao => `<span title="${ocasiao.codigo}">${ocasiao.descricao}</span>`).join('')
+    const ocasioesNormalizadas = normalizarOcasioesLook(look);
+    tags.innerHTML = ocasioesNormalizadas.length
+        ? ocasioesNormalizadas.map(ocasiao => `<span title="${escapeHtml(ocasiao.codigo)}">${escapeHtml(ocasiao.descricao)}</span>`).join('')
         : '<span>Sem ocasião definida</span>';
 
     const ficha = document.getElementById('ficha-look-modal');
@@ -7150,14 +7151,17 @@ function normalizarOcasioesLook(look) {
     const mapa = new Map();
     const adicionar = item => {
         if (!item) return;
-        const codigo = String(item.codigo || '').trim();
+        const codigoInformado = String(item.codigo || '').trim();
         const descricao = String(item.descricao || item.nome || '').trim();
-        const chave = normalizarTexto(codigo || descricao);
-        if (!chave) return;
+        const codigoPorDescricao = obterCodigoOcasiaoPorDescricao(descricao);
+        const codigo = app.mapaOcasioes?.[codigoInformado] ? codigoInformado : (codigoPorDescricao || codigoInformado);
         const info = codigo ? app.mapaOcasioes?.[codigo] : null;
+        const descricaoFinal = descricao || info?.descricao || codigo;
+        const chave = normalizarTexto(codigo || descricaoFinal);
+        if (!chave) return;
         mapa.set(chave, {
-            codigo: codigo || obterCodigoOcasiaoPorDescricao(descricao),
-            descricao: descricao || info?.descricao || codigo,
+            codigo,
+            descricao: descricaoFinal,
             tipo: item.tipo || info?.tipo || '',
         });
     };
