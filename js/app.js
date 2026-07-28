@@ -457,7 +457,7 @@ function obterDefinicoesCamposEdicaoPeca() {
         .flatMap(grupo => grupo.campos
             .filter(campoGrupo => !['id', 'data_atualizacao'].includes(campoGrupo.chave))
             .map(campoGrupo => {
-                const campoEditavel = camposEditaveis.get(campoGrupo.chave);
+                const campoEditavel = camposEditaveis.get(campoGrupo.chave) || camposEditaveis.get(campoGrupo.prop);
                 if (campoEditavel) {
                     return {
                         ...campoEditavel,
