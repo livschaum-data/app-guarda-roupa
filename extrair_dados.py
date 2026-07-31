@@ -343,7 +343,7 @@ def validar_dimensoes(pecas, looks, dimensoes):
 
     validar('situação_look', (look.get('situacao') for look in looks.values()), valores_dim('situacoes_look'))
     validar('indicador_look', (look.get('indicador') for look in looks.values()), valores_dim('categorias_look', 'indicador'))
-    validar('utilização_look', (look.get('utilizacao') for look in looks.values()), valores_dim('utilizacoes_look'))
+    validar('utilização_look', (look.get('utilizacao_calc') or look.get('utilizacao') for look in looks.values()), valores_dim('utilizacoes_look'))
     validar('local_look', (look.get('local') for look in looks.values()), valores_dim('locais'))
     validar('clima_look', (look.get('clima') for look in looks.values()), [item.get('codigo') for item in dimensoes.get('climas', [])])
     validar(
@@ -403,24 +403,36 @@ def calcular_local_look(situacao, loc1, loc2, loc3):
 
     return 'misto'
 
-def calcular_utilizacao_look(indicador, util1, util2, util3):
-    indicador = valor_texto(indicador)
-    u1, u2, u3 = [valor_texto(util) or None for util in [util1, util2, util3]]
+def calcular_utilizacao_look(utilizacoes, locais):
+    usos = [valor_texto(util) for util in utilizacoes if valor_texto(util)]
+    locais_validos = [valor_texto(local) for local in locais if valor_texto(local)]
+    locais_unicos = set(locais_validos)
 
-    if indicador in ['LL', 'PL']:
-        return 'under'
-
-    if u1 == 'casa' and em(u2, ['casa', None]) and em(u3, ['casa', None]):
-        return 'casa'
-
-    if u1 == 'sair' and em(u2, ['sair', None]) and em(u3, ['sair', None]):
-        return 'sair'
-
-    if u1 == 'sair' and ((u2 is not None and u2 != 'sair') or (u3 is not None and u3 != 'sair')):
+    if len(locais_unicos) > 1:
         return 'mix'
 
-    if u1 == 'casa' and ((u2 is not None and u2 != 'casa') or (u3 is not None and u3 != 'casa')):
-        return 'mix'
+    if not usos:
+        return None
+
+    usos_unicos = set(usos)
+    if len(usos_unicos) == 1:
+        uso = usos[0]
+        if uso == 'sair':
+            return 'produzido'
+        if uso == 'mista':
+            return 'simples'
+        return uso
+
+    total = len(usos)
+    total_casa = usos.count('casa')
+    total_mista = usos.count('mista')
+    total_sair = usos.count('sair')
+
+    if total_casa in [1, 2] and total_casa < total:
+        return 'desleixado'
+
+    if total_mista in [1, 2] and total_mista + total_sair == total:
+        return 'simples'
 
     return None
 
@@ -746,7 +758,7 @@ def extrair_dados(arquivo_excel):
                 clima_final = clima_calc or clima
                 clima_info = mapa_climas.get(clima_final, {'codigo': clima_final, 'descricao': clima_final, 'temperatura': ''}) if clima_final else {}
                 local_calc = calcular_local_look(situacao, *locais_pecas)
-                utilizacao_calc = calcular_utilizacao_look(valor_texto(row[10]), *utilizacoes_pecas)
+                utilizacao_calc = calcular_utilizacao_look(utilizacoes_pecas, locais_pecas)
                 
                 if pecas_look:
                     looks[id_look] = {

@@ -807,7 +807,7 @@ function pecaPassaNosFiltros(peca, filtros) {
 async function carregarDadosJSON() {
     try {
         // fetch() = busca um arquivo da internet (ou local)
-        const response = await fetch('dados_guarda_roupa.json?v=20260706-dimensoes-categorias', { cache: 'no-store' });
+        const response = await fetch('dados_guarda_roupa.json?v=20260731-utilizacoes-looks', { cache: 'no-store' });
         
         // .json() = transforma texto em objeto JavaScript
         const dados = await response.json();
@@ -863,6 +863,7 @@ function carregarDados() {
         const looksFavSalvos = localStorage.getItem('app_looks_favs');
         app.looksFavoritos = looksFavSalvos ? JSON.parse(looksFavSalvos) : {};
         if (garantirLooksFavoritosSemColisao()) salvarDadosLocal();
+        if (recalcularLooksFavoritosPorPecasAtuais() > 0) salvarDadosLocal();
     } catch (erro) {
         console.warn('Looks favoritos salvos inválidos. Iniciando vazio.', erro);
         app.looksFavoritos = {};
@@ -1789,6 +1790,7 @@ function mesclarDadosNuvem(data) {
     app.mapaUsosLooksAtual = null;
     app.indiceLooksPorPecasAtual = null;
     garantirLooksFavoritosSemColisao();
+    recalcularLooksFavoritosPorPecasAtuais();
 }
 
 function atualizarTelasAposSync() {
@@ -5096,7 +5098,7 @@ function obterValoresCampoLook(look, campo) {
         case 'situacao':
             return [look.situacao || basicos['situação'] || basicos.situacao];
         case 'utilizacao':
-            return [look.utilizacao_calc || look.utilizacao];
+            return [obterUtilizacaoLook(look)];
         case 'indicador':
             return [look.indicador || basicos.Indicador];
         case 'categoria':
@@ -6069,7 +6071,7 @@ function calcularDadosLookPorPecas(pecas) {
         aquecimentos: preencherAteTres(aquecimentos),
         local_calc: calcularValorComposto(locaisValidos, 'misto', { virtualPrioritario: true }),
         locais_pecas: preencherAteTres(locais),
-        utilizacao_calc: calcularValorComposto(utilizacoesValidas, 'mix'),
+        utilizacao_calc: calcularUtilizacaoLookPorPecas(utilizacoesValidas, locaisValidos),
         utilizacoes_pecas: preencherAteTres(utilizacoes),
     };
 }
@@ -6156,6 +6158,47 @@ function calcularValorComposto(valores, misto, opcoes = {}) {
     if (validos.length === 0) return '';
     if (opcoes.virtualPrioritario && validos.some(valor => normalizarTexto(valor) === 'virtual')) return 'virtual';
     return validos.length === 1 ? validos[0] : misto;
+}
+
+function calcularUtilizacaoLookPorPecas(utilizacoes, locais) {
+    const usos = (utilizacoes || []).filter(Boolean);
+    const locaisUnicos = [...new Set((locais || []).filter(Boolean).map(valor => normalizarTexto(valor)))];
+    if (locaisUnicos.length > 1) return 'mix';
+    if (usos.length === 0) return '';
+
+    const usosNormalizados = usos.map(valor => normalizarTexto(valor));
+    const usosUnicos = [...new Set(usosNormalizados)];
+    if (usosUnicos.length === 1) {
+        if (usosUnicos[0] === 'sair') return 'produzido';
+        if (usosUnicos[0] === 'mista') return 'simples';
+        return usos[0];
+    }
+
+    const total = usosNormalizados.length;
+    const totalCasa = usosNormalizados.filter(valor => valor === 'casa').length;
+    const totalMista = usosNormalizados.filter(valor => valor === 'mista').length;
+    const totalSair = usosNormalizados.filter(valor => valor === 'sair').length;
+
+    if ([1, 2].includes(totalCasa) && totalCasa < total) return 'desleixado';
+    if ([1, 2].includes(totalMista) && totalMista + totalSair === total) return 'simples';
+
+    return '';
+}
+
+function recalcularLooksFavoritosPorPecasAtuais() {
+    let total = 0;
+    Object.entries(app.looksFavoritos || {}).forEach(([id, look]) => {
+        if (!look?.id || !Array.isArray(look.pecas)) return;
+        app.looksFavoritos[id] = atualizarCalculadosLook(look, look.pecas, null, { preservarDataAtualizacao: true });
+        total += 1;
+    });
+
+    if (total > 0) {
+        app.mapaUsosLooksAtual = null;
+        app.indiceLooksPorPecasAtual = null;
+    }
+
+    return total;
 }
 
 async function salvarEdicaoLook() {
