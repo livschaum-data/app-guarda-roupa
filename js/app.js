@@ -863,7 +863,6 @@ function carregarDados() {
         const looksFavSalvos = localStorage.getItem('app_looks_favs');
         app.looksFavoritos = looksFavSalvos ? JSON.parse(looksFavSalvos) : {};
         if (garantirLooksFavoritosSemColisao()) salvarDadosLocal();
-        if (recalcularLooksFavoritosPorPecasAtuais() > 0) salvarDadosLocal();
     } catch (erro) {
         console.warn('Looks favoritos salvos inválidos. Iniciando vazio.', erro);
         app.looksFavoritos = {};
@@ -993,15 +992,16 @@ function aplicarPesquisaPecasSalva() {
     filtrarPecas();
 }
 
-function salvarDados() {
+function salvarDados(opcoes = {}) {
     // localStorage.setItem() = salva um valor
     // JSON.stringify() = transforma objeto em texto
+    const incluirLooks = opcoes.incluirLooks !== false;
 
     app.mapaUsosLooksAtual = null;
     app.indiceLooksPorPecasAtual = null;
 
     localStorage.setItem('app_historico', JSON.stringify(app.historico));
-    localStorage.setItem('app_looks_favs', JSON.stringify(app.looksFavoritos));
+    if (incluirLooks) localStorage.setItem('app_looks_favs', JSON.stringify(app.looksFavoritos));
     localStorage.setItem('app_pecas_personalizadas', JSON.stringify(app.pecasPersonalizadas));
 
     console.log('💾 Dados salvos!');
@@ -1790,7 +1790,6 @@ function mesclarDadosNuvem(data) {
     app.mapaUsosLooksAtual = null;
     app.indiceLooksPorPecasAtual = null;
     garantirLooksFavoritosSemColisao();
-    recalcularLooksFavoritosPorPecasAtuais();
 }
 
 function atualizarTelasAposSync() {
@@ -4431,7 +4430,7 @@ async function salvarPeca() {
         const idsRelacionadosAfetados = sincronizarPecasRelacionadas(id, idsAcessoriosAnteriores, idsAcessoriosNovos);
         const totalLooksAtualizados = recalcularLooksAfetadosPorPeca([editandoId, ...idsRelacionadosAfetados], { idAntigo: editandoId, idNovo: id });
         app.pecaEmDetalhes = id;
-        salvarDados();
+        salvarDados({ incluirLooks: totalLooksAtualizados > 0 });
         reconstruirFiltrosHome();
         preencherFiltrosHoje();
         preencherSelectLooks();
@@ -6133,6 +6132,10 @@ function recalcularLooksAfetadosPorPeca(pecaIds, opcoes = {}) {
         const usaPecaAfetada = pecas.some(id => idsAfetados.has(id)) || (idAntigo && look.pecas.some(id => normalizarTexto(id) === normalizarTexto(idAntigo)));
         if (!usaPecaAfetada && !trocouId) return;
 
+        const lookLocal = Boolean(app.looksFavoritos?.[look.id]);
+        const devePersistir = lookLocal || trocouId;
+        if (!devePersistir) return;
+
         const pecasUnicas = [...new Set(pecas.filter(Boolean))];
         const lookAtualizado = atualizarCalculadosLook(look, pecasUnicas, null, { preservarDataAtualizacao: true });
         app.looksFavoritos[look.id] = lookAtualizado;
@@ -6183,22 +6186,6 @@ function calcularUtilizacaoLookPorPecas(utilizacoes, locais) {
     if ([1, 2].includes(totalMista) && totalMista + totalSair === total) return 'simples';
 
     return '';
-}
-
-function recalcularLooksFavoritosPorPecasAtuais() {
-    let total = 0;
-    Object.entries(app.looksFavoritos || {}).forEach(([id, look]) => {
-        if (!look?.id || !Array.isArray(look.pecas)) return;
-        app.looksFavoritos[id] = atualizarCalculadosLook(look, look.pecas, null, { preservarDataAtualizacao: true });
-        total += 1;
-    });
-
-    if (total > 0) {
-        app.mapaUsosLooksAtual = null;
-        app.indiceLooksPorPecasAtual = null;
-    }
-
-    return total;
 }
 
 async function salvarEdicaoLook() {
