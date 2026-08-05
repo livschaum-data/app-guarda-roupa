@@ -71,7 +71,7 @@
                     <span class="sync-global-kicker">Supabase</span>
                     <h2>Sincronização da conta</h2>
                 </div>
-                <button class="btn-fechar" type="button" onclick="fecharPainelSupabase()" aria-label="Fechar conexão com a nuvem">âÅ“â€¢</button>
+                <button class="btn-fechar" type="button" onclick="fecharPainelSupabase()" aria-label="Fechar conex&atilde;o com a nuvem">x</button>
             </div>
             <div class="sync-confianca" aria-label="Resumo da sincronização">
                 <div class="sync-confianca-item">
@@ -79,7 +79,7 @@
                     <strong id="supabase-estado-resumo">Verificando</strong>
                 </div>
                 <div class="sync-confianca-item">
-                    <span>ÃƒÅ¡ltima sincronização</span>
+                    <span>&Uacute;ltima sincroniza&ccedil;&atilde;o</span>
                     <strong id="supabase-ultima-sync">Ainda não confirmada</strong>
                 </div>
                 <div class="sync-confianca-item">
@@ -423,13 +423,13 @@
                 <h3>Período</h3>
                 <div class="historico-periodo-botoes">
                     <button id="historico-periodo-7" type="button" class="filtro-btn ativo">
-                        ÃƒÅ¡ltimos 7 dias
+                        &Uacute;ltimos 7 dias
                     </button>
                     <button id="historico-periodo-14" type="button" class="filtro-btn">
-                        ÃƒÅ¡ltimos 14 dias
+                        &Uacute;ltimos 14 dias
                     </button>
                     <button id="historico-periodo-30" type="button" class="filtro-btn">
-                        ÃƒÅ¡ltimos 30 dias
+                        &Uacute;ltimos 30 dias
                     </button>
                     <button id="historico-periodo-todos" type="button" class="filtro-btn">
                         Todo histórico
@@ -459,9 +459,9 @@
                 <div class="calendario-historico-topo">
                     <h3>Calendário</h3>
                     <div class="calendario-historico-acoes">
-                        <button id="calendario-mes-anterior" type="button" class="filtro-btn">ââ‚¬Â¹</button>
+                        <button id="calendario-mes-anterior" type="button" class="filtro-btn">&lsaquo;</button>
                         <strong id="calendario-mes-label">Mês</strong>
-                        <button id="calendario-mes-proximo" type="button" class="filtro-btn">ââ‚¬Âº</button>
+                        <button id="calendario-mes-proximo" type="button" class="filtro-btn">&rsaquo;</button>
                     </div>
                 </div>
                 <div id="calendario-historico" class="calendario-historico"></div>
@@ -563,7 +563,7 @@
              Popover que mostra informaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes completas de uma peÃƒÆ’Ã‚Â§a -->
         <div id="modal-peca" class="modal" style="display:none;">
             <div class="modal-content">
-                <button class="btn-fechar" onclick="fecharModal()">âÅ“â€¢</button>
+                <button class="btn-fechar" onclick="fecharModal()">x</button>
                 
                 <img id="foto-modal" src="" alt="Peça" class="foto-modal">
                 
@@ -608,7 +608,7 @@
 
         <div id="modal-looks-peca" class="modal" style="display:none;">
             <div class="modal-content modal-looks-peca">
-                <button class="btn-fechar" onclick="fecharModalLooksPeca()">âÅ“â€¢</button>
+                <button class="btn-fechar" onclick="fecharModalLooksPeca()">x</button>
                 <div class="looks-peca-topo">
                     <div class="looks-peca-selecionada">
                         <img id="looks-peca-foto" src="" alt="Peça selecionada">
@@ -630,7 +630,7 @@
 
         <div id="modal-edicao-lote-looks" class="modal" style="display:none;">
             <div class="modal-content modal-look-detalhes">
-                <button class="btn-fechar" onclick="fecharModalEdicaoLoteLooks()">âÅ“â€¢</button>
+                <button class="btn-fechar" onclick="fecharModalEdicaoLoteLooks()">x</button>
                 <h2>Editar looks selecionados</h2>
                 <p id="edicao-lote-looks-resumo" class="texto-ajuda"></p>
                 <div id="form-edicao-lote-looks"></div>
@@ -643,7 +643,7 @@
 
         <div id="modal-look-detalhes" class="modal" style="display:none;">
             <div class="modal-content modal-look-detalhes">
-                <button class="btn-fechar" onclick="fecharModalLookDetalhes()">âÅ“â€¢</button>
+                <button class="btn-fechar" onclick="fecharModalLookDetalhes()">x</button>
                 <img id="foto-look-modal" src="" alt="Look" class="foto-look-modal">
                 <h2 id="titulo-look-modal"></h2>
                 <div id="tags-look-modal" class="tags-look"></div>
@@ -687,7 +687,7 @@
 
         <div id="modal-conflitos-historico" class="modal" style="display:none;">
             <div class="modal-content modal-conflitos-historico">
-                <button class="btn-fechar" onclick="cancelarImportacaoHistoricoComConflitos()">âÅ“â€¢</button>
+                <button class="btn-fechar" onclick="cancelarImportacaoHistoricoComConflitos()">x</button>
                 <h2>Revisar diferenças no histórico</h2>
                 <p class="texto-ajuda">
                     O arquivo tem dias que já existem no app, mas com registros diferentes. Escolha o que fazer em cada dia antes de importar.
@@ -702,7 +702,7 @@
 
         <div id="modal-criar-look-historico" class="modal" style="display:none;">
             <div class="modal-content">
-                <button class="btn-fechar" onclick="fecharModal()">âÅ“â€¢</button>
+                <button class="btn-fechar" onclick="fecharModal()">x</button>
                 <h2>Criar Look</h2>
 
                 <div class="form-look-historico form-look-historico-modo">
