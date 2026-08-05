@@ -8,9 +8,9 @@
     
     <!-- PWA Manifest (permite instalar como app) -->
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%236c63ff' width='180' height='180'/><text x='50%' y='50%' font-size='80' fill='white' text-anchor='middle' dy='.3em'>👗</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 180 180%27%3E%3Crect fill=%27%236c63ff%27 width=%27180%27 height=%27180%27/%3E%3Ctext x=%2750%25%27 y=%2754%25%27 font-size=%2780%27 fill=%27white%27 text-anchor=%27middle%27%3EM%3C/text%3E%3C/svg%3E">
     
-    <title>👗 Meu Guarda-roupa</title>
+    <title>Meu Guarda-roupa</title>
     <script>
         (function () {
             try {
@@ -22,31 +22,39 @@
             }
         })();
     </script>
-    <link rel="stylesheet" href="css/style.css?v=20260722-ocasioes-cards-fonte">
+    <link rel="preload" href="dados_guarda_roupa.json" as="fetch" crossorigin="anonymous">
+    <link rel="preload" href="fotos/home-illustration.jpg" as="image">
+    <link rel="stylesheet" href="css/style.css?v=20260805-usabilidade-sync-performance">
 </head>
 <body>
     <div id="app">
-        <!-- ==================== NAVEGAÇÃO ====================
-             A navegação fica sempre visível, mudando qual página 
-             é mostrada quando você clica em um botão -->
+        <!-- ==================== NAVEGAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O ====================
+             A navegaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o fica sempre visÃƒÆ’Ã‚Â­vel, mudando qual pÃƒÆ’Ã‚Â¡gina 
+             ÃƒÆ’Ã‚Â© mostrada quando vocÃƒÆ’Ã‚Âª clica em um botÃƒÆ’Ã‚Â£o -->
         <nav class="navbar">
-            <button class="nav-btn active" onclick="mostrarPagina('home'); ativarNavBtn(0)">
-                Inicio
+            <button class="nav-btn active" onclick="mostrarPagina('home'); ativarNavBtn(0)" aria-label="In&iacute;cio">
+                <span class="nav-icon" aria-hidden="true">I</span>
+                <span class="nav-text">In&iacute;cio</span>
             </button>
-            <button class="nav-btn" onclick="mostrarPagina('pecas'); ativarNavBtn(1)">
-                Pecas
+            <button class="nav-btn" onclick="mostrarPagina('pecas'); ativarNavBtn(1)" aria-label="Pe&ccedil;as">
+                <span class="nav-icon" aria-hidden="true">P</span>
+                <span class="nav-text">Pe&ccedil;as</span>
             </button>
-            <button class="nav-btn" onclick="mostrarPagina('usar-hoje'); ativarNavBtn(2)">
-                ✨ Registro
+            <button class="nav-btn" onclick="mostrarPagina('usar-hoje'); ativarNavBtn(2)" aria-label="Registro">
+                <span class="nav-icon" aria-hidden="true">R</span>
+                <span class="nav-text">Registro</span>
             </button>
-            <button class="nav-btn" onclick="mostrarPagina('looks'); ativarNavBtn(3)">
-                💄 Looks
+            <button class="nav-btn" onclick="mostrarPagina('looks'); ativarNavBtn(3)" aria-label="Looks">
+                <span class="nav-icon" aria-hidden="true">L</span>
+                <span class="nav-text">Looks</span>
             </button>
-            <button class="nav-btn" onclick="mostrarPagina('ocasioes'); ativarNavBtn(4)">
-                Ocasioes
+            <button class="nav-btn" onclick="mostrarPagina('ocasioes'); ativarNavBtn(4)" aria-label="Ocasi&otilde;es">
+                <span class="nav-icon" aria-hidden="true">O</span>
+                <span class="nav-text">Ocasi&otilde;es</span>
             </button>
-            <button class="nav-btn" onclick="mostrarPagina('historico'); ativarNavBtn(5)">
-                📊 Histórico
+            <button class="nav-btn" onclick="mostrarPagina('historico'); ativarNavBtn(5)" aria-label="Hist&oacute;rico">
+                <span class="nav-icon" aria-hidden="true">H</span>
+                <span class="nav-text">Hist&oacute;rico</span>
             </button>
             <button id="botao-tema" class="theme-toggle" type="button" onclick="alternarTemaVisual()" aria-label="Alternar tema visual">
                 Tema: Sistema
@@ -63,7 +71,21 @@
                     <span class="sync-global-kicker">Supabase</span>
                     <h2>Sincronização da conta</h2>
                 </div>
-                <button class="btn-fechar" type="button" onclick="fecharPainelSupabase()" aria-label="Fechar conexão com a nuvem">✕</button>
+                <button class="btn-fechar" type="button" onclick="fecharPainelSupabase()" aria-label="Fechar conexão com a nuvem">âÅ“â€¢</button>
+            </div>
+            <div class="sync-confianca" aria-label="Resumo da sincronização">
+                <div class="sync-confianca-item">
+                    <span>Estado</span>
+                    <strong id="supabase-estado-resumo">Verificando</strong>
+                </div>
+                <div class="sync-confianca-item">
+                    <span>ÃƒÅ¡ltima sincronização</span>
+                    <strong id="supabase-ultima-sync">Ainda não confirmada</strong>
+                </div>
+                <div class="sync-confianca-item">
+                    <span>Dados protegidos</span>
+                    <strong id="supabase-dados-resumo">Histórico, looks, peças e ocasiões</strong>
+                </div>
             </div>
             <div id="supabase-login" class="sync-box">
                 <input type="email" id="supabase-email" placeholder="Email" autocomplete="email">
@@ -85,54 +107,54 @@
             </div>
             <div id="supabase-logado" class="sync-box" style="display:none;">
                 <p id="supabase-usuario" class="texto-ajuda"></p>
-                <p class="sync-global-descricao">Histórico, looks e peças personalizadas são sincronizados automaticamente.</p>
+                <p class="sync-global-descricao">Histórico, looks, peças personalizadas e ocasiões editadas são sincronizados automaticamente quando a conta está conectada.</p>
                 <div class="sync-acoes">
                     <button id="supabase-sincronizar" type="button" class="btn-principal">Sincronizar agora</button>
-                    <button id="supabase-baixar" type="button" class="btn-secundario">Baixar da nuvem</button>
-                    <button id="supabase-enviar" type="button" class="btn-secundario">Enviar para nuvem</button>
+                    <button id="supabase-baixar" type="button" class="btn-secundario" title="Confere a nuvem e mescla com os dados deste aparelho.">Baixar da nuvem</button>
+                    <button id="supabase-enviar" type="button" class="btn-secundario" title="Confere a nuvem antes de gravar os dados deste aparelho.">Enviar para nuvem</button>
                     <button id="supabase-sair" type="button" class="btn-secundario">Sair</button>
                 </div>
             </div>
             <p id="supabase-status" class="texto-ajuda" aria-live="polite">Verificando conexão com a nuvem...</p>
         </aside>
 
-        <!-- ==================== PÁGINA 1: HOME ====================
+        <!-- ==================== PÃƒÆ’Ã‚ÂGINA 1: HOME ====================
              Galeria de todas as peças do guarda-roupa -->
         <div id="home" class="pagina">
             <div class="home-hero">
                 <div class="home-hero-texto">
                     <span class="home-kicker">Meu Guarda-roupa</span>
-                    <h1>Escolha por onde quer comecar</h1>
-                    <p>Acesse rapidamente suas pecas, registre o look do dia, veja combinacoes e acompanhe o historico.</p>
+                    <h1>Escolha por onde quer começar</h1>
+                    <p>Acesse rapidamente suas peças, registre o look do dia, veja combinações e acompanhe o histórico.</p>
                 </div>
-                <img src="fotos/home-illustration.jpg" alt="Ilustracao de estilo da home" class="home-hero-imagem">
+                <img src="fotos/home-illustration.jpg" alt="Ilustração de estilo da home" class="home-hero-imagem">
             </div>
 
             <div class="home-links" aria-label="Atalhos principais">
                 <a class="home-link-card" href="#pecas" onclick="mostrarPagina('pecas'); ativarNavBtn(1)">
                     <span class="home-link-icon">P</span>
-                    <strong>Pecas</strong>
+                    <strong>Peças</strong>
                     <small>Ver a galeria completa e filtrar o guarda-roupa.</small>
                 </a>
                 <a class="home-link-card" href="#usar-hoje" onclick="mostrarPagina('usar-hoje'); ativarNavBtn(2)">
                     <span class="home-link-icon">R</span>
                     <strong>Registro</strong>
-                    <small>Marcar as pecas usadas em uma data.</small>
+                    <small>Marcar as peças usadas em uma data.</small>
                 </a>
                 <a class="home-link-card" href="#looks" onclick="mostrarPagina('looks'); ativarNavBtn(3)">
                     <span class="home-link-icon">L</span>
                     <strong>Looks</strong>
-                    <small>Consultar combinacoes prontas e sugestoes.</small>
+                    <small>Consultar combinações prontas e sugestões.</small>
                 </a>
                 <a class="home-link-card" href="#ocasioes" onclick="mostrarPagina('ocasioes'); ativarNavBtn(4)">
                     <span class="home-link-icon">O</span>
-                    <strong>Ocasioes</strong>
-                    <small>Ver looks, climas e sugestoes por ocasiao.</small>
+                    <strong>Ocasiões</strong>
+                    <small>Ver looks, climas e sugestões por ocasião.</small>
                 </a>
                 <a class="home-link-card" href="#historico" onclick="mostrarPagina('historico'); ativarNavBtn(5)">
                     <span class="home-link-icon">H</span>
-                    <strong>Historico</strong>
-                    <small>Rever usos, datas, estatisticas e sincronizacao.</small>
+                    <strong>Histórico</strong>
+                    <small>Rever usos, datas, estatísticas e sincronização.</small>
                 </a>
             </div>
 
@@ -140,9 +162,9 @@
 
         <div id="pecas" class="pagina" style="display:none;">
             <div class="header">
-                <h1>👗 Minhas Peças</h1>
+                <h1>Minhas Peças</h1>
                 <div class="acoes-header-pecas">
-                    <input type="text" id="filtro-pesquisa" placeholder="🔍 Buscar..."
+                    <input type="text" id="filtro-pesquisa" placeholder="Buscar..."
                            onkeyup="filtrarPecas()">
                     <button class="btn-principal" type="button" onclick="abrirNovaPeca()">+ Nova peça</button>
                 </div>
@@ -169,7 +191,7 @@
             <!-- Filtros suspensos (Dropdowns) -->
             <div id="filtros-home" class="filtros-home">
                 <button onclick="resetarFiltrosHome()">
-                    🔄 Limpar Filtros
+                    Limpar filtros
                 </button>
                 <!-- Os selects serão adicionados dinamicamente pelo JS -->
             </div>
@@ -178,8 +200,8 @@
                 <div class="resumo-periodo-topo">
                     <h3>Peças</h3>
                 </div>
-                <!-- IMPORTANTE: Aqui é onde as peças aparecem dinamicamente
-                     JavaScript irá criar cards para cada peça -->
+                <!-- IMPORTANTE: Aqui ÃƒÆ’Ã‚Â© onde as peças aparecem dinamicamente
+                     JavaScript irá criar cards para cada peÃƒÆ’Ã‚Â§a -->
                 <div id="galeria" class="galeria">
                     <!-- Os cards das peças serão inseridos aqui pelo JavaScript -->
                 </div>
@@ -195,8 +217,8 @@
             </div>
         </div>
 
-        <!-- ==================== PÁGINA 2: USAR HOJE ====================
-             Registra qual(is) peça(s) você usou hoje -->
+        <!-- ==================== PÃƒÆ’Ã‚ÂGINA 2: USAR HOJE ====================
+             Registra qual(is) peÃƒÆ’Ã‚Â§a(s) vocÃƒÆ’Ã‚Âª usou hoje -->
         <div id="usar-hoje" class="pagina" style="display:none;">
             <div class="header">
                 <h1>Registro de Uso</h1>
@@ -239,24 +261,24 @@
                 </div>
             </div>
 
-            <!-- Botão principal -->
+            <!-- BotÃƒÆ’Ã‚Â£o principal -->
             <button class="btn-principal" onclick="salvarUsoHoje()">
                 Registrar uso
             </button>
         </div>
 
-        <!-- ==================== PÁGINA 3: LOOKS ====================
-             Gerencia looks (combinações de peças) e ocasiões -->
+        <!-- ==================== PÃƒÆ’Ã‚ÂGINA 3: LOOKS ====================
+             Gerencia looks (combinaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes de peças) e ocasiÃƒÆ’Ã‚Âµes -->
         <div id="looks" class="pagina" style="display:none;">
             <div class="header">
-                <h1>💄 Meus Looks</h1>
+                <h1>Meus Looks</h1>
             </div>
 
             <!-- Filtros dos looks -->
             <div class="secao">
                 <h3>Filtrar looks</h3>
                 <div class="filtros-home" id="filtros-ocasiao">
-                    <!-- Opções serão adicionadas aqui -->
+                    <!-- OpÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes serão adicionadas aqui -->
                 </div>
             </div>
 
@@ -266,8 +288,8 @@
             </div>
         </div>
 
-        <!-- ==================== PÁGINA 4: HISTÓRICO ====================
-             Mostra estatísticas de uso dos últimos dias -->
+        <!-- ==================== PÃƒÆ’Ã‚ÂGINA 4: HISTÃƒÆ’ââ‚¬Å“RICO ====================
+             Mostra estatÃƒÆ’Ã‚Â­sticas de uso dos ÃƒÆ’Âºltimos dias -->
         <div id="ocasioes" class="pagina" style="display:none;">
             <div class="header">
                 <h1>Ocasioes</h1>
@@ -356,7 +378,7 @@
                     <div id="ocasioes-lista-looks-simples" class="ocasioes-mini-grid"></div>
                 </section>
 
-                <section class="ocasioes-card ocasioes-bloco ocasioes-sugestoes">
+                <section class="ocasioes-card ocasioes-bloco ocasioes-sugestões">
                     <div class="ocasioes-bloco-topo">
                         <h3>Calcados</h3>
                         <span id="ocasioes-calcados-contagem">0</span>
@@ -364,7 +386,7 @@
                     <div id="ocasioes-calcados" class="ocasioes-mini-grid"></div>
                 </section>
 
-                <section class="ocasioes-card ocasioes-bloco ocasioes-sugestoes">
+                <section class="ocasioes-card ocasioes-bloco ocasioes-sugestões">
                     <div class="ocasioes-bloco-topo">
                         <h3>Bolsas</h3>
                         <span id="ocasioes-bolsas-contagem">0</span>
@@ -372,7 +394,7 @@
                     <div id="ocasioes-bolsas" class="ocasioes-mini-grid"></div>
                 </section>
 
-                <section class="ocasioes-card ocasioes-bloco ocasioes-sugestoes">
+                <section class="ocasioes-card ocasioes-bloco ocasioes-sugestões">
                     <div class="ocasioes-bloco-topo">
                         <h3>Cintos</h3>
                         <span id="ocasioes-cintos-contagem">0</span>
@@ -393,21 +415,21 @@
 
         <div id="historico" class="pagina" style="display:none;">
             <div class="header">
-                <h1>📊 Histórico de Uso</h1>
+                <h1>Histórico de Uso</h1>
             </div>
 
-            <!-- Seletor de período -->
+            <!-- Seletor de perÃƒÆ’Ã‚Â­odo -->
             <div class="secao secao-periodo-historico">
                 <h3>Período</h3>
                 <div class="historico-periodo-botoes">
                     <button id="historico-periodo-7" type="button" class="filtro-btn ativo">
-                        Últimos 7 dias
+                        ÃƒÅ¡ltimos 7 dias
                     </button>
                     <button id="historico-periodo-14" type="button" class="filtro-btn">
-                        Últimos 14 dias
+                        ÃƒÅ¡ltimos 14 dias
                     </button>
                     <button id="historico-periodo-30" type="button" class="filtro-btn">
-                        Últimos 30 dias
+                        ÃƒÅ¡ltimos 30 dias
                     </button>
                     <button id="historico-periodo-todos" type="button" class="filtro-btn">
                         Todo histórico
@@ -437,9 +459,9 @@
                 <div class="calendario-historico-topo">
                     <h3>Calendário</h3>
                     <div class="calendario-historico-acoes">
-                        <button id="calendario-mes-anterior" type="button" class="filtro-btn">‹</button>
+                        <button id="calendario-mes-anterior" type="button" class="filtro-btn">ââ‚¬Â¹</button>
                         <strong id="calendario-mes-label">Mês</strong>
-                        <button id="calendario-mes-proximo" type="button" class="filtro-btn">›</button>
+                        <button id="calendario-mes-proximo" type="button" class="filtro-btn">ââ‚¬Âº</button>
                     </div>
                 </div>
                 <div id="calendario-historico" class="calendario-historico"></div>
@@ -463,7 +485,7 @@
                 </div>
             </div>
 
-            <!-- Estatísticas gerais -->
+            <!-- EstatÃƒÆ’Ã‚Â­sticas gerais -->
             <div class="secao secao-resumo-periodo">
                 <div class="resumo-periodo-topo">
                     <h3>Usados no periodo</h3>
@@ -537,11 +559,11 @@
             </div>
         </div>
 
-        <!-- ==================== MODAL: DETALHES DA PEÇA ====================
-             Popover que mostra informações completas de uma peça -->
+        <!-- ==================== MODAL: DETALHES DA PEÃƒÆ’ââ‚¬Â¡A ====================
+             Popover que mostra informaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes completas de uma peÃƒÆ’Ã‚Â§a -->
         <div id="modal-peca" class="modal" style="display:none;">
             <div class="modal-content">
-                <button class="btn-fechar" onclick="fecharModal()">✕</button>
+                <button class="btn-fechar" onclick="fecharModal()">âÅ“â€¢</button>
                 
                 <img id="foto-modal" src="" alt="Peça" class="foto-modal">
                 
@@ -573,7 +595,7 @@
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
                     <button class="btn-secundario" onclick="fecharModal()">Fechar</button>
                     <button id="looks-existentes-peca-modal" class="btn-secundario" type="button" onclick="abrirLooksExistentesPeca()">Looks existentes</button>
-                    <button id="looks-sugeridos-peca-modal" class="btn-secundario" type="button" onclick="abrirLooksSugeridosPeca()" style="display:none;">Looks é acessório</button>
+                    <button id="looks-sugeridos-peca-modal" class="btn-secundario" type="button" onclick="abrirLooksSugeridosPeca()" style="display:none;">Looks e acessórios</button>
                     <button id="editar-peca-modal" class="btn-secundario" type="button" onclick="abrirEdicaoPeca()">Editar</button>
                     <button id="cancelar-edicao-peca-modal" class="btn-secundario" type="button" onclick="cancelarEdicaoPeca()" style="display:none;">Cancelar</button>
                     <button id="salvar-peca-modal" class="btn-principal" type="button" onclick="salvarPeca()" style="display:none;">Salvar peça</button>
@@ -586,7 +608,7 @@
 
         <div id="modal-looks-peca" class="modal" style="display:none;">
             <div class="modal-content modal-looks-peca">
-                <button class="btn-fechar" onclick="fecharModalLooksPeca()">✕</button>
+                <button class="btn-fechar" onclick="fecharModalLooksPeca()">âÅ“â€¢</button>
                 <div class="looks-peca-topo">
                     <div class="looks-peca-selecionada">
                         <img id="looks-peca-foto" src="" alt="Peça selecionada">
@@ -608,7 +630,7 @@
 
         <div id="modal-edicao-lote-looks" class="modal" style="display:none;">
             <div class="modal-content modal-look-detalhes">
-                <button class="btn-fechar" onclick="fecharModalEdicaoLoteLooks()">✕</button>
+                <button class="btn-fechar" onclick="fecharModalEdicaoLoteLooks()">âÅ“â€¢</button>
                 <h2>Editar looks selecionados</h2>
                 <p id="edicao-lote-looks-resumo" class="texto-ajuda"></p>
                 <div id="form-edicao-lote-looks"></div>
@@ -621,7 +643,7 @@
 
         <div id="modal-look-detalhes" class="modal" style="display:none;">
             <div class="modal-content modal-look-detalhes">
-                <button class="btn-fechar" onclick="fecharModalLookDetalhes()">✕</button>
+                <button class="btn-fechar" onclick="fecharModalLookDetalhes()">âÅ“â€¢</button>
                 <img id="foto-look-modal" src="" alt="Look" class="foto-look-modal">
                 <h2 id="titulo-look-modal"></h2>
                 <div id="tags-look-modal" class="tags-look"></div>
@@ -630,9 +652,9 @@
                     <h3>Peças do look</h3>
                     <div id="pecas-look-modal" class="historico-pecas-grid"></div>
                 </div>
-                <div id="secao-sugestoes-look-modal" class="secao look-modal-secao">
+                <div id="secao-sugestões-look-modal" class="secao look-modal-secao">
                     <h3>Acessórios e calçados sugeridos</h3>
-                <div id="sugestoes-look-modal" class="historico-pecas-grid"></div>
+                <div id="sugestões-look-modal" class="historico-pecas-grid"></div>
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
                     <button class="btn-secundario" onclick="fecharModalLookDetalhes()">Fechar</button>
@@ -665,7 +687,7 @@
 
         <div id="modal-conflitos-historico" class="modal" style="display:none;">
             <div class="modal-content modal-conflitos-historico">
-                <button class="btn-fechar" onclick="cancelarImportacaoHistoricoComConflitos()">✕</button>
+                <button class="btn-fechar" onclick="cancelarImportacaoHistoricoComConflitos()">âÅ“â€¢</button>
                 <h2>Revisar diferenças no histórico</h2>
                 <p class="texto-ajuda">
                     O arquivo tem dias que já existem no app, mas com registros diferentes. Escolha o que fazer em cada dia antes de importar.
@@ -680,7 +702,7 @@
 
         <div id="modal-criar-look-historico" class="modal" style="display:none;">
             <div class="modal-content">
-                <button class="btn-fechar" onclick="fecharModal()">✕</button>
+                <button class="btn-fechar" onclick="fecharModal()">âÅ“â€¢</button>
                 <h2>Criar Look</h2>
 
                 <div class="form-look-historico form-look-historico-modo">
@@ -763,34 +785,37 @@
          A ordem importa! CSS deve carregar antes, depois o app.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js?v=20260624-config-supabase"></script>
-    <script src="js/app.js?v=20260722-ficha-look-utilizacao"></script>
+    <script src="js/app.js?v=20260805-usabilidade-sync-performance"></script>
 </body>
 </html>
 
 <!-- 
-    💡 EXPLICAÇÃO DA ESTRUTURA:
+    ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¡ EXPLICAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O DA ESTRUTURA:
 
-    1. NAVBAR (Navegação)
-       - 4 botões que mudam qual página é mostrada
-       - onclick="mostrarPagina('home')" = função JS que esconde tudo e mostra aquela página
+    1. NAVBAR (NavegaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o)
+       - 4 botÃƒÆ’Ã‚Âµes que mudam qual pÃƒÆ’Ã‚Â¡gina ÃƒÆ’Ã‚Â© mostrada
+       - onclick="mostrarPagina('home')" = função JS que esconde tudo e mostra aquela pÃƒÆ’Ã‚Â¡gina
 
-    2. PÁGINAS (4 no total)
+    2. PÃƒÆ’Ã‚ÂGINAS (4 no total)
        - Cada uma tem id="algo" e class="pagina"
        - JavaScript muda o display: none/block delas
-       - Isso é melhor que recarregar a página
+       - Isso ÃƒÆ’Ã‚Â© melhor que recarregar a pÃƒÆ’Ã‚Â¡gina
 
     3. MODAIS (Popups)
-       - modal-peca: mostra detalhes de uma peça
-       - Sobrepõem as páginas
+       - modal-peca: mostra detalhes de uma peÃƒÆ’Ã‚Â§a
+       - SobrepÃƒÆ’Ã‚Âµem as pÃƒÆ’Ã‚Â¡ginas
 
     4. IDs e Classes
-       - id="algo" é para JavaScript encontrar (getElementById)
-       - class="algo" é para CSS estilizar (querySelector)
+       - id="algo" ÃƒÆ’Ã‚Â© para JavaScript encontrar (getElementById)
+       - class="algo" ÃƒÆ’Ã‚Â© para CSS estilizar (querySelector)
 
     5. Eventos JavaScript
        - onclick="funcao()" chama função quando clica
        - onkeyup="funcao()" chama enquanto digita
        - onchange="funcao()" chama quando muda
 
-    PRÓXIMO PASSO: Abra js/app.js para ver a lógica
+    PRÃƒÆ’ââ‚¬Å“XIMO PASSO: Abra js/app.js para ver a lÃƒÆ’Ã‚Â³gica
 -->
+
+
+

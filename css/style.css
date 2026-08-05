@@ -7729,6 +7729,255 @@ html[data-theme="dark"] .navbar {
     }
 }
 
+/* Ajustes de usabilidade - agosto/2026 */
+.nav-icon {
+    display: none;
+    line-height: 1;
+}
+
+.nav-text {
+    display: inline-block;
+}
+
+.sync-confianca {
+    display: grid;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid var(--modern-border, var(--cor-borda));
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--modern-surface-2, var(--cor-fundo-card)) 86%, transparent);
+}
+
+.sync-confianca-item {
+    display: grid;
+    grid-template-columns: minmax(110px, 0.9fr) minmax(0, 1.1fr);
+    gap: 10px;
+    align-items: start;
+}
+
+.sync-confianca-item span {
+    color: var(--modern-muted, var(--cor-texto-cinza));
+    font-size: 11px;
+    font-weight: 850;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.sync-confianca-item strong {
+    color: var(--modern-text, var(--cor-texto));
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+@media (min-width: 900px) {
+    #pecas {
+        display: grid;
+        grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
+        gap: 14px;
+        align-items: start;
+    }
+
+    #pecas > .header,
+    #pecas > #filtros-home,
+    #pecas > .secao-consulta-pecas-uso {
+        grid-column: 1;
+    }
+
+    #pecas > .secao-galeria-pecas,
+    #pecas > .secao-tabela-pecas {
+        grid-column: 2;
+    }
+
+    #pecas > .secao-galeria-pecas {
+        grid-row: 1 / span 3;
+        min-height: calc(100vh - 112px);
+    }
+
+    #pecas > .secao-galeria-pecas > #galeria {
+        max-height: calc(100vh - 190px);
+    }
+
+    #pecas > #filtros-home {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        overflow: visible;
+    }
+
+    #pecas > #filtros-home > button,
+    #pecas > #filtros-home .filtro-multiplo,
+    #pecas > #filtros-home .filtro-multiplo-toggle {
+        width: 100%;
+        min-width: 0;
+    }
+
+    #pecas > #filtros-home .filtro-multiplo-opcoes {
+        left: 0;
+        right: auto;
+        width: min(340px, 100%);
+    }
+
+    #pecas > .secao-consulta-pecas-uso .consulta-historico {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #pecas > .secao-consulta-pecas-uso .consulta-historico .btn-principal {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    #usar-hoje {
+        display: grid;
+        grid-template-columns: minmax(280px, 420px) minmax(0, 1fr);
+        gap: 14px;
+        align-items: start;
+    }
+
+    #usar-hoje > .header,
+    #usar-hoje > .secao:nth-of-type(1),
+    #usar-hoje > .secao:nth-of-type(2),
+    #usar-hoje > .secao:nth-of-type(3) {
+        grid-column: 1;
+    }
+
+    #usar-hoje > .secao-adicionar-peca-registro {
+        grid-column: 2;
+        grid-row: 1 / span 4;
+        min-height: calc(100vh - 112px);
+    }
+
+    #usar-hoje #galeria-usar-hoje {
+        max-height: calc(100vh - 190px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
+    #historico {
+        display: grid;
+        grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
+        gap: 14px;
+        align-items: start;
+    }
+
+    #historico > .header,
+    #historico > .secao-periodo-historico,
+    #historico > .secao-consulta-historico,
+    #historico > .secao-calendario-historico,
+    #historico > .secao-importar-historico {
+        grid-column: 1;
+    }
+
+    #historico > .secao-detalhe-historico,
+    #historico > .secao-resumo-periodo,
+    #historico > .secao-sem-uso,
+    #historico > .secao-tabela-pecas {
+        grid-column: 2;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 4px;
+        overflow-x: visible;
+        padding: 6px max(8px, env(safe-area-inset-left)) calc(6px + env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-right));
+    }
+
+    .nav-btn {
+        display: grid;
+        place-items: center;
+        gap: 3px;
+        min-width: 0;
+        min-height: 52px;
+        padding: 6px 2px;
+        font-size: 10px;
+        line-height: 1.1;
+        letter-spacing: 0;
+        white-space: normal;
+    }
+
+    .nav-icon {
+        display: block;
+        font-size: 17px;
+    }
+
+    .nav-text {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .theme-toggle,
+    .sync-global-toggle {
+        position: fixed;
+        top: 8px;
+        z-index: 130;
+        min-width: 0;
+        min-height: 38px;
+        padding: 7px 9px;
+        border-radius: 8px;
+        box-shadow: var(--modern-shadow-soft, var(--sombra));
+    }
+
+    .theme-toggle {
+        right: 116px;
+        max-width: 104px;
+        font-size: 0;
+    }
+
+    .theme-toggle::after {
+        content: "Tema";
+        font-size: 11px;
+    }
+
+    .sync-global-toggle {
+        right: 8px;
+        max-width: 104px;
+        font-size: 11px;
+    }
+
+    .sync-global-toggle .sync-global-indicador {
+        flex: 0 0 auto;
+    }
+
+    .sync-global-toggle #supabase-global-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #app {
+        padding-bottom: calc(72px + env(safe-area-inset-bottom));
+    }
+
+    .sync-global-panel {
+        top: 56px;
+        right: 8px;
+        left: 8px;
+        width: auto;
+        max-width: none;
+        max-height: calc(100vh - 144px);
+        overflow-y: auto;
+    }
+
+    .sync-confianca-item {
+        grid-template-columns: 1fr;
+        gap: 3px;
+    }
+}
+
+@supports (content-visibility: auto) {
+    .home-link-card,
+    .secao,
+    .look-card,
+    .card-peca,
+    .ocasioes-card {
+        content-visibility: auto;
+        contain-intrinsic-size: 220px;
+    }
+}
+
 /* Cores dos filtros seguindo os grupos das fichas. */
 .filtro-multiplo.ficha-grupo-azul .filtro-multiplo-toggle,
 .filtro-pecas-looks.ficha-grupo-azul {

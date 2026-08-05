@@ -183,6 +183,7 @@ const app = {
     supabaseSuportaOcasioes: true,
     forcarEnvioLocalSupabase: false,
     recuperandoSenhaSupabase: false,
+    statusSupabaseAtual: '',
     
     // Filtros da página Home
     filtrosHome: Object.fromEntries(CAMPOS_FILTROS_PECAS.map(campo => [campo, []])),
@@ -377,8 +378,10 @@ function onErrorImagem(extensoes = ['png', 'jpg']) {
     return `this.onerror=null;const base=this.src.replace(/\\.[^.]+$/,'');const exts=${listaExtensoes};let i=Number(this.dataset.fallbackIndex||0);if(i<exts.length){this.dataset.fallbackIndex=i+1;this.src=base+'.'+exts[i];}else{this.src='${imagemFallback()}';}`;
 }
 
-function criarImagem(src, alt, classe = '') {
-    return `<img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" class="${escapeHtml(classe)}" loading="lazy" decoding="async" onerror="${onErrorImagem()}">`;
+function criarImagem(src, alt, classe = '', opcoes = {}) {
+    const loading = opcoes.loading || 'lazy';
+    const fetchPriority = opcoes.fetchPriority ? ` fetchpriority="${escapeHtml(opcoes.fetchPriority)}"` : '';
+    return `<img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" class="${escapeHtml(classe)}" loading="${escapeHtml(loading)}" decoding="async"${fetchPriority} onerror="${onErrorImagem()}">`;
 }
 
 function atualizarFotoModalPeca(src) {
@@ -560,14 +563,18 @@ function criarRestricoesHtml(peca) {
     `;
 }
 
-function criarCardPeca(peca) {
+function criarCardPeca(peca, indice = 0) {
     const card = document.createElement('div');
     card.className = 'card-peca';
     const textoBusca = obterTextoBuscaPeca(peca);
+    const imagemPrioritaria = indice < 9;
 
     card.dataset.textoBusca = textoBusca.toLowerCase();
     card.innerHTML = `
-        ${criarImagem(getCaminhoFoto(peca.id), peca.tipo || peca.id, 'foto-card-peca')}
+        ${criarImagem(getCaminhoFoto(peca.id), peca.tipo || peca.id, 'foto-card-peca', {
+            loading: imagemPrioritaria ? 'eager' : 'lazy',
+            fetchPriority: imagemPrioritaria ? 'high' : 'low',
+        })}
         <div class="card-peca-corpo">
             <div class="card-peca-titulo">
                 <strong>${escapeHtml(peca.id)}</strong>
@@ -1073,7 +1080,7 @@ async function inicializarSupabase() {
         app.usuarioSupabase = session?.user || null;
         if (event === 'PASSWORD_RECOVERY') {
             app.recuperandoSenhaSupabase = true;
-            atualizarStatusSupabase('Link de recuperacao validado. Digite sua nova senha.', 'sucesso');
+            atualizarStatusSupabase('Link de recuperação validado. Digite sua nova senha.', 'sucesso');
         }
         atualizarUISupabase(app.usuarioSupabase);
         if (app.usuarioSupabase && !app.recuperandoSenhaSupabase) {
@@ -1095,8 +1102,8 @@ function configurarEventosSupabase() {
         ['supabase-criar-conta', criarContaSupabase],
         ['supabase-sair', sairSupabase],
         ['supabase-sincronizar', sincronizarSupabase],
-        ['supabase-baixar', () => baixarDadosSupabase()],
-        ['supabase-enviar', () => enviarDadosSupabase()],
+        ['supabase-baixar', confirmarBaixarDadosSupabase],
+        ['supabase-enviar', confirmarEnviarDadosSupabase],
         ['supabase-recuperar-senha', solicitarRecuperacaoSenhaSupabase],
         ['supabase-atualizar-senha', atualizarSenhaSupabase],
         ['supabase-cancelar-reset', cancelarRecuperacaoSenhaSupabase],
@@ -1111,6 +1118,7 @@ function configurarEventosSupabase() {
 }
 
 function atualizarStatusSupabase(mensagem, tipo = '') {
+    app.statusSupabaseAtual = tipo || (app.usuarioSupabase ? 'conectado' : 'desconectado');
     const status = document.getElementById('supabase-status');
     if (status) {
         status.textContent = mensagem;
@@ -1119,8 +1127,66 @@ function atualizarStatusSupabase(mensagem, tipo = '') {
 
     const botao = document.getElementById('supabase-global-toggle');
     if (botao) {
-        botao.dataset.status = tipo || (app.usuarioSupabase ? 'conectado' : 'desconectado');
+        botao.dataset.status = app.statusSupabaseAtual;
         botao.title = mensagem;
+    }
+
+    atualizarResumoSupabase(mensagem, app.statusSupabaseAtual);
+}
+
+function confirmarBaixarDadosSupabase() {
+    const confirmar = window.confirm(
+        'Baixar da nuvem vai conferir os dados salvos no Supabase e mesclar com este aparelho. Quer continuar?'
+    );
+    if (!confirmar) return;
+    baixarDadosSupabase();
+}
+
+function confirmarEnviarDadosSupabase() {
+    const confirmar = window.confirm(
+        'Enviar para nuvem vai conferir o Supabase primeiro e depois gravar os dados deste aparelho. Quer continuar?'
+    );
+    if (!confirmar) return;
+    enviarDadosSupabase();
+}
+
+function obterLabelEstadoSupabase(tipo) {
+    if (!supabaseConfigurado()) return 'Indisponível';
+    if (tipo === 'erro') return 'Atenção';
+    if (tipo === 'sincronizando') return 'Sincronizando';
+    if (tipo === 'sucesso' || tipo === 'conectado') return app.usuarioSupabase ? 'Conectada' : 'Pronta';
+    return app.usuarioSupabase ? 'Conectada' : 'Desconectada';
+}
+
+function formatarUltimaSincronizacaoSupabase(data = app.ultimaSincronizacaoSupabase) {
+    if (!data) return 'Ainda não confirmada';
+    const dataObj = data instanceof Date ? data : new Date(data);
+    if (Number.isNaN(dataObj.getTime())) return String(data);
+    return dataObj.toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+    });
+}
+
+function atualizarResumoSupabase(mensagem = '', tipo = app.statusSupabaseAtual) {
+    const estado = document.getElementById('supabase-estado-resumo');
+    const ultima = document.getElementById('supabase-ultima-sync');
+    const dados = document.getElementById('supabase-dados-resumo');
+
+    if (estado) estado.textContent = obterLabelEstadoSupabase(tipo);
+    if (ultima) ultima.textContent = formatarUltimaSincronizacaoSupabase();
+    if (dados) {
+        const partes = ['histórico', 'looks'];
+        partes.push(app.supabaseSuportaPecas === false ? 'peças pendentes de schema' : 'peças');
+        partes.push(app.supabaseSuportaOcasioes === false ? 'ocasiões pendentes de schema' : 'ocasiões');
+        dados.textContent = partes.join(', ');
+    }
+
+    const labelGlobal = document.getElementById('supabase-global-label');
+    if (labelGlobal && mensagem && tipo === 'sincronizando') {
+        labelGlobal.textContent = 'Sincronizando';
     }
 }
 
@@ -1142,6 +1208,7 @@ function atualizarUISupabase(usuario) {
     if (labelGlobal) {
         labelGlobal.textContent = !configurado ? 'Nuvem indisponível' : (usuario ? 'Nuvem conectada' : 'Conectar nuvem');
     }
+    atualizarResumoSupabase('', app.statusSupabaseAtual);
 
     if (app.recuperandoSenhaSupabase) {
         login.style.display = 'none';
@@ -1208,11 +1275,11 @@ async function solicitarRecuperacaoSenhaSupabase() {
 
     const email = document.getElementById('supabase-email')?.value?.trim();
     if (!email) {
-        alert('Digite seu email para receber o link de recuperacao.');
+        alert('Digite seu email para receber o link de recuperação.');
         return;
     }
 
-    atualizarStatusSupabase('Enviando email de recuperacao...');
+    atualizarStatusSupabase('Enviando email de recuperação...');
     const { error } = await app.supabase.auth.resetPasswordForEmail(email, {
         redirectTo: obterUrlRedirectSupabase(),
     });
@@ -1222,7 +1289,7 @@ async function solicitarRecuperacaoSenhaSupabase() {
         return;
     }
 
-    atualizarStatusSupabase('Email de recuperacao enviado. Abra o link no mesmo app para definir a nova senha.', 'sucesso');
+    atualizarStatusSupabase('Email de recuperação enviado. Abra o link no mesmo app para definir a nova senha.', 'sucesso');
 }
 
 async function atualizarSenhaSupabase() {
@@ -1236,7 +1303,7 @@ async function atualizarSenhaSupabase() {
         return;
     }
     if (novaSenha !== confirmarSenha) {
-        alert('As senhas nao conferem.');
+        alert('As senhas não conferem.');
         return;
     }
 
@@ -1253,7 +1320,7 @@ async function atualizarSenhaSupabase() {
     document.getElementById('supabase-nova-senha').value = '';
     document.getElementById('supabase-confirmar-senha').value = '';
     atualizarUISupabase(app.usuarioSupabase);
-    atualizarStatusSupabase('Senha atualizada. Voce ja esta conectada.', 'sucesso');
+    atualizarStatusSupabase('Senha atualizada. Você já está conectada.', 'sucesso');
     await baixarDadosSupabase({ silencioso: true });
 }
 
@@ -1262,7 +1329,7 @@ function cancelarRecuperacaoSenhaSupabase() {
     document.getElementById('supabase-nova-senha').value = '';
     document.getElementById('supabase-confirmar-senha').value = '';
     atualizarUISupabase(app.usuarioSupabase);
-    atualizarStatusSupabase('Recuperacao de senha cancelada.');
+    atualizarStatusSupabase('Recuperação de senha cancelada.');
 }
 
 async function entrarSupabase() {
@@ -1306,7 +1373,7 @@ async function criarContaSupabase() {
     if (!data.session) {
         app.usuarioSupabase = null;
         atualizarUISupabase(null);
-        atualizarStatusSupabase('Conta criada. Confirme o email se o Supabase pediu confirmacao, depois volte aqui e clique em Entrar.', 'sucesso');
+        atualizarStatusSupabase('Conta criada. Confirme o email se o Supabase pediu confirmação, depois volte aqui e clique em Entrar.', 'sucesso');
         return;
     }
 
@@ -1315,7 +1382,7 @@ async function criarContaSupabase() {
     const enviou = await enviarDadosSupabase({ silencioso: true });
     atualizarStatusSupabase('Conta criada. Se o Supabase pedir confirmação de email, confirme antes do próximo login.', 'sucesso');
     atualizarStatusSupabase(
-        enviou ? 'Conta criada e sincronizada com a nuvem.' : 'Conta criada, mas ainda nao consegui gravar na tabela. Clique em Sincronizar novamente.',
+        enviou ? 'Conta criada e sincronizada com a nuvem.' : 'Conta criada, mas ainda não consegui gravar na tabela. Clique em Sincronizar novamente.',
         enviou ? 'sucesso' : 'erro'
     );
 }
@@ -1344,7 +1411,7 @@ async function sincronizarSupabase() {
     atualizarStatusSupabase('Sincronizando...');
     const baixou = await baixarDadosSupabase({ silencioso: true });
     if (!baixou) {
-        atualizarStatusSupabase('Nao consegui baixar os dados atuais da nuvem antes de sincronizar.', 'erro');
+        atualizarStatusSupabase('Não consegui baixar os dados atuais da nuvem antes de sincronizar.', 'erro');
         return;
     }
 
@@ -1400,7 +1467,9 @@ async function baixarDadosSupabase({ silencioso = false } = {}) {
         atualizarTelasAposSync();
     }
 
+    app.ultimaSincronizacaoSupabase = new Date();
     if (!silencioso) atualizarStatusSupabase('Dados baixados e mesclados.', 'sucesso');
+    else atualizarResumoSupabase('', 'sucesso');
     return true;
 }
 
@@ -1456,7 +1525,7 @@ async function enviarDadosSupabase({ silencioso = false, mesclarAntes = true } =
         if (mesclarAntes) {
             const baixou = await baixarDadosSupabase({ silencioso: true });
             if (!baixou) {
-                if (!silencioso) atualizarStatusSupabase('Nao enviei porque nao consegui conferir a nuvem primeiro.', 'erro');
+                if (!silencioso) atualizarStatusSupabase('Não enviei porque não consegui conferir a nuvem primeiro.', 'erro');
                 return false;
             }
         }
@@ -1499,10 +1568,12 @@ async function enviarDadosSupabase({ silencioso = false, mesclarAntes = true } =
                 ? ' Ocasiões editadas ainda não foram enviadas porque falta atualizar o schema do Supabase.'
                 : '';
             atualizarStatusSupabase(
-                `Dados enviados para a nuvem (${app.historico.length} registros, ${Object.keys(app.looksFavoritos).length} looks criados). Ultima gravacao: ${formatarDataHoraSupabase(data?.updated_at)}.${avisoPecas}${avisoOcasioes}`,
+                `Dados enviados para a nuvem (${app.historico.length} registros, ${Object.keys(app.looksFavoritos).length} looks criados). Última gravação: ${formatarDataHoraSupabase(data?.updated_at)}.${avisoPecas}${avisoOcasioes}`,
                 'sucesso'
             );
         }
+        app.ultimaSincronizacaoSupabase = data?.updated_at ? new Date(data.updated_at) : new Date();
+        atualizarResumoSupabase('', 'sucesso');
         return true;
     } catch (erro) {
         console.error('Falha inesperada ao enviar para Supabase:', erro);
@@ -2586,7 +2657,7 @@ function mostrarPagina(nome) {
     // Mostra apenas a selecionada
     const pagina = document.getElementById(nome);
     if (pagina) {
-        pagina.style.display = 'block';
+        pagina.style.display = '';
     }
 
     if (nome === 'historico') {
@@ -2634,8 +2705,8 @@ function renderGaleria() {
 
     // Object.values() = pega só os valores (não as chaves)
     // forEach() = repete para cada item
-    Object.values(app.pecas).forEach(peca => {
-        galeria.appendChild(criarCardPeca(peca));
+    Object.values(app.pecas).forEach((peca, indice) => {
+        galeria.appendChild(criarCardPeca(peca, indice));
     });
 
     console.log('🖼️ Galeria renderizada!');
@@ -2739,8 +2810,8 @@ function renderGaleriaFiltrada() {
         return;
     }
 
-    pecasFiltradas.forEach(peca => {
-        galeria.appendChild(criarCardPeca(peca));
+    pecasFiltradas.forEach((peca, indice) => {
+        galeria.appendChild(criarCardPeca(peca, indice));
     });
 
     console.log('Galeria filtrada renderizada!');
@@ -2777,8 +2848,8 @@ function obterPecasFiltradasHome() {
         return;
     }
 
-    pecasFiltradas.forEach(peca => {
-        galeria.appendChild(criarCardPeca(peca));
+    pecasFiltradas.forEach((peca, indice) => {
+        galeria.appendChild(criarCardPeca(peca, indice));
     });
 
     console.log('🖼️ Galeria filtrada renderizada!');
