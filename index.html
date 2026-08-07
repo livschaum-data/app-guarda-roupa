@@ -28,9 +28,9 @@
 </head>
 <body>
     <div id="app">
-        <!-- ==================== NAVEGAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O ====================
-             A navegaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o fica sempre visÃƒÆ’Ã‚Â­vel, mudando qual pÃƒÆ’Ã‚Â¡gina 
-             ÃƒÆ’Ã‚Â© mostrada quando vocÃƒÆ’Ã‚Âª clica em um botÃƒÆ’Ã‚Â£o -->
+        <!-- ==================== NAVEGACAO ====================
+             A navegacao fica sempre visivel, mudando qual pagina
+             e mostrada quando voce clica em um botao -->
         <nav class="navbar">
             <button class="nav-btn active" onclick="mostrarPagina('home'); ativarNavBtn(0)" aria-label="In&iacute;cio">
                 <span class="nav-icon" aria-hidden="true">I</span>
@@ -118,7 +118,7 @@
             <p id="supabase-status" class="texto-ajuda" aria-live="polite">Verificando conexão com a nuvem...</p>
         </aside>
 
-        <!-- ==================== PÃƒÆ’Ã‚ÂGINA 1: HOME ====================
+        <!-- ==================== PAGINA 1: HOME ====================
              Galeria de todas as peças do guarda-roupa -->
         <div id="home" class="pagina">
             <div class="home-hero">
@@ -133,28 +133,28 @@
             <div class="home-links" aria-label="Atalhos principais">
                 <a class="home-link-card" href="#ocasioes" onclick="mostrarPagina('ocasioes'); ativarNavBtn(1)">
                     <span class="home-link-icon">O</span>
-                    <strong>Ocasi�es</strong>
-                    <small>Ver looks, climas e sugest�es por ocasi�o.</small>
+                    <strong>Ocasiões</strong>
+                    <small>Ver looks, climas e sugestões por ocasião.</small>
                 </a>
                 <a class="home-link-card" href="#usar-hoje" onclick="mostrarPagina('usar-hoje'); ativarNavBtn(2)">
                     <span class="home-link-icon">R</span>
                     <strong>Registro</strong>
-                    <small>Marcar as pe�as usadas em uma data.</small>
+                    <small>Marcar as peças usadas em uma data.</small>
                 </a>
                 <a class="home-link-card" href="#historico" onclick="mostrarPagina('historico'); ativarNavBtn(3)">
                     <span class="home-link-icon">H</span>
-                    <strong>Hist�rico</strong>
-                    <small>Rever usos, datas, estat�sticas e sincroniza��o.</small>
+                    <strong>Histórico</strong>
+                    <small>Rever usos, datas, estatísticas e sincronização.</small>
                 </a>
                 <a class="home-link-card" href="#pecas" onclick="mostrarPagina('pecas'); ativarNavBtn(4)">
                     <span class="home-link-icon">P</span>
-                    <strong>Pe�as</strong>
+                    <strong>Peças</strong>
                     <small>Ver a galeria completa e filtrar o guarda-roupa.</small>
                 </a>
                 <a class="home-link-card" href="#looks" onclick="mostrarPagina('looks'); ativarNavBtn(5)">
                     <span class="home-link-icon">L</span>
                     <strong>Looks</strong>
-                    <small>Consultar combina��es prontas e sugest�es.</small>
+                    <small>Consultar combinações prontas e sugestões.</small>
                 </a>
             </div>
 
@@ -200,8 +200,8 @@
                 <div class="resumo-periodo-topo">
                     <h3>Peças</h3>
                 </div>
-                <!-- IMPORTANTE: Aqui ÃƒÆ’Ã‚Â© onde as peças aparecem dinamicamente
-                     JavaScript irá criar cards para cada peÃƒÆ’Ã‚Â§a -->
+                <!-- IMPORTANTE: Aqui e onde as pecas aparecem dinamicamente
+                     JavaScript ira criar cards para cada peca -->
                 <div id="galeria" class="galeria">
                     <!-- Os cards das peças serão inseridos aqui pelo JavaScript -->
                 </div>
@@ -217,8 +217,8 @@
             </div>
         </div>
 
-        <!-- ==================== PÃƒÆ’Ã‚ÂGINA 2: USAR HOJE ====================
-             Registra qual(is) peÃƒÆ’Ã‚Â§a(s) vocÃƒÆ’Ã‚Âª usou hoje -->
+        <!-- ==================== PAGINA 2: USAR HOJE ====================
+             Registra qual(is) peca(s) voce usou hoje -->
         <div id="usar-hoje" class="pagina" style="display:none;">
             <div class="header">
                 <h1>Registro de Uso</h1>
@@ -261,14 +261,14 @@
                 </div>
             </div>
 
-            <!-- BotÃƒÆ’Ã‚Â£o principal -->
+            <!-- Botao principal -->
             <button class="btn-principal" onclick="salvarUsoHoje()">
                 Registrar uso
             </button>
         </div>
 
-        <!-- ==================== PÃƒÆ’Ã‚ÂGINA 3: LOOKS ====================
-             Gerencia looks (combinaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes de peças) e ocasiÃƒÆ’Ã‚Âµes -->
+        <!-- ==================== PAGINA 3: LOOKS ====================
+             Gerencia looks (combinacoes de pecas) e ocasioes -->
         <div id="looks" class="pagina" style="display:none;">
             <div class="header">
                 <h1>Meus Looks</h1>
@@ -278,7 +278,7 @@
             <div class="secao">
                 <h3>Filtrar looks</h3>
                 <div class="filtros-home" id="filtros-ocasiao">
-                    <!-- OpÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes serão adicionadas aqui -->
+                    <!-- Opcoes serao adicionadas aqui -->
                 </div>
             </div>
 
@@ -288,8 +288,8 @@
             </div>
         </div>
 
-        <!-- ==================== PÃƒÆ’Ã‚ÂGINA 4: HISTÃƒÆ’ââ‚¬Å“RICO ====================
-             Mostra estatÃƒÆ’Ã‚Â­sticas de uso dos ÃƒÆ’Âºltimos dias -->
+        <!-- ==================== PAGINA 4: OCASIOES ====================
+             Mostra estatisticas de looks, climas e ocasioes -->
         <div id="ocasioes" class="pagina" style="display:none;">
             <div class="header">
                 <h1>Ocasioes</h1>
@@ -418,7 +418,7 @@
                 <h1>Histórico de Uso</h1>
             </div>
 
-            <!-- Seletor de perÃƒÆ’Ã‚Â­odo -->
+            <!-- Seletor de periodo -->
             <div class="secao secao-periodo-historico">
                 <h3>Período</h3>
                 <div class="historico-periodo-botoes">
@@ -485,7 +485,7 @@
                 </div>
             </div>
 
-            <!-- EstatÃƒÆ’Ã‚Â­sticas gerais -->
+            <!-- Estatisticas gerais -->
             <div class="secao secao-resumo-periodo">
                 <div class="resumo-periodo-topo">
                     <h3>Usados no periodo</h3>
@@ -559,8 +559,8 @@
             </div>
         </div>
 
-        <!-- ==================== MODAL: DETALHES DA PEÃƒÆ’ââ‚¬Â¡A ====================
-             Popover que mostra informaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes completas de uma peÃƒÆ’Ã‚Â§a -->
+        <!-- ==================== MODAL: DETALHES DA PECA ====================
+             Popover que mostra informacoes completas de uma peca -->
         <div id="modal-peca" class="modal" style="display:none;">
             <div class="modal-content">
                 <button class="btn-fechar" onclick="fecharModal()">x</button>
@@ -790,31 +790,31 @@
 </html>
 
 <!-- 
-    ÃƒÂ°Ã…Â¸ââ‚¬â„¢Ã‚Â¡ EXPLICAÃƒÆ’ââ‚¬Â¡ÃƒÆ’Ã†â€™O DA ESTRUTURA:
+    EXPLICACAO DA ESTRUTURA:
 
-    1. NAVBAR (NavegaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o)
-       - 4 botÃƒÆ’Ã‚Âµes que mudam qual pÃƒÆ’Ã‚Â¡gina ÃƒÆ’Ã‚Â© mostrada
-       - onclick="mostrarPagina('home')" = função JS que esconde tudo e mostra aquela pÃƒÆ’Ã‚Â¡gina
+    1. NAVBAR (Navegacao)
+       - Botoes que mudam qual pagina e mostrada
+       - onclick="mostrarPagina('home')" = funcao JS que esconde tudo e mostra aquela pagina
 
-    2. PÃƒÆ’Ã‚ÂGINAS (4 no total)
+    2. PAGINAS
        - Cada uma tem id="algo" e class="pagina"
        - JavaScript muda o display: none/block delas
-       - Isso ÃƒÆ’Ã‚Â© melhor que recarregar a pÃƒÆ’Ã‚Â¡gina
+       - Isso e melhor que recarregar a pagina
 
     3. MODAIS (Popups)
-       - modal-peca: mostra detalhes de uma peÃƒÆ’Ã‚Â§a
-       - SobrepÃƒÆ’Ã‚Âµem as pÃƒÆ’Ã‚Â¡ginas
+       - modal-peca: mostra detalhes de uma peca
+       - Sobrepoem as paginas
 
     4. IDs e Classes
-       - id="algo" ÃƒÆ’Ã‚Â© para JavaScript encontrar (getElementById)
-       - class="algo" ÃƒÆ’Ã‚Â© para CSS estilizar (querySelector)
+       - id="algo" e para JavaScript encontrar (getElementById)
+       - class="algo" e para CSS estilizar (querySelector)
 
     5. Eventos JavaScript
        - onclick="funcao()" chama função quando clica
        - onkeyup="funcao()" chama enquanto digita
        - onchange="funcao()" chama quando muda
 
-    PRÃƒÆ’ââ‚¬Å“XIMO PASSO: Abra js/app.js para ver a lÃƒÆ’Ã‚Â³gica
+    PROXIMO PASSO: Abra js/app.js para ver a logica
 -->
 
 
