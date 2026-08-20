@@ -1099,6 +1099,24 @@ body {
     display: none;
 }
 
+.acoes-registro-uso {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+    margin-top: 12px;
+}
+
+.acoes-registro-uso .btn-principal,
+.acoes-registro-uso .btn-secundario {
+    margin: 0;
+}
+
+@media (max-width: 520px) {
+    .acoes-registro-uso {
+        flex-direction: column;
+    }
+}
+
 .btn-principal:hover {
     background: #6d28d9;
     transform: translateY(-2px);
@@ -3792,6 +3810,11 @@ tr:hover {
     transition: var(--transicao);
 }
 
+.calendario-dia.tem-agendamento {
+    border-color: #0ea5e9;
+    background: #f0f9ff;
+}
+
 .calendario-dia.tem-uso:hover,
 .calendario-dia.selecionado {
     border-color: var(--cor-primaria);
@@ -4279,6 +4302,12 @@ tr:hover {
     background: #fffbeb;
 }
 
+.historico-look-agendado,
+.historico-peca-agendada {
+    border-color: #0ea5e9;
+    background: #f0f9ff;
+}
+
 .historico-look-card:hover {
     border-color: var(--cor-primaria);
     box-shadow: var(--sombra);
@@ -4322,6 +4351,18 @@ tr:hover {
     white-space: nowrap;
 }
 
+.historico-peca-origem {
+    display: inline-flex;
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 5px;
+    padding: 3px 6px;
+    border-radius: 6px;
+    font-size: 9px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
 .secao-detalhe-historico .historico-bloco-topo [data-criar-look-dia] {
     flex: 0 0 auto;
     width: auto;
@@ -4340,6 +4381,12 @@ tr:hover {
 .historico-look-inferido .historico-look-origem {
     background: #fde68a;
     color: #92400e;
+}
+
+.historico-look-agendado .historico-look-origem,
+.historico-peca-origem {
+    background: #bae6fd;
+    color: #075985;
 }
 
 .historico-look-foto,

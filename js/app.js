@@ -27,6 +27,7 @@ const CAMPOS_FILTROS_LOOKS_MULTIPLOS = CAMPOS_FILTROS_LOOKS.filter(campo => camp
 const TEMA_VISUAL_STORAGE_KEY = 'temaVisualGuardaRoupa';
 const ESTADO_FILTROS_STORAGE_KEY = 'estadoFiltrosGuardaRoupa';
 const TEMAS_VISUAIS = ['sistema', 'claro', 'escuro'];
+const TIPO_REGISTRO_AGENDAMENTO = 'agendamento';
 const CAMPOS_IMPORTADOS_PECA = [
     {
         prop: 'info_fotos',
@@ -861,6 +862,7 @@ function carregarDados() {
         const historicoSalvo = localStorage.getItem('app_historico');
         app.historico = historicoSalvo ? JSON.parse(historicoSalvo) : [];
         if (!Array.isArray(app.historico)) app.historico = [];
+        if (limparAgendamentosExpirados()) salvarDadosLocal();
     } catch (erro) {
         console.warn('Histórico salvo inválido. Iniciando vazio.', erro);
         app.historico = [];
@@ -1004,6 +1006,7 @@ function salvarDados(opcoes = {}) {
     // JSON.stringify() = transforma objeto em texto
     const incluirLooks = opcoes.incluirLooks !== false;
 
+    limparAgendamentosExpirados();
     app.mapaUsosLooksAtual = null;
     app.indiceLooksPorPecasAtual = null;
 
@@ -1132,6 +1135,33 @@ function atualizarStatusSupabase(mensagem, tipo = '') {
     }
 
     atualizarResumoSupabase(mensagem, app.statusSupabaseAtual);
+}
+
+function obterHojeISO() {
+    return formatarDataInput(new Date());
+}
+
+function registroEhAgendamento(registro) {
+    return registro?.tipo === TIPO_REGISTRO_AGENDAMENTO || registro?.agendamento === true;
+}
+
+function agendamentoExpirado(registro) {
+    const dia = obterDiaRegistro(registro);
+    return registroEhAgendamento(registro) && dia && dia < obterHojeISO();
+}
+
+function limparAgendamentosExpirados() {
+    const totalAntes = app.historico.length;
+    app.historico = app.historico.filter(registro => !agendamentoExpirado(registro));
+    return app.historico.length !== totalAntes;
+}
+
+function obterRegistrosUso(registros = app.historico) {
+    return (registros || []).filter(registro => !registroEhAgendamento(registro));
+}
+
+function obterRegistrosHistoricoAtivos(registros = app.historico) {
+    return (registros || []).filter(registro => !agendamentoExpirado(registro));
 }
 
 function confirmarBaixarDadosSupabase() {
@@ -2156,7 +2186,7 @@ function prepararImportacaoHistorico(registros) {
     const registrosValidos = (registros || [])
         .map(normalizarRegistroUso)
         .filter(Boolean);
-    const existentesPorDia = agruparRegistrosPorDia(app.historico || []);
+    const existentesPorDia = agruparRegistrosPorDia(obterRegistrosUso(app.historico || []));
     const importadosPorDia = agruparRegistrosPorDia(registrosValidos);
     const automaticos = [];
     const conflitos = [];
@@ -2348,7 +2378,8 @@ function normalizarRegistroUso(registro) {
 function chaveRegistroHistoricoBase(registro) {
     const dia = normalizarDataHistorico(registro.data)?.slice(0, 10) || '';
     const pecas = [...(registro.pecas || [])].sort().join(',');
-    return `${dia}|${pecas}`;
+    const tipo = registroEhAgendamento(registro) ? TIPO_REGISTRO_AGENDAMENTO : 'uso';
+    return `${dia}|${tipo}|${pecas}`;
 }
 
 function mesclarRegistroHistorico(registro) {
@@ -2367,7 +2398,8 @@ function chaveRegistroHistorico(registro) {
     const dia = normalizarDataHistorico(registro.data)?.slice(0, 10) || '';
     const pecas = [...(registro.pecas || [])].sort().join(',');
     const looks = [...new Set([registro.lookId, ...(registro.lookIds || [])].filter(Boolean))].sort().join(',');
-    return `${dia}|${pecas}|${looks}`;
+    const tipo = registroEhAgendamento(registro) ? TIPO_REGISTRO_AGENDAMENTO : 'uso';
+    return `${dia}|${tipo}|${pecas}|${looks}`;
 }
 
 function csvParaObjetos(texto) {
@@ -3062,7 +3094,7 @@ function obterIdsPecasPorDataUsoSelecionada() {
     if (!inicio) return null;
 
     const ids = new Set();
-    obterRegistrosHistoricoEntre(inicio, fim || inicio).forEach(registro => {
+    obterRegistrosUso(obterRegistrosHistoricoEntre(inicio, fim || inicio)).forEach(registro => {
         (registro.pecas || []).forEach(id => {
             if (app.pecas[id]) ids.add(id);
         });
@@ -3213,7 +3245,7 @@ function obterDatasUsoLook(lookId) {
     const registradas = [];
     const inferidas = [];
 
-    obterUsosLooksAgrupadosPorDia(app.historico).forEach(({ dia, registrados, inferidos }) => {
+    obterUsosLooksAgrupadosPorDia(obterRegistrosUso(app.historico)).forEach(({ dia, registrados, inferidos }) => {
         if (registrados.some(id => normalizarTexto(id) === alvo)) registradas.push(dia);
         if (inferidos.some(id => normalizarTexto(id) === alvo)) inferidas.push(dia);
     });
@@ -4842,6 +4874,14 @@ function selecionarPecaHoje() {
 
 /* SALVAR USO DO DIA */
 function salvarUsoHoje() {
+    salvarRegistroHoje('uso');
+}
+
+function agendarUsoHoje() {
+    salvarRegistroHoje(TIPO_REGISTRO_AGENDAMENTO);
+}
+
+function salvarRegistroHoje(tipo = 'uso') {
     if (app.pecasSelecionadasHoje.length === 0) {
         alert('Selecione pelo menos uma peça!');
         return;
@@ -4853,6 +4893,11 @@ function salvarUsoHoje() {
         return;
     }
 
+    if (tipo === TIPO_REGISTRO_AGENDAMENTO && dataRegistro < obterHojeISO()) {
+        alert('Agendamentos precisam ser para hoje ou para uma data futura.');
+        return;
+    }
+
     // Verificar se usar um look favorito
 
     // Criar registro no histórico
@@ -4861,6 +4906,7 @@ function salvarUsoHoje() {
         pecas: [...app.pecasSelecionadasHoje],
         lookId: app.looksSelecionadosHoje[0] || null,
         lookIds: [...app.looksSelecionadosHoje],
+        tipo: tipo === TIPO_REGISTRO_AGENDAMENTO ? TIPO_REGISTRO_AGENDAMENTO : 'uso',
         alteradoEm: new Date().toISOString(),
     };
 
@@ -4868,7 +4914,7 @@ function salvarUsoHoje() {
     salvarDados();
 
     // Feedback visual
-    alert('Uso registrado com sucesso!');
+    alert(tipo === TIPO_REGISTRO_AGENDAMENTO ? 'Agendamento salvo com sucesso!' : 'Uso registrado com sucesso!');
 
     // Limpar
     app.pecasSelecionadasHoje = [];
@@ -5397,6 +5443,8 @@ function obterLookIdsRegistroOuInferidos(registro) {
 }
 
 function obterLooksRegistroComOrigem(registro) {
+    const origemExplicita = registroEhAgendamento(registro) ? 'agendado' : 'registrado';
+    const origemInferida = registroEhAgendamento(registro) ? 'agendado' : 'inferido';
     const explicitos = new Map();
     obterLookIdsRegistro(registro).forEach(id => {
         const chave = normalizarTexto(id);
@@ -5409,8 +5457,8 @@ function obterLooksRegistroComOrigem(registro) {
         if (chave && !ignorados.has(chave) && !explicitos.has(chave) && !inferidos.has(chave)) inferidos.set(chave, id);
     });
     const itens = [
-        ...[...explicitos.values()].map(id => ({ id, origem: 'registrado' })),
-        ...[...inferidos.values()].map(id => ({ id, origem: 'inferido' })),
+        ...[...explicitos.values()].map(id => ({ id, origem: origemExplicita })),
+        ...[...inferidos.values()].map(id => ({ id, origem: origemInferida })),
     ];
 
     return itens;
@@ -5450,7 +5498,7 @@ function obterUsosLooksAgrupadosPorDia(registros) {
 function calcularMapaUsosLooks() {
     const mapa = new Map();
 
-    obterUsosLooksAgrupadosPorDia(app.historico).forEach(({ dia, registrados, inferidos }) => {
+    obterUsosLooksAgrupadosPorDia(obterRegistrosUso(app.historico)).forEach(({ dia, registrados, inferidos }) => {
         registrados.forEach(id => incrementarUsoLookDetalhado(mapa, id, 'registrado', dia));
         inferidos.forEach(id => incrementarUsoLookDetalhado(mapa, id, 'inferido', dia));
     });
@@ -6754,7 +6802,7 @@ function lookEhHTT(look) {
 function contarUsosLooksOcasiao(lookIds) {
     if (!lookIds.size) return 0;
 
-    return app.historico.reduce((total, registro) => {
+    return obterRegistrosUso(app.historico).reduce((total, registro) => {
         const usados = obterLookIdsRegistroOuInferidos(registro);
         return total + (usados.some(id => lookIds.has(id)) ? 1 : 0);
     }, 0);
@@ -7555,13 +7603,14 @@ function consultarHistoricoPorDatas() {
 
 function renderHistorico(registrosPeriodo, inicio, fim) {
     registrosPeriodo = registrosPeriodo.filter(reg => Array.isArray(reg.pecas) && reg.pecas.length > 0);
+    const registrosUsoPeriodo = obterRegistrosUso(registrosPeriodo);
     app.registrosHistoricoPeriodo = registrosPeriodo;
 
     atualizarResumoPeriodo(registrosPeriodo, inicio, fim);
-    renderResumoItensPeriodo(registrosPeriodo);
-    renderTabelaPecasMaisUsadas(registrosPeriodo);
+    renderResumoItensPeriodo(registrosUsoPeriodo);
+    renderTabelaPecasMaisUsadas(registrosUsoPeriodo);
     renderDetalheHistorico(registrosPeriodo);
-    atualizarStatsHistorico(registrosPeriodo);
+    atualizarStatsHistorico(registrosUsoPeriodo);
     renderCalendarioHistorico(inicio, fim);
     renderPecasSemUso();
 
@@ -7582,7 +7631,7 @@ function renderCalendarioHistorico(inicioSelecionado = null, fimSelecionado = nu
     const primeiroDia = new Date(ano, mes - 1, 1);
     const diasNoMes = new Date(ano, mes, 0).getDate();
     const inicioSemana = primeiroDia.getDay();
-    const registrosPorDia = agruparRegistrosPorDia(app.historico);
+    const registrosPorDia = agruparRegistrosPorDia(obterRegistrosHistoricoAtivos(app.historico));
     const nomesDias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
     label.textContent = primeiroDia.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
@@ -7595,6 +7644,8 @@ function renderCalendarioHistorico(inicioSelecionado = null, fimSelecionado = nu
     for (let dia = 1; dia <= diasNoMes; dia++) {
         const dataISO = `${ano}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
         const registros = registrosPorDia[dataISO] || [];
+        const temUsoReal = registros.some(registro => !registroEhAgendamento(registro));
+        const temAgendamento = registros.some(registro => registroEhAgendamento(registro));
         const pecas = [...new Set(registros.flatMap(reg => reg.pecas || []))].filter(id => app.pecas[id]);
         const selecionado = inicioSelecionado && fimSelecionado && dataISO >= inicioSelecionado && dataISO <= fimSelecionado;
         const fotos = pecas.slice(0, 3).map(id => `
@@ -7604,11 +7655,11 @@ function renderCalendarioHistorico(inicioSelecionado = null, fimSelecionado = nu
 
         container.insertAdjacentHTML('beforeend', `
             <button type="button"
-                    class="calendario-dia ${registros.length ? 'tem-uso' : ''} ${selecionado ? 'selecionado' : ''}"
+                    class="calendario-dia ${registros.length ? 'tem-uso' : ''} ${temAgendamento && !temUsoReal ? 'tem-agendamento' : ''} ${selecionado ? 'selecionado' : ''}"
                     data-data="${dataISO}">
                 <span>${dia}</span>
                 <div class="calendario-miniaturas">${fotos}</div>
-                ${registros.length ? `<small>${pecas.length} peças</small>` : ''}
+                ${registros.length ? `<small>${pecas.length} peças${temAgendamento && !temUsoReal ? ' agendadas' : ''}</small>` : ''}
             </button>
         `);
     }
@@ -7743,7 +7794,7 @@ function pecaPassaFiltroTempoSemUso(dias, tempo) {
 function obterUltimoUsoPorPeca() {
     const ultimoUso = {};
 
-    app.historico.forEach(reg => {
+    obterRegistrosUso(app.historico).forEach(reg => {
         const dia = obterDiaRegistro(reg);
         if (!dia) return;
         const data = new Date(`${dia}T12:00:00`);
@@ -7929,7 +7980,7 @@ function compararValoresResumoHistorico(valorA, valorB) {
 
 function calcularResumoUsoHistorico(registrosPeriodo, tipo) {
     const contagemPeriodo = contarUsosHistorico(registrosPeriodo, tipo);
-    const contagemTotal = contarUsosHistorico(app.historico, tipo);
+    const contagemTotal = contarUsosHistorico(obterRegistrosUso(app.historico), tipo);
 
     return [...contagemPeriodo.values()]
         .map(itemPeriodo => {
@@ -7948,6 +7999,7 @@ function calcularResumoUsoHistorico(registrosPeriodo, tipo) {
 
 function contarUsosHistorico(registros, tipo) {
     const mapa = new Map();
+    registros = obterRegistrosUso(registros);
 
     if (tipo === 'looks') {
         obterUsosLooksAgrupadosPorDia(registros).forEach(({ dia, registrados, inferidos }) => {
@@ -8040,6 +8092,7 @@ function formatarDataResumoHistorico(valor) {
 
 function renderTabelaPecasMaisUsadas(registrosPeriodo) {
     const contagem = {};
+    registrosPeriodo = obterRegistrosUso(registrosPeriodo);
     registrosPeriodo.forEach(reg => {
         (reg.pecas || []).forEach(id => {
             contagem[id] = (contagem[id] || 0) + 1;
@@ -8100,12 +8153,21 @@ function renderDetalheHistorico(registrosPeriodo) {
     Object.entries(registrosPorDia)
         .sort(([diaA], [diaB]) => diaB.localeCompare(diaA))
         .forEach(([dia, registros]) => {
-            const pecasDia = [...new Set(registros.flatMap(reg => reg.pecas || []))].filter(id => app.pecas[id]);
+            const pecasDiaMap = new Map();
+            registros.forEach(registro => {
+                (registro.pecas || []).forEach(id => {
+                    if (!app.pecas[id]) return;
+                    const atual = pecasDiaMap.get(id);
+                    const origem = !registroEhAgendamento(registro) || atual?.origem === 'registrado' ? 'registrado' : 'agendado';
+                    pecasDiaMap.set(id, { id, origem });
+                });
+            });
+            const pecasDia = [...pecasDiaMap.values()];
             const looksDiaMap = new Map();
             registros.flatMap(reg => obterLooksRegistroComOrigem(reg)).forEach(item => {
                 if (!obterLookPorId(item.id)) return;
                 const atual = looksDiaMap.get(item.id);
-                const origem = atual?.origem === 'registrado' || item.origem === 'registrado' ? 'registrado' : 'inferido';
+                const origem = escolherOrigemHistorico(atual?.origem, item.origem);
                 looksDiaMap.set(item.id, { id: item.id, origem });
             });
             const looksDia = [...looksDiaMap.values()];
@@ -8119,7 +8181,7 @@ function renderDetalheHistorico(registrosPeriodo) {
                 : '<p class="texto-ajuda">Nenhum look identificado nesse dia.</p>';
 
             const pecasHtml = pecasDia.length > 0
-                ? pecasDia.map(id => criarCardPecaHistorico(id, { dia, removivel: true })).join('')
+                ? pecasDia.map(item => criarCardPecaHistorico(item.id, { dia, removivel: true, agendado: item.origem === 'agendado' })).join('')
                 : '<p class="texto-ajuda">Nenhuma peça identificada nesse dia.</p>';
 
             grupo.innerHTML = `
@@ -8147,12 +8209,19 @@ function renderDetalheHistorico(registrosPeriodo) {
         });
 }
 
+function escolherOrigemHistorico(origemAtual, origemNova) {
+    const pesos = { registrado: 3, agendado: 2, inferido: 1 };
+    return (pesos[origemNova] || 0) > (pesos[origemAtual] || 0) ? origemNova : (origemAtual || origemNova || 'inferido');
+}
+
 function criarCardLookHistorico(id, origem = 'registrado', opcoes = {}) {
     const look = obterLookPorId(id);
     const pecas = (look?.pecas || []).filter(pid => app.pecas[pid]);
     const nome = look?.nome || look?.id || id;
-    const origemNormalizada = origem === 'inferido' ? 'inferido' : 'registrado';
-    const origemLabel = origemNormalizada === 'inferido' ? 'Inferido pelas peças' : 'Registrado no histórico';
+    const origemNormalizada = ['inferido', 'agendado'].includes(origem) ? origem : 'registrado';
+    const origemLabel = origemNormalizada === 'inferido'
+        ? 'Inferido pelas peças'
+        : (origemNormalizada === 'agendado' ? 'Agendado' : 'Registrado no histórico');
     const idJs = escapeHtml(JSON.stringify(String(id)));
     const diaJs = escapeHtml(JSON.stringify(String(opcoes.dia || '')));
     const acaoRemover = opcoes.removivel && opcoes.dia
@@ -8175,13 +8244,14 @@ function criarCardPecaHistorico(id, opcoes = {}) {
     const peca = app.pecas[id];
     if (!peca) return '';
     const semSeletor = Boolean(opcoes.semSeletor);
+    const classeAgendada = opcoes.agendado ? 'historico-peca-agendada' : '';
 
     const acaoRemover = opcoes.removivel && opcoes.dia
         ? `<button type="button" class="historico-peca-remover" onclick="removerPecaDoHistoricoDia('${opcoes.dia}', '${id}')">Remover</button>`
         : '';
 
     return `
-        <div class="historico-peca-card ${semSeletor ? 'historico-peca-sem-seletor' : 'historico-peca-selecionavel'} ${opcoes.compacto ? 'historico-peca-compacto' : ''}" ${semSeletor ? '' : 'onclick="alternarCardPecaLookHistorico(event, this)"'}>
+        <div class="historico-peca-card ${classeAgendada} ${semSeletor ? 'historico-peca-sem-seletor' : 'historico-peca-selecionavel'} ${opcoes.compacto ? 'historico-peca-compacto' : ''}" ${semSeletor ? '' : 'onclick="alternarCardPecaLookHistorico(event, this)"'}>
             ${semSeletor ? '' : `<label class="historico-peca-check" title="Selecionar para criar look">
                 <input type="checkbox" value="${id}" onchange="alternarPecaLookHistorico(this)">
                 <span></span>
@@ -8190,6 +8260,7 @@ function criarCardPecaHistorico(id, opcoes = {}) {
                  onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23eee%22 width=%22100%22 height=%22100%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22>sem foto</text></svg>'">
             <span>${peca.tipo}</span>
             <small>${id}</small>
+            ${opcoes.agendado ? '<small class="historico-peca-origem">Agendada</small>' : ''}
             <button type="button" class="historico-peca-detalhes" onclick="mostrarDetalhesPeca('${id}')">Ficha</button>
             ${acaoRemover}
         </div>
@@ -8725,7 +8796,7 @@ function agruparRegistrosPorDia(registros) {
 }
 
 function obterRegistrosHistoricoEntre(inicio, fim) {
-    return app.historico.filter(reg => {
+    return obterRegistrosHistoricoAtivos(app.historico).filter(reg => {
         const dia = obterDiaRegistro(reg);
         return dia && dia >= inicio && dia <= fim;
     });
@@ -8736,7 +8807,7 @@ function obterDiaRegistro(registro) {
 }
 
 function obterDataReferenciaHistorico() {
-    const dias = app.historico
+    const dias = obterRegistrosHistoricoAtivos(app.historico)
         .map(obterDiaRegistro)
         .filter(Boolean)
         .sort();
@@ -8748,7 +8819,7 @@ function obterDataReferenciaHistorico() {
 }
 
 function obterIntervaloCompletoHistorico() {
-    const dias = app.historico
+    const dias = obterRegistrosHistoricoAtivos(app.historico)
         .map(obterDiaRegistro)
         .filter(Boolean)
         .sort();
@@ -8778,7 +8849,10 @@ function atualizarResumoPeriodo(registros, inicio, fim) {
         return;
     }
 
-    resumo.textContent = `${registros.length} registro(s) entre ${formatarDataBR(inicio)} e ${formatarDataBR(fim)}.`;
+    const totalUsos = obterRegistrosUso(registros).length;
+    const totalAgendamentos = registros.filter(registroEhAgendamento).length;
+    const complementoAgendamentos = totalAgendamentos ? ` e ${totalAgendamentos} agendamento(s)` : '';
+    resumo.textContent = `${totalUsos} uso(s)${complementoAgendamentos} entre ${formatarDataBR(inicio)} e ${formatarDataBR(fim)}.`;
 }
 
 function marcarFiltroPeriodoHistorico(valor) {
