@@ -28,6 +28,8 @@ const TEMA_VISUAL_STORAGE_KEY = 'temaVisualGuardaRoupa';
 const ESTADO_FILTROS_STORAGE_KEY = 'estadoFiltrosGuardaRoupa';
 const TEMAS_VISUAIS = ['sistema', 'claro', 'escuro'];
 const TIPO_REGISTRO_AGENDAMENTO = 'agendamento';
+const MODAL_Z_INDEX_BASE = 200;
+const MODAL_Z_INDEX_STEP = 40;
 const CAMPOS_IMPORTADOS_PECA = [
     {
         prop: 'info_fotos',
@@ -2303,7 +2305,7 @@ function mostrarConflitosImportacaoHistorico() {
         </div>
     `).join('');
 
-    modal.style.display = 'flex';
+    abrirModalEmpilhado(modal);
 }
 
 function resumirRegistrosHistoricoConflito(registros) {
@@ -2330,7 +2332,7 @@ function resumirRegistrosHistoricoConflito(registros) {
 
 function cancelarImportacaoHistoricoComConflitos() {
     app.importacaoHistoricoPendente = null;
-    document.getElementById('modal-conflitos-historico').style.display = 'none';
+    fecharModalEspecifico(document.getElementById('modal-conflitos-historico'));
     const input = document.getElementById('arquivo-historico');
     if (input) input.value = '';
     atualizarStatusImportacao('Importação cancelada. Nenhuma alteração foi aplicada.', 'erro');
@@ -2349,7 +2351,7 @@ function confirmarImportacaoHistoricoComConflitos() {
 
     const resultado = aplicarPlanoImportacaoHistorico(pendente);
     app.importacaoHistoricoPendente = null;
-    document.getElementById('modal-conflitos-historico').style.display = 'none';
+    fecharModalEspecifico(document.getElementById('modal-conflitos-historico'));
     const input = document.getElementById('arquivo-historico');
     if (input) input.value = '';
     finalizarImportacaoHistorico(resultado, pendente.ignorados || 0);
@@ -3133,8 +3135,6 @@ function abrirDetalhsPeca(id) {
     if (!peca) return;
     const dataAtualizacao = obterDataAtualizacaoPeca(peca);
     const modalPeca = document.getElementById('modal-peca');
-    const modalAbertoPorBaixo = [...document.querySelectorAll('.modal')]
-        .some(modal => modal !== modalPeca && modal.style.display !== 'none');
 
     // Guardar referência para usar depois
     app.pecaEmDetalhes = id;
@@ -3157,8 +3157,7 @@ function abrirDetalhsPeca(id) {
     document.getElementById('registrar-peca-modal').style.display = '';
 
     // Mostrar modal
-    modalPeca.classList.toggle('modal-em-pilha', modalAbertoPorBaixo);
-    modalPeca.style.display = 'flex';
+    abrirModalEmpilhado(modalPeca);
 }
 
 function mostrarDetalhesPeca(id) {
@@ -3188,29 +3187,26 @@ function abrirFichaLooksPeca(modo = 'existentes') {
     document.getElementById('looks-peca-foto').src = getCaminhoFoto(pecaId);
     document.getElementById('looks-peca-id').textContent = pecaId;
     renderLooksExistentesPeca();
-    modal.classList.add('modal-em-pilha');
-    modal.style.display = 'flex';
+    abrirModalEmpilhado(modal);
 }
 
 function fecharModalLooksPeca() {
     const modal = document.getElementById('modal-looks-peca');
     app.looksPecaSelecionados = [];
-    modal.classList.remove('modal-em-pilha');
-    modal.style.display = 'none';
+    fecharModalEspecifico(modal);
 }
 
 function fecharModalLookDetalhes() {
     const modal = document.getElementById('modal-look-detalhes');
     const temModalPorBaixo = [...document.querySelectorAll('.modal')]
-        .some(item => item !== modal && item.style.display !== 'none');
+        .some(item => item !== modal && modalEstaAberto(item));
 
     if (!temModalPorBaixo) {
         fecharModal();
         return;
     }
 
-    modal.classList.remove('modal-em-pilha');
-    modal.style.display = 'none';
+    fecharModalEspecifico(modal);
 }
 
 function abrirDatasUsoLook(lookId) {
@@ -3226,18 +3222,12 @@ function abrirDatasUsoLook(lookId) {
     document.getElementById('datas-uso-look-registradas').innerHTML = criarListaDatasUsoLook(usos.registradas, 'registrada');
     document.getElementById('datas-uso-look-inferidas').innerHTML = criarListaDatasUsoLook(usos.inferidas, 'inferida');
 
-    modal.classList.add('modal-em-pilha');
-    modal.style.display = 'flex';
-    modal.style.zIndex = '340';
-    modal.scrollTop = 0;
+    abrirModalEmpilhado(modal);
 }
 
 function fecharModalDatasUsoLook() {
     const modal = document.getElementById('modal-datas-uso-look');
-    if (!modal) return;
-    modal.classList.remove('modal-em-pilha');
-    modal.style.zIndex = '';
-    modal.style.display = 'none';
+    fecharModalEspecifico(modal);
 }
 
 function obterDatasUsoLook(lookId) {
@@ -3660,18 +3650,12 @@ function abrirEdicaoLoteLooksPeca() {
         renderSugestoesLookComFotos('edit-lote-look-sugestoes');
     }, 0);
 
-    modal.classList.add('modal-em-pilha');
-    modal.style.display = 'flex';
-    modal.style.zIndex = '340';
-    modal.scrollTop = 0;
+    abrirModalEmpilhado(modal);
 }
 
 function fecharModalEdicaoLoteLooks() {
     const modal = document.getElementById('modal-edicao-lote-looks');
-    if (!modal) return;
-    modal.classList.remove('modal-em-pilha');
-    modal.style.zIndex = '';
-    modal.style.display = 'none';
+    fecharModalEspecifico(modal);
 }
 
 function obterIdsLooksSelecionadosParaEdicaoLote() {
@@ -3856,11 +3840,34 @@ function obterSugestoesSelectMultiplo(selectId) {
     })).filter(item => item.id);
 }
 
+function modalEstaAberto(modal) {
+    return Boolean(modal && modal.style.display !== 'none');
+}
+
+function abrirModalEmpilhado(modal) {
+    if (!modal) return;
+
+    const modaisAbertos = [...document.querySelectorAll('.modal')]
+        .filter(item => item !== modal && modalEstaAberto(item));
+    const zIndex = MODAL_Z_INDEX_BASE + (modaisAbertos.length * MODAL_Z_INDEX_STEP);
+
+    modal.classList.toggle('modal-em-pilha', modaisAbertos.length > 0);
+    modal.style.zIndex = String(zIndex);
+    modal.style.display = 'flex';
+    modal.scrollTop = 0;
+}
+
+function fecharModalEspecifico(modal) {
+    if (!modal) return;
+    modal.classList.remove('modal-em-pilha');
+    modal.style.zIndex = '';
+    modal.style.display = 'none';
+}
+
 function fecharModal() {
     // Esconde todos os modais
     document.querySelectorAll('.modal').forEach(modal => {
-        modal.classList.remove('modal-em-pilha');
-        modal.style.display = 'none';
+        fecharModalEspecifico(modal);
     });
 }
 
@@ -4453,7 +4460,7 @@ function mostrarFormularioPeca(id) {
     document.getElementById('cancelar-edicao-peca-modal').style.display = '';
     document.getElementById('salvar-peca-modal').style.display = '';
     document.getElementById('registrar-peca-modal').style.display = 'none';
-    document.getElementById('modal-peca').style.display = 'flex';
+    abrirModalEmpilhado(document.getElementById('modal-peca'));
 }
 
 function lerFotoPeca() {
@@ -5619,8 +5626,6 @@ function mostrarDetalhesLook(lookId, editando = false) {
     if (!look) return;
 
     const modal = document.getElementById('modal-look-detalhes');
-    const modalAbertoPorBaixo = [...document.querySelectorAll('.modal')]
-        .some(item => item !== modal && item.style.display !== 'none');
     modal.dataset.lookId = lookId;
     modal.dataset.editando = editando ? 'true' : 'false';
 
@@ -5661,8 +5666,7 @@ function mostrarDetalhesLook(lookId, editando = false) {
         .map(item => criarCardPecaLookSugerida(item))
         .join('') || '<p class="texto-ajuda">Nenhuma sugestão cadastrada.</p>';
 
-    modal.classList.toggle('modal-em-pilha', modalAbertoPorBaixo);
-    modal.style.display = 'flex';
+    abrirModalEmpilhado(modal);
 }
 
 function renderFichaLookLeitura(look, ficha) {
@@ -8457,7 +8461,7 @@ function abrirCriacaoLookHistorico(dia) {
     renderOrdemPecasLookHistorico();
     atualizarPreviewLookHistorico();
 
-    document.getElementById('modal-criar-look-historico').style.display = 'flex';
+    abrirModalEmpilhado(document.getElementById('modal-criar-look-historico'));
 }
 
 function configurarModoLookHistorico() {
