@@ -172,6 +172,7 @@ const app = {
     fotoNovoLookHistorico: null,
     pecaEmDetalhes: null,
     mesCalendarioHistorico: null,
+    mesCalendarioRegistro: null,
     filtroHistoricoAtivo: null,
     resumoHistoricoTipo: 'looks',
     filtrosResumoHistorico: { categoria: '', utilizacao: '' },
@@ -261,6 +262,7 @@ async function inicializar() {
     preencherFiltrosOcasiao();
     renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
     preencherFiltrosHoje();
+    configurarEventosRegistro();
     configurarEventosHistorico();
     inicializarPaginaOcasioes();
     await inicializarSupabase();
@@ -2705,6 +2707,7 @@ function mostrarPagina(nome) {
 
     if (nome === 'usar-hoje') {
         preencherFiltrosHoje();
+        renderCalendarioRegistro();
     }
 
     if (nome === 'looks') {
@@ -3891,6 +3894,224 @@ function formatarDataParaInput(data) {
     return `${ano}-${mes}-${dia}`;
 }
 
+function configurarEventosRegistro() {
+    const eventos = [
+        ['calendario-registro-mes-anterior', () => navegarMesCalendarioRegistro(-1)],
+        ['calendario-registro-mes-proximo', () => navegarMesCalendarioRegistro(1)],
+        ['data-registro-uso', evento => atualizarMesCalendarioRegistroPorData(evento.target.value), 'change'],
+    ];
+
+    eventos.forEach(([id, acao, evento = 'click']) => {
+        const botao = document.getElementById(id);
+        if (!botao || botao.dataset.eventoConfigurado === 'true') return;
+
+        botao.addEventListener(evento, acao);
+        botao.dataset.eventoConfigurado = 'true';
+    });
+}
+
+function atualizarMesCalendarioRegistroPorData(dataISO) {
+    if (!dataISO) return;
+    app.mesCalendarioRegistro = dataISO.slice(0, 7);
+    renderCalendarioRegistro();
+}
+
+function renderCalendarioRegistro() {
+    const container = document.getElementById('calendario-registro');
+    const label = document.getElementById('calendario-registro-mes-label');
+    if (!container || !label) return;
+
+    if (!app.mesCalendarioRegistro) {
+        const campoData = document.getElementById('data-registro-uso')?.value;
+        const referencia = campoData
+            ? new Date(`${campoData}T12:00:00`)
+            : (obterDataReferenciaHistorico() || new Date());
+        app.mesCalendarioRegistro = formatarMesInput(referencia);
+    }
+
+    const [ano, mes] = app.mesCalendarioRegistro.split('-').map(Number);
+    const primeiroDia = new Date(ano, mes - 1, 1);
+    const diasNoMes = new Date(ano, mes, 0).getDate();
+    const inicioSemana = primeiroDia.getDay();
+    const registrosPorDia = agruparRegistrosPorDia(obterRegistrosHistoricoAtivos(app.historico));
+    const nomesDias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+    label.textContent = primeiroDia.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+    container.innerHTML = nomesDias.map(dia => `<div class="calendario-dia-semana">${dia}</div>`).join('');
+
+    for (let i = 0; i < inicioSemana; i++) {
+        container.insertAdjacentHTML('beforeend', '<div class="calendario-dia vazio"></div>');
+    }
+
+    for (let dia = 1; dia <= diasNoMes; dia++) {
+        const dataISO = `${ano}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+        const registros = registrosPorDia[dataISO] || [];
+        const temUsoReal = registros.some(registro => !registroEhAgendamento(registro));
+        const temAgendamento = registros.some(registro => registroEhAgendamento(registro));
+        const fotos = obterFotosResumoDiaRegistro(registros).slice(0, 3).map(item => `
+            <img src="${escapeHtml(item.src)}" alt="${escapeHtml(item.alt)}"
+                 onerror="this.style.display='none'">
+        `).join('');
+
+        container.insertAdjacentHTML('beforeend', `
+            <button type="button"
+                    class="calendario-dia ${registros.length ? 'tem-uso' : ''} ${temAgendamento && !temUsoReal ? 'tem-agendamento' : ''}"
+                    data-data="${dataISO}"
+                    ${registros.length ? '' : 'disabled'}>
+                <span>${dia}</span>
+                <div class="calendario-miniaturas">${fotos}</div>
+                ${registros.length ? `<small>${resumirItensDiaRegistro(registros)}</small>` : ''}
+            </button>
+        `);
+    }
+
+    container.querySelectorAll('.calendario-dia.tem-uso').forEach(botao => {
+        botao.addEventListener('click', () => abrirModalDiaRegistro(botao.dataset.data));
+    });
+}
+
+function navegarMesCalendarioRegistro(delta) {
+    const referencia = app.mesCalendarioRegistro
+        ? new Date(`${app.mesCalendarioRegistro}-01T12:00:00`)
+        : (obterDataReferenciaHistorico() || new Date());
+
+    referencia.setMonth(referencia.getMonth() + delta);
+    app.mesCalendarioRegistro = formatarMesInput(referencia);
+    renderCalendarioRegistro();
+}
+
+function obterFotosResumoDiaRegistro(registros) {
+    const itens = [];
+    const vistos = new Set();
+
+    obterLooksDiaRegistro(registros).forEach(item => {
+        const chave = `look:${item.id}`;
+        if (vistos.has(chave)) return;
+        vistos.add(chave);
+        itens.push({ tipo: 'look', id: item.id, src: getCaminhoFotoLook(item.id), alt: `Look ${item.id}` });
+    });
+
+    obterPecasDiaRegistro(registros).forEach(id => {
+        const chave = `peca:${id}`;
+        if (vistos.has(chave)) return;
+        vistos.add(chave);
+        itens.push({ tipo: 'peca', id, src: getCaminhoFoto(id), alt: `Peça ${id}` });
+    });
+
+    return itens;
+}
+
+function resumirItensDiaRegistro(registros) {
+    const looks = obterLooksDiaRegistro(registros).length;
+    const pecas = obterPecasDiaRegistro(registros).length;
+    const temAgendamento = registros.some(registroEhAgendamento);
+    const partes = [];
+
+    if (looks) partes.push(`${looks} look${looks === 1 ? '' : 's'}`);
+    if (pecas) partes.push(`${pecas} peça${pecas === 1 ? '' : 's'}`);
+    return `${partes.join(' + ') || `${registros.length} registro${registros.length === 1 ? '' : 's'}`}${temAgendamento ? ' ag.' : ''}`;
+}
+
+function obterLooksDiaRegistro(registros) {
+    const vistos = new Set();
+    const looks = [];
+
+    (registros || []).forEach(registro => {
+        obterLooksRegistroComOrigem(registro).forEach(item => {
+            const chave = normalizarTexto(item.id);
+            if (!chave || vistos.has(chave) || !obterLookPorId(item.id)) return;
+            vistos.add(chave);
+            looks.push({
+                id: item.id,
+                origem: registroEhAgendamento(registro) ? 'agendado' : item.origem,
+            });
+        });
+    });
+
+    return looks.sort((a, b) => String(a.id).localeCompare(String(b.id), 'pt-BR', { numeric: true }));
+}
+
+function obterPecasDiaRegistro(registros) {
+    const vistos = new Set();
+
+    (registros || []).forEach(registro => {
+        (registro.pecas || []).forEach(id => {
+            const chave = normalizarTexto(id);
+            if (chave && app.pecas[id]) vistos.add(id);
+        });
+    });
+
+    return [...vistos].sort((a, b) => String(a).localeCompare(String(b), 'pt-BR', { numeric: true }));
+}
+
+function abrirModalDiaRegistro(dataISO) {
+    const registros = obterRegistrosHistoricoEntre(dataISO, dataISO);
+    if (!registros.length) return;
+
+    const modal = document.getElementById('modal-dia-registro');
+    const titulo = document.getElementById('titulo-dia-registro');
+    const galeria = document.getElementById('galeria-dia-registro');
+    if (!modal || !titulo || !galeria) return;
+
+    titulo.textContent = formatarDataBR(dataISO);
+    galeria.innerHTML = criarGaleriaDiaRegistro(registros);
+    abrirModalEmpilhado(modal);
+}
+
+function fecharModalDiaRegistro() {
+    fecharModalEspecifico(document.getElementById('modal-dia-registro'));
+}
+
+function criarGaleriaDiaRegistro(registros) {
+    const looks = obterLooksDiaRegistro(registros);
+    const pecas = obterPecasDiaRegistro(registros);
+    const blocos = [];
+
+    if (looks.length) {
+        blocos.push(`
+            <section class="galeria-dia-registro-bloco">
+                <div class="galeria-dia-registro-grid galeria-dia-registro-looks">
+                    ${looks.map(criarCardLookDiaRegistro).join('')}
+                </div>
+            </section>
+        `);
+    }
+
+    if (pecas.length) {
+        blocos.push(`
+            <section class="galeria-dia-registro-bloco">
+                <div class="galeria-dia-registro-grid">
+                    ${pecas.map(criarCardPecaDiaRegistro).join('')}
+                </div>
+            </section>
+        `);
+    }
+
+    return blocos.join('') || '<p class="texto-ajuda">Nenhum item neste dia.</p>';
+}
+
+function criarCardLookDiaRegistro(item) {
+    const look = obterLookPorId(item.id);
+    const origem = item.origem === 'agendado' ? 'agendado' : 'look';
+    return `
+        <button type="button" class="galeria-dia-registro-item" onclick="mostrarDetalhesLook('${escapeHtml(item.id)}')">
+            <img src="${escapeHtml(getCaminhoFotoLook(item.id))}" alt="${escapeHtml(look?.nome || item.id)}" onerror="${onErrorImagem()}">
+            <span>${escapeHtml(item.id)}</span>
+            <small>${escapeHtml(origem)}</small>
+        </button>
+    `;
+}
+
+function criarCardPecaDiaRegistro(id) {
+    const peca = app.pecas[id] || {};
+    return `
+        <button type="button" class="galeria-dia-registro-item" onclick="mostrarDetalhesPeca('${escapeHtml(id)}')">
+            <img src="${escapeHtml(getCaminhoFoto(id))}" alt="${escapeHtml(peca.tipo || id)}" onerror="${onErrorImagem()}">
+            <span>${escapeHtml(id)}</span>
+        </button>
+    `;
+}
+
 /* Renderizar galeria de peças com filtros aplicados na aba "Usar Hoje" */
 function preencherFiltrosHoje() {
     const container = document.getElementById('filtros-hoje');
@@ -4927,6 +5148,7 @@ function salvarRegistroHoje(tipo = 'uso') {
     app.pecasSelecionadasHoje = [];
     app.looksSelecionadosHoje = [];
     atualizarPecasSelecionadasHoje();
+    renderCalendarioRegistro();
 }
 
 /* Mostrar/esconder select de look quando checkbox é marcado */

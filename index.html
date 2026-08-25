@@ -24,7 +24,7 @@
     </script>
     <link rel="preload" href="dados_guarda_roupa.json" as="fetch" crossorigin="anonymous">
     <link rel="preload" href="fotos/home-illustration.jpg" as="image">
-    <link rel="stylesheet" href="css/style.css?v=20260805-usabilidade-sync-performance">
+    <link rel="stylesheet" href="css/style.css?v=20260825-calendario-registro">
 </head>
 <body>
     <div id="app">
@@ -274,6 +274,18 @@
                 <button class="btn-secundario" onclick="agendarUsoHoje()">
                     Agendar
                 </button>
+            </div>
+
+            <div class="secao secao-calendario-registro">
+                <div class="calendario-historico-topo">
+                    <h3>Calendário</h3>
+                    <div class="calendario-historico-acoes">
+                        <button id="calendario-registro-mes-anterior" type="button" class="filtro-btn">&lsaquo;</button>
+                        <strong id="calendario-registro-mes-label">Mês</strong>
+                        <button id="calendario-registro-mes-proximo" type="button" class="filtro-btn">&rsaquo;</button>
+                    </div>
+                </div>
+                <div id="calendario-registro" class="calendario-historico calendario-registro"></div>
             </div>
         </div>
 
@@ -695,6 +707,14 @@
             </div>
         </div>
 
+        <div id="modal-dia-registro" class="modal" style="display:none;">
+            <div class="modal-content modal-dia-registro">
+                <button class="btn-fechar" onclick="fecharModalDiaRegistro()" aria-label="Fechar">x</button>
+                <h2 id="titulo-dia-registro">Registro do dia</h2>
+                <div id="galeria-dia-registro" class="galeria-dia-registro"></div>
+            </div>
+        </div>
+
         <div id="modal-conflitos-historico" class="modal" style="display:none;">
             <div class="modal-content modal-conflitos-historico">
                 <button class="btn-fechar" onclick="cancelarImportacaoHistoricoComConflitos()">x</button>
@@ -795,7 +815,7 @@
          A ordem importa! CSS deve carregar antes, depois o app.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js?v=20260624-config-supabase"></script>
-    <script src="js/app.js?v=20260823-modal-look-sugestoes"></script>
+    <script src="js/app.js?v=20260825-calendario-registro"></script>
 </body>
 </html>
 

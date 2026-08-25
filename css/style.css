@@ -3850,6 +3850,96 @@ tr:hover {
     background: #f3f4f6;
 }
 
+.calendario-dia:disabled {
+    cursor: default;
+}
+
+.secao-calendario-registro {
+    margin-top: 18px;
+}
+
+.modal-dia-registro {
+    max-width: 980px;
+}
+
+.modal-dia-registro h2 {
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+.galeria-dia-registro {
+    display: grid;
+    gap: 22px;
+}
+
+.galeria-dia-registro-bloco {
+    display: grid;
+    gap: 12px;
+}
+
+.galeria-dia-registro-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+    gap: 10px;
+}
+
+.galeria-dia-registro-looks {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+
+.galeria-dia-registro-item {
+    position: relative;
+    display: grid;
+    gap: 6px;
+    padding: 0;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    background: white;
+    color: var(--cor-texto);
+    font-family: inherit;
+    overflow: hidden;
+    cursor: pointer;
+    transition: var(--transicao);
+}
+
+.galeria-dia-registro-item:hover,
+.galeria-dia-registro-item:focus-visible {
+    border-color: var(--cor-primaria);
+    box-shadow: 0 10px 26px rgba(31, 41, 55, 0.12);
+    transform: translateY(-1px);
+}
+
+.galeria-dia-registro-item img {
+    width: 100%;
+    aspect-ratio: 1 / 1.18;
+    object-fit: contain;
+    background: #f8fafc;
+}
+
+.galeria-dia-registro-looks .galeria-dia-registro-item img {
+    aspect-ratio: 1 / 1.28;
+}
+
+.galeria-dia-registro-item span,
+.galeria-dia-registro-item small {
+    padding: 0 8px;
+    text-align: center;
+}
+
+.galeria-dia-registro-item span {
+    color: var(--cor-texto);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.galeria-dia-registro-item small {
+    margin: -4px 0 8px;
+    color: var(--cor-texto-cinza);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
 .secao-detalhe-historico {
     display: flex;
     flex-direction: column;
@@ -4763,6 +4853,16 @@ tr:hover {
 
     .calendario-dia small {
         display: none;
+    }
+
+    .galeria-dia-registro-grid,
+    .galeria-dia-registro-looks {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .modal-dia-registro {
+        padding-left: 14px;
+        padding-right: 14px;
     }
 }
 
@@ -7883,7 +7983,9 @@ html[data-theme="dark"] .navbar {
     #usar-hoje > .header,
     #usar-hoje > .secao:nth-of-type(1),
     #usar-hoje > .secao:nth-of-type(2),
-    #usar-hoje > .secao:nth-of-type(3) {
+    #usar-hoje > .secao:nth-of-type(3),
+    #usar-hoje > .acoes-registro-uso,
+    #usar-hoje > .secao-calendario-registro {
         grid-column: 1;
     }
 
