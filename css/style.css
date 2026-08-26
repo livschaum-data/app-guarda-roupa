@@ -3879,18 +3879,18 @@ tr:hover {
 
 .galeria-dia-registro-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+    gap: 8px;
 }
 
 .galeria-dia-registro-looks {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
 }
 
 .galeria-dia-registro-item {
     position: relative;
     display: grid;
-    gap: 6px;
+    gap: 4px;
     padding: 0;
     border: 1px solid var(--cor-borda);
     border-radius: 8px;
@@ -3922,20 +3922,20 @@ tr:hover {
 
 .galeria-dia-registro-item span,
 .galeria-dia-registro-item small {
-    padding: 0 8px;
+    padding: 0 5px;
     text-align: center;
 }
 
 .galeria-dia-registro-item span {
     color: var(--cor-texto);
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 700;
 }
 
 .galeria-dia-registro-item small {
-    margin: -4px 0 8px;
+    margin: -3px 0 6px;
     color: var(--cor-texto-cinza);
-    font-size: 10px;
+    font-size: 8px;
     font-weight: 600;
     text-transform: uppercase;
 }
@@ -4857,7 +4857,7 @@ tr:hover {
 
     .galeria-dia-registro-grid,
     .galeria-dia-registro-looks {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .modal-dia-registro {
