@@ -466037,6 +466037,14 @@
       {
         "codigo": "7",
         "valor": "desleixado"
+      },
+      {
+        "codigo": "8",
+        "valor": "caseiro"
+      },
+      {
+        "codigo": "9",
+        "valor": "conforto"
       }
     ],
     "locais": [

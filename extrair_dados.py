@@ -428,8 +428,14 @@ def calcular_utilizacao_look(utilizacoes, locais):
     total_mista = usos.count('mista')
     total_sair = usos.count('sair')
 
-    if total_casa in [1, 2] and total_casa < total:
+    if total_casa == 1 and total_casa < total:
         return 'desleixado'
+
+    if total_casa == 2 and total_mista == 1 and total == 3:
+        return 'caseiro'
+
+    if total_casa == 2 and total_sair == 1 and total == 3:
+        return 'conforto'
 
     if total_mista in [1, 2] and total_mista + total_sair == total:
         return 'simples'

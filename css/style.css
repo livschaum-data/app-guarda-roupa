@@ -1401,6 +1401,16 @@ body {
     min-width: min(280px, 100%);
 }
 
+.header .acoes-header-pecas input[type="text"] {
+    background: #ffffff;
+    color: var(--cor-texto);
+    caret-color: var(--cor-texto);
+}
+
+.header .acoes-header-pecas input[type="text"]::placeholder {
+    color: var(--cor-texto-cinza);
+}
+
 .acoes-header-pecas select {
     min-height: 44px;
     border: 1px solid var(--cor-borda);
