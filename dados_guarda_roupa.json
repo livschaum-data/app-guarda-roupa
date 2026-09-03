@@ -105843,7 +105843,7 @@
         "BASE",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -105894,7 +105894,7 @@
         "BASE",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -138267,7 +138267,7 @@
         "BASE",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -146237,7 +146237,7 @@
         "GUA",
         "GUA"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -146293,7 +146293,7 @@
         "GUA",
         "GUA"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -147031,7 +147031,7 @@
         "GUA",
         "GUA"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -147087,7 +147087,7 @@
         "GUA",
         "GUA"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -147323,7 +147323,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -148275,7 +148275,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -148331,7 +148331,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -148387,7 +148387,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -156393,7 +156393,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -156449,7 +156449,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -156505,7 +156505,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -156617,7 +156617,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -194220,7 +194220,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -196110,7 +196110,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -214960,7 +214960,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -223486,7 +223486,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -223639,7 +223639,7 @@
         "BASE",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -223690,7 +223690,7 @@
         "BASE",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -223741,7 +223741,7 @@
         "BASE",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -223792,7 +223792,7 @@
         "BASE",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -246313,7 +246313,7 @@
         "BASE",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -248380,7 +248380,7 @@
         "GUA",
         "BASE"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -248492,7 +248492,7 @@
         "GUA",
         "BASE"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -250941,7 +250941,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -251051,7 +251051,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "casa",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -254429,7 +254429,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -254858,7 +254858,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -254968,7 +254968,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -255078,7 +255078,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -255133,7 +255133,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -255827,7 +255827,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "casa",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -256047,7 +256047,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "casa",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -256212,7 +256212,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -257876,7 +257876,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "casa",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -257931,7 +257931,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "casa",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -257986,7 +257986,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "casa",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -258151,7 +258151,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "casa",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -258444,7 +258444,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "casa",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -265193,7 +265193,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -265597,7 +265597,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -265872,7 +265872,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -266092,7 +266092,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -266202,7 +266202,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -274458,7 +274458,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -274568,7 +274568,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -274678,7 +274678,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -275515,7 +275515,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "casa",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -275570,7 +275570,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "casa",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -275625,7 +275625,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -275680,7 +275680,7 @@
         "GUA",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -276315,7 +276315,7 @@
         "GUA",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -276425,7 +276425,7 @@
         "GRA",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -277439,7 +277439,7 @@
         "BASE",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -277604,7 +277604,7 @@
         "BASE",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -277782,7 +277782,7 @@
         "BASE",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -278387,7 +278387,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "casa",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -278442,7 +278442,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "casa",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -278497,7 +278497,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "casa",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -284733,7 +284733,7 @@
         "BASE",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -287274,7 +287274,7 @@
         "GUA",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -287329,7 +287329,7 @@
         "GUA",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -292544,7 +292544,7 @@
         "BASE",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -292874,7 +292874,7 @@
         "BASE",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -306751,7 +306751,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -306975,7 +306975,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -308782,7 +308782,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -311150,7 +311150,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -311262,7 +311262,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -314847,7 +314847,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -316627,7 +316627,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -316851,7 +316851,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -322077,7 +322077,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -322189,7 +322189,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -322469,7 +322469,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -323433,7 +323433,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -323545,7 +323545,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -324102,7 +324102,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -324158,7 +324158,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -326140,7 +326140,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -326978,7 +326978,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -327034,7 +327034,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -327830,7 +327830,7 @@
         null,
         null
       ],
-      "utilizacao_calc": "casa",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         null,
@@ -327884,7 +327884,7 @@
         null,
         null
       ],
-      "utilizacao_calc": "casa",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         null,
@@ -328112,7 +328112,7 @@
         null,
         null
       ],
-      "utilizacao_calc": "casa",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         null,
@@ -329718,7 +329718,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -329830,7 +329830,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -329942,7 +329942,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -330054,7 +330054,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -338958,7 +338958,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -339014,7 +339014,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -339126,7 +339126,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -339182,7 +339182,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -339294,7 +339294,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -339406,7 +339406,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -339462,7 +339462,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -339574,7 +339574,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -339630,7 +339630,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -339742,7 +339742,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -339910,7 +339910,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -339966,7 +339966,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -340582,7 +340582,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -350438,7 +350438,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -350550,7 +350550,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -350606,7 +350606,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -350718,7 +350718,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -350830,7 +350830,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -350886,7 +350886,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -350942,7 +350942,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -350998,7 +350998,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -351054,7 +351054,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -351166,7 +351166,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -351278,7 +351278,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -367968,7 +367968,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -368080,7 +368080,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -368192,7 +368192,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -369312,7 +369312,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -375968,7 +375968,7 @@
         "BASE",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -376019,7 +376019,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -385573,7 +385573,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -385797,7 +385797,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -386021,7 +386021,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -387029,7 +387029,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -387141,7 +387141,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -387365,7 +387365,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -387589,7 +387589,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -387701,7 +387701,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -387813,7 +387813,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -388037,7 +388037,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -389269,7 +389269,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -389381,7 +389381,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -389605,7 +389605,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -389829,7 +389829,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -396661,7 +396661,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -396885,7 +396885,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -397109,7 +397109,7 @@
         "virtual",
         "virtual"
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -400861,7 +400861,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -401085,7 +401085,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -405733,7 +405733,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -407780,7 +407780,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "under",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "under",
         "under",
@@ -408137,7 +408137,7 @@
         "GUA",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "under",
         "under",
@@ -413256,7 +413256,7 @@
         null,
         null
       ],
-      "utilizacao_calc": "casa",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "casa",
         null,
@@ -413711,7 +413711,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -413876,7 +413876,7 @@
         "virtual",
         null
       ],
-      "utilizacao_calc": "produzido",
+      "utilizacao_calc": "mix",
       "utilizacoes_pecas": [
         "sair",
         "sair",
@@ -435997,7 +435997,7 @@
         "BASE",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -448150,7 +448150,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -448262,7 +448262,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -450222,7 +450222,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -451724,7 +451724,7 @@
         "GUA",
         null
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -451835,7 +451835,7 @@
         "GUA",
         "GUA"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -451891,7 +451891,7 @@
         "GUA",
         "GUA"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -453086,7 +453086,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -455470,7 +455470,7 @@
         "GUA",
         "GUA"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -455526,7 +455526,7 @@
         "GUA",
         "GUA"
       ],
-      "utilizacao_calc": "mix",
+      "utilizacao_calc": "deslocado",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -456720,7 +456720,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -457331,7 +457331,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -458350,7 +458350,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -458462,7 +458462,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -458574,7 +458574,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -458630,7 +458630,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -458742,7 +458742,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -458993,7 +458993,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -459384,7 +459384,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -459737,7 +459737,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "casa",
@@ -460286,7 +460286,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "casa",
         "sair",
@@ -460884,7 +460884,7 @@
         "BASE",
         "BASE"
       ],
-      "utilizacao_calc": "desleixado",
+      "utilizacao_calc": "conforto",
       "utilizacoes_pecas": [
         "sair",
         "casa",
@@ -466045,6 +466045,10 @@
       {
         "codigo": "9",
         "valor": "conforto"
+      },
+      {
+        "codigo": "10",
+        "valor": "deslocado"
       }
     ],
     "locais": [
@@ -467284,7 +467288,7 @@
     "campos_com_opcoes_faltantes": 0,
     "faltantes": {}
   },
-  "ultima_atualizacao": "2026-07-31T11:48:48.974961",
+  "ultima_atualizacao": "2026-09-03T17:09:49.219384",
   "total_pecas": 721,
   "total_looks": 6888
 }
