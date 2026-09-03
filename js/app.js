@@ -6527,6 +6527,7 @@ function calcularUtilizacaoLookPorPecas(utilizacoes, locais) {
     const totalMista = usosNormalizados.filter(valor => valor === 'mista').length;
     const totalSair = usosNormalizados.filter(valor => valor === 'sair').length;
 
+    if (totalCasa === 1 && totalMista === 1 && total === 2) return 'caseiro';
     if (totalCasa === 1 && totalCasa < total) return 'desleixado';
     if (totalCasa === 2 && totalMista === 1 && total === 3) return 'caseiro';
     if (totalCasa === 2 && totalSair === 1 && total === 3) return 'conforto';

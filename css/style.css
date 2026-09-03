@@ -3615,14 +3615,16 @@ tr:hover {
 }
 
 #pecas > .secao-consulta-pecas-uso {
-    top: 54px;
+    position: relative;
+    top: auto;
+    z-index: 2;
     padding: 6px 10px;
 }
 
 #pecas > #filtros-home {
-    position: sticky;
-    top: 112px;
-    z-index: 79;
+    position: relative;
+    top: auto;
+    z-index: 3;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
@@ -4738,11 +4740,11 @@ tr:hover {
     }
 
     #pecas > .secao-consulta-pecas-uso {
-        top: 0;
+        top: auto;
     }
 
     #pecas > #filtros-home {
-        top: 116px;
+        top: auto;
         margin-left: 10px;
         margin-right: 10px;
     }
@@ -7932,12 +7934,32 @@ html[data-theme="dark"] .navbar {
         grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
         gap: 14px;
         align-items: start;
+        padding: 14px;
     }
 
-    #pecas > .header,
-    #pecas > #filtros-home,
+    #pecas > .header {
+        grid-column: 1;
+        grid-row: 1;
+        margin: 0;
+        border-radius: 8px;
+        max-width: none;
+    }
+
     #pecas > .secao-consulta-pecas-uso {
         grid-column: 1;
+        grid-row: 2;
+        margin: 0;
+        max-width: none;
+        grid-template-columns: 1fr;
+        align-items: start;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    #pecas > #filtros-home {
+        grid-column: 1;
+        grid-row: 3;
+        margin: 0;
     }
 
     #pecas > .secao-galeria-pecas,
@@ -7947,7 +7969,17 @@ html[data-theme="dark"] .navbar {
 
     #pecas > .secao-galeria-pecas {
         grid-row: 1 / span 3;
+        margin: 0;
+        max-width: none;
+        width: 100%;
         min-height: calc(100vh - 112px);
+    }
+
+    #pecas > .secao-tabela-pecas {
+        grid-row: 4;
+        margin: 0;
+        max-width: none;
+        width: 100%;
     }
 
     #pecas > .secao-galeria-pecas > #galeria {
@@ -7981,6 +8013,11 @@ html[data-theme="dark"] .navbar {
     #pecas > .secao-consulta-pecas-uso .consulta-historico .btn-principal {
         grid-column: 1 / -1;
         width: 100%;
+    }
+
+    #pecas > .secao-consulta-pecas-uso .texto-ajuda {
+        grid-column: 1;
+        margin: 0;
     }
 
     #usar-hoje {
