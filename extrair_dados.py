@@ -408,8 +408,11 @@ def calcular_utilizacao_look(utilizacoes, locais):
     locais_validos = [valor_texto(local) for local in locais if valor_texto(local)]
     locais_unicos = set(locais_validos)
 
-    if len(locais_unicos) > 1:
+    if 'virtual' in locais_unicos:
         return 'mix'
+
+    if len(locais_unicos) > 1:
+        return 'deslocado'
 
     if not usos:
         return None

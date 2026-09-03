@@ -6511,7 +6511,8 @@ function calcularValorComposto(valores, misto, opcoes = {}) {
 function calcularUtilizacaoLookPorPecas(utilizacoes, locais) {
     const usos = (utilizacoes || []).filter(Boolean);
     const locaisUnicos = [...new Set((locais || []).filter(Boolean).map(valor => normalizarTexto(valor)))];
-    if (locaisUnicos.length > 1) return 'mix';
+    if (locaisUnicos.includes('virtual')) return 'mix';
+    if (locaisUnicos.length > 1) return 'deslocado';
     if (usos.length === 0) return '';
 
     const usosNormalizados = usos.map(valor => normalizarTexto(valor));
