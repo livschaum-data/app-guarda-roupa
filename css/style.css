@@ -1403,12 +1403,14 @@ body {
 
 .header .acoes-header-pecas input[type="text"] {
     background: #ffffff;
-    color: var(--cor-texto);
-    caret-color: var(--cor-texto);
+    color: #111827;
+    -webkit-text-fill-color: #111827;
+    caret-color: #111827;
+    opacity: 1;
 }
 
 .header .acoes-header-pecas input[type="text"]::placeholder {
-    color: var(--cor-texto-cinza);
+    color: #6b7280;
 }
 
 .acoes-header-pecas select {
