@@ -1609,6 +1609,50 @@ body {
     font-weight: 600;
 }
 
+.combinacoes-tipos-lista {
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    align-items: stretch;
+}
+
+.combinacao-tipo-opcao {
+    grid-template-columns: 48px minmax(0, 1fr);
+    align-items: start;
+    min-height: 96px;
+    padding: 10px 34px 10px 10px;
+}
+
+.combinacao-tipo-opcao img {
+    width: 48px;
+    height: 48px;
+}
+
+.combinacao-tipo-opcao span {
+    align-content: start;
+    gap: 5px;
+    padding-right: 0;
+}
+
+.combinacao-tipo-opcao strong,
+.combinacao-tipo-opcao small {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+}
+
+.combinacao-tipo-opcao strong {
+    color: var(--cor-texto);
+    font-size: 12px;
+    font-weight: 750;
+    line-height: 1.3;
+}
+
+.combinacao-tipo-opcao small {
+    color: var(--cor-texto-cinza);
+    font-size: 10px;
+    font-weight: 650;
+    line-height: 1.2;
+}
+
 .submit-oculto {
     position: absolute;
     width: 1px;

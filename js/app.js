@@ -4415,18 +4415,18 @@ function criarSeletorPecasNaoCombinam(peca, idAtual) {
     }
 
     return `
-        <div class="pecas-relacionadas-lista">
+        <div class="pecas-relacionadas-lista combinacoes-tipos-lista">
             ${opcoes.map(opcao => {
                 const codigo = String(opcao.codigo || '').toUpperCase();
                 const selecionado = selecionados.has(codigo);
                 const nome = [opcao.tipo, opcao.grupo].filter(valorVisivel).join(' · ') || codigo;
                 return `
-                    <label class="peca-relacionada-opcao ${selecionado ? 'selecionada' : ''}">
+                    <label class="peca-relacionada-opcao combinacao-tipo-opcao ${selecionado ? 'selecionada' : ''}">
                         <input type="checkbox" name="edit-peca-restricoes" value="${escapeHtml(codigo)}" ${selecionado ? 'checked' : ''}>
                         ${criarImagem(`fotos/combinacoes/${codigo}.webp`, codigo)}
                         <span>
-                            <strong>${escapeHtml(codigo)}</strong>
-                            <small>${escapeHtml(nome)}</small>
+                            <small>${escapeHtml(codigo)}</small>
+                            <strong>${escapeHtml(nome)}</strong>
                         </span>
                     </label>
                 `;
@@ -4656,7 +4656,7 @@ function mostrarFormularioPeca(id) {
                 </div>
             </label>
             <label class="campo-edicao-peca campo-edicao-peca-largo">
-                <span>Combinações que não combinam</span>
+                <span>Combinação com outros tipos</span>
                 <div id="edit-peca-restricoes-opcoes">
                     ${criarSeletorPecasNaoCombinam(peca, peca.id)}
                 </div>
