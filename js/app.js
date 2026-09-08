@@ -134,6 +134,10 @@ const GRUPOS_FICHA_PECA = [
         ],
     },
 ];
+const CAMPOS_PECA_PERSONALIZADA = [...new Set(GRUPOS_FICHA_PECA
+    .flatMap(grupo => grupo.campos)
+    .map(campo => campo.prop || campo.chave)
+    .filter(campo => campo && !['id', 'data_atualizacao'].includes(campo)))];
 const GRUPOS_REGISTRO_PECAS = [
     { id: 'roupas-principais', titulo: 'Blusas, calças, casacos e inteiros', tipos: ['blusa', 'calça', 'casaco', 'inteiro'] },
     { id: 'intimas-funcionais', titulo: 'Sutiãs, calcinhas, modeladores, tops e segunda pele', tipos: ['sutien', 'calcinha', 'modelador', 'top', 'segunda-pele'] },
@@ -147,6 +151,7 @@ const GRUPOS_REGISTRO_PECAS = [
 const app = {
     // Dados carregados do JSON (nunca mudam)
     pecas: {},
+    pecasBase: {},
     pecasPersonalizadas: {},
     looks: {},
     mapaOcasioesBase: {},
@@ -1013,10 +1018,18 @@ function salvarDados(opcoes = {}) {
     limparAgendamentosExpirados();
     app.mapaUsosLooksAtual = null;
     app.indiceLooksPorPecasAtual = null;
+    app.pecasPersonalizadas = compactarMapaPecasPersonalizadas(app.pecasPersonalizadas);
 
-    localStorage.setItem('app_historico', JSON.stringify(app.historico));
-    if (incluirLooks) localStorage.setItem('app_looks_favs', JSON.stringify(app.looksFavoritos));
-    localStorage.setItem('app_pecas_personalizadas', JSON.stringify(app.pecasPersonalizadas));
+    try {
+        localStorage.setItem('app_historico', JSON.stringify(app.historico));
+        if (incluirLooks) localStorage.setItem('app_looks_favs', JSON.stringify(app.looksFavoritos));
+        localStorage.setItem('app_pecas_personalizadas', JSON.stringify(app.pecasPersonalizadas));
+    } catch (erro) {
+        if (erro?.name === 'QuotaExceededError' || String(erro?.message || '').toLowerCase().includes('quota')) {
+            throw new Error('Não foi possível salvar no armazenamento do navegador porque o espaço local está cheio. Tente sincronizar com a nuvem e limpar dados antigos do navegador.');
+        }
+        throw erro;
+    }
 
     console.log('💾 Dados salvos!');
     agendarEnvioSupabase();
@@ -1556,6 +1569,8 @@ async function enviarDadosSupabase({ silencioso = false, mesclarAntes = true } =
     if (!silencioso) atualizarStatusSupabase('Enviando dados para a nuvem...');
 
     try {
+        app.pecasPersonalizadas = compactarMapaPecasPersonalizadas(app.pecasPersonalizadas);
+
         if (mesclarAntes) {
             const baixou = await baixarDadosSupabase({ silencioso: true });
             if (!baixou) {
@@ -1563,6 +1578,8 @@ async function enviarDadosSupabase({ silencioso = false, mesclarAntes = true } =
                 return false;
             }
         }
+
+        app.pecasPersonalizadas = compactarMapaPecasPersonalizadas(app.pecasPersonalizadas);
 
         const montarPayload = (incluirPecas, incluirOcasioes) => ({
             user_id: app.usuarioSupabase.id,
@@ -1734,15 +1751,75 @@ function mesclarPecaPersonalizadaComBase(pecaBase = {}, pecaPersonalizada = {}) 
     return peca;
 }
 
+function compactarPecaPersonalizada(peca = {}, pecaBase = {}) {
+    const compacta = {
+        id: peca.id || pecaBase.id || '',
+        editadaLocalmente: true,
+        editadaEm: peca.editadaEm || new Date().toISOString(),
+    };
+    const temBase = Boolean(pecaBase && Object.keys(pecaBase).length);
+
+    CAMPOS_PECA_PERSONALIZADA.forEach(campo => {
+        if (
+            Object.prototype.hasOwnProperty.call(peca, campo)
+            && (!temBase || String(peca[campo] ?? '') !== String(pecaBase[campo] ?? ''))
+        ) {
+            compacta[campo] = peca[campo] ?? '';
+        }
+    });
+
+    if ((peca.foto || '') !== (pecaBase.foto || '')) {
+        compacta.foto = peca.foto || '';
+    }
+
+    if (
+        Array.isArray(peca.detalhes)
+        && (!temBase || JSON.stringify(peca.detalhes || []) !== JSON.stringify(pecaBase.detalhes || []))
+    ) {
+        compacta.detalhes = peca.detalhes
+            .map(item => ({ campo: item?.campo || '', valor: item?.valor || '' }))
+            .filter(item => valorVisivel(item.campo) || valorVisivel(item.valor));
+    }
+
+    const idsAcessorios = obterIdsAcessoriosPeca(peca);
+    const idsAcessoriosBase = obterIdsAcessoriosPeca(pecaBase);
+    if (!temBase || JSON.stringify(idsAcessorios) !== JSON.stringify(idsAcessoriosBase)) {
+        compacta.acessorios = idsAcessorios.map(criarItemAcessorio);
+    }
+
+    const idsRestricoes = obterIdsRestricoesPeca(peca);
+    const idsRestricoesBase = obterIdsRestricoesPeca(pecaBase);
+    if (!temBase || JSON.stringify(idsRestricoes) !== JSON.stringify(idsRestricoesBase)) {
+        compacta.combinacoes_nao_permitidas = idsRestricoes.map(criarItemRestricao);
+    }
+
+    return compacta;
+}
+
+function compactarMapaPecasPersonalizadas(pecasPersonalizadas = {}) {
+    return Object.fromEntries(Object.entries(pecasPersonalizadas || {})
+        .filter(([id, peca]) => peca && typeof peca === 'object')
+        .map(([id, peca]) => {
+            const pecaCompleta = app.pecas?.[id] || mesclarPecaPersonalizadaComBase(app.pecasBase?.[id], peca);
+            return [id, compactarPecaPersonalizada(pecaCompleta, app.pecasBase?.[id] || {})];
+        }));
+}
+
 function aplicarPecasPersonalizadas() {
-    const pecasBase = { ...app.pecas };
+    const pecasBase = Object.keys(app.pecasBase || {}).length
+        ? { ...app.pecasBase }
+        : { ...app.pecas };
     const personalizadas = {};
+    const personalizadasCompactas = {};
+
+    app.pecasBase = pecasBase;
 
     Object.entries(app.pecasPersonalizadas || {}).forEach(([id, pecaPersonalizada]) => {
         personalizadas[id] = mesclarPecaPersonalizadaComBase(pecasBase[id], pecaPersonalizada);
+        personalizadasCompactas[id] = compactarPecaPersonalizada(personalizadas[id], pecasBase[id]);
     });
 
-    app.pecasPersonalizadas = personalizadas;
+    app.pecasPersonalizadas = personalizadasCompactas;
     app.pecas = { ...pecasBase, ...personalizadas };
 }
 
@@ -1802,10 +1879,19 @@ function obterDataAtualizacaoTabelaPeca(peca) {
 }
 
 function salvarDadosLocal() {
-    localStorage.setItem('app_historico', JSON.stringify(app.historico));
-    localStorage.setItem('app_looks_favs', JSON.stringify(app.looksFavoritos));
-    localStorage.setItem('app_pecas_personalizadas', JSON.stringify(app.pecasPersonalizadas));
-    localStorage.setItem('app_ocasioes_personalizadas', JSON.stringify(app.ocasioesPersonalizadas));
+    app.pecasPersonalizadas = compactarMapaPecasPersonalizadas(app.pecasPersonalizadas);
+
+    try {
+        localStorage.setItem('app_historico', JSON.stringify(app.historico));
+        localStorage.setItem('app_looks_favs', JSON.stringify(app.looksFavoritos));
+        localStorage.setItem('app_pecas_personalizadas', JSON.stringify(app.pecasPersonalizadas));
+        localStorage.setItem('app_ocasioes_personalizadas', JSON.stringify(app.ocasioesPersonalizadas));
+    } catch (erro) {
+        if (erro?.name === 'QuotaExceededError' || String(erro?.message || '').toLowerCase().includes('quota')) {
+            throw new Error('Não foi possível salvar no armazenamento do navegador porque o espaço local está cheio. Tente sincronizar com a nuvem e limpar dados antigos do navegador.');
+        }
+        throw erro;
+    }
 }
 
 function timestampValor(valor) {
@@ -4492,7 +4578,7 @@ function sincronizarPecasRelacionadas(id, idsAnteriores, idsNovos) {
             acessorios,
             editadaLocalmente: true,
         };
-        app.pecasPersonalizadas[relacionadoId] = app.pecas[relacionadoId];
+        app.pecasPersonalizadas[relacionadoId] = compactarPecaPersonalizada(app.pecas[relacionadoId], app.pecasBase?.[relacionadoId] || {});
         afetados.add(relacionadoId);
     });
 
@@ -4508,7 +4594,7 @@ function sincronizarPecasRelacionadas(id, idsAnteriores, idsNovos) {
             acessorios: [...idsRelacionados].map(criarItemAcessorio),
             editadaLocalmente: true,
         };
-        app.pecasPersonalizadas[relacionadoId] = app.pecas[relacionadoId];
+        app.pecasPersonalizadas[relacionadoId] = compactarPecaPersonalizada(app.pecas[relacionadoId], app.pecasBase?.[relacionadoId] || {});
         afetados.add(relacionadoId);
     });
 
@@ -4757,7 +4843,10 @@ async function salvarPeca() {
         });
 
         app.pecas[id] = peca;
-        app.pecasPersonalizadas[id] = peca;
+        if (editandoId && editandoId !== id) {
+            delete app.pecasPersonalizadas[editandoId];
+        }
+        app.pecasPersonalizadas[id] = compactarPecaPersonalizada(peca, app.pecasBase?.[editandoId] || app.pecasBase?.[id] || {});
         const idsRelacionadosAfetados = sincronizarPecasRelacionadas(id, idsAcessoriosAnteriores, idsAcessoriosNovos);
         const totalLooksAtualizados = recalcularLooksAfetadosPorPeca([editandoId, ...idsRelacionadosAfetados], { idAntigo: editandoId, idNovo: id });
         app.pecaEmDetalhes = id;
