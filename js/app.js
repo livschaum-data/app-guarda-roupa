@@ -5228,15 +5228,23 @@ function salvarRegistroHoje(tipo = 'uso') {
     };
 
     app.historico.push(registro);
-    salvarDados();
+    try {
+        salvarDados();
+    } catch (erro) {
+        app.historico.pop();
+        console.error('Nao foi possivel salvar o registro de uso.', erro);
+        alert(erro?.message || 'Nao foi possivel salvar o registro de uso.');
+        return;
+    }
 
     // Feedback visual
     alert(tipo === TIPO_REGISTRO_AGENDAMENTO ? 'Agendamento salvo com sucesso!' : 'Uso registrado com sucesso!');
 
-    // Limpar
+    // Limpar somente depois que o registro foi persistido com sucesso.
     app.pecasSelecionadasHoje = [];
     app.looksSelecionadosHoje = [];
     atualizarPecasSelecionadasHoje();
+    renderGaleriaUsarHoje();
     renderCalendarioRegistro();
 }
 
@@ -8970,6 +8978,15 @@ function gerarProximoIdLook(indicador) {
 }
 
 async function salvarLookHistorico() {
+    try {
+        await salvarLookHistoricoInterno();
+    } catch (erro) {
+        console.error('Nao foi possivel salvar o look.', erro);
+        alert(erro?.message || 'Nao foi possivel salvar o look.');
+    }
+}
+
+async function salvarLookHistoricoInterno() {
     const dia = app.diaCriacaoLookHistorico;
     const pecas = app.pecasSelecionadasLookHistorico[dia] || [];
     const modo = obterModoLookHistorico();
@@ -8993,6 +9010,17 @@ async function salvarLookHistorico() {
     }
 
     const id = modo === 'substituir' ? lookExistenteId : gerarProximoIdLook(indicador);
+    const lookFavoritoAnterior = app.looksFavoritos[id];
+    const registroHistorico = app.historico.find(registro => {
+        const mesmoDia = obterDiaRegistro(registro) === dia;
+        const pecasRegistro = new Set(registro.pecas || []);
+        return mesmoDia && pecas.every(pecaId => pecasRegistro.has(pecaId));
+    });
+    const registroHistoricoAnterior = registroHistorico ? {
+        ...registroHistorico,
+        lookIds: [...(registroHistorico.lookIds || [])],
+        looksIgnorados: [...(registroHistorico.looksIgnorados || [])],
+    } : null;
     const dataCriacao = modo === 'substituir'
         ? (normalizarDataHistorico(obterDataCriacaoLook(lookExistente))?.slice(0, 10) || '')
         : (document.getElementById('look-historico-data').value || dia);
@@ -9048,10 +9076,23 @@ async function salvarLookHistorico() {
 
     vincularLookAoHistorico(dia, id, pecas);
 
-    salvarDados();
+    try {
+        salvarDados();
+    } catch (erro) {
+        if (lookFavoritoAnterior) {
+            app.looksFavoritos[id] = lookFavoritoAnterior;
+        } else {
+            delete app.looksFavoritos[id];
+        }
+        if (registroHistorico && registroHistoricoAnterior) {
+            Object.assign(registroHistorico, registroHistoricoAnterior);
+        }
+        throw erro;
+    }
     preencherSelectLooks();
     preencherFiltrosOcasiao();
     renderLooks(obterTodosLooks().filter(lookPassaNosFiltros));
+    app.pecasSelecionadasLookHistorico[dia] = [];
     renderDetalheHistorico(obterRegistrosHistoricoEntre(dia, dia));
 
     alert(modo === 'substituir'
