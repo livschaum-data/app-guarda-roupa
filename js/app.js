@@ -913,6 +913,20 @@ function clonarEstado(valor, fallback) {
     return JSON.parse(JSON.stringify(valor));
 }
 
+function valorEhFotoBase64(valor) {
+    return typeof valor === 'string' && /^data:image\//i.test(valor);
+}
+
+function prepararMapaParaArmazenamentoLocal(mapa = {}) {
+    return Object.fromEntries(Object.entries(mapa || {}).map(([id, item]) => {
+        if (!item || typeof item !== 'object' || Array.isArray(item)) return [id, item];
+
+        const copia = { ...item };
+        if (valorEhFotoBase64(copia.foto)) delete copia.foto;
+        return [id, copia];
+    }));
+}
+
 function normalizarMapaFiltrosArrays(filtros, campos) {
     return Object.fromEntries(campos.map(campo => [
         campo,
@@ -1018,12 +1032,15 @@ function salvarDados(opcoes = {}) {
     limparAgendamentosExpirados();
     app.mapaUsosLooksAtual = null;
     app.indiceLooksPorPecasAtual = null;
-    app.pecasPersonalizadas = compactarMapaPecasPersonalizadas(app.pecasPersonalizadas);
+    const pecasPersonalizadasLocais = prepararMapaParaArmazenamentoLocal(
+        compactarMapaPecasPersonalizadas(app.pecasPersonalizadas)
+    );
+    const looksFavoritosLocais = prepararMapaParaArmazenamentoLocal(app.looksFavoritos);
 
     try {
         localStorage.setItem('app_historico', JSON.stringify(app.historico));
-        if (incluirLooks) localStorage.setItem('app_looks_favs', JSON.stringify(app.looksFavoritos));
-        localStorage.setItem('app_pecas_personalizadas', JSON.stringify(app.pecasPersonalizadas));
+        if (incluirLooks) localStorage.setItem('app_looks_favs', JSON.stringify(looksFavoritosLocais));
+        localStorage.setItem('app_pecas_personalizadas', JSON.stringify(pecasPersonalizadasLocais));
     } catch (erro) {
         if (erro?.name === 'QuotaExceededError' || String(erro?.message || '').toLowerCase().includes('quota')) {
             throw new Error('Não foi possível salvar no armazenamento do navegador porque o espaço local está cheio. Tente sincronizar com a nuvem e limpar dados antigos do navegador.');
@@ -1879,12 +1896,15 @@ function obterDataAtualizacaoTabelaPeca(peca) {
 }
 
 function salvarDadosLocal() {
-    app.pecasPersonalizadas = compactarMapaPecasPersonalizadas(app.pecasPersonalizadas);
+    const pecasPersonalizadasLocais = prepararMapaParaArmazenamentoLocal(
+        compactarMapaPecasPersonalizadas(app.pecasPersonalizadas)
+    );
+    const looksFavoritosLocais = prepararMapaParaArmazenamentoLocal(app.looksFavoritos);
 
     try {
         localStorage.setItem('app_historico', JSON.stringify(app.historico));
-        localStorage.setItem('app_looks_favs', JSON.stringify(app.looksFavoritos));
-        localStorage.setItem('app_pecas_personalizadas', JSON.stringify(app.pecasPersonalizadas));
+        localStorage.setItem('app_looks_favs', JSON.stringify(looksFavoritosLocais));
+        localStorage.setItem('app_pecas_personalizadas', JSON.stringify(pecasPersonalizadasLocais));
         localStorage.setItem('app_ocasioes_personalizadas', JSON.stringify(app.ocasioesPersonalizadas));
     } catch (erro) {
         if (erro?.name === 'QuotaExceededError' || String(erro?.message || '').toLowerCase().includes('quota')) {

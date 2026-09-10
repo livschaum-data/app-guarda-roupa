@@ -6295,9 +6295,19 @@ body {
     padding: 6px;
 }
 
+#ocasioes .ocasioes-sugestoes .ocasioes-mini-card img {
+    width: 72%;
+    max-width: 72px;
+    justify-self: center;
+}
+
 @media (max-width: 480px) {
     #ocasioes .ocasioes-sugestoes .ocasioes-mini-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    #ocasioes .ocasioes-sugestoes .ocasioes-mini-card img {
+        max-width: 56px;
     }
 }
 
@@ -7511,11 +7521,13 @@ body {
     }
 
     .ocasioes-dropdown-painel {
-        position: fixed;
-        top: auto;
-        right: 12px;
-        bottom: 72px;
-        left: 12px;
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        bottom: auto;
+        left: 0;
+        z-index: 360;
+        width: auto;
         max-height: min(70vh, 520px);
     }
 
