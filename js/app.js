@@ -5534,12 +5534,13 @@ function substituirLookIdHistorico(idAntigo, idNovo) {
 }
 
 function obterValoresFiltroLooks(campo) {
+    if (campo === 'clima') return obterOpcoesClimaFiltroLooks();
+
     const valoresDimensao = {
         situacao: (app.dimensoes?.situacoes_look || []).map(item => item.valor),
         utilizacao: (app.dimensoes?.utilizacoes_look || []).map(item => item.valor),
         categoria: (app.dimensoes?.categorias_look || []).map(item => item.categoria),
         indicador: (app.dimensoes?.categorias_look || []).map(item => item.indicador),
-        clima: Object.values(app.climas || {}).map(formatarClimaFiltro),
         local: (app.dimensoes?.locais || []).map(item => item.valor),
         ocasiao: Object.values(app.mapaOcasioes || {}).map(item => item.descricao),
     };
@@ -5557,6 +5558,30 @@ function obterValoresFiltroLooks(campo) {
     });
 
     return [...valores.values()].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }));
+}
+
+function obterOpcoesClimaFiltroLooks() {
+    const climasPorCodigo = new Map();
+
+    Object.values(app.climas || {}).forEach(clima => {
+        const codigo = normalizarCodigoClima(clima?.codigo);
+        if (!codigo) return;
+        climasPorCodigo.set(normalizarTexto(codigo), formatarClimaFiltro({
+            codigo,
+            descricao: clima?.descricao || codigo,
+        }));
+    });
+
+    obterTodosLooks().forEach(look => {
+        const codigo = obterCodigoClimaLook(look);
+        const chave = normalizarTexto(codigo);
+        if (!codigo || climasPorCodigo.has(chave)) return;
+        climasPorCodigo.set(chave, formatarClimaFiltroLook(look));
+    });
+
+    return [...climasPorCodigo.values()]
+        .filter(Boolean)
+        .sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }));
 }
 
 function normalizarSelecoesFiltroLooks(campo, selecionados, opcoes) {
@@ -5639,7 +5664,7 @@ function formatarClimaFiltro(clima) {
 
 function formatarClimaFiltroLook(look) {
     const codigo = obterCodigoClimaLook(look);
-    const info = look?.clima_info || app.climas?.[codigo] || {};
+    const info = app.climas?.[codigo] || look?.clima_info || {};
     return formatarClimaFiltro({
         codigo,
         descricao: info.descricao || codigo,
