@@ -8345,6 +8345,142 @@ html[data-theme="dark"] .navbar {
     border-radius: 8px;
 }
 
+/* Os menus dos filtros de looks precisam ultrapassar o painel sem recorte. */
+#looks .secao-filtros-looks {
+    position: relative;
+    z-index: 20;
+    overflow: visible;
+    contain: none;
+    content-visibility: visible;
+}
+
+#filtros-ocasiao {
+    overflow: visible;
+    isolation: isolate;
+}
+
+#filtros-ocasiao .filtro-multiplo {
+    align-self: start;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+#filtros-ocasiao .filtro-multiplo.aberto {
+    z-index: 100;
+}
+
+#filtros-ocasiao .filtro-multiplo-opcoes {
+    z-index: 110;
+    width: min(360px, calc(100vw - 40px));
+    overflow-x: hidden;
+    border-color: var(--modern-border, var(--cor-borda));
+    background: var(--modern-surface, var(--cor-fundo-card));
+    color: var(--modern-text, var(--cor-texto));
+    box-shadow: var(--modern-shadow, var(--sombra-forte));
+}
+
+/* No modo claro, a cor identifica o grupo sem tingir todo o campo. */
+#filtros-ocasiao .ficha-grupo-azul { --filtro-accent: #2563eb; }
+#filtros-ocasiao .ficha-grupo-vermelho { --filtro-accent: #dc2626; }
+#filtros-ocasiao .ficha-grupo-roxo { --filtro-accent: #7c3aed; }
+#filtros-ocasiao .ficha-grupo-verde { --filtro-accent: #059669; }
+#filtros-ocasiao .ficha-grupo-amarelo { --filtro-accent: #ca8a04; }
+#filtros-ocasiao .ficha-grupo-verde-claro { --filtro-accent: #65a30d; }
+#filtros-ocasiao .ficha-grupo-azul-claro { --filtro-accent: #0284c7; }
+#filtros-ocasiao .ficha-grupo-laranja { --filtro-accent: #ea580c; }
+#filtros-ocasiao .ficha-grupo-rosa { --filtro-accent: #db2777; }
+
+#filtros-ocasiao .filtro-multiplo[class*="ficha-grupo-"] .filtro-multiplo-toggle,
+#filtros-ocasiao .filtro-pecas-looks[class*="ficha-grupo-"] {
+    border-color: var(--modern-border, var(--cor-borda));
+    border-left: 4px solid var(--filtro-accent, var(--modern-accent));
+    background: var(--modern-surface-2, var(--cor-fundo-card)) !important;
+    color: var(--modern-text, var(--cor-texto));
+}
+
+#filtros-ocasiao .filtro-multiplo.aberto .filtro-multiplo-toggle,
+#filtros-ocasiao .filtro-multiplo.tem-selecao .filtro-multiplo-toggle,
+#filtros-ocasiao .filtro-multiplo-toggle:hover {
+    border-color: var(--modern-border, var(--cor-borda));
+    border-left-color: var(--filtro-accent, var(--modern-accent));
+    background: var(--modern-surface-3, var(--cor-fundo)) !important;
+    color: var(--modern-text, var(--cor-texto));
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--filtro-accent, var(--modern-accent)) 18%, transparent);
+}
+
+html[data-theme="light"] #filtros-ocasiao .filtro-multiplo-opcoes {
+    border-color: #d9e1ec;
+    background: #ffffff;
+    color: #111827;
+    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.14);
+}
+
+html[data-theme="light"] #filtros-ocasiao .filtro-multiplo-cabecalho {
+    border-bottom-color: #e5e7eb;
+}
+
+html[data-theme="light"] #filtros-ocasiao .filtro-multiplo-cabecalho strong {
+    color: #111827;
+}
+
+html[data-theme="light"] #filtros-ocasiao .filtro-multiplo-fechar {
+    background: #eef2f7;
+    color: #475569;
+}
+
+html[data-theme="light"] #filtros-ocasiao .filtro-multiplo-fechar:hover {
+    background: #e2e8f0;
+    color: #111827;
+}
+
+html[data-theme="light"] #filtros-ocasiao .filtro-chip {
+    border-color: #d9e1ec;
+    background: #ffffff;
+    color: #172033;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.07);
+}
+
+html[data-theme="light"] #filtros-ocasiao .filtro-chip:hover {
+    border-color: var(--filtro-accent, #7c3aed);
+    background: #f8fafc;
+}
+
+html[data-theme="light"] #filtros-ocasiao .filtro-chip-marcador {
+    border-color: #cbd5e1;
+    background: #ffffff;
+}
+
+html[data-theme="light"] #filtros-ocasiao .filtro-chip.selecionado,
+html[data-theme="light"] #filtros-ocasiao .filtro-chip:has(input:checked) {
+    border-color: var(--filtro-accent, #7c3aed);
+    background: color-mix(in srgb, var(--filtro-accent, #7c3aed) 8%, #ffffff);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--filtro-accent, #7c3aed) 14%, transparent);
+}
+
+html[data-theme="light"] #filtros-ocasiao .filtro-chip.selecionado .filtro-chip-marcador,
+html[data-theme="light"] #filtros-ocasiao .filtro-chip:has(input:checked) .filtro-chip-marcador {
+    border-color: var(--filtro-accent, #7c3aed);
+    background: var(--filtro-accent, #7c3aed);
+}
+
+@media (max-width: 768px) {
+    #looks .secao-filtros-looks {
+        z-index: 120;
+    }
+
+    #filtros-ocasiao .filtro-multiplo-opcoes {
+        position: fixed;
+        top: auto;
+        right: 12px;
+        bottom: calc(72px + env(safe-area-inset-bottom));
+        left: 12px;
+        width: auto;
+        max-height: min(52vh, 420px);
+    }
+}
+
 /* Botao compacto nos cards de looks vinculados a peca. */
 .looks-peca-card .looks-peca-ficha.btn-secundario {
     width: auto !important;
