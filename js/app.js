@@ -139,7 +139,9 @@ const CAMPOS_PECA_PERSONALIZADA = [...new Set(GRUPOS_FICHA_PECA
     .map(campo => campo.prop || campo.chave)
     .filter(campo => campo && !['id', 'data_atualizacao'].includes(campo)))];
 const GRUPOS_REGISTRO_PECAS = [
-    { id: 'roupas-principais', titulo: 'Blusas, calças, casacos e inteiros', tipos: ['blusa', 'calça', 'casaco', 'inteiro'] },
+    { id: 'blusas-inteiros', titulo: 'Blusas e inteiros', tipos: ['blusa', 'inteiro'] },
+    { id: 'calcas', titulo: 'Calças', tipos: ['calça'] },
+    { id: 'casacos', titulo: 'Casacos', tipos: ['casaco'] },
     { id: 'intimas-funcionais', titulo: 'Sutiãs, calcinhas, modeladores, tops e segunda pele', tipos: ['sutien', 'calcinha', 'modelador', 'top', 'segunda-pele'] },
     { id: 'pijamas', titulo: 'Pijamas', tipos: ['pijama'] },
     { id: 'meias-calcados', titulo: 'Meias e calçados', tipos: ['meia', 'calçado'] },
