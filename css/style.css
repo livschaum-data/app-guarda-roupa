@@ -3158,6 +3158,18 @@ body {
     background: rgba(255, 255, 255, 0.06);
 }
 
+.edicao-lote-pecas {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-column: 1 / -1;
+    gap: 12px;
+}
+
+.edicao-lote-pecas .campo-edicao-lote {
+    grid-column: auto;
+    align-content: start;
+}
+
 .campo-edicao-lote-aplicar {
     display: flex;
     align-items: center;
