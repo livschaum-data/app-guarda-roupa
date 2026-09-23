@@ -3785,18 +3785,20 @@ function criarFormularioEdicaoLoteLooks() {
 
     return `
         <div class="form-edicao-look form-edicao-lote-looks">
-            ${criarCampoAplicarEdicaoLote('situacao', `
-                <label class="campo-edicao-look">
-                    <span>Situação</span>
-                    <select id="edit-lote-look-situacao">${opcoesSituacao}</select>
-                </label>
-            `)}
-            ${criarCampoAplicarEdicaoLote('htt', `
-                <label class="campo-edicao-look">
-                    <span>HTT</span>
-                    <select id="edit-lote-look-htt">${opcoesHtt}</select>
-                </label>
-            `)}
+            <div class="edicao-lote-linha edicao-lote-linha-dupla">
+                ${criarCampoAplicarEdicaoLote('situacao', `
+                    <label class="campo-edicao-look">
+                        <span>Situação</span>
+                        <select id="edit-lote-look-situacao">${opcoesSituacao}</select>
+                    </label>
+                `)}
+                ${criarCampoAplicarEdicaoLote('htt', `
+                    <label class="campo-edicao-look">
+                        <span>HTT</span>
+                        <select id="edit-lote-look-htt">${opcoesHtt}</select>
+                    </label>
+                `)}
+            </div>
             <div class="edicao-lote-pecas">
                 ${[1, 2, 3].map(numero => criarCampoAplicarEdicaoLote(`peca${numero}`, `
                     <label class="campo-edicao-look">

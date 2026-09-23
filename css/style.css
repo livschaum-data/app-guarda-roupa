@@ -3158,13 +3158,22 @@ body {
     background: rgba(255, 255, 255, 0.06);
 }
 
+.edicao-lote-linha,
 .edicao-lote-pecas {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-column: 1 / -1;
     gap: 12px;
 }
 
+.edicao-lote-linha-dupla {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.edicao-lote-pecas {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.edicao-lote-linha .campo-edicao-lote,
 .edicao-lote-pecas .campo-edicao-lote {
     grid-column: auto;
     align-content: start;
