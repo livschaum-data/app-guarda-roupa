@@ -5320,7 +5320,9 @@ function preencherFiltrosOcasiao() {
         }
         const valores = obterValoresFiltroLooks(campo);
         if (valores.length > 0) {
-            criarFiltroMultiplo(container, campo, valores, app.filtrosLooks[campo], novosValores => {
+            const selecionados = normalizarSelecoesFiltroLooks(campo, app.filtrosLooks[campo], valores);
+            app.filtrosLooks[campo] = selecionados;
+            criarFiltroMultiplo(container, campo, valores, selecionados, novosValores => {
                 filtrarLooks(campo, novosValores);
             }, { classeGrupo: obterClasseGrupoFiltroLook(campo) });
         }
@@ -5557,6 +5559,18 @@ function obterValoresFiltroLooks(campo) {
     return [...valores.values()].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }));
 }
 
+function normalizarSelecoesFiltroLooks(campo, selecionados, opcoes) {
+    if (campo !== 'clima') return Array.isArray(selecionados) ? selecionados : [];
+
+    const opcoesPorCodigo = new Map((opcoes || []).map(opcao => [
+        normalizarValorFiltroLook(campo, opcao),
+        opcao,
+    ]));
+    return [...new Set((selecionados || [])
+        .map(valor => opcoesPorCodigo.get(normalizarValorFiltroLook(campo, valor)))
+        .filter(Boolean))];
+}
+
 function obterValoresCampoLook(look, campo) {
     const basicos = look.basicos || {};
 
@@ -5570,7 +5584,7 @@ function obterValoresCampoLook(look, campo) {
         case 'categoria':
             return [look.categoria || obterCategoriaIndicadorLook(look.indicador || basicos.Indicador)];
         case 'clima':
-            return [formatarClimaFiltroLook(look), obterCodigoClimaLook(look)];
+            return [formatarClimaFiltroLook(look)];
         case 'local':
             return [look.local_calc || look.local];
         case 'htt':
@@ -5603,7 +5617,14 @@ function obterValoresOcasiaoLook(look) {
 
 function obterCodigoClimaLook(look) {
     const info = look?.clima_info || {};
-    return String(look?.clima_calc || look?.clima || info.codigo || '').trim();
+    return normalizarCodigoClima(look?.clima_calc || look?.clima || info.codigo);
+}
+
+function normalizarCodigoClima(valor) {
+    const texto = String(valor || '').trim();
+    if (!texto) return '';
+
+    return texto.split(/\s*-\s*/, 1)[0].trim();
 }
 
 function formatarClimaFiltro(clima) {
@@ -5633,7 +5654,7 @@ function filtrarLooks(campo, valores) {
 
 function normalizarValorFiltroLook(campo, valor) {
     if (campo === 'clima') {
-        const codigo = String(valor || '').split('-')[0].trim();
+        const codigo = normalizarCodigoClima(valor);
         return normalizarTexto(codigo || valor);
     }
     return normalizarTexto(valor);
@@ -6779,11 +6800,12 @@ function lerFotoEdicaoLook() {
 
 function formatarClimaLook(look) {
     const info = look.clima_info || {};
-    const codigo = look.clima_calc || look.clima || info.codigo;
+    const codigo = obterCodigoClimaLook(look);
     if (!codigo) return '';
 
-    const descricao = info.descricao || codigo;
-    const temperatura = info.temperatura ? ` (${info.temperatura})` : '';
+    const clima = app.climas?.[codigo] || info;
+    const descricao = clima.descricao || codigo;
+    const temperatura = clima.temperatura ? ` (${clima.temperatura})` : '';
     return `${codigo} - ${descricao}${temperatura}`;
 }
 
@@ -7015,7 +7037,7 @@ function preencherFiltrosPaginaOcasioes() {
         .filter(clima => clima.codigo)
         .sort((a, b) => String(a.codigo).localeCompare(String(b.codigo), 'pt-BR', { numeric: true }));
     selectClima.innerHTML = '<option value="">Todas</option>' +
-        climas.map(clima => `<option value="${escapeHtml(clima.codigo)}">${escapeHtml(clima.descricao || clima.codigo)}</option>`).join('');
+        climas.map(clima => `<option value="${escapeHtml(clima.codigo)}">${escapeHtml(formatarClimaFiltro(clima))}</option>`).join('');
     marcarValoresSelectMultiplo(selectClima, app.filtrosOcasioes.clima);
 
     const filtradas = obterOcasioesFiltradasPagina();
@@ -7127,7 +7149,7 @@ function obterLooksPaginaOcasioes(codigosSelecionados = []) {
     return obterTodosLooks()
         .filter(look => !ehLookExcluido(look))
         .filter(look => codigosOcasioes.some(codigoOcasiao => lookTemOcasiao(look, codigoOcasiao)))
-        .filter(look => climas.length === 0 || climas.includes(String(look.clima_calc || look.clima || '')))
+        .filter(look => climas.length === 0 || climas.includes(obterCodigoClimaLook(look)))
         .sort((a, b) => String(a.id || '').localeCompare(String(b.id || ''), 'pt-BR', { numeric: true }));
 }
 
@@ -7161,7 +7183,7 @@ function contarUsosLooksOcasiao(lookIds) {
 
 function obterTemperaturasOcasiao(looks) {
     const temperaturas = [...new Set(looks
-        .map(look => look.clima_info?.temperatura || app.climas?.[String(look.clima_calc || look.clima || '')]?.temperatura)
+        .map(look => app.climas?.[obterCodigoClimaLook(look)]?.temperatura || look.clima_info?.temperatura)
         .filter(Boolean))];
 
     return temperaturas.length ? temperaturas.slice(0, 3).join(' / ') : '-';
@@ -7375,7 +7397,7 @@ function obterGruposGraficoClimas(looks) {
         .sort((a, b) => String(a.codigo).localeCompare(String(b.codigo), 'pt-BR', { numeric: true }));
 
     return climas.map(clima => {
-        const atual = looks.filter(look => String(look.clima_calc || look.clima || '') === String(clima.codigo) && lookEhHTT(look)).length;
+        const atual = looks.filter(look => obterCodigoClimaLook(look) === String(clima.codigo) && lookEhHTT(look)).length;
         const codigos = (app.filtrosOcasioes.ocasiao || []).length
             ? app.filtrosOcasioes.ocasiao
             : obterOcasioesFiltradasPagina().map(ocasiao => ocasiao.codigo);
@@ -7402,7 +7424,7 @@ function obterGruposGraficoOcasioes() {
         const looks = obterTodosLooks()
             .filter(look => !ehLookExcluido(look))
             .filter(look => lookTemOcasiao(look, ocasiao.codigo))
-            .filter(look => climas.length === 0 || climas.includes(String(look.clima_calc || look.clima || '')));
+            .filter(look => climas.length === 0 || climas.includes(obterCodigoClimaLook(look)));
 
         const necessario = climas.length
             ? climas.reduce((total, clima) => total + obterQuantidadeNecessariaOcasiao(ocasiao, clima), 0)
