@@ -7119,6 +7119,7 @@ function renderPaginaOcasioes() {
     renderLooksPaginaOcasioes(looks);
     renderGraficoClimasOcasioes(looks);
     renderSugestoesOcasioes(looks);
+    renderOcasioesLookSelecionado(looks);
 }
 
 function obterResumoOcasiaoSelecionada(codigos) {
@@ -7834,6 +7835,76 @@ function renderSugestoesOcasioes(looks) {
     renderPecasSugestaoOcasioes('ocasioes-calcados', 'ocasioes-calcados-contagem', calcados);
     renderPecasSugestaoOcasioes('ocasioes-bolsas', 'ocasioes-bolsas-contagem', bolsas);
     renderPecasSugestaoOcasioes('ocasioes-cintos', 'ocasioes-cintos-contagem', cintos);
+}
+
+function renderOcasioesLookSelecionado(looks) {
+    const painel = document.getElementById('ocasioes-look-painel');
+    const container = document.getElementById('ocasioes-look-lista');
+    const identificador = document.getElementById('ocasioes-look-selecionado');
+    const contador = document.getElementById('ocasioes-look-contagem');
+    if (!painel || !container) return;
+
+    const look = looks.find(item => item.id === app.filtrosOcasioes.lookId);
+    painel.hidden = !look;
+    if (!look) {
+        container.innerHTML = '';
+        if (identificador) identificador.textContent = '';
+        if (contador) contador.textContent = '0';
+        return;
+    }
+
+    const ocasioes = obterOcasioesCadastradasLook(look);
+    if (identificador) identificador.textContent = look.id;
+    if (contador) contador.textContent = ocasioes.length;
+    container.innerHTML = ocasioes.length
+        ? ocasioes.map(ocasiao => `
+            <div class="ocasioes-look-item">
+                ${ocasiao.codigo ? `<strong>${escapeHtml(ocasiao.codigo)}</strong>` : ''}
+                <span>${escapeHtml(ocasiao.descricao)}</span>
+                ${ocasiao.tipo ? `<small>${escapeHtml(ocasiao.tipo)}</small>` : ''}
+            </div>
+        `).join('')
+        : '<p class="texto-ajuda">Nenhuma ocasião cadastrada neste look.</p>';
+}
+
+function obterOcasioesCadastradasLook(look) {
+    const encontradas = new Map();
+
+    (look?.ocasioes || []).forEach(item => {
+        const codigo = String(item?.codigo || '').trim();
+        const cadastro = codigo ? app.mapaOcasioes?.[codigo] || {} : {};
+        const descricao = String(item?.descricao || cadastro.descricao || codigo).trim();
+        if (!descricao) return;
+        const chave = normalizarTexto(codigo || descricao);
+        encontradas.set(chave, {
+            codigo,
+            descricao,
+            tipo: String(item?.tipo || cadastro.tipo || '').trim(),
+        });
+    });
+
+    String(look?.ocasiao || '')
+        .split(',')
+        .map(valor => valor.trim())
+        .filter(valor => valor && normalizarTexto(valor) !== 'nao especificada')
+        .forEach(descricao => {
+            const cadastro = Object.values(app.mapaOcasioes || {}).find(item =>
+                normalizarTexto(item?.descricao) === normalizarTexto(descricao)
+            ) || {};
+            const codigo = String(cadastro.codigo || '').trim();
+            const chave = normalizarTexto(codigo || descricao);
+            if (!encontradas.has(chave)) {
+                encontradas.set(chave, {
+                    codigo,
+                    descricao,
+                    tipo: String(cadastro.tipo || '').trim(),
+                });
+            }
+        });
+
+    return [...encontradas.values()].sort((a, b) =>
+        String(a.codigo || a.descricao).localeCompare(String(b.codigo || b.descricao), 'pt-BR', { numeric: true })
+    );
 }
 
 function coletarSugestoesPecasOcasioes(looks) {

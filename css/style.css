@@ -2216,6 +2216,65 @@ body {
     max-height: 250px;
 }
 
+.ocasioes-look-painel[hidden] {
+    display: none;
+}
+
+.ocasioes-look-painel .ocasioes-bloco-topo > div {
+    min-width: 0;
+}
+
+.ocasioes-look-painel .ocasioes-bloco-topo small {
+    display: block;
+    margin-top: 3px;
+    color: var(--modern-muted, var(--cor-texto-cinza));
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.ocasioes-look-lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 8px;
+    align-content: start;
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.ocasioes-look-item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 3px 8px;
+    align-items: center;
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid var(--modern-border, var(--cor-borda));
+    border-left: 3px solid var(--modern-accent, var(--cor-primaria));
+    border-radius: 6px;
+    background: var(--modern-surface-2, var(--cor-fundo-card));
+    color: var(--modern-text, var(--cor-texto));
+}
+
+.ocasioes-look-item strong {
+    color: var(--modern-accent-strong, var(--cor-primaria));
+    font-size: 12px;
+}
+
+.ocasioes-look-item span {
+    min-width: 0;
+    font-size: 13px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.ocasioes-look-item small {
+    grid-column: 2;
+    color: var(--modern-muted, var(--cor-texto-cinza));
+    font-size: 11px;
+    text-transform: capitalize;
+}
+
 .ocasioes-mini-card {
     display: grid;
     gap: 5px;

@@ -24,7 +24,7 @@
     </script>
     <link rel="preload" href="dados_guarda_roupa.json" as="fetch" crossorigin="anonymous">
     <link rel="preload" href="fotos/home-illustration.jpg" as="image">
-    <link rel="stylesheet" href="css/style.css?v=20260923-filtros-looks">
+    <link rel="stylesheet" href="css/style.css?v=20260923-ocasioes-look">
 </head>
 <body>
     <div id="app">
@@ -422,6 +422,17 @@
                         <span id="ocasioes-cintos-contagem">0</span>
                     </div>
                     <div id="ocasioes-cintos" class="ocasioes-mini-grid"></div>
+                </section>
+
+                <section id="ocasioes-look-painel" class="ocasioes-card ocasioes-bloco ocasioes-sugestoes ocasioes-look-painel" hidden>
+                    <div class="ocasioes-bloco-topo">
+                        <div>
+                            <h3>Ocasiões do look</h3>
+                            <small id="ocasioes-look-selecionado"></small>
+                        </div>
+                        <span id="ocasioes-look-contagem">0</span>
+                    </div>
+                    <div id="ocasioes-look-lista" class="ocasioes-look-lista" aria-live="polite"></div>
                 </section>
 
                 <section class="ocasioes-card ocasioes-bloco ocasioes-looks ocasioes-looks-editor">
