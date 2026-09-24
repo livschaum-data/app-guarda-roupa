@@ -3,7 +3,7 @@
    É como um "banco de dados em memória" */
 
 const CAMPOS_FILTROS_PECAS = ['tipo', 'funcao', 'subtipo', 'local', 'alocacao', 'situacao', 'conservacao', 'reposicao', 'utilizacao', 'formalidade', 'nivel_aquecimento', 'padronagem', 'modelagem', 'tom', 'cor_detalhe', 'cor', 'tendencia', 'info_fotos', 'combinacoes'];
-const CAMPOS_FILTROS_LOOKS = ['lookId', 'pecas', 'categoria', 'indicador', 'local', 'situacao', 'utilizacao', 'clima', 'htt', 'ocasiao'];
+const CAMPOS_FILTROS_LOOKS = ['lookId', 'pecas', 'categoria', 'indicador', 'local', 'situacao', 'utilizacao', 'clima', 'htt', 'ocasiao', 'usos'];
 const DIMENSAO_POR_CAMPO_PECA = {
     tipo: ['tipos_peca', 'tipo'],
     funcao: ['funcoes_peca', 'valor'],
@@ -679,7 +679,8 @@ function formatarNomeFiltro(campo) {
         clima: 'Clima',
         local: 'Local',
         htt: 'HTT',
-        ocasiao: 'Ocasião'
+        ocasiao: 'Ocasião',
+        usos: 'Número de usos'
     };
     if (nomes[campo]) return nomes[campo];
     return campo.toUpperCase().replace('_', ' ');
@@ -728,7 +729,11 @@ function criarFiltroMultiplo(container, campo, valores, selecionados, aoAlterar,
         filtro.classList.toggle('aberto', !estavaAberto);
     });
 
-    valores.sort().forEach(valor => {
+    const valoresOrdenados = [...valores].sort((a, b) => campo === 'usos'
+        ? Number(a) - Number(b)
+        : a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }));
+
+    valoresOrdenados.forEach(valor => {
         const label = document.createElement('label');
         label.className = 'filtro-chip';
         const checkbox = document.createElement('input');
@@ -749,7 +754,7 @@ function criarFiltroMultiplo(container, campo, valores, selecionados, aoAlterar,
         marcador.className = 'filtro-chip-marcador';
         const texto = document.createElement('span');
         texto.className = 'filtro-chip-texto';
-        const textoExibido = corrigirTextoMojibake(valor);
+        const textoExibido = campo === 'usos' ? formatarOpcaoUsosFiltro(valor) : corrigirTextoMojibake(valor);
         texto.textContent = textoExibido.charAt(0).toUpperCase() + textoExibido.slice(1);
         label.appendChild(marcador);
         label.appendChild(texto);
@@ -5538,6 +5543,10 @@ function substituirLookIdHistorico(idAntigo, idNovo) {
 
 function obterValoresFiltroLooks(campo) {
     if (campo === 'clima') return obterOpcoesClimaFiltroLooks();
+    if (campo === 'usos') {
+        return [...new Set(obterTodosLooks().map(look => String(contarUsosLook(look.id).total)))]
+            .sort((a, b) => Number(a) - Number(b));
+    }
 
     const valoresDimensao = {
         situacao: (app.dimensoes?.situacoes_look || []).map(item => item.valor),
@@ -5619,6 +5628,8 @@ function obterValoresCampoLook(look, campo) {
             return [basicos.HTT || look.HTT || look.htt];
         case 'ocasiao':
             return obterValoresOcasiaoLook(look);
+        case 'usos':
+            return [String(contarUsosLook(look.id).total)];
         default:
             return [look[campo] || basicos[campo]];
     }
@@ -5686,6 +5697,11 @@ function normalizarValorFiltroLook(campo, valor) {
         return normalizarTexto(codigo || valor);
     }
     return normalizarTexto(valor);
+}
+
+function formatarOpcaoUsosFiltro(valor) {
+    const total = Number(valor);
+    return `${total} ${total === 1 ? 'uso' : 'usos'}`;
 }
 
 function limparFiltrosLooks() {
