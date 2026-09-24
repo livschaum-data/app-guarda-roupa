@@ -5666,11 +5666,16 @@ function obterCategoriaIndicadorLook(indicador) {
 function obterValoresOcasiaoLook(look) {
     const valores = [];
     (look.ocasioes || []).forEach(ocasiao => {
-        if (ocasiao.descricao) valores.push(ocasiao.descricao);
+        if (ocasiao.descricao && !ocasiaoEhNaoEspecificada(ocasiao.descricao)) {
+            valores.push(ocasiao.descricao);
+        }
     });
 
     if (valores.length === 0 && look.ocasiao) {
-        valores.push(...String(look.ocasiao).split(','));
+        valores.push(...String(look.ocasiao)
+            .split(',')
+            .map(item => item.trim())
+            .filter(item => item && !ocasiaoEhNaoEspecificada(item)));
     }
 
     return [...new Set(valores)];
@@ -6020,7 +6025,7 @@ function criarCardLook(look) {
     const pecasTexto = (look.pecas || [])
         .map(id => escapeHtml(id))
         .join(' · ');
-    const tags = normalizarOcasioesLook(look).slice(0, 4).map(ocasiao => `<span>${escapeHtml(ocasiao.descricao)}</span>`).join('');
+    const tags = normalizarOcasioesLook(look).map(ocasiao => `<span>${escapeHtml(ocasiao.descricao)}</span>`).join('');
     const lookId = look.id || look.nome || '';
     const utilizacao = obterUtilizacaoLook(look);
     const totalUsos = contarUsosLook(look.id);
@@ -7742,6 +7747,7 @@ function normalizarOcasioesLook(look) {
         if (!item) return;
         const codigoInformado = String(item.codigo || '').trim();
         const descricao = String(item.descricao || item.nome || '').trim();
+        if (ocasiaoEhNaoEspecificada(descricao)) return;
         const codigoPorDescricao = obterCodigoOcasiaoPorDescricao(descricao);
         const codigo = app.mapaOcasioes?.[codigoInformado] ? codigoInformado : (codigoPorDescricao || codigoInformado);
         const info = codigo ? app.mapaOcasioes?.[codigo] : null;
@@ -7761,6 +7767,10 @@ function normalizarOcasioesLook(look) {
     }
 
     return [...mapa.values()];
+}
+
+function ocasiaoEhNaoEspecificada(valor) {
+    return normalizarTexto(valor) === 'nao especificada';
 }
 
 function obterCodigoOcasiaoPorDescricao(descricao) {
