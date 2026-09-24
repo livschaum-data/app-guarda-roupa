@@ -7752,6 +7752,7 @@ function normalizarOcasioesLook(look) {
         const codigo = app.mapaOcasioes?.[codigoInformado] ? codigoInformado : (codigoPorDescricao || codigoInformado);
         const info = codigo ? app.mapaOcasioes?.[codigo] : null;
         const descricaoFinal = descricao || info?.descricao || codigo;
+        if (ocasiaoEhNaoEspecificada(descricaoFinal)) return;
         const chave = normalizarTexto(codigo || descricaoFinal);
         if (!chave) return;
         mapa.set(chave, {
@@ -7950,7 +7951,7 @@ function obterOcasioesCadastradasLook(look) {
         const codigo = String(item?.codigo || '').trim();
         const cadastro = codigo ? app.mapaOcasioes?.[codigo] || {} : {};
         const descricao = String(item?.descricao || cadastro.descricao || codigo).trim();
-        if (!descricao) return;
+        if (!descricao || ocasiaoEhNaoEspecificada(descricao)) return;
         const chave = normalizarTexto(codigo || descricao);
         encontradas.set(chave, {
             codigo,
