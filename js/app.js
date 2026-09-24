@@ -714,12 +714,34 @@ function criarFiltroMultiplo(container, campo, valores, selecionados, aoAlterar,
     });
     opcoes.appendChild(cabecalho);
 
+    const linhaSelecionarTodos = document.createElement('label');
+    linhaSelecionarTodos.className = 'filtro-selecionar-todos';
+    const checkboxSelecionarTodos = document.createElement('input');
+    checkboxSelecionarTodos.type = 'checkbox';
+    checkboxSelecionarTodos.checked = valores.length > 0 && selecionados.length === valores.length;
+    const textoSelecionarTodos = document.createElement('span');
+    textoSelecionarTodos.textContent = 'Selecionar todos';
+    linhaSelecionarTodos.appendChild(checkboxSelecionarTodos);
+    linhaSelecionarTodos.appendChild(textoSelecionarTodos);
+    opcoes.appendChild(linhaSelecionarTodos);
+
     const atualizarResumo = () => {
-        const total = opcoes.querySelectorAll('input:checked').length;
+        const total = opcoes.querySelectorAll('.filtro-chip input:checked').length;
         const contador = botao.querySelector('.filtro-multiplo-contador');
         contador.textContent = total > 0 ? total : '';
         filtro.classList.toggle('tem-selecao', total > 0);
+        checkboxSelecionarTodos.checked = valores.length > 0 && total === valores.length;
     };
+
+    checkboxSelecionarTodos.addEventListener('change', () => {
+        const selecionar = checkboxSelecionarTodos.checked;
+        opcoes.querySelectorAll('.filtro-chip input').forEach(checkbox => {
+            checkbox.checked = selecionar;
+            checkbox.closest('.filtro-chip')?.classList.toggle('selecionado', selecionar);
+        });
+        atualizarResumo();
+        aoAlterar(selecionar ? [...valores] : []);
+    });
 
     botao.addEventListener('click', () => {
         const estavaAberto = filtro.classList.contains('aberto');
