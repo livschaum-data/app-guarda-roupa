@@ -8453,11 +8453,63 @@ html[data-theme="dark"] .navbar {
 #filtros-ocasiao .filtro-multiplo-opcoes {
     z-index: 110;
     width: min(360px, calc(100vw - 40px));
+    gap: 5px;
+    padding: 10px;
     overflow-x: hidden;
     border-color: var(--modern-border, var(--cor-borda));
     background: var(--modern-surface, var(--cor-fundo-card));
     color: var(--modern-text, var(--cor-texto));
     box-shadow: var(--modern-shadow, var(--sombra-forte));
+}
+
+#filtros-ocasiao .filtro-multiplo-cabecalho {
+    padding-bottom: 5px;
+    margin-bottom: 0;
+}
+
+#filtros-ocasiao .filtro-selecionar-todos {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    height: 28px;
+    min-height: 28px;
+    padding: 3px 5px;
+    gap: 6px;
+    line-height: 1.2;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+#filtros-ocasiao .filtro-selecionar-todos span {
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+}
+
+#filtros-ocasiao .filtro-selecionar-todos input {
+    flex: 0 0 16px;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}
+
+#filtros-ocasiao .filtro-chip {
+    min-height: 30px;
+    padding: 4px 9px 4px 6px;
+    gap: 5px;
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+#filtros-ocasiao .filtro-chip-marcador {
+    width: 16px;
+    height: 16px;
+}
+
+#filtros-ocasiao .filtro-chip-marcador::after {
+    width: 7px;
+    height: 4px;
 }
 
 /* No modo claro, a cor identifica o grupo sem tingir todo o campo. */
