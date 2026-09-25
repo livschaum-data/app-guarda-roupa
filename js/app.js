@@ -3605,7 +3605,7 @@ function obterCalculadosAtuaisLook(look) {
         .filter(Boolean);
 
     if (pecas.length === 0 || !pecas.some(id => app.pecas?.[id])) return null;
-    return calcularDadosLookPorPecas(pecas);
+    return calcularDadosLookPorPecas(pecas, obterIndicadorLook(look, look?.id));
 }
 
 function obterCategoriaLook(look) {
@@ -6567,7 +6567,8 @@ function configurarRecalculoEdicaoLook() {
         .filter(Boolean);
 
     const atualizar = () => {
-        const calculados = calcularDadosLookPorPecas(obterPecasSelecionadasEdicaoLook());
+        const indicador = document.getElementById('edit-look-indicador')?.value || '';
+        const calculados = calcularDadosLookPorPecas(obterPecasSelecionadasEdicaoLook(), indicador);
         const clima = document.getElementById('edit-look-clima-calc');
         const local = document.getElementById('edit-look-local-calc');
         const utilizacao = document.getElementById('edit-look-utilizacao-calc');
@@ -6575,7 +6576,6 @@ function configurarRecalculoEdicaoLook() {
         const locais = document.getElementById('edit-look-locais-pecas');
         const utilizacoes = document.getElementById('edit-look-utilizacoes-pecas');
         const categoria = document.getElementById('edit-look-categoria-calc');
-        const indicador = document.getElementById('edit-look-indicador')?.value || '';
         if (clima) clima.value = calculados.clima_calc || '';
         if (local) local.value = calculados.local_calc || '';
         if (utilizacao) utilizacao.value = calculados.utilizacao_calc || '';
@@ -6609,21 +6609,76 @@ function obterPecasSelecionadasEdicaoLook() {
         .map(id => id.toUpperCase());
 }
 
-function calcularDadosLookPorPecas(pecas) {
+function calcularClimaLookPorRegras(indicador, aquecimento1, aquecimento2, aquecimento3) {
+    const tipoLook = String(indicador || '').trim();
+    const aquecimentos = [aquecimento1, aquecimento2, aquecimento3].map(valor => {
+        const texto = String(valor ?? '').trim();
+        return texto || null;
+    });
+    const [a1, a2, a3] = aquecimentos;
+    const umDos = valores => valores.includes(a2);
+
+    if (a1 === '1' && umDos(['1', null]) && a3 === null) return '1';
+
+    if (a1 === '2' && umDos(['1', null]) && a3 === null) return '2';
+    if (tipoLook !== 'TL' && ['1', '2'].includes(a1) && a2 === '2' && a3 === null) return '2';
+    if (tipoLook !== 'TL' && ['1', '2'].includes(a1) && ['1', '2', null].includes(a2) && a3 === '2') return '2';
+    if (tipoLook === 'TL' && a1 === '1' && a2 === '2' && a3 === null) return '2';
+
+    if (tipoLook !== 'TL' && ['1', '2'].includes(a1) && ['1', '2', null].includes(a2) && a3 === '3') return '3';
+    if (tipoLook === 'TL' && a1 === '1' && ['1', '2'].includes(a2) && a3 === '3') return '3';
+    if (tipoLook === 'TL' && a1 === '2' && a2 === '2' && a3 === null) return '3';
+
+    if (a1 === '3' && ['1', '2'].includes(a2) && ['3', null].includes(a3)) return '4';
+    if (tipoLook !== 'TL' && ['1', '2'].includes(a1) && ['1', '2', null].includes(a2) && a3 === '4') return '4';
+    if (tipoLook === 'TL' && a1 === '2' && ['1', '2'].includes(a2) && a3 === '3') return '4';
+
+    if (a1 === '4' && ['2', '1'].includes(a2) && [null, '2', '3'].includes(a3)) return '5';
+    if (tipoLook !== 'TL' && ['1', '2'].includes(a1) && ['1', '2', null].includes(a2) && a3 === '5') return '5';
+    if (tipoLook !== 'TL' && a1 === '3' && ['1', '2', null].includes(a2) && a3 === '4') return '5';
+    if (a1 === '3' && a2 === '5' && a3 === null) return '5';
+    if (tipoLook === 'TL' && ['1', '2'].includes(a1) && a2 === '2' && a3 === '4') return '5';
+
+    if (tipoLook !== 'TL' && a1 === '5' && ['1', '2'].includes(a2) && [null, '2', '3'].includes(a3)) return '6';
+    if (tipoLook !== 'TL' && a1 === '3' && a2 === '2' && a3 === '5') return '6';
+    if (tipoLook !== 'TL' && ['1', '2'].includes(a1) && a2 === '2' && a3 === '6') return '6';
+    if (tipoLook !== 'TL' && ['4', '5'].includes(a1) && a2 === '2' && a3 === '4') return '6';
+    if (tipoLook !== 'TL' && a1 === '4' && a2 === '5' && [null, '2'].includes(a3)) return '6';
+    if (tipoLook === 'TL' && ['1', '2', '3'].includes(a1) && a2 === '2' && a3 === '5') return '6';
+    if (tipoLook === 'TL' && a1 === '5' && a2 === '2' && a3 === null) return '6';
+    if (tipoLook === 'TL' && a1 === '2' && a2 === '5' && ['3', null].includes(a3)) return '6';
+
+    if (a1 === '6' && a2 === '2' && [null, '2'].includes(a3)) return '7';
+    if (tipoLook !== 'TL' && a1 === '3' && a2 === '2' && a3 === '6') return '7';
+    if (tipoLook !== 'TL' && ['4', '5'].includes(a1) && ['2', '5'].includes(a2) && a3 === '5') return '7';
+    if (tipoLook !== 'TL' && a1 === '5' && a2 === '5' && [null, '2'].includes(a3)) return '7';
+    if (tipoLook !== 'TL' && a1 === '3' && a2 === '5' && a3 === '5') return '7';
+    if (tipoLook === 'TL' && a1 === '2' && a2 === '5' && a3 === '4') return '7';
+    if (tipoLook === 'TL' && ['3', '4'].includes(a1) && a2 === '5' && a3 === null) return '7';
+
+    if (tipoLook !== 'TL' && ['4', '5'].includes(a1) && ['2', '5'].includes(a2) && a3 === '6') return '8';
+    if (tipoLook !== 'TL' && a1 === '6' && a2 === '5' && [null, '2'].includes(a3)) return '8';
+    if (tipoLook !== 'TL' && a1 === '3' && a2 === '5' && a3 === '6') return '8';
+    if (tipoLook === 'TL' && a1 === '2' && a2 === '5' && ['5', '6'].includes(a3)) return '8';
+    if (tipoLook === 'TL' && ['5', '6'].includes(a1) && a2 === '5' && a3 === null) return '8';
+
+    if (tipoLook === 'PRL' && a1 === '0' && ['0', '1', null].includes(a2) && ['1', '2', null].includes(a3)) return '1';
+
+    return '';
+}
+
+function calcularDadosLookPorPecas(pecas, indicador = '') {
     const ids = (pecas || []).map(id => String(id || '').trim().toUpperCase()).filter(Boolean);
     const valoresPecas = ids.map(id => app.pecas[id] || null);
     const aquecimentos = valoresPecas.map(peca => valorVisivel(peca?.nivel_aquecimento) ? String(peca.nivel_aquecimento) : null);
     const locais = valoresPecas.map(peca => valorVisivel(peca?.local) ? String(peca.local) : null);
     const utilizacoes = valoresPecas.map(peca => valorVisivel(peca?.utilizacao) ? String(peca.utilizacao) : null);
-    const climaCalc = aquecimentos
-        .map(valor => Number(valor))
-        .filter(valor => Number.isFinite(valor))
-        .reduce((maior, valor) => Math.max(maior, valor), 0);
+    const climaCalc = calcularClimaLookPorRegras(indicador, ...aquecimentos);
     const locaisValidos = locais.filter(Boolean);
     const utilizacoesValidas = utilizacoes.filter(Boolean);
 
     return {
-        clima_calc: climaCalc ? String(climaCalc) : '',
+        clima_calc: climaCalc,
         clima_info: climaCalc && app.climas?.[String(climaCalc)] ? { ...app.climas[String(climaCalc)] } : {},
         aquecimentos: preencherAteTres(aquecimentos),
         local_calc: calcularValorComposto(locaisValidos, 'misto', { virtualPrioritario: true }),
@@ -6634,7 +6689,8 @@ function calcularDadosLookPorPecas(pecas) {
 }
 
 function atualizarCalculadosLook(look, pecas, dataAtualizacao, opcoes = {}) {
-    const calculados = calcularDadosLookPorPecas(pecas);
+    const indicador = look?.indicador || look?.basicos?.Indicador || '';
+    const calculados = calcularDadosLookPorPecas(pecas, indicador);
     const basicos = {
         ...(look.basicos || {}),
         ID: look.id,
@@ -6769,7 +6825,7 @@ async function salvarEdicaoLook() {
     const fotoUrl = document.getElementById('edit-look-foto')?.value.trim() || '';
     const pecas = obterPecasSelecionadasEdicaoLook();
     const ocasioes = parseOcasioesEdicaoLook(obterOcasioesSelecionadasEdicaoLook());
-    const calculados = calcularDadosLookPorPecas(pecas);
+    const calculados = calcularDadosLookPorPecas(pecas, indicador);
 
     basicos.ID = lookId;
     basicos.ID1 = pecas[0] || '';
@@ -9229,7 +9285,7 @@ async function salvarLookHistoricoInterno() {
         .map(codigo => app.mapaOcasioes[codigo] ? { codigo, ...app.mapaOcasioes[codigo] } : null)
         .filter(Boolean);
     const basicosOriginais = lookExistente?.basicos || {};
-    const calculados = calcularDadosLookPorPecas(pecas);
+    const calculados = calcularDadosLookPorPecas(pecas, indicador);
 
     app.looksFavoritos[id] = {
         ...(lookExistente || {}),
