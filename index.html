@@ -24,7 +24,7 @@
     </script>
     <link rel="preload" href="dados_guarda_roupa.json" as="fetch" crossorigin="anonymous">
     <link rel="preload" href="fotos/home-illustration.jpg" as="image">
-    <link rel="stylesheet" href="css/style.css?v=20260924-selecionar-todos-alinhado">
+    <link rel="stylesheet" href="css/style.css?v=20260927-edicao-lote-htt">
 </head>
 <body>
     <div id="app">
@@ -667,9 +667,22 @@
                 <h2>Editar looks selecionados</h2>
                 <p id="edicao-lote-looks-resumo" class="texto-ajuda"></p>
                 <div id="form-edicao-lote-looks"></div>
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <div class="acoes-modal-edicao-lote">
                     <button class="btn-secundario" type="button" onclick="fecharModalEdicaoLoteLooks()">Cancelar</button>
                     <button class="btn-principal" type="button" onclick="salvarEdicaoLoteLooks()">Salvar alterações</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-edicao-lote-ocasioes" class="modal" style="display:none;">
+            <div class="modal-content modal-look-detalhes modal-edicao-lote-ocasioes">
+                <button class="btn-fechar" type="button" onclick="fecharModalEdicaoLoteLooksOcasioes()">x</button>
+                <h2>Editar looks selecionados</h2>
+                <p id="edicao-lote-ocasioes-resumo" class="texto-ajuda"></p>
+                <div id="form-edicao-lote-ocasioes"></div>
+                <div class="acoes-modal-edicao-lote">
+                    <button class="btn-secundario" type="button" onclick="fecharModalEdicaoLoteLooksOcasioes()">Cancelar</button>
+                    <button class="btn-principal" type="button" onclick="salvarEdicaoLoteLooksOcasioes()">Salvar alterações</button>
                 </div>
             </div>
         </div>
@@ -826,7 +839,7 @@
          A ordem importa! CSS deve carregar antes, depois o app.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js?v=20260624-config-supabase"></script>
-    <script src="js/app.js?v=20260925-regras-clima-json"></script>
+    <script src="js/app.js?v=20260927-edicao-lote-htt"></script>
 </body>
 </html>
 

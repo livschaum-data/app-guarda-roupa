@@ -3282,6 +3282,14 @@ body {
     align-content: start;
 }
 
+.acoes-modal-edicao-lote {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
 .campo-edicao-lote-aplicar {
     display: flex;
     align-items: center;

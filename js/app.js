@@ -3829,6 +3829,12 @@ function criarFormularioEdicaoLoteLooks() {
                     </label>
                 `)}
             </div>
+            ${criarCampoAplicarEdicaoLote('dataRevisaoHtt', `
+                <label class="campo-edicao-look">
+                    <span>Data de edição do HTT</span>
+                    <input type="date" id="edit-lote-look-data-revisao-htt">
+                </label>
+            `)}
             <div class="edicao-lote-pecas">
                 ${[1, 2, 3].map(numero => criarCampoAplicarEdicaoLote(`peca${numero}`, `
                     <label class="campo-edicao-look">
@@ -3881,8 +3887,8 @@ function criarOptionsPecasLook(valorAtual) {
         .join('');
 }
 
-function campoLoteDeveAplicar(campo) {
-    return Boolean(document.querySelector(`[data-aplicar-lote="${campo}"]`)?.checked);
+function campoLoteDeveAplicar(campo, raiz = document) {
+    return Boolean(raiz.querySelector(`[data-aplicar-lote="${campo}"]`)?.checked);
 }
 
 function salvarEdicaoLoteLooks() {
@@ -3894,6 +3900,7 @@ function salvarEdicaoLoteLooks() {
 
     const aplicarSituacao = campoLoteDeveAplicar('situacao');
     const aplicarHtt = campoLoteDeveAplicar('htt');
+    const aplicarDataRevisaoHtt = campoLoteDeveAplicar('dataRevisaoHtt');
     const aplicarPeca1 = campoLoteDeveAplicar('peca1');
     const aplicarPeca2 = campoLoteDeveAplicar('peca2');
     const aplicarPeca3 = campoLoteDeveAplicar('peca3');
@@ -3901,13 +3908,14 @@ function salvarEdicaoLoteLooks() {
     const aplicarSugestoes = campoLoteDeveAplicar('sugestoes');
     const aplicarPecas = aplicarPeca1 || aplicarPeca2 || aplicarPeca3;
 
-    if (!aplicarSituacao && !aplicarHtt && !aplicarPecas && !aplicarOcasioes && !aplicarSugestoes) {
+    if (!aplicarSituacao && !aplicarHtt && !aplicarDataRevisaoHtt && !aplicarPecas && !aplicarOcasioes && !aplicarSugestoes) {
         alert('Marque pelo menos um campo para aplicar aos looks selecionados.');
         return;
     }
 
     const situacao = document.getElementById('edit-lote-look-situacao')?.value.trim() || '';
     const htt = document.getElementById('edit-lote-look-htt')?.value.trim() || '';
+    const dataRevisaoHtt = document.getElementById('edit-lote-look-data-revisao-htt')?.value || '';
     const pecasLote = [
         document.getElementById('edit-lote-look-peca1')?.value.trim().toUpperCase() || '',
         document.getElementById('edit-lote-look-peca2')?.value.trim().toUpperCase() || '',
@@ -3925,6 +3933,7 @@ function salvarEdicaoLoteLooks() {
         if (aplicarSituacao) basicos['situação'] = situacao;
         if (aplicarSituacao) basicos.situacao = situacao;
         if (aplicarHtt) basicos.HTT = htt;
+        if (aplicarDataRevisaoHtt) basicos['Data revisão HTT'] = dataRevisaoHtt;
         const pecasAtualizadas = [...(lookOriginal.pecas || [])];
         if (aplicarPeca1) pecasAtualizadas[0] = pecasLote[0];
         if (aplicarPeca2) pecasAtualizadas[1] = pecasLote[1];
@@ -7366,36 +7375,171 @@ function renderAcoesLooksOcasioes(looks) {
     const idsDisponiveis = new Set(looks.map(look => look.id));
     app.looksOcasioesSelecionados = (app.looksOcasioesSelecionados || []).filter(id => idsDisponiveis.has(id));
     const selecionados = app.looksOcasioesSelecionados.length;
-    const opcoesOcasioes = criarOptionsOcasioesLook([]);
-    const opcoesSugestoes = criarOptionsSugestoesLook([]);
-
     container.innerHTML = `
         <div class="ocasioes-looks-selecao">
             <button type="button" class="btn-secundario" onclick="selecionarTodosLooksOcasioes()">Selecionar todos</button>
             <button type="button" class="btn-secundario" onclick="limparSelecaoLooksOcasioes()">Limpar</button>
+            <button type="button" class="btn-principal" onclick="abrirEdicaoLoteLooksOcasioes()" ${selecionados ? '' : 'disabled'}>Editar selecionados</button>
             <span>${selecionados} selecionado${selecionados === 1 ? '' : 's'}</span>
         </div>
-        <div class="ocasioes-lote">
-            <label>
-                <span>Acessório/calçado</span>
-                <select id="ocasioes-lote-acessorio">
-                    <option value="">Selecione</option>
-                    ${opcoesSugestoes}
-                </select>
-            </label>
-            <button type="button" class="btn-secundario" onclick="aplicarAcessorioLooksOcasioes('adicionar')">Adicionar</button>
-            <button type="button" class="btn-secundario" onclick="aplicarAcessorioLooksOcasioes('remover')">Remover</button>
-            <label>
-                <span>Ocasião</span>
-                <select id="ocasioes-lote-ocasiao">
-                    <option value="">Selecione</option>
-                    ${opcoesOcasioes}
-                </select>
-            </label>
-            <button type="button" class="btn-secundario" onclick="aplicarOcasiaoLooksOcasioes('adicionar')">Adicionar</button>
-            <button type="button" class="btn-secundario" onclick="aplicarOcasiaoLooksOcasioes('remover')">Remover</button>
+    `;
+}
+
+function abrirEdicaoLoteLooksOcasioes() {
+    const idsSelecionados = obterIdsLooksSelecionadosOcasioes();
+    if (!idsSelecionados.length) {
+        alert('Selecione pelo menos um look.');
+        return;
+    }
+
+    const modal = document.getElementById('modal-edicao-lote-ocasioes');
+    const resumo = document.getElementById('edicao-lote-ocasioes-resumo');
+    const form = document.getElementById('form-edicao-lote-ocasioes');
+    if (!modal || !form) return;
+
+    resumo.textContent = `${idsSelecionados.length} look${idsSelecionados.length === 1 ? '' : 's'} selecionado${idsSelecionados.length === 1 ? '' : 's'}: ${idsSelecionados.join(', ')}`;
+    form.innerHTML = criarFormularioEdicaoLoteLooksOcasioes();
+    abrirModalEmpilhado(modal);
+}
+
+function fecharModalEdicaoLoteLooksOcasioes() {
+    fecharModalEspecifico(document.getElementById('modal-edicao-lote-ocasioes'));
+}
+
+function criarFormularioEdicaoLoteLooksOcasioes() {
+    const opcoesOcasioes = criarOptionsOcasioesLook([]);
+    const opcoesSugestoes = criarOptionsSugestoesLook([]);
+
+    return `
+        <div class="form-edicao-look form-edicao-lote-looks">
+            <div class="edicao-lote-linha edicao-lote-linha-dupla">
+                ${criarCampoAplicarEdicaoLote('htt', `
+                    <label class="campo-edicao-look">
+                        <span>HTT</span>
+                        <select id="edit-ocasioes-lote-htt">${criarOptionsHttLook('false')}</select>
+                    </label>
+                `)}
+                ${criarCampoAplicarEdicaoLote('dataRevisaoHtt', `
+                    <label class="campo-edicao-look">
+                        <span>Data de edição do HTT</span>
+                        <input type="date" id="edit-ocasioes-lote-data-revisao-htt">
+                    </label>
+                `)}
+            </div>
+            <div class="edicao-lote-linha edicao-lote-linha-dupla">
+                ${criarCampoAplicarEdicaoLote('ocasioes', `
+                    <label class="campo-edicao-look">
+                        <span>Ocasião</span>
+                        <select id="edit-ocasioes-lote-ocasiao">
+                            <option value="">Selecione</option>
+                            ${opcoesOcasioes}
+                        </select>
+                    </label>
+                    <label class="campo-edicao-look">
+                        <span>Ação</span>
+                        <select id="edit-ocasioes-lote-ocasiao-acao">
+                            <option value="adicionar">Adicionar</option>
+                            <option value="remover">Remover</option>
+                        </select>
+                    </label>
+                `)}
+                ${criarCampoAplicarEdicaoLote('sugestoes', `
+                    <label class="campo-edicao-look">
+                        <span>Acessório/calçado</span>
+                        <select id="edit-ocasioes-lote-acessorio">
+                            <option value="">Selecione</option>
+                            ${opcoesSugestoes}
+                        </select>
+                    </label>
+                    <label class="campo-edicao-look">
+                        <span>Ação</span>
+                        <select id="edit-ocasioes-lote-acessorio-acao">
+                            <option value="adicionar">Adicionar</option>
+                            <option value="remover">Remover</option>
+                        </select>
+                    </label>
+                `)}
+            </div>
         </div>
     `;
+}
+
+function salvarEdicaoLoteLooksOcasioes() {
+    const idsSelecionados = obterIdsLooksSelecionadosOcasioes();
+    if (!idsSelecionados.length) {
+        alert('Selecione pelo menos um look.');
+        return;
+    }
+
+    const form = document.getElementById('form-edicao-lote-ocasioes');
+    const aplicarHtt = campoLoteDeveAplicar('htt', form);
+    const aplicarDataRevisaoHtt = campoLoteDeveAplicar('dataRevisaoHtt', form);
+    const aplicarOcasioes = campoLoteDeveAplicar('ocasioes', form);
+    const aplicarSugestoes = campoLoteDeveAplicar('sugestoes', form);
+    if (!aplicarHtt && !aplicarDataRevisaoHtt && !aplicarOcasioes && !aplicarSugestoes) {
+        alert('Marque pelo menos um campo para aplicar aos looks selecionados.');
+        return;
+    }
+
+    const htt = document.getElementById('edit-ocasioes-lote-htt')?.value.trim() || '';
+    const dataRevisaoHtt = document.getElementById('edit-ocasioes-lote-data-revisao-htt')?.value || '';
+    const codigoOcasiao = document.getElementById('edit-ocasioes-lote-ocasiao')?.value || '';
+    const acaoOcasiao = document.getElementById('edit-ocasioes-lote-ocasiao-acao')?.value || 'adicionar';
+    const pecaAcessorio = document.getElementById('edit-ocasioes-lote-acessorio')?.value.trim().toUpperCase() || '';
+    const acaoAcessorio = document.getElementById('edit-ocasioes-lote-acessorio-acao')?.value || 'adicionar';
+
+    if (aplicarOcasioes && (!codigoOcasiao || !app.mapaOcasioes[codigoOcasiao])) {
+        alert('Selecione uma ocasião válida.');
+        return;
+    }
+    if (aplicarSugestoes && (!pecaAcessorio || !app.pecas[pecaAcessorio])) {
+        alert('Selecione um acessório ou calçado válido.');
+        return;
+    }
+
+    const infoOcasiao = codigoOcasiao ? criarOcasiaoLook(codigoOcasiao) : null;
+    const editadoEm = new Date().toISOString();
+    idsSelecionados.forEach(lookId => {
+        const lookOriginal = obterLookPorId(lookId);
+        if (!lookOriginal) return;
+
+        const lookEditado = obterLookEditavelParaOcasioes(lookId);
+        const basicos = { ...(lookEditado.basicos || {}) };
+        if (aplicarHtt) {
+            basicos.HTT = htt;
+            lookEditado.HTT = htt;
+            lookEditado.htt = htt;
+        }
+        if (aplicarDataRevisaoHtt) basicos['Data revisão HTT'] = dataRevisaoHtt;
+
+        if (aplicarOcasioes && infoOcasiao) {
+            const mapa = new Map(normalizarOcasioesLook(lookEditado).map(item => [normalizarTexto(item.codigo || item.descricao), item]));
+            const chave = normalizarTexto(codigoOcasiao);
+            if (acaoOcasiao === 'remover') mapa.delete(chave);
+            else mapa.set(chave, infoOcasiao);
+            lookEditado.ocasioes = [...mapa.values()];
+            lookEditado.ocasiao = lookEditado.ocasioes.map(item => item.descricao).join(', ');
+        }
+
+        if (aplicarSugestoes && pecaAcessorio) {
+            const sugestoes = new Map((lookEditado.pecas_sugeridas || []).map(item => [normalizarTexto(item?.id), item]));
+            const chave = normalizarTexto(pecaAcessorio);
+            if (acaoAcessorio === 'remover') sugestoes.delete(chave);
+            else sugestoes.set(chave, criarSugestaoLookPorPeca(pecaAcessorio));
+            lookEditado.pecas_sugeridas = [...sugestoes.values()];
+        }
+
+        lookEditado.basicos = { ...basicos, ID: lookId };
+        lookEditado.editadoLocalmente = true;
+        lookEditado.editadoEm = editadoEm;
+        lookEditado.substituiLookBase = Boolean(app.looks[lookId] || lookEditado.substituiLookBase) || undefined;
+        lookEditado.id_original = undefined;
+        app.looksFavoritos[lookId] = lookEditado;
+    });
+
+    finalizarEdicaoLooksOcasioes();
+    fecharModalEdicaoLoteLooksOcasioes();
+    alert(`${idsSelecionados.length} look${idsSelecionados.length === 1 ? '' : 's'} atualizado${idsSelecionados.length === 1 ? '' : 's'} com sucesso.`);
 }
 
 function criarMiniCardLookOcasioes(look) {
