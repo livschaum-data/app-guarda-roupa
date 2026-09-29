@@ -857,7 +857,7 @@ function pecaPassaNosFiltros(peca, filtros) {
 async function carregarDadosJSON() {
     try {
         // fetch() = busca um arquivo da internet (ou local)
-        const response = await fetch('dados_guarda_roupa.json?v=20260929-cor-look', { cache: 'no-store' });
+        const response = await fetch('dados_guarda_roupa.json?v=20260929-cor-detalhe-look', { cache: 'no-store' });
         
         // .json() = transforma texto em objeto JavaScript
         const dados = await response.json();
@@ -6196,7 +6196,7 @@ function obterPecaLookPorIndice(look, indice) {
 
 function obterCorLook(look) {
     const peca1 = obterPecaLookPorIndice(look, 0);
-    return app.pecas?.[String(peca1 || '').trim().toUpperCase()]?.cor || '';
+    return app.pecas?.[String(peca1 || '').trim().toUpperCase()]?.cor_detalhe || '';
 }
 
 function obterDataUltimaAlteracaoLook(look) {
@@ -6719,7 +6719,7 @@ function calcularDadosLookPorPecas(pecas, indicador = '') {
     const aquecimentos = valoresPecas.map(peca => valorVisivel(peca?.nivel_aquecimento) ? String(peca.nivel_aquecimento) : null);
     const locais = valoresPecas.map(peca => valorVisivel(peca?.local) ? String(peca.local) : null);
     const utilizacoes = valoresPecas.map(peca => valorVisivel(peca?.utilizacao) ? String(peca.utilizacao) : null);
-    const cor = valoresPecas[0]?.cor || '';
+    const cor = valoresPecas[0]?.cor_detalhe || '';
     const climaCalc = calcularClimaLookPorRegras(indicador, ...aquecimentos);
     const locaisValidos = locais.filter(Boolean);
     const utilizacoesValidas = utilizacoes.filter(Boolean);

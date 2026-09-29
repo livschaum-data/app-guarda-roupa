@@ -785,7 +785,7 @@ def extrair_dados(arquivo_excel):
                 clima_info = mapa_climas.get(clima_final, {'codigo': clima_final, 'descricao': clima_final, 'temperatura': ''}) if clima_final else {}
                 local_calc = calcular_local_look(situacao, *locais_pecas)
                 utilizacao_calc = calcular_utilizacao_look(utilizacoes_pecas, locais_pecas)
-                cor = pecas.get(pecas_look[0], {}).get('cor', '') if pecas_look else ''
+                cor = pecas.get(pecas_look[0], {}).get('cor_detalhe', '') if pecas_look else ''
                 
                 if pecas_look:
                     looks[id_look] = {
