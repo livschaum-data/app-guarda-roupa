@@ -1013,6 +1013,10 @@ body {
     border-color: rgba(239, 68, 68, 0.45);
 }
 
+.miniaturas-restricoes {
+    grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+}
+
 .card-peca p {
     padding: 12px 10px;
     text-align: center;
@@ -1637,15 +1641,15 @@ body {
 }
 
 .combinacao-tipo-opcao {
-    grid-template-columns: 48px minmax(0, 1fr);
+    grid-template-columns: 72px minmax(0, 1fr);
     align-items: start;
-    min-height: 96px;
+    min-height: 116px;
     padding: 10px 34px 10px 10px;
 }
 
 .combinacao-tipo-opcao img {
-    width: 48px;
-    height: 48px;
+    width: 72px;
+    height: 72px;
 }
 
 .combinacao-tipo-opcao span {
