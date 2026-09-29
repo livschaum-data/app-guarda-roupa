@@ -1014,7 +1014,13 @@ body {
 }
 
 .miniaturas-restricoes {
-    grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+}
+
+.miniaturas-restricoes .miniatura-peca small {
+    font-size: 11px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
 }
 
 .card-peca p {

@@ -541,7 +541,7 @@ function criarMiniaturaPeca(item, opcoes = {}) {
     return `
         <span class="miniatura-peca ${opcoes.classe || ''}" title="${escapeHtml(descricao)}">
             ${conteudo}
-            <small>${escapeHtml(id)}</small>
+            <small>${escapeHtml(opcoes.mostrarDescricao ? descricao : id)}</small>
         </span>
     `;
 }
@@ -570,6 +570,7 @@ function criarRestricoesHtml(peca) {
             <div class="miniaturas-peca miniaturas-restricoes">
                 ${restricoes.map(item => criarMiniaturaPeca(item, {
                     foto: `fotos/combinacoes/${item.codigo}.webp`,
+                    mostrarDescricao: true,
                 })).join('')}
             </div>
         </div>
