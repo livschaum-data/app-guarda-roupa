@@ -73,8 +73,8 @@ def extrair_ids_linha(row, headers, indices):
 
 def extrair_mapa_combinacoes_nao_permitidas(wb):
     """
-    Lê a aba Categorias e retorna descrições para códigos CD0001...
-    Na planilha, esse bloco fica nas colunas AY:BA.
+    Lê a aba Categorias e retorna as opções para códigos CD0001...
+    Na planilha, a ordem fica em AX e os dados em AY:BA.
     """
     try:
         ws = wb['Categorias']
@@ -82,15 +82,17 @@ def extrair_mapa_combinacoes_nao_permitidas(wb):
         return {}
 
     mapa = {}
-    for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=51, max_col=53, values_only=True):
-        codigo = valor_texto(row[0]).upper()
+    for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=50, max_col=53, values_only=True):
+        ordem = valor_texto(row[0])
+        codigo = valor_texto(row[1]).upper()
         if not codigo:
             continue
 
         mapa[codigo] = {
+            'ordem': ordem,
             'codigo': codigo,
-            'descricao': valor_texto(row[1]) or codigo,
-            'grupo': valor_texto(row[2]),
+            'descricao': valor_texto(row[2]) or codigo,
+            'grupo': valor_texto(row[3]),
             'foto': f'fotos/categorias/{codigo}.webp',
         }
 
@@ -223,6 +225,18 @@ def extrair_dimensoes(wb, mapa_climas, mapa_ocasioes):
         if valor_texto(ws.cell(linha, 80).value)
     ]
 
+    tipos_combinacao = []
+    for row in ws.iter_rows(min_row=2, max_row=ws.max_row, min_col=50, max_col=53, values_only=True):
+        ordem, codigo, tipo, grupo = [valor_texto(valor) for valor in row]
+        if not tipo:
+            continue
+        tipos_combinacao.append({
+            'ordem': ordem,
+            'codigo': codigo,
+            'tipo': tipo,
+            'grupo': grupo,
+        })
+
     return {
         'climas': list(mapa_climas.values()),
         'ocasioes': list(mapa_ocasioes.values()),
@@ -231,7 +245,7 @@ def extrair_dimensoes(wb, mapa_climas, mapa_ocasioes):
         'utilizacoes_look': extrair_linhas_dimensao(ws, 27, 28, ['codigo', 'valor']),
         'locais': locais,
         'tipos_peca': tipos_peca,
-        'tipos_combinacao': extrair_linhas_dimensao(ws, 51, 53, ['codigo', 'tipo', 'grupo']),
+        'tipos_combinacao': tipos_combinacao,
         'conservacoes_peca': extrair_linhas_dimensao(ws, 55, 56, ['codigo', 'valor']),
         'reposicoes_peca': extrair_linhas_dimensao(ws, 58, 59, ['codigo', 'valor']),
         'funcoes_peca': extrair_linhas_dimensao(ws, 61, 62, ['codigo', 'valor']),

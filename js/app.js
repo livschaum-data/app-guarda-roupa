@@ -854,7 +854,7 @@ function pecaPassaNosFiltros(peca, filtros) {
 async function carregarDadosJSON() {
     try {
         // fetch() = busca um arquivo da internet (ou local)
-        const response = await fetch('dados_guarda_roupa.json?v=20260731-utilizacoes-looks', { cache: 'no-store' });
+        const response = await fetch('dados_guarda_roupa.json?v=20260929-combinacoes-ordem', { cache: 'no-store' });
         
         // .json() = transforma texto em objeto JavaScript
         const dados = await response.json();
@@ -4493,7 +4493,12 @@ function criarItemAcessorio(id) {
 
 function criarItemRestricao(id) {
     const combinacao = obterCombinacaoNaoPermitidaPorCodigo(id);
-    return { codigo: id, descricao: combinacao?.tipo || id, grupo: combinacao?.grupo || '' };
+    return {
+        ordem: combinacao?.ordem || '',
+        codigo: id,
+        descricao: combinacao?.tipo || id,
+        grupo: combinacao?.grupo || '',
+    };
 }
 
 function obterIdsAcessoriosPeca(peca) {
@@ -4524,7 +4529,15 @@ function obterCombinacaoNaoPermitidaPorCodigo(codigo) {
 function obterOpcoesCombinacoesNaoPermitidas() {
     return (app.dimensoes?.tipos_combinacao || [])
         .filter(item => item?.codigo)
-        .sort((a, b) => String(a.codigo).localeCompare(String(b.codigo), 'pt-BR', { numeric: true }));
+        .sort((a, b) => {
+            const ordemA = Number(a.ordem);
+            const ordemB = Number(b.ordem);
+            const temOrdemA = Number.isFinite(ordemA);
+            const temOrdemB = Number.isFinite(ordemB);
+            if (temOrdemA && temOrdemB && ordemA !== ordemB) return ordemA - ordemB;
+            if (temOrdemA !== temOrdemB) return temOrdemA ? -1 : 1;
+            return String(a.codigo).localeCompare(String(b.codigo), 'pt-BR', { numeric: true });
+        });
 }
 
 function criarSeletorPecasRelacionadas(peca, idAtual) {

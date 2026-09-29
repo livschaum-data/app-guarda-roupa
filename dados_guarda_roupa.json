@@ -464813,299 +464813,369 @@
     }
   },
   "combinacoes_nao_permitidas": {
-    "CD0001": {
-      "codigo": "CD0001",
-      "descricao": "blusas tipo1",
+    "CD0049": {
+      "ordem": "1",
+      "codigo": "CD0049",
+      "descricao": "sem terceira",
       "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0001.webp"
+      "foto": "fotos/categorias/CD0049.webp"
     },
-    "CD0002": {
-      "codigo": "CD0002",
-      "descricao": "blusas tipo2",
+    "CD0022": {
+      "ordem": "2",
+      "codigo": "CD0022",
+      "descricao": "como casaco treino",
       "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0002.webp"
-    },
-    "CD0003": {
-      "codigo": "CD0003",
-      "descricao": "blusas tipo3",
-      "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0003.webp"
-    },
-    "CD0004": {
-      "codigo": "CD0004",
-      "descricao": "blusas tipo4",
-      "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0004.webp"
-    },
-    "CD0005": {
-      "codigo": "CD0005",
-      "descricao": "blusas tipo5",
-      "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0005.webp"
-    },
-    "CD0006": {
-      "codigo": "CD0006",
-      "descricao": "calças tipo1",
-      "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0006.webp"
-    },
-    "CD0007": {
-      "codigo": "CD0007",
-      "descricao": "calças tipo1 treino",
-      "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0007.webp"
-    },
-    "CD0008": {
-      "codigo": "CD0008",
-      "descricao": "calças tipo2",
-      "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0008.webp"
-    },
-    "CD0009": {
-      "codigo": "CD0009",
-      "descricao": "calças tipo2 treino",
-      "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0009.webp"
-    },
-    "CD0010": {
-      "codigo": "CD0010",
-      "descricao": "calças tipo5",
-      "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0010.webp"
-    },
-    "CD0011": {
-      "codigo": "CD0011",
-      "descricao": "calças tipo5 treino",
-      "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0011.webp"
-    },
-    "CD0012": {
-      "codigo": "CD0012",
-      "descricao": "casacos tipo2",
-      "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0012.webp"
-    },
-    "CD0013": {
-      "codigo": "CD0013",
-      "descricao": "casacos tipo3",
-      "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0013.webp"
-    },
-    "CD0014": {
-      "codigo": "CD0014",
-      "descricao": "casacos tipo4",
-      "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0014.webp"
-    },
-    "CD0015": {
-      "codigo": "CD0015",
-      "descricao": "casacos tipo5",
-      "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0015.webp"
-    },
-    "CD0016": {
-      "codigo": "CD0016",
-      "descricao": "casacos tipo6",
-      "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0016.webp"
-    },
-    "CD0017": {
-      "codigo": "CD0017",
-      "descricao": "blusas tipo1 treino",
-      "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0017.webp"
-    },
-    "CD0018": {
-      "codigo": "CD0018",
-      "descricao": "blusas tipo2 treino",
-      "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0018.webp"
-    },
-    "CD0019": {
-      "codigo": "CD0019",
-      "descricao": "blusas tipo3 treino",
-      "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0019.webp"
+      "foto": "fotos/categorias/CD0022.webp"
     },
     "CD0020": {
+      "ordem": "3",
       "codigo": "CD0020",
       "descricao": "como blusa",
       "grupo": "não permitidas",
       "foto": "fotos/categorias/CD0020.webp"
     },
     "CD0021": {
+      "ordem": "4",
       "codigo": "CD0021",
       "descricao": "como blusa treino",
       "grupo": "não permitidas",
       "foto": "fotos/categorias/CD0021.webp"
     },
-    "CD0022": {
-      "codigo": "CD0022",
-      "descricao": "como casaco treino",
+    "CD0001": {
+      "ordem": "5",
+      "codigo": "CD0001",
+      "descricao": "blusas tipo1",
       "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0022.webp"
+      "foto": "fotos/categorias/CD0001.webp"
     },
-    "CD0049": {
-      "codigo": "CD0049",
-      "descricao": "sem terceira",
+    "CD0002": {
+      "ordem": "6",
+      "codigo": "CD0002",
+      "descricao": "blusas tipo2",
       "grupo": "não permitidas",
-      "foto": "fotos/categorias/CD0049.webp"
+      "foto": "fotos/categorias/CD0002.webp"
     },
-    "CD0023": {
-      "codigo": "CD0023",
-      "descricao": "básicos",
-      "grupo": "disponíveis",
-      "foto": "fotos/categorias/CD0023.webp"
+    "CD0003": {
+      "ordem": "7",
+      "codigo": "CD0003",
+      "descricao": "blusas tipo3",
+      "grupo": "não permitidas",
+      "foto": "fotos/categorias/CD0003.webp"
     },
-    "CD0024": {
-      "codigo": "CD0024",
-      "descricao": "cool",
-      "grupo": "disponíveis",
-      "foto": "fotos/categorias/CD0024.webp"
+    "CD0004": {
+      "ordem": "8",
+      "codigo": "CD0004",
+      "descricao": "blusas tipo4",
+      "grupo": "não permitidas",
+      "foto": "fotos/categorias/CD0004.webp"
     },
-    "CD0025": {
-      "codigo": "CD0025",
-      "descricao": "sexy",
-      "grupo": "disponíveis",
-      "foto": "fotos/categorias/CD0025.webp"
+    "CD0005": {
+      "ordem": "9",
+      "codigo": "CD0005",
+      "descricao": "blusas tipo5",
+      "grupo": "não permitidas",
+      "foto": "fotos/categorias/CD0005.webp"
     },
-    "CD0026": {
-      "codigo": "CD0026",
-      "descricao": "treino",
-      "grupo": "disponíveis",
-      "foto": "fotos/categorias/CD0026.webp"
+    "CD0017": {
+      "ordem": "10",
+      "codigo": "CD0017",
+      "descricao": "blusas tipo1 treino",
+      "grupo": "não permitidas",
+      "foto": "fotos/categorias/CD0017.webp"
     },
-    "CD0027": {
-      "codigo": "CD0027",
-      "descricao": "sutiens treino",
-      "grupo": "disponíveis",
-      "foto": "fotos/categorias/CD0027.webp"
+    "CD0018": {
+      "ordem": "11",
+      "codigo": "CD0018",
+      "descricao": "blusas tipo2 treino",
+      "grupo": "não permitidas",
+      "foto": "fotos/categorias/CD0018.webp"
     },
-    "CD0028": {
-      "codigo": "CD0028",
-      "descricao": "tops",
-      "grupo": "disponíveis",
-      "foto": "fotos/categorias/CD0028.webp"
+    "CD0019": {
+      "ordem": "12",
+      "codigo": "CD0019",
+      "descricao": "blusas tipo3 treino",
+      "grupo": "não permitidas",
+      "foto": "fotos/categorias/CD0019.webp"
     },
-    "CD0029": {
-      "codigo": "CD0029",
-      "descricao": "segunda-pele",
-      "grupo": "disponíveis",
-      "foto": "fotos/categorias/CD0029.webp"
+    "CD0006": {
+      "ordem": "13",
+      "codigo": "CD0006",
+      "descricao": "calças tipo1",
+      "grupo": "não permitidas",
+      "foto": "fotos/categorias/CD0006.webp"
     },
-    "CD0030": {
-      "codigo": "CD0030",
-      "descricao": "casacos como blusa",
-      "grupo": "disponíveis",
-      "foto": "fotos/categorias/CD0030.webp"
+    "CD0008": {
+      "ordem": "14",
+      "codigo": "CD0008",
+      "descricao": "calças tipo2",
+      "grupo": "não permitidas",
+      "foto": "fotos/categorias/CD0008.webp"
     },
-    "CD0031": {
-      "codigo": "CD0031",
-      "descricao": "calcinhas",
-      "grupo": "disponíveis",
-      "foto": "fotos/categorias/CD0031.webp"
+    "CD0010": {
+      "ordem": "15",
+      "codigo": "CD0010",
+      "descricao": "calças tipo5",
+      "grupo": "não permitidas",
+      "foto": "fotos/categorias/CD0010.webp"
+    },
+    "CD0007": {
+      "ordem": "16",
+      "codigo": "CD0007",
+      "descricao": "calças tipo1 treino",
+      "grupo": "não permitidas",
+      "foto": "fotos/categorias/CD0007.webp"
+    },
+    "CD0009": {
+      "ordem": "17",
+      "codigo": "CD0009",
+      "descricao": "calças tipo2 treino",
+      "grupo": "não permitidas",
+      "foto": "fotos/categorias/CD0009.webp"
+    },
+    "CD0011": {
+      "ordem": "18",
+      "codigo": "CD0011",
+      "descricao": "calças tipo5 treino",
+      "grupo": "não permitidas",
+      "foto": "fotos/categorias/CD0011.webp"
+    },
+    "CD0012": {
+      "ordem": "19",
+      "codigo": "CD0012",
+      "descricao": "casacos tipo2",
+      "grupo": "não permitidas",
+      "foto": "fotos/categorias/CD0012.webp"
+    },
+    "CD0013": {
+      "ordem": "20",
+      "codigo": "CD0013",
+      "descricao": "casacos tipo3",
+      "grupo": "não permitidas",
+      "foto": "fotos/categorias/CD0013.webp"
+    },
+    "CD0014": {
+      "ordem": "21",
+      "codigo": "CD0014",
+      "descricao": "casacos tipo4",
+      "grupo": "não permitidas",
+      "foto": "fotos/categorias/CD0014.webp"
+    },
+    "CD0015": {
+      "ordem": "22",
+      "codigo": "CD0015",
+      "descricao": "casacos tipo5",
+      "grupo": "não permitidas",
+      "foto": "fotos/categorias/CD0015.webp"
+    },
+    "CD0016": {
+      "ordem": "23",
+      "codigo": "CD0016",
+      "descricao": "casacos tipo6",
+      "grupo": "não permitidas",
+      "foto": "fotos/categorias/CD0016.webp"
     },
     "CD0032": {
+      "ordem": "24",
       "codigo": "CD0032",
       "descricao": "blusas",
-      "grupo": "disponíveis",
+      "grupo": "combínável",
       "foto": "fotos/categorias/CD0032.webp"
     },
-    "CD0033": {
-      "codigo": "CD0033",
-      "descricao": "calças",
-      "grupo": "disponíveis",
-      "foto": "fotos/categorias/CD0033.webp"
+    "CD0042": {
+      "ordem": "25",
+      "codigo": "CD0042",
+      "descricao": "inteiros",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0042.webp"
     },
-    "CD0034": {
-      "codigo": "CD0034",
-      "descricao": "casacos",
-      "grupo": "disponíveis",
-      "foto": "fotos/categorias/CD0034.webp"
-    },
-    "CD0035": {
-      "codigo": "CD0035",
-      "descricao": "calças treino",
-      "grupo": "disponíveis",
-      "foto": "fotos/categorias/CD0035.webp"
+    "CD0030": {
+      "ordem": "26",
+      "codigo": "CD0030",
+      "descricao": "casacos como blusa",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0030.webp"
     },
     "CD0036": {
+      "ordem": "27",
       "codigo": "CD0036",
       "descricao": "blusas treino",
-      "grupo": "disponíveis",
+      "grupo": "combínável",
       "foto": "fotos/categorias/CD0036.webp"
     },
+    "CD0050": {
+      "ordem": "28",
+      "codigo": "CD0050",
+      "descricao": "casacos como blusa treino",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0050.webp"
+    },
+    "CD0033": {
+      "ordem": "29",
+      "codigo": "CD0033",
+      "descricao": "calças",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0033.webp"
+    },
+    "CD0035": {
+      "ordem": "30",
+      "codigo": "CD0035",
+      "descricao": "calças treino",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0035.webp"
+    },
+    "CD0034": {
+      "ordem": "31",
+      "codigo": "CD0034",
+      "descricao": "casacos",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0034.webp"
+    },
+    "CD0043": {
+      "ordem": "32",
+      "codigo": "CD0043",
+      "descricao": "casacos praia",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0043.webp"
+    },
     "CD0037": {
+      "ordem": "33",
       "codigo": "CD0037",
       "descricao": "como blusa calças",
-      "grupo": "disponíveis",
+      "grupo": "combínável",
       "foto": "fotos/categorias/CD0037.webp"
     },
     "CD0038": {
+      "ordem": "34",
       "codigo": "CD0038",
       "descricao": "como blusa calças treino",
-      "grupo": "disponíveis",
+      "grupo": "combínável",
       "foto": "fotos/categorias/CD0038.webp"
     },
+    "CD0045": {
+      "ordem": "35",
+      "codigo": "CD0045",
+      "descricao": "como blusas casacos",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0045.webp"
+    },
+    "CD0052": {
+      "ordem": "36",
+      "codigo": "CD0052",
+      "descricao": "como blusas casacos treino",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0052.webp"
+    },
+    "CD0044": {
+      "ordem": "37",
+      "codigo": "CD0044",
+      "descricao": "bikinis e maios",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0044.webp"
+    },
+    "CD0031": {
+      "ordem": "38",
+      "codigo": "CD0031",
+      "descricao": "calcinhas",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0031.webp"
+    },
+    "CD0051": {
+      "ordem": "39",
+      "codigo": "CD0051",
+      "descricao": "calcinhas discretas",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0051.webp"
+    },
+    "CD0026": {
+      "ordem": "40",
+      "codigo": "CD0026",
+      "descricao": "sutiens",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0026.webp"
+    },
+    "CD0027": {
+      "ordem": "41",
+      "codigo": "CD0027",
+      "descricao": "sutiens treino",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0027.webp"
+    },
+    "CD0023": {
+      "ordem": "42",
+      "codigo": "CD0023",
+      "descricao": "básicos",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0023.webp"
+    },
+    "CD0024": {
+      "ordem": "43",
+      "codigo": "CD0024",
+      "descricao": "cool",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0024.webp"
+    },
+    "CD0025": {
+      "ordem": "44",
+      "codigo": "CD0025",
+      "descricao": "sexy",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0025.webp"
+    },
+    "CD0028": {
+      "ordem": "45",
+      "codigo": "CD0028",
+      "descricao": "tops",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0028.webp"
+    },
+    "CD0029": {
+      "ordem": "46",
+      "codigo": "CD0029",
+      "descricao": "segunda-pele",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0029.webp"
+    },
+    "CD0041": {
+      "ordem": "47",
+      "codigo": "CD0041",
+      "descricao": "pro pescoço",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0041.webp"
+    },
+    "CD0048": {
+      "ordem": "48",
+      "codigo": "CD0048",
+      "descricao": "calçados",
+      "grupo": "combínável",
+      "foto": "fotos/categorias/CD0048.webp"
+    },
     "CD0039": {
+      "ordem": "49",
       "codigo": "CD0039",
       "descricao": "meias",
-      "grupo": "disponíveis",
+      "grupo": "combínável",
       "foto": "fotos/categorias/CD0039.webp"
     },
     "CD0040": {
+      "ordem": "50",
       "codigo": "CD0040",
       "descricao": "meias treino",
-      "grupo": "disponíveis",
+      "grupo": "combínável",
       "foto": "fotos/categorias/CD0040.webp"
     },
-    "CD0041": {
-      "codigo": "CD0041",
-      "descricao": "pro pescoço",
-      "grupo": "disponíveis",
-      "foto": "fotos/categorias/CD0041.webp"
-    },
-    "CD0042": {
-      "codigo": "CD0042",
-      "descricao": "inteiros",
-      "grupo": "disponíveis",
-      "foto": "fotos/categorias/CD0042.webp"
-    },
-    "CD0043": {
-      "codigo": "CD0043",
-      "descricao": "casacos praia",
-      "grupo": "disponíveis",
-      "foto": "fotos/categorias/CD0043.webp"
-    },
-    "CD0044": {
-      "codigo": "CD0044",
-      "descricao": "bikinis e maios",
-      "grupo": "disponíveis",
-      "foto": "fotos/categorias/CD0044.webp"
-    },
-    "CD0045": {
-      "codigo": "CD0045",
-      "descricao": "como blusas casacos",
-      "grupo": "disponíveis",
-      "foto": "fotos/categorias/CD0045.webp"
-    },
     "CD0046": {
+      "ordem": "51",
       "codigo": "CD0046",
       "descricao": "correntes",
-      "grupo": "disponíveis",
+      "grupo": "combínável",
       "foto": "fotos/categorias/CD0046.webp"
     },
     "CD0047": {
+      "ordem": "52",
       "codigo": "CD0047",
       "descricao": "pingentes",
-      "grupo": "disponíveis",
+      "grupo": "combínável",
       "foto": "fotos/categorias/CD0047.webp"
-    },
-    "CD0048": {
-      "codigo": "CD0048",
-      "descricao": "calçados",
-      "grupo": "disponíveis",
-      "foto": "fotos/categorias/CD0048.webp"
     }
   },
   "dimensoes": {
@@ -466248,249 +466318,316 @@
     ],
     "tipos_combinacao": [
       {
-        "codigo": "CD0001",
-        "tipo": "blusas tipo1",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0002",
-        "tipo": "blusas tipo2",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0003",
-        "tipo": "blusas tipo3",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0004",
-        "tipo": "blusas tipo4",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0005",
-        "tipo": "blusas tipo5",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0006",
-        "tipo": "calças tipo1",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0007",
-        "tipo": "calças tipo1 treino",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0008",
-        "tipo": "calças tipo2",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0009",
-        "tipo": "calças tipo2 treino",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0010",
-        "tipo": "calças tipo5",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0011",
-        "tipo": "calças tipo5 treino",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0012",
-        "tipo": "casacos tipo2",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0013",
-        "tipo": "casacos tipo3",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0014",
-        "tipo": "casacos tipo4",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0015",
-        "tipo": "casacos tipo5",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0016",
-        "tipo": "casacos tipo6",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0017",
-        "tipo": "blusas tipo1 treino",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0018",
-        "tipo": "blusas tipo2 treino",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0019",
-        "tipo": "blusas tipo3 treino",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0020",
-        "tipo": "como blusa",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0021",
-        "tipo": "como blusa treino",
-        "grupo": "não permitidas"
-      },
-      {
-        "codigo": "CD0022",
-        "tipo": "como casaco treino",
-        "grupo": "não permitidas"
-      },
-      {
+        "ordem": "1",
         "codigo": "CD0049",
         "tipo": "sem terceira",
         "grupo": "não permitidas"
       },
       {
-        "codigo": "CD0023",
-        "tipo": "básicos",
-        "grupo": "disponíveis"
+        "ordem": "2",
+        "codigo": "CD0022",
+        "tipo": "como casaco treino",
+        "grupo": "não permitidas"
       },
       {
-        "codigo": "CD0024",
-        "tipo": "cool",
-        "grupo": "disponíveis"
+        "ordem": "3",
+        "codigo": "CD0020",
+        "tipo": "como blusa",
+        "grupo": "não permitidas"
       },
       {
-        "codigo": "CD0025",
-        "tipo": "sexy",
-        "grupo": "disponíveis"
+        "ordem": "4",
+        "codigo": "CD0021",
+        "tipo": "como blusa treino",
+        "grupo": "não permitidas"
       },
       {
-        "codigo": "CD0026",
-        "tipo": "treino",
-        "grupo": "disponíveis"
+        "ordem": "5",
+        "codigo": "CD0001",
+        "tipo": "blusas tipo1",
+        "grupo": "não permitidas"
       },
       {
-        "codigo": "CD0027",
-        "tipo": "sutiens treino",
-        "grupo": "disponíveis"
+        "ordem": "6",
+        "codigo": "CD0002",
+        "tipo": "blusas tipo2",
+        "grupo": "não permitidas"
       },
       {
-        "codigo": "CD0028",
-        "tipo": "tops",
-        "grupo": "disponíveis"
+        "ordem": "7",
+        "codigo": "CD0003",
+        "tipo": "blusas tipo3",
+        "grupo": "não permitidas"
       },
       {
-        "codigo": "CD0029",
-        "tipo": "segunda-pele",
-        "grupo": "disponíveis"
+        "ordem": "8",
+        "codigo": "CD0004",
+        "tipo": "blusas tipo4",
+        "grupo": "não permitidas"
       },
       {
-        "codigo": "CD0030",
-        "tipo": "casacos como blusa",
-        "grupo": "disponíveis"
+        "ordem": "9",
+        "codigo": "CD0005",
+        "tipo": "blusas tipo5",
+        "grupo": "não permitidas"
       },
       {
-        "codigo": "CD0031",
-        "tipo": "calcinhas",
-        "grupo": "disponíveis"
+        "ordem": "10",
+        "codigo": "CD0017",
+        "tipo": "blusas tipo1 treino",
+        "grupo": "não permitidas"
       },
       {
+        "ordem": "11",
+        "codigo": "CD0018",
+        "tipo": "blusas tipo2 treino",
+        "grupo": "não permitidas"
+      },
+      {
+        "ordem": "12",
+        "codigo": "CD0019",
+        "tipo": "blusas tipo3 treino",
+        "grupo": "não permitidas"
+      },
+      {
+        "ordem": "13",
+        "codigo": "CD0006",
+        "tipo": "calças tipo1",
+        "grupo": "não permitidas"
+      },
+      {
+        "ordem": "14",
+        "codigo": "CD0008",
+        "tipo": "calças tipo2",
+        "grupo": "não permitidas"
+      },
+      {
+        "ordem": "15",
+        "codigo": "CD0010",
+        "tipo": "calças tipo5",
+        "grupo": "não permitidas"
+      },
+      {
+        "ordem": "16",
+        "codigo": "CD0007",
+        "tipo": "calças tipo1 treino",
+        "grupo": "não permitidas"
+      },
+      {
+        "ordem": "17",
+        "codigo": "CD0009",
+        "tipo": "calças tipo2 treino",
+        "grupo": "não permitidas"
+      },
+      {
+        "ordem": "18",
+        "codigo": "CD0011",
+        "tipo": "calças tipo5 treino",
+        "grupo": "não permitidas"
+      },
+      {
+        "ordem": "19",
+        "codigo": "CD0012",
+        "tipo": "casacos tipo2",
+        "grupo": "não permitidas"
+      },
+      {
+        "ordem": "20",
+        "codigo": "CD0013",
+        "tipo": "casacos tipo3",
+        "grupo": "não permitidas"
+      },
+      {
+        "ordem": "21",
+        "codigo": "CD0014",
+        "tipo": "casacos tipo4",
+        "grupo": "não permitidas"
+      },
+      {
+        "ordem": "22",
+        "codigo": "CD0015",
+        "tipo": "casacos tipo5",
+        "grupo": "não permitidas"
+      },
+      {
+        "ordem": "23",
+        "codigo": "CD0016",
+        "tipo": "casacos tipo6",
+        "grupo": "não permitidas"
+      },
+      {
+        "ordem": "24",
         "codigo": "CD0032",
         "tipo": "blusas",
-        "grupo": "disponíveis"
+        "grupo": "combínável"
       },
       {
-        "codigo": "CD0033",
-        "tipo": "calças",
-        "grupo": "disponíveis"
-      },
-      {
-        "codigo": "CD0034",
-        "tipo": "casacos",
-        "grupo": "disponíveis"
-      },
-      {
-        "codigo": "CD0035",
-        "tipo": "calças treino",
-        "grupo": "disponíveis"
-      },
-      {
-        "codigo": "CD0036",
-        "tipo": "blusas treino",
-        "grupo": "disponíveis"
-      },
-      {
-        "codigo": "CD0037",
-        "tipo": "como blusa calças",
-        "grupo": "disponíveis"
-      },
-      {
-        "codigo": "CD0038",
-        "tipo": "como blusa calças treino",
-        "grupo": "disponíveis"
-      },
-      {
-        "codigo": "CD0039",
-        "tipo": "meias",
-        "grupo": "disponíveis"
-      },
-      {
-        "codigo": "CD0040",
-        "tipo": "meias treino",
-        "grupo": "disponíveis"
-      },
-      {
-        "codigo": "CD0041",
-        "tipo": "pro pescoço",
-        "grupo": "disponíveis"
-      },
-      {
+        "ordem": "25",
         "codigo": "CD0042",
         "tipo": "inteiros",
-        "grupo": "disponíveis"
+        "grupo": "combínável"
       },
       {
+        "ordem": "26",
+        "codigo": "CD0030",
+        "tipo": "casacos como blusa",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "27",
+        "codigo": "CD0036",
+        "tipo": "blusas treino",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "28",
+        "codigo": "CD0050",
+        "tipo": "casacos como blusa treino",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "29",
+        "codigo": "CD0033",
+        "tipo": "calças",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "30",
+        "codigo": "CD0035",
+        "tipo": "calças treino",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "31",
+        "codigo": "CD0034",
+        "tipo": "casacos",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "32",
         "codigo": "CD0043",
         "tipo": "casacos praia",
-        "grupo": "disponíveis"
+        "grupo": "combínável"
       },
       {
-        "codigo": "CD0044",
-        "tipo": "bikinis e maios",
-        "grupo": "disponíveis"
+        "ordem": "33",
+        "codigo": "CD0037",
+        "tipo": "como blusa calças",
+        "grupo": "combínável"
       },
       {
+        "ordem": "34",
+        "codigo": "CD0038",
+        "tipo": "como blusa calças treino",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "35",
         "codigo": "CD0045",
         "tipo": "como blusas casacos",
-        "grupo": "disponíveis"
+        "grupo": "combínável"
       },
       {
-        "codigo": "CD0046",
-        "tipo": "correntes",
-        "grupo": "disponíveis"
+        "ordem": "36",
+        "codigo": "CD0052",
+        "tipo": "como blusas casacos treino",
+        "grupo": "combínável"
       },
       {
-        "codigo": "CD0047",
-        "tipo": "pingentes",
-        "grupo": "disponíveis"
+        "ordem": "37",
+        "codigo": "CD0044",
+        "tipo": "bikinis e maios",
+        "grupo": "combínável"
       },
       {
+        "ordem": "38",
+        "codigo": "CD0031",
+        "tipo": "calcinhas",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "39",
+        "codigo": "CD0051",
+        "tipo": "calcinhas discretas",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "40",
+        "codigo": "CD0026",
+        "tipo": "sutiens",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "41",
+        "codigo": "CD0027",
+        "tipo": "sutiens treino",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "42",
+        "codigo": "CD0023",
+        "tipo": "básicos",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "43",
+        "codigo": "CD0024",
+        "tipo": "cool",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "44",
+        "codigo": "CD0025",
+        "tipo": "sexy",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "45",
+        "codigo": "CD0028",
+        "tipo": "tops",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "46",
+        "codigo": "CD0029",
+        "tipo": "segunda-pele",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "47",
+        "codigo": "CD0041",
+        "tipo": "pro pescoço",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "48",
         "codigo": "CD0048",
         "tipo": "calçados",
-        "grupo": "disponíveis"
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "49",
+        "codigo": "CD0039",
+        "tipo": "meias",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "50",
+        "codigo": "CD0040",
+        "tipo": "meias treino",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "51",
+        "codigo": "CD0046",
+        "tipo": "correntes",
+        "grupo": "combínável"
+      },
+      {
+        "ordem": "52",
+        "codigo": "CD0047",
+        "tipo": "pingentes",
+        "grupo": "combínável"
       }
     ],
     "conservacoes_peca": [
@@ -467288,7 +467425,7 @@
     "campos_com_opcoes_faltantes": 0,
     "faltantes": {}
   },
-  "ultima_atualizacao": "2026-09-03T17:09:49.219384",
+  "ultima_atualizacao": "2026-09-29T10:04:12.109241",
   "total_pecas": 721,
   "total_looks": 6888
 }
