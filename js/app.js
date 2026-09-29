@@ -753,9 +753,9 @@ function criarFiltroMultiplo(container, campo, valores, selecionados, aoAlterar,
         filtro.classList.toggle('aberto', !estavaAberto);
     });
 
-    const valoresOrdenados = [...valores].sort((a, b) => campo === 'usos'
-        ? Number(a) - Number(b)
-        : a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }));
+    const valoresOrdenados = campo === 'usos'
+        ? [...valores].sort((a, b) => Number(a) - Number(b))
+        : [...valores];
 
     valoresOrdenados.forEach(valor => {
         const label = document.createElement('label');
@@ -2899,8 +2899,25 @@ function renderGaleria() {
    Preencher filtros dinamicamente com valores únicos do JSON */
 
 function ordenarOpcoesDimensao(valores) {
-    return [...new Set((valores || []).map(valor => String(valor ?? '').trim()).filter(valor => valor && normalizarTexto(valor) !== 'na'))]
-        .sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }));
+    return [...new Set((valores || []).map(valor => String(valor ?? '').trim()).filter(valor => valor && normalizarTexto(valor) !== 'na'))];
+}
+
+function obterCodigoDimensaoPorValor(campo, valor) {
+    const [nomeDimensao, propriedade] = DIMENSAO_POR_CAMPO_PECA[campo] || [];
+    const itens = nomeDimensao ? app.dimensoes?.[nomeDimensao] || [] : [];
+    const item = itens.find(opcao => normalizarTexto(opcao?.[propriedade]) === normalizarTexto(valor));
+    return item?.codigo || '';
+}
+
+function ordenarOpcoesDimensaoPorCodigo(valores, campo) {
+    const unicos = ordenarOpcoesDimensao(valores);
+    return unicos.sort((a, b) => {
+        const codigoA = obterCodigoDimensaoPorValor(campo, a);
+        const codigoB = obterCodigoDimensaoPorValor(campo, b);
+        if (codigoA && codigoB) return String(codigoA).localeCompare(String(codigoB), 'pt-BR', { numeric: true, sensitivity: 'base' });
+        if (codigoA !== codigoB) return codigoA ? -1 : 1;
+        return a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' });
+    });
 }
 
 function obterValoresDimensaoPeca(campo, opcoes = {}) {
@@ -2917,7 +2934,7 @@ function obterValoresDimensaoPeca(campo, opcoes = {}) {
         ? Object.values(app.pecas || {}).filter(peca => normalizarTexto(peca.tipo) === normalizarTexto(opcoes.tipo))
         : Object.values(app.pecas || {});
     const valoresAtuais = pecasAtuais.map(peca => obterValorFiltroPeca(peca, campo));
-    return ordenarOpcoesDimensao([...valoresDimensao, ...valoresAtuais, opcoes.valorAtual]);
+    return ordenarOpcoesDimensaoPorCodigo([...valoresDimensao, ...valoresAtuais, opcoes.valorAtual], campo);
 }
 
 function obterValorFiltroPeca(peca, campo) {
@@ -4753,9 +4770,9 @@ function obterDetalhesExtrasEdicaoPeca(peca, definicoes) {
         }));
 }
 
-function preencherSelectDimensao(select, valores, valorAtual = '') {
+function preencherSelectDimensao(select, valores, valorAtual = '', campo = '') {
     if (!select) return;
-    select.innerHTML = '<option value="">Selecione...</option>' + ordenarOpcoesDimensao([...valores, valorAtual])
+    select.innerHTML = '<option value="">Selecione...</option>' + ordenarOpcoesDimensaoPorCodigo([...valores, valorAtual], campo)
         .map(valor => `<option value="${escapeHtml(valor)}" ${normalizarTexto(valor) === normalizarTexto(valorAtual) ? 'selected' : ''}>${escapeHtml(valor)}</option>`)
         .join('');
 }
@@ -4769,7 +4786,7 @@ function configurarDependenciasFormularioPeca() {
     tipo?.addEventListener('change', () => {
         const valores = obterValoresDimensaoPeca('subtipo', { tipo: tipo.value });
         const atual = valores.some(valor => normalizarTexto(valor) === normalizarTexto(subtipo?.value)) ? subtipo.value : '';
-        preencherSelectDimensao(subtipo, valores, atual);
+        preencherSelectDimensao(subtipo, valores, atual, 'subtipo');
         atualizarOpcoesPecasRelacionadasFormulario();
     });
 
@@ -4783,7 +4800,7 @@ function configurarDependenciasFormularioPeca() {
             .filter(item => normalizarTexto(item.cor) === normalizarTexto(cor))
             .map(item => item.tom);
         const atual = valores.some(valor => normalizarTexto(valor) === normalizarTexto(tom?.value)) ? tom.value : '';
-        preencherSelectDimensao(tom, valores, atual);
+        preencherSelectDimensao(tom, valores, atual, 'tom');
     });
 }
 
@@ -5623,7 +5640,49 @@ function obterValoresFiltroLooks(campo) {
         obterValoresCampoLook(look, campo).forEach(adicionarValor);
     });
 
-    return [...valores.values()].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }));
+    return ordenarOpcoesLookPorCodigo(campo, [...valores.values()]);
+}
+
+function obterCodigoOrdenacaoLook(campo, valor) {
+    const definicoes = {
+        situacao: ['situacoes_look', 'valor'],
+        utilizacao: ['utilizacoes_look', 'valor'],
+        categoria: ['categorias_look', 'categoria'],
+        indicador: ['categorias_look', 'indicador'],
+        local: ['locais', 'valor'],
+        cor: ['cores_detalhe', 'cor_detalhe'],
+    };
+    let itens = [];
+    let propriedades = [];
+
+    if (campo === 'clima') {
+        itens = Object.values(app.climas || {});
+        propriedades = ['codigo', 'descricao'];
+    } else if (campo === 'ocasiao') {
+        itens = Object.entries(app.mapaOcasioes || {}).map(([codigo, info]) => ({ codigo, ...info }));
+        propriedades = ['codigo', 'descricao'];
+    } else {
+        const [nomeDimensao, propriedade] = definicoes[campo] || [];
+        itens = nomeDimensao ? app.dimensoes?.[nomeDimensao] || [] : [];
+        propriedades = [propriedade];
+    }
+
+    const item = itens.find(opcao => propriedades.some(propriedade =>
+        normalizarTexto(opcao?.[propriedade]) === normalizarTexto(valor)
+        || (campo === 'clima' && normalizarCodigoClima(opcao?.codigo) === normalizarCodigoClima(valor))
+    ));
+    return item?.codigo || '';
+}
+
+function ordenarOpcoesLookPorCodigo(campo, valores) {
+    return [...new Set((valores || []).map(valor => String(valor ?? '').trim()).filter(valor => valor && normalizarTexto(valor) !== 'na'))]
+        .sort((a, b) => {
+            const codigoA = obterCodigoOrdenacaoLook(campo, a);
+            const codigoB = obterCodigoOrdenacaoLook(campo, b);
+            if (codigoA && codigoB) return String(codigoA).localeCompare(String(codigoB), 'pt-BR', { numeric: true, sensitivity: 'base' });
+            if (codigoA !== codigoB) return codigoA ? -1 : 1;
+            return a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' });
+        });
 }
 
 function obterOpcoesClimaFiltroLooks() {
@@ -6231,8 +6290,7 @@ function criarOptionsSituacaoLook(valorAtual) {
     ].filter(valorVisivel))];
     const atualNormalizado = normalizarTexto(valorAtual);
 
-    return valores
-        .sort((a, b) => String(a).localeCompare(String(b), 'pt-BR'))
+    return ordenarOpcoesLookPorCodigo('situacao', valores)
         .map(valor => `<option value="${escapeHtml(valor)}" ${normalizarTexto(valor) === atualNormalizado ? 'selected' : ''}>${escapeHtml(valor)}</option>`)
         .join('');
 }
@@ -6243,6 +6301,7 @@ function criarOptionsIndicadorLook(valorAtual) {
     if (valorAtual && !itens.some(item => normalizarTexto(item.indicador) === atualNormalizado)) {
         itens.push({ indicador: valorAtual, categoria: 'Fora da aba Categorias' });
     }
+    itens.sort((a, b) => String(a.codigo || '').localeCompare(String(b.codigo || ''), 'pt-BR', { numeric: true, sensitivity: 'base' }));
     return itens.map(item => {
         const selecionado = normalizarTexto(item.indicador) === atualNormalizado ? 'selected' : '';
         return `<option value="${escapeHtml(item.indicador)}" ${selecionado}>${escapeHtml(item.indicador)} - ${escapeHtml(item.categoria)}</option>`;
