@@ -785,6 +785,7 @@ def extrair_dados(arquivo_excel):
                 clima_info = mapa_climas.get(clima_final, {'codigo': clima_final, 'descricao': clima_final, 'temperatura': ''}) if clima_final else {}
                 local_calc = calcular_local_look(situacao, *locais_pecas)
                 utilizacao_calc = calcular_utilizacao_look(utilizacoes_pecas, locais_pecas)
+                cor = pecas.get(pecas_look[0], {}).get('cor', '') if pecas_look else ''
                 
                 if pecas_look:
                     looks[id_look] = {
@@ -799,6 +800,7 @@ def extrair_dados(arquivo_excel):
                             item.get('categoria', '') for item in dimensoes.get('categorias_look', [])
                             if normalizar_categoria(item.get('indicador')) == normalizar_categoria(valor_texto(row[10]))
                         ), ''),
+                        'cor': cor,
                         'clima': clima_final,
                         'clima_planilha': clima,
                         'clima_calc': clima_calc or '',

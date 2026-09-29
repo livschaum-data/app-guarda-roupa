@@ -3,7 +3,7 @@
    É como um "banco de dados em memória" */
 
 const CAMPOS_FILTROS_PECAS = ['tipo', 'funcao', 'subtipo', 'local', 'alocacao', 'situacao', 'conservacao', 'reposicao', 'utilizacao', 'formalidade', 'nivel_aquecimento', 'padronagem', 'modelagem', 'tom', 'cor_detalhe', 'cor', 'tendencia', 'info_fotos', 'combinacoes'];
-const CAMPOS_FILTROS_LOOKS = ['lookId', 'pecas', 'categoria', 'indicador', 'local', 'situacao', 'utilizacao', 'clima', 'htt', 'ocasiao', 'usos'];
+const CAMPOS_FILTROS_LOOKS = ['lookId', 'pecas', 'categoria', 'indicador', 'local', 'situacao', 'utilizacao', 'cor', 'clima', 'htt', 'ocasiao', 'usos'];
 const DIMENSAO_POR_CAMPO_PECA = {
     tipo: ['tipos_peca', 'tipo'],
     funcao: ['funcoes_peca', 'valor'],
@@ -676,6 +676,7 @@ function formatarNomeFiltro(campo) {
         nivel_aquecimento: 'Aquecimento',
         situacao: 'Situação',
         utilizacao: 'Utilização',
+        cor: 'Cor',
         indicador: 'Tipo',
         clima: 'Clima',
         local: 'Local',
@@ -806,6 +807,7 @@ function obterClasseGrupoFiltroLook(campo) {
         local: 'ficha-grupo-roxo',
         situacao: 'ficha-grupo-verde',
         utilizacao: 'ficha-grupo-amarelo',
+        cor: 'ficha-grupo-verde-claro',
         clima: 'ficha-grupo-amarelo',
         htt: 'ficha-grupo-rosa',
         ocasiao: 'ficha-grupo-azul-claro',
@@ -855,14 +857,17 @@ function pecaPassaNosFiltros(peca, filtros) {
 async function carregarDadosJSON() {
     try {
         // fetch() = busca um arquivo da internet (ou local)
-        const response = await fetch('dados_guarda_roupa.json?v=20260929-combinacoes-ordem', { cache: 'no-store' });
+        const response = await fetch('dados_guarda_roupa.json?v=20260929-cor-look', { cache: 'no-store' });
         
         // .json() = transforma texto em objeto JavaScript
         const dados = await response.json();
 
         // Atribui ao app
         app.pecas = dados.pecas;
-        app.looks = dados.looks;
+        app.looks = Object.fromEntries(Object.entries(dados.looks || {}).map(([id, look]) => [
+            id,
+            { ...look, cor: obterCorLook(look) },
+        ]));
         app.mapaOcasioesBase = dados.ocasioes || {};
         app.mapaOcasioes = { ...app.mapaOcasioesBase };
         app.climas = dados.climas || {};
@@ -911,6 +916,10 @@ function carregarDados() {
     try {
         const looksFavSalvos = localStorage.getItem('app_looks_favs');
         app.looksFavoritos = looksFavSalvos ? JSON.parse(looksFavSalvos) : {};
+        app.looksFavoritos = Object.fromEntries(Object.entries(app.looksFavoritos || {}).map(([id, look]) => [
+            id,
+            look && typeof look === 'object' ? { ...look, cor: obterCorLook(look) } : look,
+        ]));
         if (garantirLooksFavoritosSemColisao()) salvarDadosLocal();
     } catch (erro) {
         console.warn('Looks favoritos salvos inválidos. Iniciando vazio.', erro);
@@ -5661,6 +5670,8 @@ function obterValoresCampoLook(look, campo) {
             return [look.situacao || basicos['situação'] || basicos.situacao];
         case 'utilizacao':
             return [obterUtilizacaoLook(look)];
+        case 'cor':
+            return [obterCorLook(look)];
         case 'indicador':
             return [look.indicador || basicos.Indicador];
         case 'categoria':
@@ -6152,6 +6163,7 @@ function criarCamposLookHtml(look) {
         ['Categoria', obterCategoriaLook(lookAtual), 'ficha-grupo-vermelho'],
         ['Indicador', obterIndicadorLook(lookAtual, lookAtual.id), 'ficha-grupo-vermelho'],
         ['Local', lookAtual.local_calc || lookAtual.local || obterCampoLookPorNomes(lookAtual, ['Local', 'local']), 'ficha-grupo-roxo'],
+        ['Cor', obterCorLook(lookAtual), 'ficha-grupo-verde-claro'],
         ['Situação', obterSituacaoLook(lookAtual), 'ficha-grupo-verde'],
         ['Utilização', obterUtilizacaoLook(lookAtual), 'ficha-grupo-amarelo'],
         ['Clima', formatarClimaLook(lookAtual), 'ficha-grupo-amarelo'],
@@ -6180,6 +6192,11 @@ function obterPecaLookPorIndice(look, indice) {
     return look?.pecas?.[indice]
         || obterCampoLookPorNomes(look, [`ID${indice + 1}`, `Peça ${indice + 1}`, `Peca ${indice + 1}`])
         || '';
+}
+
+function obterCorLook(look) {
+    const peca1 = obterPecaLookPorIndice(look, 0);
+    return app.pecas?.[String(peca1 || '').trim().toUpperCase()]?.cor || '';
 }
 
 function obterDataUltimaAlteracaoLook(look) {
@@ -6528,6 +6545,10 @@ function criarFormularioEdicaoLook(look) {
                 <span>Local</span>
                 <input type="text" id="edit-look-local-calc" value="${escapeHtml(look.local_calc || look.local || '')}" disabled>
             </label>
+            <label class="campo-edicao-look ficha-grupo-verde-claro">
+                <span>Cor</span>
+                <input type="text" id="edit-look-cor-calc" value="${escapeHtml(obterCorLook(look) || '')}" disabled>
+            </label>
             <label class="campo-edicao-look ficha-grupo-verde">
                 <span>Situação</span>
                 <select id="edit-look-situacao">${opcoesSituacao}</select>
@@ -6594,6 +6615,7 @@ function configurarRecalculoEdicaoLook() {
         const calculados = calcularDadosLookPorPecas(obterPecasSelecionadasEdicaoLook(), indicador);
         const clima = document.getElementById('edit-look-clima-calc');
         const local = document.getElementById('edit-look-local-calc');
+        const cor = document.getElementById('edit-look-cor-calc');
         const utilizacao = document.getElementById('edit-look-utilizacao-calc');
         const aquecimentos = document.getElementById('edit-look-aquecimentos');
         const locais = document.getElementById('edit-look-locais-pecas');
@@ -6601,6 +6623,7 @@ function configurarRecalculoEdicaoLook() {
         const categoria = document.getElementById('edit-look-categoria-calc');
         if (clima) clima.value = calculados.clima_calc || '';
         if (local) local.value = calculados.local_calc || '';
+        if (cor) cor.value = calculados.cor || '';
         if (utilizacao) utilizacao.value = calculados.utilizacao_calc || '';
         if (aquecimentos) aquecimentos.value = formatarListaCampoLook(calculados.aquecimentos);
         if (locais) locais.value = formatarListaCampoLook(calculados.locais_pecas);
@@ -6696,11 +6719,13 @@ function calcularDadosLookPorPecas(pecas, indicador = '') {
     const aquecimentos = valoresPecas.map(peca => valorVisivel(peca?.nivel_aquecimento) ? String(peca.nivel_aquecimento) : null);
     const locais = valoresPecas.map(peca => valorVisivel(peca?.local) ? String(peca.local) : null);
     const utilizacoes = valoresPecas.map(peca => valorVisivel(peca?.utilizacao) ? String(peca.utilizacao) : null);
+    const cor = valoresPecas[0]?.cor || '';
     const climaCalc = calcularClimaLookPorRegras(indicador, ...aquecimentos);
     const locaisValidos = locais.filter(Boolean);
     const utilizacoesValidas = utilizacoes.filter(Boolean);
 
     return {
+        cor,
         clima_calc: climaCalc,
         clima_info: climaCalc && app.climas?.[String(climaCalc)] ? { ...app.climas[String(climaCalc)] } : {},
         aquecimentos: preencherAteTres(aquecimentos),
@@ -6728,6 +6753,7 @@ function atualizarCalculadosLook(look, pecas, dataAtualizacao, opcoes = {}) {
     return {
         ...look,
         pecas,
+        cor: calculados.cor,
         clima_calc: calculados.clima_calc,
         clima_info: calculados.clima_info,
         aquecimentos: calculados.aquecimentos,
@@ -6866,6 +6892,7 @@ async function salvarEdicaoLook() {
         situacao,
         indicador,
         categoria: obterCategoriaIndicadorLook(indicador),
+        cor: calculados.cor,
         HTT: htt,
         htt,
         clima_calc: calculados.clima_calc,
@@ -9456,6 +9483,7 @@ async function salvarLookHistoricoInterno() {
         situacao,
         indicador,
         HTT: htt,
+        cor: calculados.cor,
         clima_calc: calculados.clima_calc,
         clima_info: calculados.clima_info,
         aquecimentos: calculados.aquecimentos,
