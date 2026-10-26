@@ -8643,3 +8643,10 @@ html[data-theme="light"] #filtros-ocasiao .filtro-chip:has(input:checked) .filtr
     font-size: 10px !important;
     line-height: 1 !important;
 }
+
+#ocasioes .ocasioes-sugestoes .ocasioes-bloco-topo > span {
+    border: 1px solid var(--modern-accent);
+    background: var(--modern-accent-soft);
+    color: var(--modern-accent-strong);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--modern-accent) 12%, transparent);
+}
