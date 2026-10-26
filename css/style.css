@@ -8650,3 +8650,14 @@ html[data-theme="light"] #filtros-ocasiao .filtro-chip:has(input:checked) .filtr
     color: var(--modern-accent-strong);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--modern-accent) 12%, transparent);
 }
+
+/* Os dropdowns precisam ultrapassar o card sem serem recortados pela contenção visual. */
+#ocasioes .ocasioes-filtro-clima,
+#ocasioes .ocasioes-filtro-ocasiao {
+    content-visibility: visible;
+    contain: none;
+}
+
+#ocasioes .ocasioes-filtro-clima {
+    z-index: 90;
+}
