@@ -6790,7 +6790,8 @@ function calcularDadosLookPorPecas(pecas, indicador = '') {
         aquecimentos: preencherAteTres(aquecimentos),
         local_calc: calcularValorComposto(locaisValidos, 'misto', { virtualPrioritario: true }),
         locais_pecas: preencherAteTres(locais),
-        utilizacao_calc: calcularUtilizacaoLookPorPecas(utilizacoesValidas, locaisValidos),
+        // Mantém a posição das peças: a regra de "casa" distingue a 2ª peça.
+        utilizacao_calc: calcularUtilizacaoLookPorPecas(utilizacoes, locaisValidos),
         utilizacoes_pecas: preencherAteTres(utilizacoes),
     };
 }
@@ -6904,11 +6905,12 @@ function calcularUtilizacaoLookPorPecas(utilizacoes, locais) {
     const totalCasa = usosNormalizados.filter(valor => valor === 'casa').length;
     const totalMista = usosNormalizados.filter(valor => valor === 'mista').length;
     const totalSair = usosNormalizados.filter(valor => valor === 'sair').length;
+    const segundaPecaEhCasa = normalizarTexto(utilizacoes?.[1]) === 'casa';
 
     if (totalCasa === 1 && totalMista === 1 && total === 2) return 'caseiro';
-    if (totalCasa === 1 && totalCasa < total) return 'desleixado';
     if (totalCasa === 2 && totalMista === 1 && total === 3) return 'caseiro';
     if (totalCasa === 2 && totalSair === 1 && total === 3) return 'conforto';
+    if (totalCasa === 1 && totalCasa < total) return segundaPecaEhCasa ? 'conforto' : 'desleixado';
     if ([1, 2].includes(totalMista) && totalMista + totalSair === total) return 'simples';
 
     return '';
