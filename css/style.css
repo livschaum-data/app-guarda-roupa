@@ -4267,14 +4267,15 @@ tr:hover {
 
 .historico-peca-detalhes {
     width: 100%;
-    margin-top: 8px;
+    margin-top: 6px;
     border: 0;
-    border-radius: 8px;
-    padding: 7px 8px;
+    border-radius: 6px;
+    padding: 4px 6px;
     background: #f3f4f6;
     color: var(--cor-texto);
     font: inherit;
-    font-size: 12px;
+    font-size: 11px;
+    line-height: 1.2;
     cursor: pointer;
 }
 
@@ -4286,14 +4287,15 @@ tr:hover {
 .historico-peca-remover,
 .historico-look-remover {
     width: 100%;
-    margin-top: 6px;
+    margin-top: 4px;
     border: 1px solid #fecaca;
-    border-radius: 8px;
-    padding: 7px 8px;
+    border-radius: 6px;
+    padding: 4px 6px;
     background: #fff1f2;
     color: #b91c1c;
     font: inherit;
-    font-size: 12px;
+    font-size: 11px;
+    line-height: 1.2;
     font-weight: 700;
     cursor: pointer;
 }
