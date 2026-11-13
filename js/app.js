@@ -1131,32 +1131,26 @@ async function inicializarSupabase() {
     }
 
     const config = window.SUPABASE_CONFIG;
+
+    // O link de recuperação chega com os tokens no hash da URL. O cliente Supabase
+    // consome esses tokens sozinho e cria uma sessão válida. Precisamos detectar o
+    // fluxo de recuperação ANTES de o cliente processar a URL; senão o app abre
+    // como se a pessoa tivesse feito login normal.
+    if (urlIndicaRecuperacaoSenha() || recuperacaoSenhaPendente()) {
+        app.recuperandoSenhaSupabase = true;
+        marcarRecuperacaoSenhaPendente(true);
+    }
+
     app.supabase = window.supabase.createClient(config.url, config.anonKey);
 
-    const { data, error } = await app.supabase.auth.getSession();
-    if (error) {
-        atualizarStatusSupabase(error.message, 'erro');
-        return false;
-    }
-
-    app.usuarioSupabase = data.session?.user || null;
-    atualizarUISupabase(app.usuarioSupabase);
-
-    if (app.usuarioSupabase) {
-        const baixou = await baixarDadosSupabase({ silencioso: true });
-        if (baixou && app.supabaseSuportaPecas && app.supabaseSuportaOcasioes) {
-            atualizarStatusSupabase('Conectado. Dados do app atualizados pela nuvem.', 'sucesso');
-        } else if (baixou) {
-            atualizarStatusSupabase('Conectado, mas falta atualizar o schema para sincronizar todas as edições.', 'erro');
-        }
-    } else {
-        atualizarStatusSupabase('Entre na sua conta para sincronizar peças, looks e histórico.');
-    }
-
+    // Registrar o listener antes de getSession(): o evento PASSWORD_RECOVERY é
+    // disparado durante a inicialização do cliente e se perde se o listener for
+    // adicionado depois.
     app.supabase.auth.onAuthStateChange(async (event, session) => {
         app.usuarioSupabase = session?.user || null;
         if (event === 'PASSWORD_RECOVERY') {
             app.recuperandoSenhaSupabase = true;
+            marcarRecuperacaoSenhaPendente(true);
             atualizarStatusSupabase('Link de recuperação validado. Digite sua nova senha.', 'sucesso');
         }
         atualizarUISupabase(app.usuarioSupabase);
@@ -1171,6 +1165,28 @@ async function inicializarSupabase() {
             atualizarStatusSupabase('Entre na sua conta para sincronizar peças, looks e histórico.');
         }
     });
+
+    const { data, error } = await app.supabase.auth.getSession();
+    if (error) {
+        atualizarStatusSupabase(error.message, 'erro');
+        return false;
+    }
+
+    app.usuarioSupabase = data.session?.user || null;
+    atualizarUISupabase(app.usuarioSupabase);
+
+    if (app.recuperandoSenhaSupabase) {
+        atualizarStatusSupabase('Link de recuperação validado. Digite sua nova senha.', 'sucesso');
+    } else if (app.usuarioSupabase) {
+        const baixou = await baixarDadosSupabase({ silencioso: true });
+        if (baixou && app.supabaseSuportaPecas && app.supabaseSuportaOcasioes) {
+            atualizarStatusSupabase('Conectado. Dados do app atualizados pela nuvem.', 'sucesso');
+        } else if (baixou) {
+            atualizarStatusSupabase('Conectado, mas falta atualizar o schema para sincronizar todas as edições.', 'erro');
+        }
+    } else {
+        atualizarStatusSupabase('Entre na sua conta para sincronizar peças, looks e histórico.');
+    }
 }
 
 function configurarEventosSupabase() {
@@ -1318,6 +1334,16 @@ function atualizarUISupabase(usuario) {
         login.style.display = 'none';
         logado.style.display = 'none';
         if (resetSenha) resetSenha.style.display = 'grid';
+
+        const painel = document.getElementById('supabase-global-panel');
+        if (painel) {
+            if (painel.style.display === 'none') painel.style.display = 'grid';
+            document.getElementById('supabase-global-toggle')?.setAttribute('aria-expanded', 'true');
+            if (painel.dataset.recoveryFocado !== 'true') {
+                painel.dataset.recoveryFocado = 'true';
+                window.setTimeout(() => document.getElementById('supabase-nova-senha')?.focus(), 0);
+            }
+        }
         return;
     }
 
@@ -1371,6 +1397,43 @@ function obterUrlRedirectSupabase() {
     return `${window.location.origin}${window.location.pathname}`;
 }
 
+function urlIndicaRecuperacaoSenha() {
+    const hash = window.location.hash.replace(/^#/, '');
+    if (hash) {
+        const hashParams = new URLSearchParams(hash);
+        if (hashParams.get('error') || hashParams.get('error_description')) return false;
+        if ((hashParams.get('type') || '').toLowerCase() === 'recovery') return true;
+    }
+
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get('error') || searchParams.get('error_description')) return false;
+    if ((searchParams.get('type') || '').toLowerCase() === 'recovery') return true;
+
+    return false;
+}
+
+const CHAVE_RECUPERACAO_SENHA = 'supabase-recuperacao-senha-pendente';
+
+function marcarRecuperacaoSenhaPendente(pendente) {
+    try {
+        if (pendente) {
+            sessionStorage.setItem(CHAVE_RECUPERACAO_SENHA, '1');
+        } else {
+            sessionStorage.removeItem(CHAVE_RECUPERACAO_SENHA);
+        }
+    } catch (erro) {
+        // sessionStorage pode estar bloqueado (modo privado); seguimos só com o estado em memória.
+    }
+}
+
+function recuperacaoSenhaPendente() {
+    try {
+        return sessionStorage.getItem(CHAVE_RECUPERACAO_SENHA) === '1';
+    } catch (erro) {
+        return false;
+    }
+}
+
 async function solicitarRecuperacaoSenhaSupabase() {
     if (!app.supabase) {
         atualizarStatusSupabase('Configure o Supabase antes de recuperar senha.', 'erro');
@@ -1420,6 +1483,7 @@ async function atualizarSenhaSupabase() {
     }
 
     app.recuperandoSenhaSupabase = false;
+    marcarRecuperacaoSenhaPendente(false);
     app.usuarioSupabase = data.user || app.usuarioSupabase;
     document.getElementById('supabase-nova-senha').value = '';
     document.getElementById('supabase-confirmar-senha').value = '';
@@ -1428,11 +1492,18 @@ async function atualizarSenhaSupabase() {
     await baixarDadosSupabase({ silencioso: true });
 }
 
-function cancelarRecuperacaoSenhaSupabase() {
+async function cancelarRecuperacaoSenhaSupabase() {
     app.recuperandoSenhaSupabase = false;
+    marcarRecuperacaoSenhaPendente(false);
+    app.usuarioSupabase = null;
     document.getElementById('supabase-nova-senha').value = '';
     document.getElementById('supabase-confirmar-senha').value = '';
-    atualizarUISupabase(app.usuarioSupabase);
+    // A sessão de recuperação já está autenticada; sem sair, a pessoa continuaria
+    // "logada" mesmo tendo cancelado a troca de senha.
+    if (app.supabase) {
+        await app.supabase.auth.signOut();
+    }
+    atualizarUISupabase(null);
     atualizarStatusSupabase('Recuperação de senha cancelada.');
 }
 
@@ -1454,6 +1525,7 @@ async function entrarSupabase() {
 
     app.usuarioSupabase = data.session?.user || data.user;
     app.recuperandoSenhaSupabase = false;
+    marcarRecuperacaoSenhaPendente(false);
     atualizarUISupabase(app.usuarioSupabase);
     await baixarDadosSupabase();
 }
@@ -1496,6 +1568,7 @@ async function sairSupabase() {
     await app.supabase.auth.signOut();
     app.usuarioSupabase = null;
     app.recuperandoSenhaSupabase = false;
+    marcarRecuperacaoSenhaPendente(false);
     atualizarUISupabase(null);
     atualizarStatusSupabase('Desconectado.');
 }
