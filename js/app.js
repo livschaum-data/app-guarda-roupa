@@ -9925,7 +9925,8 @@ function renderPecasMontador(pecas) {
         ? unicas.map(id => {
             const peca = app.pecas[id] || {};
             return `
-                <button type="button" class="montador-peca" onclick="adicionarItemMontador('${escapeHtml(id)}')">
+                <button type="button" class="montador-peca" onclick="selecionarOuAdicionarPecaMontador('${escapeHtml(id)}')"
+                        title="Selecionar esta peça no quadro">
                     <img src="${getCaminhoFoto(id)}" alt="${escapeHtml(peca.tipo || id)}" draggable="false"
                          onerror="this.src='${imagemFallback()}'">
                     <span>${escapeHtml(id)}</span>
@@ -9935,8 +9936,28 @@ function renderPecasMontador(pecas) {
         : '<p class="texto-ajuda">Nenhuma peça selecionada neste look.</p>';
 }
 
+function selecionarOuAdicionarPecaMontador(pecaId) {
+    const st = app.montadorFoto;
+    if (!st) return;
+
+    const indice = st.itens.findIndex(item => item.pecaId === pecaId);
+    if (indice >= 0) {
+        selecionarItemMontador(indice);
+        return;
+    }
+
+    adicionarItemMontador(pecaId);
+}
+
 function adicionarItemMontador(pecaId, renderizar = true) {
     if (!app.montadorFoto) return;
+
+    // Cada peça entra uma única vez: evita duplicar ao tocar na lista.
+    if (app.montadorFoto.itens.some(item => item.pecaId === pecaId)) {
+        const indiceExistente = app.montadorFoto.itens.findIndex(item => item.pecaId === pecaId);
+        selecionarItemMontador(indiceExistente);
+        return;
+    }
 
     const peca = app.pecas[pecaId] || {};
     const fonte = getCaminhoFoto(pecaId);
