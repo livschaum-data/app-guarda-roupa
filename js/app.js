@@ -10091,9 +10091,9 @@ function ajustarItemMontador(acao) {
     } else if (acao === 'menor') {
         item.w = Math.max(4, item.w / 1.12);
     } else if (acao === 'girar-esq') {
-        item.rot -= 15;
+        item.rot -= 5;
     } else if (acao === 'girar-dir') {
-        item.rot += 15;
+        item.rot += 5;
     } else if (acao === 'frente') {
         moverItemMontador(st.selecionado, 'frente');
         return;
