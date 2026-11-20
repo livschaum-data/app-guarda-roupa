@@ -27,7 +27,7 @@
     </script>
     <link rel="preload" href="dados_guarda_roupa.json" as="fetch" crossorigin="anonymous">
     <link rel="preload" href="fotos/home-illustration.jpg" as="image">
-        <link rel="stylesheet" href="css/style.css?v=20261120-ocasioes-visual">
+        <link rel="stylesheet" href="css/style.css?v=20261120-montador-foto">
 </head>
 <body>
     <div id="app">
@@ -814,6 +814,11 @@
                         Foto do look
                         <input type="file" id="look-historico-foto" accept="image/*">
                     </label>
+                    <div class="form-look-historico-largo montador-campo-montado">
+                        <span>Ou monte com as peças</span>
+                        <button type="button" class="btn-secundario montador-abrir" onclick="abrirMontadorFotoLook('historico')">Montar com as peças</button>
+                        <img id="look-historico-foto-montada" class="montador-preview" alt="Prévia da foto montada" style="display:none;">
+                    </div>
                 </div>
 
                 <div class="look-historico-preview">
@@ -836,13 +841,59 @@
             </div>
         </div>
 
+        <div id="modal-montar-foto" class="modal" style="display:none;">
+            <div class="modal-content modal-montador">
+                <button class="btn-fechar" type="button" onclick="fecharMontadorFotoLook()">x</button>
+                <h2>Montar foto do look</h2>
+                <p class="texto-ajuda montador-ajuda">Arraste as peças no quadro para montar. Toque em uma peça para ajustar tamanho, giro, ordem e fundo.</p>
+
+                <div class="montador-grade">
+                    <div class="montador-palco-area">
+                        <div id="montador-palco" class="montador-palco"></div>
+                        <div id="montador-ferramentas" class="montador-ferramentas" hidden>
+                            <button type="button" onclick="ajustarItemMontador('menor')" title="Diminuir" aria-label="Diminuir">−</button>
+                            <button type="button" onclick="ajustarItemMontador('maior')" title="Aumentar" aria-label="Aumentar">+</button>
+                            <button type="button" onclick="ajustarItemMontador('girar-esq')" title="Girar à esquerda" aria-label="Girar à esquerda">⟲</button>
+                            <button type="button" onclick="ajustarItemMontador('girar-dir')" title="Girar à direita" aria-label="Girar à direita">⟳</button>
+                            <button type="button" onclick="ajustarItemMontador('frente')">Frente</button>
+                            <button type="button" onclick="ajustarItemMontador('tras')">Trás</button>
+                            <button type="button" id="montador-btn-fundo" onclick="ajustarItemMontador('fundo')">Tirar fundo</button>
+                            <button type="button" onclick="ajustarItemMontador('remover')">Remover</button>
+                        </div>
+                        <p id="montador-dica" class="texto-ajuda montador-dica">Toque em uma peça do quadro para ver as ferramentas.</p>
+                    </div>
+
+                    <aside class="montador-pecas-area">
+                        <h3>Peças do look</h3>
+                        <div id="montador-pecas" class="montador-pecas"></div>
+                    </aside>
+                </div>
+
+                <div class="montador-rodape">
+                    <div class="montador-fundo">
+                        <span>Fundo</span>
+                        <button type="button" class="montador-cor" data-cor="#d9d9d9" onclick="definirFundoMontador('#d9d9d9')" title="Cinza claro" aria-label="Fundo cinza claro"></button>
+                        <button type="button" class="montador-cor" data-cor="#ffffff" onclick="definirFundoMontador('#ffffff')" title="Branco" aria-label="Fundo branco"></button>
+                        <button type="button" class="montador-cor" data-cor="#111827" onclick="definirFundoMontador('#111827')" title="Escuro" aria-label="Fundo escuro"></button>
+                        <button type="button" class="montador-cor montador-cor-transparente" data-cor="transparente" onclick="definirFundoMontador('transparente')" title="Transparente" aria-label="Fundo transparente"></button>
+                        <input type="color" id="montador-cor-livre" value="#d9d9d9" oninput="definirFundoMontador(this.value)" aria-label="Escolher cor de fundo">
+                    </div>
+                    <div class="montador-acoes">
+                        <button type="button" class="btn-secundario" onclick="organizarPecasMontador()">Organizar</button>
+                        <button type="button" class="btn-secundario" onclick="limparMontadorFoto()">Limpar</button>
+                        <button type="button" class="btn-principal" id="montador-salvar" onclick="salvarFotoMontadaLook()">Usar esta foto</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- ==================== SCRIPTS ====================
          A ordem importa! CSS deve carregar antes, depois o app.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js?v=20260624-config-supabase"></script>
-    <script src="js/app.js?v=20261120-ocasioes-ajustes"></script>
+    <script src="js/app.js?v=20261120-montador-foto"></script>
 </body>
 </html>
 

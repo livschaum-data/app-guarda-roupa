@@ -6632,6 +6632,7 @@ function campoBasicoEditavelLook(campo) {
 }
 
 function criarFormularioEdicaoLook(look) {
+    app.fotoMontadaEdicao = null;
     const basicos = look.basicos || {};
     const situacaoAtual = look.situacao || basicos['situação'] || basicos['situação'] || '';
     const httAtual = String(look.HTT || look.htt || basicos.HTT || '');
@@ -6725,6 +6726,11 @@ function criarFormularioEdicaoLook(look) {
                 <span>Nova foto</span>
                 <input type="file" id="edit-look-foto-arquivo" accept="image/*">
             </label>
+            <div class="campo-edicao-look campo-edicao-look-largo ficha-grupo-outros montador-campo-montado">
+                <span>Ou monte com as peças</span>
+                <button type="button" class="btn-secundario montador-abrir" onclick="abrirMontadorFotoLook('edicao')">Montar com as peças</button>
+                <img id="edit-look-foto-montada" class="montador-preview" alt="Prévia da foto montada" style="display:none;">
+            </div>
             <label class="campo-edicao-look campo-edicao-look-largo ficha-grupo-azul-claro">
                 <span>Ocasiões</span>
                 <select id="edit-look-ocasioes" multiple size="8">${opcoesOcasioes}</select>
@@ -7005,6 +7011,7 @@ async function salvarEdicaoLook() {
     const indicador = document.getElementById('edit-look-indicador')?.value.trim() || obterIndicadorLook(lookOriginal, lookId);
     const htt = document.getElementById('edit-look-htt')?.value.trim() || '';
     const fotoArquivo = await lerFotoEdicaoLook();
+    const fotoMontada = app.fotoMontadaEdicao || '';
     const fotoUrl = document.getElementById('edit-look-foto')?.value.trim() || '';
     const pecas = obterPecasSelecionadasEdicaoLook();
     const ocasioes = parseOcasioesEdicaoLook(obterOcasioesSelecionadasEdicaoLook());
@@ -7022,7 +7029,7 @@ async function salvarEdicaoLook() {
         ...lookOriginal,
         id: lookId,
         nome,
-        foto: fotoArquivo || fotoUrl || lookOriginal.foto || getCaminhoFotoLook(lookId),
+        foto: fotoArquivo || fotoMontada || fotoUrl || lookOriginal.foto || getCaminhoFotoLook(lookId),
         situacao,
         indicador,
         categoria: obterCategoriaIndicadorLook(indicador),
@@ -9336,6 +9343,7 @@ function abrirCriacaoLookHistorico(dia) {
 
     app.diaCriacaoLookHistorico = dia;
     app.fotoNovoLookHistorico = null;
+    app.fotoMontadaLookHistorico = null;
 
     document.getElementById('look-historico-modo').value = 'novo';
     document.getElementById('look-historico-data-alteracao').value = dia;
@@ -9492,7 +9500,10 @@ function atualizarPreviewLookHistorico() {
     document.getElementById('look-historico-pecas-preview').textContent = `${pecas.length} peças selecionadas: ${pecas.join(', ')}`;
 
     if (fotoPreview) {
-        if (lookExistente) {
+        if (app.fotoMontadaLookHistorico) {
+            fotoPreview.style.display = '';
+            fotoPreview.src = app.fotoMontadaLookHistorico;
+        } else if (lookExistente) {
             fotoPreview.style.display = '';
             fotoPreview.onerror = () => {
                 fotoPreview.style.display = 'none';
@@ -9599,7 +9610,7 @@ async function salvarLookHistoricoInterno() {
     const situacao = document.getElementById('look-historico-situacao').value;
     const htt = document.getElementById('look-historico-htt').value;
     const codigosOcasiao = [...document.getElementById('look-historico-ocasiao').selectedOptions].map(option => option.value);
-    const foto = await lerFotoLookHistorico();
+    const foto = (await lerFotoLookHistorico()) || app.fotoMontadaLookHistorico || '';
     const ocasioes = codigosOcasiao
         .map(codigo => app.mapaOcasioes[codigo] ? { codigo, ...app.mapaOcasioes[codigo] } : null)
         .filter(Boolean);
@@ -9861,3 +9872,548 @@ window.addEventListener('DOMContentLoaded', inicializar);
    - Customize conforme necessário
 */
 
+/* ==================== MONTADOR DE FOTO DO LOOK ====================
+   Junta as fotos das pecas em uma unica imagem do look. O resultado e
+   salvo como foto do look (data URL), igual ao upload de foto existente. */
+
+const MONTADOR_LARGURA_IMAGEM = 720;
+const MONTADOR_ALTURA_IMAGEM = 960;
+
+let montadorArraste = null;
+
+function abrirMontadorFotoLook(alvo = 'edicao') {
+    const pecas = obterPecasMontadorLook(alvo);
+
+    app.montadorFoto = {
+        alvo,
+        bg: '#d9d9d9',
+        itens: [],
+        selecionado: -1,
+    };
+
+    renderPecasMontador(pecas);
+    pecas.forEach(pecaId => adicionarItemMontador(pecaId, false));
+    organizarPecasMontador();
+    definirFundoMontador('#d9d9d9');
+
+    abrirModalEmpilhado(document.getElementById('modal-montar-foto'));
+}
+
+function obterPecasMontadorLook(alvo) {
+    if (alvo === 'historico') {
+        return [...(app.pecasSelecionadasLookHistorico[app.diaCriacaoLookHistorico] || [])];
+    }
+
+    if (typeof obterPecasSelecionadasEdicaoLook === 'function') {
+        return [...obterPecasSelecionadasEdicaoLook()];
+    }
+
+    return [];
+}
+
+function fecharMontadorFotoLook() {
+    montadorArraste = null;
+    fecharModalEspecifico(document.getElementById('modal-montar-foto'));
+}
+
+function renderPecasMontador(pecas) {
+    const container = document.getElementById('montador-pecas');
+    if (!container) return;
+
+    const unicas = [...new Set(pecas)];
+    container.innerHTML = unicas.length
+        ? unicas.map(id => {
+            const peca = app.pecas[id] || {};
+            return `
+                <button type="button" class="montador-peca" onclick="adicionarItemMontador('${escapeHtml(id)}')">
+                    <img src="${getCaminhoFoto(id)}" alt="${escapeHtml(peca.tipo || id)}" draggable="false"
+                         onerror="this.src='${imagemFallback()}'">
+                    <span>${escapeHtml(id)}</span>
+                </button>
+            `;
+        }).join('')
+        : '<p class="texto-ajuda">Nenhuma peça selecionada neste look.</p>';
+}
+
+function adicionarItemMontador(pecaId, renderizar = true) {
+    if (!app.montadorFoto) return;
+
+    const peca = app.pecas[pecaId] || {};
+    const fonte = getCaminhoFoto(pecaId);
+
+    app.montadorFoto.itens.push({
+        pecaId,
+        tipo: peca.tipo || '',
+        src: fonte,
+        srcOriginal: fonte,
+        semFundo: false,
+        x: 50,
+        y: 50,
+        w: 40,
+        rot: 0,
+    });
+
+    if (renderizar) {
+        app.montadorFoto.selecionado = app.montadorFoto.itens.length - 1;
+        renderMontadorFoto();
+    }
+}
+
+function renderMontadorFoto() {
+    const st = app.montadorFoto;
+    const palco = document.getElementById('montador-palco');
+    if (!st || !palco) return;
+
+    palco.innerHTML = '';
+    st.itens.forEach((item, indice) => {
+        palco.appendChild(criarElementoItemMontador(item, indice));
+    });
+
+    aplicarFundoMontador();
+    atualizarFerramentasMontador();
+}
+
+function criarElementoItemMontador(item, indice) {
+    const img = document.createElement('img');
+    img.className = 'montador-item';
+    img.src = item.src;
+    img.alt = item.pecaId || 'Peça';
+    img.draggable = false;
+    img.dataset.indice = String(indice);
+    img.addEventListener('pointerdown', iniciarArrasteMontador);
+    img.addEventListener('pointermove', moverArrasteMontador);
+    img.addEventListener('pointerup', finalizarArrasteMontador);
+    img.addEventListener('pointercancel', finalizarArrasteMontador);
+    img.addEventListener('error', () => { img.style.opacity = '0'; });
+
+    if (indice === app.montadorFoto.selecionado) img.classList.add('selecionado');
+
+    aplicarEstiloItemMontador(img, item);
+    return img;
+}
+
+function aplicarEstiloItemMontador(elemento, item) {
+    if (!elemento || !item) return;
+    elemento.style.left = `${item.x}%`;
+    elemento.style.top = `${item.y}%`;
+    elemento.style.width = `${item.w}%`;
+    elemento.style.transform = `translate(-50%, -50%) rotate(${item.rot}deg)`;
+}
+
+function selecionarItemMontador(indice) {
+    const st = app.montadorFoto;
+    if (!st) return;
+
+    st.selecionado = indice;
+    document.querySelectorAll('#montador-palco .montador-item').forEach(elemento => {
+        elemento.classList.toggle('selecionado', Number(elemento.dataset.indice) === indice);
+    });
+    atualizarFerramentasMontador();
+}
+
+function atualizarFerramentasMontador() {
+    const st = app.montadorFoto;
+    const ferramentas = document.getElementById('montador-ferramentas');
+    const dica = document.getElementById('montador-dica');
+    const botaoFundo = document.getElementById('montador-btn-fundo');
+    const selecionado = Boolean(st && st.selecionado >= 0 && st.itens[st.selecionado]);
+
+    if (ferramentas) ferramentas.hidden = !selecionado;
+    if (dica) dica.hidden = selecionado;
+
+    if (botaoFundo && selecionado) {
+        botaoFundo.textContent = st.itens[st.selecionado].semFundo ? 'Manter fundo' : 'Tirar fundo';
+    }
+}
+
+function iniciarArrasteMontador(evento) {
+    const st = app.montadorFoto;
+    const palco = document.getElementById('montador-palco');
+    if (!st || !palco) return;
+
+    const indice = Number(evento.currentTarget.dataset.indice);
+    const item = st.itens[indice];
+    if (!item) return;
+
+    evento.preventDefault();
+    selecionarItemMontador(indice);
+
+    const retangulo = palco.getBoundingClientRect();
+    montadorArraste = {
+        indice,
+        pointerId: evento.pointerId,
+        origemX: evento.clientX,
+        origemY: evento.clientY,
+        itemX: item.x,
+        itemY: item.y,
+        largura: retangulo.width || 1,
+        altura: retangulo.height || 1,
+    };
+
+    try {
+        evento.currentTarget.setPointerCapture(evento.pointerId);
+    } catch (erro) {
+        // Alguns navegadores antigos não suportam captura de ponteiro.
+    }
+}
+
+function moverArrasteMontador(evento) {
+    if (!montadorArraste || evento.pointerId !== montadorArraste.pointerId) return;
+
+    const st = app.montadorFoto;
+    const item = st?.itens[montadorArraste.indice];
+    if (!item) return;
+
+    evento.preventDefault();
+    const deslocamentoX = ((evento.clientX - montadorArraste.origemX) / montadorArraste.largura) * 100;
+    const deslocamentoY = ((evento.clientY - montadorArraste.origemY) / montadorArraste.altura) * 100;
+
+    item.x = Math.max(-20, Math.min(120, montadorArraste.itemX + deslocamentoX));
+    item.y = Math.max(-20, Math.min(120, montadorArraste.itemY + deslocamentoY));
+    aplicarEstiloItemMontador(evento.currentTarget, item);
+}
+
+function finalizarArrasteMontador(evento) {
+    if (!montadorArraste) return;
+    if (evento && evento.pointerId !== montadorArraste.pointerId) return;
+    montadorArraste = null;
+}
+
+function ajustarItemMontador(acao) {
+    const st = app.montadorFoto;
+    if (!st || st.selecionado < 0) return;
+
+    const item = st.itens[st.selecionado];
+    if (!item) return;
+
+    if (acao === 'maior') {
+        item.w = Math.min(120, item.w * 1.12);
+    } else if (acao === 'menor') {
+        item.w = Math.max(4, item.w / 1.12);
+    } else if (acao === 'girar-esq') {
+        item.rot -= 15;
+    } else if (acao === 'girar-dir') {
+        item.rot += 15;
+    } else if (acao === 'frente') {
+        moverItemMontador(st.selecionado, 'frente');
+        return;
+    } else if (acao === 'tras') {
+        moverItemMontador(st.selecionado, 'tras');
+        return;
+    } else if (acao === 'remover') {
+        st.itens.splice(st.selecionado, 1);
+        st.selecionado = -1;
+        renderMontadorFoto();
+        return;
+    } else if (acao === 'fundo') {
+        alternarFundoItemMontador(item);
+        return;
+    }
+
+    atualizarElementoItemMontador(st.selecionado, item);
+}
+
+function atualizarElementoItemMontador(indice, item) {
+    const elemento = document.querySelector(`#montador-palco .montador-item[data-indice="${indice}"]`);
+    aplicarEstiloItemMontador(elemento, item);
+}
+
+function moverItemMontador(indice, direcao) {
+    const st = app.montadorFoto;
+    if (!st) return;
+
+    const [item] = st.itens.splice(indice, 1);
+    if (!item) return;
+
+    if (direcao === 'frente') {
+        st.itens.push(item);
+        st.selecionado = st.itens.length - 1;
+    } else {
+        st.itens.unshift(item);
+        st.selecionado = 0;
+    }
+
+    renderMontadorFoto();
+}
+
+async function alternarFundoItemMontador(item) {
+    const st = app.montadorFoto;
+    const indice = st ? st.itens.indexOf(item) : -1;
+
+    try {
+        if (item.semFundo) {
+            item.src = item.srcOriginal;
+            item.semFundo = false;
+        } else {
+            item.src = await removerFundoClaroFoto(item.srcOriginal);
+            item.semFundo = true;
+        }
+
+        const elemento = document.querySelector(`#montador-palco .montador-item[data-indice="${indice}"]`);
+        if (elemento) elemento.src = item.src;
+        atualizarFerramentasMontador();
+    } catch (erro) {
+        alert('Não consegui tratar o fundo desta foto.');
+    }
+}
+
+function carregarImagemMontador(src) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error(`Não consegui carregar a foto ${src}`));
+        img.src = src;
+    });
+}
+
+async function removerFundoClaroFoto(src) {
+    const img = await carregarImagemMontador(src);
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth || img.width;
+    canvas.height = img.naturalHeight || img.height;
+
+    const contexto = canvas.getContext('2d');
+    contexto.drawImage(img, 0, 0);
+
+    const largura = canvas.width;
+    const altura = canvas.height;
+    const dados = contexto.getImageData(0, 0, largura, altura);
+    const pixels = dados.data;
+
+    // Se a foto já tem transparência, não há fundo para remover.
+    let bordaOpaca = 0;
+    let bordaTotal = 0;
+    const contarBorda = (x, y) => {
+        const indice = (y * largura + x) * 4;
+        bordaTotal += 1;
+        if (pixels[indice + 3] > 32) bordaOpaca += 1;
+    };
+    for (let x = 0; x < largura; x++) {
+        contarBorda(x, 0);
+        contarBorda(x, altura - 1);
+    }
+    for (let y = 1; y < altura - 1; y++) {
+        contarBorda(0, y);
+        contarBorda(largura - 1, y);
+    }
+    if (bordaTotal === 0 || bordaOpaca / bordaTotal < 0.5) {
+        return canvas.toDataURL('image/png');
+    }
+
+    // Cor média da borda = fundo da foto (branco, cinza, estúdio...).
+    let somaR = 0;
+    let somaG = 0;
+    let somaB = 0;
+    let amostras = 0;
+    const somarBorda = (x, y) => {
+        const indice = (y * largura + x) * 4;
+        if (pixels[indice + 3] <= 32) return;
+        somaR += pixels[indice];
+        somaG += pixels[indice + 1];
+        somaB += pixels[indice + 2];
+        amostras += 1;
+    };
+    for (let x = 0; x < largura; x++) {
+        somarBorda(x, 0);
+        somarBorda(x, altura - 1);
+    }
+    for (let y = 1; y < altura - 1; y++) {
+        somarBorda(0, y);
+        somarBorda(largura - 1, y);
+    }
+
+    const fundoR = somaR / amostras;
+    const fundoG = somaG / amostras;
+    const fundoB = somaB / amostras;
+    const tolerancia = 42;
+    const suavidade = 46;
+
+    for (let i = 0; i < pixels.length; i += 4) {
+        const distancia = Math.sqrt(
+            (pixels[i] - fundoR) ** 2 +
+            (pixels[i + 1] - fundoG) ** 2 +
+            (pixels[i + 2] - fundoB) ** 2
+        );
+
+        if (distancia <= tolerancia) {
+            pixels[i + 3] = 0;
+        } else if (distancia < tolerancia + suavidade) {
+            pixels[i + 3] = Math.round(pixels[i + 3] * ((distancia - tolerancia) / suavidade));
+        }
+    }
+
+    contexto.putImageData(dados, 0, 0);
+    return canvas.toDataURL('image/png');
+}
+
+function definirFundoMontador(cor) {
+    if (!app.montadorFoto) return;
+    app.montadorFoto.bg = cor || '#d9d9d9';
+    aplicarFundoMontador();
+}
+
+function aplicarFundoMontador() {
+    const st = app.montadorFoto;
+    const palco = document.getElementById('montador-palco');
+    if (!st || !palco) return;
+
+    palco.classList.toggle('montador-transparente', st.bg === 'transparente');
+    palco.style.backgroundColor = st.bg === 'transparente' ? '' : st.bg;
+
+    document.querySelectorAll('.montador-cor').forEach(botao => {
+        botao.classList.toggle('ativa', botao.dataset.cor === st.bg);
+    });
+
+    const corLivre = document.getElementById('montador-cor-livre');
+    if (corLivre && st.bg !== 'transparente') corLivre.value = st.bg;
+}
+
+function classificarPecaMontador(item) {
+    const tipo = normalizarTexto(item.tipo || '');
+    if (!tipo) return 'cima';
+
+    if (/calcado|tenis|sapato|sandalia|bota|chinelo|mocassim/.test(tipo)) return 'calcado';
+    if (/bolsa|biju|cinto|pescoco|cabeca|acessorio|oculos|relogio|brinco|colar/.test(tipo)) return 'acessorio';
+    if (/inteiro|vestido|macacao|pijama|praia|modelador/.test(tipo)) return 'inteiro';
+    if (/calca|calcinha|meia|short|saia|bermuda/.test(tipo)) return 'baixo';
+
+    return 'cima';
+}
+
+function organizarPecasMontador() {
+    const st = app.montadorFoto;
+    if (!st || !st.itens.length) return;
+
+    const grupos = { baixo: [], cima: [], inteiro: [], calcado: [], acessorio: [] };
+    st.itens.forEach(item => {
+        item.rot = 0;
+        grupos[classificarPecaMontador(item)].push(item);
+    });
+
+    const posicoes = quantidade => {
+        if (quantidade <= 1) return [50];
+        const inicio = Math.max(14, 50 - 14 * (quantidade - 1));
+        const fim = Math.min(86, 50 + 14 * (quantidade - 1));
+        const passo = (fim - inicio) / (quantidade - 1);
+        return Array.from({ length: quantidade }, (_, i) => inicio + passo * i);
+    };
+
+    const distribuir = (lista, y, largura) => {
+        const xs = posicoes(lista.length);
+        lista.forEach((item, i) => {
+            item.x = xs[i];
+            item.y = y;
+            item.w = largura;
+        });
+    };
+
+    distribuir(grupos.baixo, 68, grupos.baixo.length > 1 ? 34 : 44);
+    distribuir(grupos.cima, 32, grupos.cima.length > 1 ? 33 : 40);
+    distribuir(grupos.inteiro, 54, grupos.inteiro.length > 1 ? 42 : 60);
+    distribuir(grupos.calcado, 91, grupos.calcado.length > 1 ? 19 : 24);
+
+    grupos.acessorio.forEach((item, indice) => {
+        item.x = 10;
+        item.y = 16 + indice * 19;
+        item.w = 14;
+    });
+
+    const ordem = { baixo: 0, cima: 1, inteiro: 2, calcado: 3, acessorio: 4 };
+    st.itens.sort((a, b) => ordem[classificarPecaMontador(a)] - ordem[classificarPecaMontador(b)]);
+
+    st.selecionado = -1;
+    renderMontadorFoto();
+}
+
+function limparMontadorFoto() {
+    if (!app.montadorFoto) return;
+    app.montadorFoto.itens = [];
+    app.montadorFoto.selecionado = -1;
+    renderMontadorFoto();
+}
+
+async function gerarImagemMontador() {
+    const st = app.montadorFoto;
+    const largura = MONTADOR_LARGURA_IMAGEM;
+    const altura = MONTADOR_ALTURA_IMAGEM;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = largura;
+    canvas.height = altura;
+    const contexto = canvas.getContext('2d');
+
+    if (st.bg !== 'transparente') {
+        contexto.fillStyle = st.bg;
+        contexto.fillRect(0, 0, largura, altura);
+    }
+
+    for (const item of st.itens) {
+        try {
+            const img = await carregarImagemMontador(item.src);
+            const larguraItem = (item.w / 100) * largura;
+            const proporcao = (img.naturalHeight || img.height) / (img.naturalWidth || img.width);
+            const alturaItem = larguraItem * proporcao;
+
+            contexto.save();
+            contexto.translate((item.x / 100) * largura, (item.y / 100) * altura);
+            contexto.rotate((item.rot * Math.PI) / 180);
+            contexto.drawImage(img, -larguraItem / 2, -alturaItem / 2, larguraItem, alturaItem);
+            contexto.restore();
+        } catch (erro) {
+            // Foto ausente: ignora a peça e mantém o restante da montagem.
+        }
+    }
+
+    return st.bg === 'transparente'
+        ? canvas.toDataURL('image/png')
+        : canvas.toDataURL('image/jpeg', 0.86);
+}
+
+async function salvarFotoMontadaLook() {
+    const st = app.montadorFoto;
+    if (!st) return;
+
+    if (!st.itens.length) {
+        alert('Adicione pelo menos uma peça para montar a foto.');
+        return;
+    }
+
+    const botao = document.getElementById('montador-salvar');
+    const rotulo = botao ? botao.textContent : '';
+    if (botao) {
+        botao.disabled = true;
+        botao.textContent = 'Gerando foto...';
+    }
+
+    try {
+        const dataUrl = await gerarImagemMontador();
+
+        if (st.alvo === 'historico') {
+            app.fotoMontadaLookHistorico = dataUrl;
+            const preview = document.getElementById('look-historico-foto-montada');
+            if (preview) {
+                preview.src = dataUrl;
+                preview.style.display = '';
+            }
+            atualizarPreviewLookHistorico();
+        } else {
+            app.fotoMontadaEdicao = dataUrl;
+            const arquivo = document.getElementById('edit-look-foto-arquivo');
+            if (arquivo) arquivo.value = '';
+            const preview = document.getElementById('edit-look-foto-montada');
+            if (preview) {
+                preview.src = dataUrl;
+                preview.style.display = '';
+            }
+        }
+
+        fecharMontadorFotoLook();
+    } catch (erro) {
+        alert('Não consegui gerar a foto do look.');
+    } finally {
+        if (botao) {
+            botao.disabled = false;
+            botao.textContent = rotulo || 'Usar esta foto';
+        }
+    }
+}
