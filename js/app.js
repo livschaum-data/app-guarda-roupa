@@ -3885,7 +3885,7 @@ function abrirEdicaoLoteLooksPeca() {
     }
 
     setTimeout(() => {
-        renderControleVisualMultiploEdicaoLook('edit-lote-look-ocasioes', 'Pesquisar ocasiao');
+        renderControleVisualMultiploEdicaoLook('edit-lote-look-ocasioes', 'Pesquisar ocasião');
         renderSugestoesLookComFotos('edit-lote-look-sugestoes');
     }, 0);
 
@@ -6539,7 +6539,7 @@ function obterSugestoesSelecionadasEdicaoLook() {
 }
 
 function configurarControlesVisuaisEdicaoLook() {
-    renderControleVisualMultiploEdicaoLook('edit-look-ocasioes', 'Pesquisar ocasiao');
+    renderControleVisualMultiploEdicaoLook('edit-look-ocasioes', 'Pesquisar ocasião');
     renderSugestoesLookComFotos();
 }
 
@@ -7509,7 +7509,7 @@ function renderLooksSimplesPaginaOcasioes(looks) {
     if (contador) contador.textContent = looks.length;
     container.innerHTML = looks.length
         ? looks.map(look => criarMiniCardLookSimplesOcasioes(look)).join('')
-        : '<p class="texto-ajuda">Nenhum look encontrado para essa ocasiao.</p>';
+        : '<p class="texto-ajuda">Nenhum look encontrado para essa ocasião.</p>';
 }
 
 function criarMiniCardLookSimplesOcasioes(look) {
@@ -7520,7 +7520,7 @@ function criarMiniCardLookSimplesOcasioes(look) {
              tabindex="0"
              onclick="selecionarLookOcasioes('${escapeHtml(look.id)}')"
              onkeydown="if(event.key === 'Enter' || event.key === ' '){event.preventDefault(); selecionarLookOcasioes('${escapeHtml(look.id)}');}"
-             title="Filtrar sugestoes por este look">
+             title="Filtrar sugestões por este look">
             <img src="${getCaminhoFotoLook(look.id)}" alt="${escapeHtml(look.id)}"
                  onerror="this.src='${imagemFallback()}';">
             <strong>${escapeHtml(look.id)}</strong>
@@ -7540,7 +7540,7 @@ function renderLooksPaginaOcasioes(looks) {
     if (contador) contador.textContent = looks.length;
     container.innerHTML = looks.length
         ? looks.map(look => criarMiniCardLookOcasioes(look)).join('')
-        : '<p class="texto-ajuda">Nenhum look encontrado para essa ocasiao.</p>';
+        : '<p class="texto-ajuda">Nenhum look encontrado para essa ocasião.</p>';
 }
 
 function renderAcoesLooksOcasioes(looks) {

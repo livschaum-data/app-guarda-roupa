@@ -27,7 +27,7 @@
     </script>
     <link rel="preload" href="dados_guarda_roupa.json" as="fetch" crossorigin="anonymous">
     <link rel="preload" href="fotos/home-illustration.jpg" as="image">
-        <link rel="stylesheet" href="css/style.css?v=20261026-ocasioes-dropdown">
+        <link rel="stylesheet" href="css/style.css?v=20261120-ocasioes-visual">
 </head>
 <body>
     <div id="app">
@@ -307,7 +307,7 @@
              Mostra estatisticas de looks, climas e ocasioes -->
         <div id="ocasioes" class="pagina" style="display:none;">
             <div class="header">
-                <h1>Ocasioes</h1>
+                <h1>Ocasiões</h1>
             </div>
 
             <div class="ocasioes-painel">
@@ -322,12 +322,12 @@
                 </section>
 
                 <section class="ocasioes-card ocasioes-destaque">
-                    <span>Ocasiao selecionada</span>
+                    <span>Ocasião selecionada</span>
                     <strong id="ocasiao-selecionada-nome">Selecione</strong>
                 </section>
 
                 <section class="ocasioes-card ocasioes-codigo">
-                    <span>Codigo</span>
+                    <span>Código</span>
                     <strong id="ocasiao-selecionada-codigo">-</strong>
                 </section>
 
@@ -347,7 +347,7 @@
                 </section>
 
                 <section class="ocasioes-card ocasioes-stat">
-                    <span>Data de revisao</span>
+                    <span>Data de revisão</span>
                     <strong id="ocasioes-data-revisao">-</strong>
                 </section>
 
@@ -378,7 +378,7 @@
                             </label>
                             <select id="ocasioes-grafico-eixo" onchange="alterarEixoGraficoOcasioes(this.value)">
                                 <option value="climas">Climas</option>
-                                <option value="ocasioes">Ocasioes</option>
+                                <option value="ocasioes">Ocasiões</option>
                             </select>
                         </div>
                     </div>
@@ -405,7 +405,7 @@
 
                 <section class="ocasioes-card ocasioes-bloco ocasioes-sugestoes">
                     <div class="ocasioes-bloco-topo">
-                        <h3>Calcados</h3>
+                        <h3>Calçados</h3>
                         <span id="ocasioes-calcados-contagem">0</span>
                     </div>
                     <div id="ocasioes-calcados" class="ocasioes-mini-grid"></div>
@@ -842,7 +842,7 @@
          A ordem importa! CSS deve carregar antes, depois o app.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js?v=20260624-config-supabase"></script>
-    <script src="js/app.js?v=20261112-recuperacao-senha"></script>
+    <script src="js/app.js?v=20261120-ocasioes-ajustes"></script>
 </body>
 </html>
 

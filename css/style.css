@@ -7516,6 +7516,32 @@ body {
     font-size: 17px;
 }
 
+/* Coesao visual da pagina Ocasioes com o restante do app. */
+#ocasioes .ocasioes-bloco-topo span {
+    background: var(--modern-accent-soft);
+    color: var(--modern-accent-strong);
+}
+
+#ocasioes .ocasioes-mini-acoes button {
+    width: 100%;
+    padding: 7px 8px;
+    border: 1px solid var(--modern-border);
+    border-radius: 8px;
+    background: var(--modern-surface-2);
+    color: var(--modern-text);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: var(--transicao);
+}
+
+#ocasioes .ocasioes-mini-acoes button:hover {
+    border-color: var(--modern-accent);
+    background: var(--modern-accent-soft);
+    color: var(--modern-accent-strong);
+}
+
 @media (max-width: 768px) {
     .header,
     .home-hero,
@@ -7605,14 +7631,19 @@ body {
         order: 20;
     }
 
-    #ocasioes .ocasioes-bloco-topo,
     #ocasioes .ocasioes-grafico-controles,
     #ocasioes .ocasioes-looks-selecao {
         align-items: stretch;
         flex-direction: column;
     }
 
+    #ocasioes .ocasioes-grafico .ocasioes-bloco-topo {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
     #ocasioes .ocasioes-bloco-topo {
+        align-items: center;
         gap: 10px;
     }
 
@@ -7647,6 +7678,15 @@ body {
     #ocasioes .ocasioes-mini-grid,
     #ocasioes .ocasioes-sugestoes .ocasioes-mini-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #ocasioes .ocasioes-mini-grid {
+        max-height: 62vh;
+        overflow-y: auto;
+    }
+
+    #ocasioes .ocasioes-sugestoes .ocasioes-mini-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         max-height: none;
         overflow: visible;
     }
